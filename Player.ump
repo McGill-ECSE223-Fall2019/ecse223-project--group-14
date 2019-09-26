@@ -1,6 +1,6 @@
 class Player
 {
-  name;
+  username;
    * -- 1 Quoridor;
   1 -- 1 PlayerStatus;
 }
