@@ -1,7 +1,15 @@
+namespace ca.mcgill.ecse223.quoridor.model;
+
 class Player
 {
+<<<<<<< Updated upstream
   name;
    * -- 1 Quoridor;
+=======
+  username;
+   totalTime;
+* -- 1 Quoridor;
+>>>>>>> Stashed changes
   1 -- 1 PlayerStatus;
 }
 
@@ -9,12 +17,14 @@ class Wall
 {
   
   pos;
+  enum Orientation{v, h};
 }
 
 
 class Board
 {
   state;
+saveState;
 1 -- 1 Game;
     * -- 1 Quoridor;
 }
@@ -40,14 +50,14 @@ class PlayerStatus
 enum Colour {B, W}
 }
 
-//$?[End_of_model]$?
+
 
 namespace -;
 
 
 class Player
 {
-  position 602 103 122 58;
+  position 602 102 141 75;
       position.association Player__Quoridor 0,3 109,12;
   position.association Player__PlayerStatus 0,49 119,4;
 }
