@@ -2,39 +2,37 @@ namespace ca.mcgill.ecse223.quoridor.model;
 
 class Quoridor
 {
-  1 <@>- * Player players;
-  1 <@>- * Square squares;
-  1 <@>- * Wall walls;
-  1 <@>- * Game games;
-  1 <@>- * Turn turns;
-  1 <@>- * Board boards;
-  1 <@>- * Pawn pawns;
+	1 <@>- * Player players;
+	1 <@>- * Board boards;
+	1 <@>- * Pawn pawns;
+	1 <@>- * Square squares;
+	1 <@>- * Wall walls;
+	1 <@>- * Move moves;
+    1 <@>- * PlayerMove playermoves;
+	1 <@>- * WallMove wallmoves;
 }
-
+enum Color { white, black };
+  
 class Player
 {
 	unique username;
 }
 
-enum Color { white, black };
-
 class Game
 {
 	autounique id;
 	Boolean replayModeActive;
-	
-	1 <@>- 1 Board board;
-	1 -- * Turn turns;
+	1 <@>- 1 Board;
+	1 -- * Move;
 }
 
 associationClass Pawn
 {
 	Color color;
 	Time timeRemaining;
-	Integer wallsRemaining = 10;
 	* Player;
 	* Game;
-	1 -- 10 Wall walls;
+	1 -- 10 Wall;
 }
 
 class Board
@@ -57,21 +55,21 @@ class Wall
 	Boolean isPlaced;
 }
 
-class Turn
+class Move
 {
+	abstract;
 	autounique number;
-	1 -- 1 Square square;
-	
 }
 
-class WallTurn
+class PlayerMove
 {
-    isA Turn;
-1 -- 0..1 Wall wall;
+	isA Move;
+	1 -- 1 Square;
 }
 
-class PawnTurn
+class WallMove
 {
-  isA Turn;
-  1 -- 1 Pawn pawn;
+	isA Move;
+	1 -- 1 Square;
+	1 -- 1 Wall;
 }
