@@ -1,97 +1,77 @@
 namespace ca.mcgill.ecse223.quoridor.model;
 
+class Quoridor
+{
+  1 <@>- * Player players;
+  1 <@>- * Square squares;
+  1 <@>- * Wall walls;
+  1 <@>- * Game games;
+  1 <@>- * Turn turns;
+  1 <@>- * Board boards;
+  1 <@>- * Pawn pawns;
+}
+
 class Player
 {
-<<<<<<< Updated upstream
-  name;
-   * -- 1 Quoridor;
-=======
-  username;
-   totalTime;
-* -- 1 Quoridor;
->>>>>>> Stashed changes
-  1 -- 1 PlayerStatus;
+	unique username;
+}
+
+enum Color { white, black };
+
+class Game
+{
+	autounique id;
+	Boolean replayModeActive;
+	
+	1 <@>- 1 Board board;
+	1 -- * Turn turns;
+}
+
+associationClass Pawn
+{
+	Color color;
+	Time timeRemaining;
+	Integer wallsRemaining = 10;
+	* Player;
+	* Game;
+	1 -- 10 Wall walls;
+}
+
+class Board
+{	
+	1 -- * Square;
+}
+
+class Square
+{
+	column;
+	Integer row;
+	1 -- 1 Pawn;
+	1 -- * Wall;
 }
 
 class Wall
 {
-  
-  pos;
-  enum Orientation{v, h};
+	enum Orientation{ vertical, horizontal };
+	Orientation orientation;
+	Boolean isPlaced;
 }
 
-
-class Board
+class Turn
 {
-  state;
-saveState;
-1 -- 1 Game;
-    * -- 1 Quoridor;
+	autounique number;
+	1 -- 1 Square square;
+	
 }
 
-class Game
+class WallTurn
 {
-    * -- 1 Quoridor;
-    * -- 2 Player;
-  1 -- 2 PlayerStatus;
+    isA Turn;
+1 -- 0..1 Wall wall;
 }
 
-class Quoridor
+class PawnTurn
 {
-  1 -- * Wall;
-}
-
-class PlayerStatus
-{
-  ppos;
-  Colour colour;
-    1 -- 10 Wall;
-  * -- 1 Quoridor;
-enum Colour {B, W}
-}
-
-
-
-namespace -;
-
-
-class Player
-{
-  position 602 102 141 75;
-      position.association Player__Quoridor 0,3 109,12;
-  position.association Player__PlayerStatus 0,49 119,4;
-}
-
-class Wall
-{
-  position 163 346 109 58;
-}
-
-class Board
-{
-  position 211 209 109 58;
-  position.association Board__GameController 10,0 105,41;
-    position.association Board__Quoridor 10,0 9,41;
-  position.association Board__Game 104,0 17,41;
-}
-
-class Game
-{
-  position 254 129 109 41;
-    position.association Game__Quoridor 60,0 64,41;
-    position.association Game__Player 109,1 0,19;
-  position.association Game__PlayerStatus 109,41 0,1;
-}
-
-class Quoridor
-{
-  position 155 11 109 41;
-  position.association Quoridor__Wall 6,41 2,0;
-}
-
-class PlayerStatus
-{
-  position 439 138 119 75;
-  position.association PlayerStatus__Wall 8,75 108,0;
-  position.association PlayerStatus__Quoridor 0,29 81,33;
+  isA Turn;
+  1 -- 1 Pawn pawn;
 }
