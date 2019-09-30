@@ -8,10 +8,10 @@ class Quoridor
 	1 <@>- * Square squares;
 	1 <@>- * Wall walls;
 	1 <@>- * Move moves;
-    1 <@>- * PlayerMove playermoves;
+  1 <@>- * PlayerMove playermoves;
 	1 <@>- * WallMove wallmoves;
 }
-enum Color { white, black };
+enum Color { white, black }
   
 class Player
 {
