@@ -109,9 +109,10 @@ public class CucumberStepDefinitions {
 	// ***********************************************
 
 	@When("A new game is initializing")
-	public void aNewGameIsInitializing() {
+	public void aNewGameIsInitializing() throws InvalidInputException {
 		GameController G= new GameController();
-		G.initQ();
+		
+		G.initGame(quoridor);
 	}
 	
 	/*
