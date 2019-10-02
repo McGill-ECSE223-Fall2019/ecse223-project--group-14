@@ -20,6 +20,10 @@ import ca.mcgill.ecse223.quoridor.model.WallMove;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
+import io.cucumber.java.en.When;
+import io.cucumber.java.en.Then;
+import ca.mcgill.ecse223.quoridor.controller.GameController;
+import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
 
 public class CucumberStepDefinitions {
 
@@ -104,6 +108,12 @@ public class CucumberStepDefinitions {
 	// Scenario and scenario outline step definitions
 	// ***********************************************
 
+	@When("A new game is initializing")
+	public void aNewGameIsInitializing() {
+		GameController G= new GameController();
+		G.initQ();
+	}
+	
 	/*
 	 * TODO Insert your missing step definitions here
 	 * 
