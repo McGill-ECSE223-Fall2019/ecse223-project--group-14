@@ -10,7 +10,8 @@ import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 public class GameController {
 	
 	public Game initGame(Quoridor q)throws InvalidInputException{
-		GameStatus aGameStatus = null; MoveMode aMoveMode = null; Player aWhitePlayer = null; Player aBlackPlayer = null; 
+		GameStatus aGameStatus = GameStatus.Initializing; MoveMode aMoveMode = null; Player aWhitePlayer = null; Player aBlackPlayer = null; 
+		
 		Game g = new Game(aGameStatus, aMoveMode, aWhitePlayer, aBlackPlayer, q);
 		return g;
 	}
