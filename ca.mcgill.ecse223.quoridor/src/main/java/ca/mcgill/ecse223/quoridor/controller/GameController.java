@@ -10,7 +10,7 @@ import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 public class GameController {
 	
 	/**
-	 * For Initiate a new game scenario 
+	 * For Start New Game feature 
 	 * 
 	 * @author dariu
 	 * 
