@@ -108,7 +108,10 @@ public class CucumberStepDefinitions {
 	// Scenario and scenario outline step definitions
 	// ***********************************************
 
-	
+	/**
+	 * @author dariu
+	 * @throws Throwable
+	 */
 	@When("A new game is initializing")
 	public void aNewGameIsInitializing() throws Throwable{
 		GameController G= new GameController();
@@ -129,6 +132,132 @@ public class CucumberStepDefinitions {
 	public void iTryToFlipTheWall(){
 		GameController G= new GameController();
 		G.rotateWall(game, currentPlayer);
+	}
+
+	/**
+	 * @author dariu
+	 * @throws Throwable
+	 */
+	@And ("White player chooses a username")
+	public void whitePlayerChoosesAUsername() throws Throwable{
+		//todo call choose username
+	}
+	
+	/**
+	 * @author dariu
+	 * @throws Throwable
+	 */ 
+	@And ("Black player chooses a username")
+	public void blackPlayerChoosesAUsername() throws Throwable{
+		//todo
+	}
+	
+	/**
+	 * @author dariu
+	 * @throws Throwable
+	 */ 
+	@And ("Total thinking time is set")
+	public void totalThinkingTimeIsSet() throws Throwable{
+		//todo call thinking time method
+	}
+	
+	/**
+	 * @author dariu
+	 * @throws Throwable
+	 */ 
+	@Then ("The game is ready to start")
+	public void theGameIsReadyToStart() throws Throwable{
+		//todo 
+	}
+	
+	/**
+	 * @author dariu
+	 * @throws Throwable
+	 */ 
+	@When ("I start the clock")
+	public void iStartTheClock() throws Throwable{
+		
+		//todo create clock controller
+	}
+	
+	/**
+	 * @author dariu
+	 * @throws Throwable
+	 */ 
+	@And ("The board is initialized")
+	public void theBoardIsInitialized() throws Throwable{
+		
+		//todo
+	}
+	
+	/**
+	 * @author dariu
+	 * @throws Throwable
+	 */ 
+	@Given ("Next player to set user name is? (.*)")
+	public void nextPlayerToSetUserNameIs(String colour) throws Throwable{
+			//needs somesortof color input
+			//todo
+	}
+	
+	/**
+	 * @author dariu
+	 * @throws Throwable
+	 */ 
+	@And ("There is existing user? (.*)")
+	public void thereIsExistingUser(String name) throws Throwable{
+		//needs somesortof name input
+		//todo
+	}
+	
+	/**
+	 * @author dariu
+	 * @throws Throwable
+	 */ 
+	@When ("The player selects existing? (.*)")
+	public void thePlayerSelectsExisting(String name) throws Throwable{
+		//needs somesortof name input
+		//todo
+	}
+	
+	/**
+	 * @author dariu
+	 * @throws Throwable
+	 */ 
+	@Then ("The name of player? (.*) in the new game shall be (.*)")
+	public void theNameOfPlayerInTheNewGameShallBe(String Colour, String name) throws Throwable{
+		//needs somesortof name input
+		//todo
+	}
+	
+	/**
+	 * @author dariu
+	 * @throws Throwable
+	 */ 
+	@And ("There is no existing user?(.*)")
+	public void thereIsNoExistingUser(String name) throws Throwable{
+		//needs somesortof name input
+		//todo
+	}
+	
+	/**
+	 * @author dariu
+	 * @throws Throwable
+	 */ 
+	@When ("The player provides new user name: ?(.*)")
+	public void thePlayerProvidesNewUserName(String name) throws Throwable{
+		//needs somesortof name input
+		//todo
+	}
+	
+	/**
+	 * @author dariu
+	 * @throws Throwable
+	 */ 
+	@Then ("The player shall be warned that (.*) already exists")
+	public void thePlayerShallBeWarnedThatAlreadyExists(String name) throws Throwable{
+		//needs somesortof name input
+		//todo
 	}
 	
 	/*
