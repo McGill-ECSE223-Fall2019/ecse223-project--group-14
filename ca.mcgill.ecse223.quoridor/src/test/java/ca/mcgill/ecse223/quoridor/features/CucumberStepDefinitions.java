@@ -110,10 +110,25 @@ public class CucumberStepDefinitions {
 
 	
 	@When("A new game is initializing")
-	public void aNewGameIsInitializing() throws Throwable {
+	public void aNewGameIsInitializing() throws Throwable{
 		GameController G= new GameController();
 		
 		G.initGame(quoridor);
+	}
+	
+	@Given("A wall move candidate exists with <dir> at position (<row>, <col>)")
+	public boolean aWallMoveCandidateExists(Direction dir, Tile tile) {
+		GameController G= new GameController();
+		G.rotateWall(game, currentPlayer);
+	}
+	
+	/**
+	 * @author louismollick
+	 */
+	@When("I try to flip the wall")
+	public void iTryToFlipTheWall(){
+		GameController G= new GameController();
+		G.rotateWall(game, currentPlayer);
 	}
 	
 	/*

@@ -28,4 +28,26 @@ public class GameController {
 		Board board = new Board(q);
 		return board;
 	}
+	
+	/**
+	 * For Rotate Wall feature 
+	 * 
+	 * @author louismollick
+	 * 
+	 * @throws UnsupportedOperationException
+	 */
+	public void rotateWall(Game g, Player currentplayer) throws UnsupportedOperationException{
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * For Grab Wall feature 
+	 * 
+	 * @author louismollick
+	 * 
+	 * @throws UnsupportedOperationException
+	 */
+	public void grabWall(Game g, Player currentplayer) throws UnsupportedOperationException{
+		throw new UnsupportedOperationException();
+	}
 }
