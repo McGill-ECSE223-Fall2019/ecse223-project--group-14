@@ -17,10 +17,12 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	public Game initGame(Quoridor q)throws UnsupportedOperationException{
+		
 		GameStatus aGameStatus = GameStatus.Initializing; MoveMode aMoveMode = null; Player aWhitePlayer = null; Player aBlackPlayer = null; 
 		
 		Game g = new Game(aGameStatus, aMoveMode, aWhitePlayer, aBlackPlayer, q);
-		return g;
+		throw new UnsupportedOperationException();
+		//return g;
 	}
 	
 	
