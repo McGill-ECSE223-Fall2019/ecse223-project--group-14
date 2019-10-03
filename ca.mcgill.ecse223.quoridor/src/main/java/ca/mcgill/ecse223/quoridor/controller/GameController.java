@@ -9,14 +9,22 @@ import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 
 public class GameController {
 	
-	public Game initGame(Quoridor q)throws InvalidInputException{
+	/**
+	 * For Initiate a new game scenario 
+	 * 
+	 * @author dariu
+	 * 
+	 * @throws UnsupportedOperationException
+	 */
+	public Game initGame(Quoridor q)throws UnsupportedOperationException{
 		GameStatus aGameStatus = GameStatus.Initializing; MoveMode aMoveMode = null; Player aWhitePlayer = null; Player aBlackPlayer = null; 
 		
 		Game g = new Game(aGameStatus, aMoveMode, aWhitePlayer, aBlackPlayer, q);
 		return g;
 	}
 	
-	public Board initBoard(Quoridor q) throws InvalidInputException{
+	
+	public Board initBoard(Quoridor q) throws UnsupportedOperationException{
 		Board board = new Board(q);
 		return board;
 	}

@@ -108,8 +108,9 @@ public class CucumberStepDefinitions {
 	// Scenario and scenario outline step definitions
 	// ***********************************************
 
+	
 	@When("A new game is initializing")
-	public void aNewGameIsInitializing() throws InvalidInputException {
+	public void aNewGameIsInitializing() throws Throwable {
 		GameController G= new GameController();
 		
 		G.initGame(quoridor);
