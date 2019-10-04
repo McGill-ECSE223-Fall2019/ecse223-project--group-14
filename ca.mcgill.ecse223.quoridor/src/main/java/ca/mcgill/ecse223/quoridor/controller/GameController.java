@@ -44,17 +44,6 @@ public class GameController {
 	}
 	
 	/**
-	 * For Rotate Wall feature 
-	 * 
-	 * @author louismollick
-	 * 
-	 * @throws UnsupportedOperationException
-	 */
-	public boolean doesWallMoveCandidateExist(Direction dir, int row, int col) throws UnsupportedOperationException{
-		throw new UnsupportedOperationException();
-	}
-	
-	/**
 	 * For Grab Wall feature 
 	 * 
 	 * @author louismollick

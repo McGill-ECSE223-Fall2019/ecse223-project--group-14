@@ -24,7 +24,6 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
 import ca.mcgill.ecse223.quoridor.controller.GameController;
-import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
 
 public class CucumberStepDefinitions {
 
@@ -99,10 +98,21 @@ public class CucumberStepDefinitions {
 		System.out.println();
 
 	}
-
+	
+	/**
+	 * @author louismollick
+	 */
+	@And("I have a wall in my hand over the board")
+	public boolean iHaveAWallInMyHandOverTheBoard() {
+		return QuoridorApplication.getQuoridor().getCurrentGame().hasWallMoveCandidate();
+	}
+	
+	/**
+	 * @author louismollick
+	 */
 	@And("I do not have a wall in my hand")
-	public void iDoNotHaveAWallInMyHand() {
-		// Walls are in stock for all players
+	public boolean iDoNotHaveAWallInMyHand() {
+		return !iHaveAWallInMyHandOverTheBoard();
 	}
 	
 	// ***********************************************
@@ -125,9 +135,10 @@ public class CucumberStepDefinitions {
 	 */
 	@Given("A wall move candidate exists with? (.*) at position ((.*), (.*))")
 	@And("A wall move candidate shall exist with? (.*) at position ((.*), (.*))")
-	public boolean aWallMoveCandidateExists(Direction dir, int row, int col) {
-		GameController g = new GameController();
-		return g.doesWallMoveCandidateExist(dir, row, col);
+	public boolean aWallMoveCandidateExistsAtPos(Direction dir, int row, int col) {
+		WallMove w = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+		return (w.getWallDirection().equals(dir) && w.getTargetTile().getRow() == row &&
+				w.getTargetTile().getColumn() == col);
 	}
 	
 	/**
@@ -140,12 +151,64 @@ public class CucumberStepDefinitions {
 	}
 	
 //	/**
-//	 * @author louismollick IN GUI
+//	 * @author louismollick -------- IS GUI STEP
 //	 */
 //	@Then("The wall shall be rotated over the board to? (.*)")
 //	public boolean theWallShallBeRotatedOverTheBoardTo(Direction dir){
 //	}
-
+	
+	/**
+	 * @author louismollick
+	 */
+	@Given("I have more walls on stock")
+	public boolean iHaveMoreWallsOnStock() {
+		return QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove().hasWalls();
+	}
+	
+	/**
+	 * @author louismollick
+	 */
+	@When("I try to grab a wall from my stock")
+	public void iTryToGrabAWallFromMyStock() {
+		GameController g = new GameController();
+		g.grabWall(game, currentPlayer);
+	}
+	
+	/**
+	 * @author louismollick
+	 */
+	@And("The wall in my hand should disappear from my stock")
+	public boolean theWallInMyHandShouldDisappearFromMyStock() {
+		Game g = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player p = g.getCurrentPosition().getPlayerToMove();
+		// Get the index of the wallMove candidate. Verify it isn't in player stock
+		if (p.indexOfWall(g.getWallMoveCandidate().getWallPlaced()) == -1) return false;
+		return true;
+	}
+	
+	/**
+	 * @author louismollick
+	 */
+	@And("A wall move candidate shall be created at initial position")
+	public boolean aWallMoveCandidateShallBeCreatedAtInitalPosition() {
+		return aWallMoveCandidateExistsAtPos(Direction.Horizontal, 1, 1);
+	}
+	
+	/**
+	 * @author louismollick
+	 */
+	@Given("I have no more walls on stock")
+	public boolean iHaveNoMoreWallsOnStock() {
+		return !iHaveMoreWallsOnStock();
+	}
+	
+//	/**
+//	 * @author louismollick ----- IS GUI STEP
+//	 */
+//	@Then("I should be notified that I have no more walls")
+//	public boolean iShouldBeNotifiedThatIHaveNoMoreWalls() {
+//		return false;
+//	}
 	
 	/**
 	 * @author dariu
