@@ -120,10 +120,14 @@ public class CucumberStepDefinitions {
 		G.initGame(quoridor);
 	}
 	
-	@Given("A wall move candidate exists with <dir> at position (<row>, <col>)")
-	public boolean aWallMoveCandidateExists(Direction dir, Tile tile) {
-		GameController G= new GameController();
-		return true;
+	/**
+	 * @author louismollick
+	 */
+	@Given("A wall move candidate exists with? (.*) at position ((.*), (.*))")
+	@And("A wall move candidate shall exist with? (.*) at position ((.*), (.*))")
+	public boolean aWallMoveCandidateExists(Direction dir, int row, int col) {
+		GameController g = new GameController();
+		return g.doesWallMoveCandidateExist(dir, row, col);
 	}
 	
 	/**
@@ -131,18 +135,17 @@ public class CucumberStepDefinitions {
 	 */
 	@When("I try to flip the wall")
 	public void iTryToFlipTheWall(){
-		GameController G= new GameController();
-		G.rotateWall(game, currentPlayer);
+		GameController g = new GameController();
+		g.rotateWall(game, currentPlayer);
 	}
+	
+//	/**
+//	 * @author louismollick IN GUI
+//	 */
+//	@Then("The wall shall be rotated over the board to? (.*)")
+//	public boolean theWallShallBeRotatedOverTheBoardTo(Direction dir){
+//	}
 
-	/**
-	 * @author dariu
-	 * @throws Throwable
-	 */
-	@And ("White player chooses a username")
-	public void whitePlayerChoosesAUsername() throws Throwable{
-		//todo call choose username
-	}
 	
 	/**
 	 * @author dariu

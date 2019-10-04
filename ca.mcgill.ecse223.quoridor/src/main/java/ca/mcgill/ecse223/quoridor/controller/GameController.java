@@ -1,6 +1,7 @@
 package ca.mcgill.ecse223.quoridor.controller;
 
 import ca.mcgill.ecse223.quoridor.model.Board;
+import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Game;
 import ca.mcgill.ecse223.quoridor.model.Player;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
@@ -39,6 +40,17 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	public void rotateWall(Game g, Player currentplayer) throws UnsupportedOperationException{
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * For Rotate Wall feature 
+	 * 
+	 * @author louismollick
+	 * 
+	 * @throws UnsupportedOperationException
+	 */
+	public boolean doesWallMoveCandidateExist(Direction dir, int row, int col) throws UnsupportedOperationException{
 		throw new UnsupportedOperationException();
 	}
 	
