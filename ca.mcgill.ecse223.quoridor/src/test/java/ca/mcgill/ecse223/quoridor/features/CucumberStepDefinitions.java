@@ -122,7 +122,7 @@ public class CucumberStepDefinitions {
 	@Given("A wall move candidate exists with <dir> at position (<row>, <col>)")
 	public boolean aWallMoveCandidateExists(Direction dir, Tile tile) {
 		GameController G= new GameController();
-		G.rotateWall(game, currentPlayer);
+		return true;
 	}
 	
 	/**
