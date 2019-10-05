@@ -120,6 +120,29 @@ public class CucumberStepDefinitions {
 		G.setTime(min, sec);
 	}
 	
+	@Given("A new game is initializing")
+	public void aNewGameIsInitializing() throws Throwable{
+		GameController G=new GameController();
+		G.initGame(quoridor);
+	}
+	
+	 @Then ("Both players shall have <min>:<sec> remaining time left")
+	 	public void RemainingTime(int min, int sec) throws Throwable{
+		 GameController G = new GameController();
+		 G.setTime(min, sec);
+	 }
+	
+	 @Given ("The Game is Running")
+	 	public void GameRunning() throws Throwable{
+		 
+	 }
+	 
+	 
+	 
+	 
+	 
+	 
+	
 	
 	
 	/**
