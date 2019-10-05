@@ -134,12 +134,15 @@ public class CucumberStepDefinitions {
 	
 	 @Given ("The Game is Running")
 	 	public void TheGameIsRunning() throws Throwable{
+		 GameController G = new GameController();
+		 G.RunGame();
 		 //code missing
 	 }
 	 
 	 @Given ("No file <filename> exists in the filesystem")
 	 	public void NoFileExistsInTheFilesystem() throws Throwable{
-		//code missing
+		
+		 //code missing
 	 }
 	 
 	 
