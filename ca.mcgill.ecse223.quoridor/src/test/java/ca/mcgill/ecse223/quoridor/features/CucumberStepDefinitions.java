@@ -115,7 +115,7 @@ public class CucumberStepDefinitions {
 	 */ 
 	
 	@When ("<min>:<sec> is set as the thinking time")
-	public void ThinkingTime(int min, int sec) throws Throwable{
+	public void IsSetAsTheThinkingTime(int min, int sec) throws Throwable{
 		GameController G= new GameController();
 		G.setTime(min, sec);
 	}
@@ -127,22 +127,65 @@ public class CucumberStepDefinitions {
 	}
 	
 	 @Then ("Both players shall have <min>:<sec> remaining time left")
-	 	public void RemainingTime(int min, int sec) throws Throwable{
+	 	public void BothPlayersShallHaveMinSecRemainingTimeLeft(int min, int sec) throws Throwable{
 		 GameController G = new GameController();
 		 G.setTime(min, sec);
 	 }
 	
 	 @Given ("The Game is Running")
-	 	public void GameRunning() throws Throwable{
-		 
+	 	public void TheGameIsRunning() throws Throwable{
+		 //code missing
+	 }
+	 
+	 @Given ("No file <filename> exists in the filesystem")
+	 	public void NoFileExistsInTheFilesystem() throws Throwable{
+		//code missing
 	 }
 	 
 	 
+	 @When ("The user initiates to save the game with name <filename>")
 	 
+	 	public void TheUserInitiatesToSaveTheGameWithNameFilename () throws Throwable{
+		//code missing
+	 }
 	 
+	 @Then ("A file with <filename> is created in the filesystem")
 	 
+	 	public void AFileWithFilenameIsCreatedInTheFilesystem () throws Throwable{
+		//code missing
+	 }
 	 
-	
+	 @Given ("File <filename> exists in the filesystem")
+	 
+	 	public void FileFilenameExistsInTheFileSystem () throws Throwable{
+		//code missing
+	 }
+	 
+	 @Then ("File with <filename> is updated in the filesystem")
+	 
+	 	public void FileWithFilenameIsUpdatedInTheFilesystem () throws Throwable{
+		//code missing
+		 }
+		 
+	 
+	 @And ("The user cancels to overwrite existing file")
+	 
+	 public void TheUserCancelsToOverwriteExistingFile () throws Throwable{
+			//code missing
+			 }
+	 
+	 @And ("The user confirms to overwrite existing file") 
+	 
+	 public void TheUserConfirmsToOverwriteExistingFile () throws Throwable{
+			//code missing
+			 }
+	 
+	 @Then ("File <filename> is not changed in the filesystem")
+	 
+	 public void FileFilenameIsNotChangedInTheFilesystem () throws Throwable{
+			//code missing
+			 }
+	 
 	
 	
 	/**
