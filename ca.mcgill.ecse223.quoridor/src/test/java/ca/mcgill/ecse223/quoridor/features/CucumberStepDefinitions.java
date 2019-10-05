@@ -110,6 +110,19 @@ public class CucumberStepDefinitions {
 	// ***********************************************
 
 	/**
+	 * @author AmineMallek
+	 * @throws Throwable
+	 */ 
+	
+	@When ("<min>:<sec> is set as the thinking time")
+	public void ThinkingTime(int min, int sec) throws Throwable{
+		GameController G= new GameController();
+		G.setTime(min, sec);
+	}
+	
+	
+	
+	/**
 	 * @author dariu
 	 * @throws Throwable
 	 */
@@ -260,6 +273,8 @@ public class CucumberStepDefinitions {
 		//needs somesortof name input
 		//todo
 	}
+	
+
 	
 	/*
 	 * TODO Insert your missing step definitions here
