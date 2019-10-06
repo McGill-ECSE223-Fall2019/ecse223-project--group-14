@@ -1,5 +1,7 @@
 package ca.mcgill.ecse223.quoridor.features;
 
+import static org.junit.Assert.assertEquals;
+
 import java.sql.Time;
 import java.util.List;
 import java.util.Map;
@@ -103,16 +105,16 @@ public class CucumberStepDefinitions {
 	 * @author louismollick
 	 */
 	@And("I have a wall in my hand over the board")
-	public boolean iHaveAWallInMyHandOverTheBoard() {
-		return QuoridorApplication.getQuoridor().getCurrentGame().hasWallMoveCandidate();
+	public void iHaveAWallInMyHandOverTheBoard() {
+		assertEquals(true,QuoridorApplication.getQuoridor().getCurrentGame().hasWallMoveCandidate());
 	}
 	
 	/**
 	 * @author louismollick
 	 */
 	@And("I do not have a wall in my hand")
-	public boolean iDoNotHaveAWallInMyHand() {
-		return !iHaveAWallInMyHandOverTheBoard();
+	public void iDoNotHaveAWallInMyHand() {
+		assertEquals(false,QuoridorApplication.getQuoridor().getCurrentGame().hasWallMoveCandidate());
 	}
 	
 	// ***********************************************
@@ -133,19 +135,20 @@ public class CucumberStepDefinitions {
 	/**
 	 * @author louismollick
 	 */
-	@Given("A wall move candidate exists with? (.*) at position ((.*), (.*))")
+	@Given("A wall move candidate exists with (.*) at position ((.*), (.*))")
 	@And("A wall move candidate shall exist with? (.*) at position ((.*), (.*))")
-	public boolean aWallMoveCandidateExistsAtPos(Direction dir, int row, int col) {
+	public void aWallMoveCandidateExistsAtPos(Direction dir, int row, int col) throws Throwable{
 		WallMove w = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
-		return (w.getWallDirection().equals(dir) && w.getTargetTile().getRow() == row &&
+		boolean b = (w.getWallDirection().equals(dir) && w.getTargetTile().getRow() == row &&
 				w.getTargetTile().getColumn() == col);
+		assertEquals(true, b);
 	}
 	
 	/**
 	 * @author louismollick
 	 */
 	@When("I try to flip the wall")
-	public void iTryToFlipTheWall(){
+	public void iTryToFlipTheWall() throws Throwable{
 		GameController g = new GameController();
 		g.rotateWall(game, currentPlayer);
 	}
@@ -154,22 +157,23 @@ public class CucumberStepDefinitions {
 //	 * @author louismollick -------- IS GUI STEP
 //	 */
 //	@Then("The wall shall be rotated over the board to? (.*)")
-//	public boolean theWallShallBeRotatedOverTheBoardTo(Direction dir){
+//	public void theWallShallBeRotatedOverTheBoardTo(Direction dir){
+//		assertEquals(true, GUI get state);
 //	}
 	
 	/**
 	 * @author louismollick
 	 */
 	@Given("I have more walls on stock")
-	public boolean iHaveMoreWallsOnStock() {
-		return QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove().hasWalls();
+	public void iHaveMoreWallsOnStock() throws Throwable{
+		assertEquals(true, QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove().hasWalls());
 	}
 	
 	/**
 	 * @author louismollick
 	 */
 	@When("I try to grab a wall from my stock")
-	public void iTryToGrabAWallFromMyStock() {
+	public void iTryToGrabAWallFromMyStock() throws Throwable{
 		GameController g = new GameController();
 		g.grabWall(game, currentPlayer);
 	}
@@ -178,28 +182,28 @@ public class CucumberStepDefinitions {
 	 * @author louismollick
 	 */
 	@And("The wall in my hand should disappear from my stock")
-	public boolean theWallInMyHandShouldDisappearFromMyStock() {
+	public void theWallInMyHandShouldDisappearFromMyStock() throws Throwable{
 		Game g = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player p = g.getCurrentPosition().getPlayerToMove();
 		// Get the index of the wallMove candidate. Verify it isn't in player stock
-		if (p.indexOfWall(g.getWallMoveCandidate().getWallPlaced()) == -1) return false;
-		return true;
+		boolean b = (p.indexOfWall(g.getWallMoveCandidate().getWallPlaced()) == -1);
+		assertEquals(false, b);
 	}
 	
 	/**
 	 * @author louismollick
 	 */
 	@And("A wall move candidate shall be created at initial position")
-	public boolean aWallMoveCandidateShallBeCreatedAtInitalPosition() {
-		return aWallMoveCandidateExistsAtPos(Direction.Horizontal, 1, 1);
+	public void aWallMoveCandidateShallBeCreatedAtInitalPosition() throws Throwable{
+		aWallMoveCandidateExistsAtPos(Direction.Horizontal, 1, 1);
 	}
 	
 	/**
 	 * @author louismollick
 	 */
 	@Given("I have no more walls on stock")
-	public boolean iHaveNoMoreWallsOnStock() {
-		return !iHaveMoreWallsOnStock();
+	public void iHaveNoMoreWallsOnStock() throws Throwable{
+		assertEquals(false, QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove().hasWalls());
 	}
 	
 //	/**
