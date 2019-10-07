@@ -1,5 +1,7 @@
 package ca.mcgill.ecse223.quoridor.controller;
 
+import java.sql.Time;
+
 import ca.mcgill.ecse223.quoridor.model.Board;
 import ca.mcgill.ecse223.quoridor.model.Game;
 import ca.mcgill.ecse223.quoridor.model.Player;
@@ -12,7 +14,7 @@ public class GameController {
 	/**
 	 * For Start New Game feature 
 	 * 
-	 * @author dariu
+	 * @author DariusPi
 	 * 
 	 * @throws UnsupportedOperationException
 	 */
@@ -23,6 +25,48 @@ public class GameController {
 		Game g = new Game(aGameStatus, aMoveMode, aWhitePlayer, aBlackPlayer, q);
 		throw new UnsupportedOperationException();
 		//return g;
+	}
+	
+	/**
+	 * For Start New Game feature
+	 * 
+	 * @author DariusPi
+	 * 
+	 * @throws UnsupportedOperationException
+	 */
+	public void assignUsername(Quoridor q, String colour, String name)throws UnsupportedOperationException {
+		
+		
+	}
+	
+	/**
+	 * For Start New Game feature
+	 * 
+	 * @author DariusPi
+	 * 
+	 * @throws UnsupportedOperationException
+	 */
+	public void startTheClock(Game g)throws UnsupportedOperationException{
+		Time time=g.getBlackPlayer().getRemainingTime();
+		
+	}
+	
+	/**
+	 * For Start New Game feature
+	 * 
+	 * @author DariusPi
+	 * 
+	 * @throws UnsupportedOperationException
+	 */
+	public Boolean doesUserExist(Quoridor q, String name) {
+		
+		for (int i=0; i<q.numberOfUsers();i++) {
+			if (q.getUser(i).hasWithName(name)) {
+				return true;
+			}
+		}
+		return false;
+		
 	}
 	
 	
