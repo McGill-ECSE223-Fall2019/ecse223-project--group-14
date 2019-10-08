@@ -25,6 +25,7 @@ public class GameController {
 		GameStatus aGameStatus = GameStatus.Initializing; MoveMode aMoveMode = null; Player aWhitePlayer = null; Player aBlackPlayer = null; 
 		
 		Game g = new Game(aGameStatus, aMoveMode, aWhitePlayer, aBlackPlayer, q);
+		q.setCurrentGame(g);
 		throw new UnsupportedOperationException();
 		//return g;
 	}

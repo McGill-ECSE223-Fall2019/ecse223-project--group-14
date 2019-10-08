@@ -166,7 +166,7 @@ public class CucumberStepDefinitions {
 	@And ("Total thinking time is set")
 	public void totalThinkingTimeIsSet() throws Throwable{
 		int min=0; int sec=0;
-		setThinkingTime(min, sec,player1,player2);
+		setThinkingTime(min, sec,quoridor);
 		//todo call thinking time method
 		GameStatus aGameStatus = GameStatus.ReadyToStart;
 		game.setGameStatus(aGameStatus);
