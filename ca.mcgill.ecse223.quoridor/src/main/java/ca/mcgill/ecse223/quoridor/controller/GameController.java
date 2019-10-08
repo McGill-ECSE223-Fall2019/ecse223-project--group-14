@@ -6,6 +6,7 @@ import ca.mcgill.ecse223.quoridor.model.Board;
 import ca.mcgill.ecse223.quoridor.model.Game;
 import ca.mcgill.ecse223.quoridor.model.Player;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
+import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
 import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 
@@ -13,6 +14,7 @@ public class GameController {
 	
 	/**
 	 * For Start New Game feature 
+	 * initializes a game with null parameters
 	 * 
 	 * @author DariusPi
 	 * 
@@ -29,18 +31,31 @@ public class GameController {
 	
 	/**
 	 * For Start New Game feature
+	 * Assigns username to player with given colour by either choosing an existing one or creating a new one
 	 * 
 	 * @author DariusPi
 	 * 
 	 * @throws UnsupportedOperationException
 	 */
-	public void assignUsername(Quoridor q, String colour, String name)throws UnsupportedOperationException {
+	public void assignUsername(Quoridor q, String colour)throws UnsupportedOperationException {
 		
-		
+		//todo
+		//call select or create use methods
+		User user= new User(null,q);
+		Time time =null;
+		Player play= new Player(null,user,null);
+		if (colour.equals("white")) {
+			q.getCurrentGame().setWhitePlayer(play);
+		}
+		else {
+			q.getCurrentGame().setBlackPlayer(play);
+		}
+		throw new UnsupportedOperationException();
 	}
 	
 	/**
 	 * For Start New Game feature
+	 * Initilizes game clocks to be used for player time limits
 	 * 
 	 * @author DariusPi
 	 * 
@@ -48,24 +63,68 @@ public class GameController {
 	 */
 	public void startTheClock(Game g)throws UnsupportedOperationException{
 		Time time=g.getBlackPlayer().getRemainingTime();
-		
+		//todo
+		throw new UnsupportedOperationException();
 	}
 	
 	/**
-	 * For Start New Game feature
+	 * For Provide Or Select User Name feature
+	 * Selects and returns name
 	 * 
 	 * @author DariusPi
 	 * 
 	 * @throws UnsupportedOperationException
 	 */
-	public Boolean doesUserExist(Quoridor q, String name) {
+	public String selectUsername(Quoridor q, String name)throws UnsupportedOperationException {
+		int i=doesUserExist(q,name);
+		if (i==-1) {
+			//error statement
+		}
+		else {
+			return q.getUser(i).getName();
+		}
+		throw new UnsupportedOperationException();
+		
+	}
+	
+	/**
+	 * For Provide Or Select User Name feature
+	 * Creates new user, adds it to quoridor and returns its name
+	 * 
+	 * @author DariusPi
+	 * 
+	 * @throws UnsupportedOperationException
+	 */
+	public String createUsername(Quoridor q, String name)throws UnsupportedOperationException {
+		int i=doesUserExist(q,name);
+		if (i==-1) {
+			q.addUser(name);
+			return name;
+		}
+		else {
+			String msg= name +" already exists";
+			return  msg;
+		}
+		//throw new UnsupportedOperationException();
+		
+	}
+	
+	/**
+	 * For Provide Or Select User Name feature
+	 * Determines if a user with the given name has already been created, if so return index else return -1
+	 * 
+	 * @author DariusPi
+	 * 
+	 * @throws UnsupportedOperationException
+	 */
+	public int doesUserExist(Quoridor q, String name) throws UnsupportedOperationException{
 		
 		for (int i=0; i<q.numberOfUsers();i++) {
-			if (q.getUser(i).hasWithName(name)) {
-				return true;
+			if (q.getUser(i).getName().contentEquals(name)) {
+				return i;
 			}
 		}
-		return false;
+		return -1;
 		
 	}
 	

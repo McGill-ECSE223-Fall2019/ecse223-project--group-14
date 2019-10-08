@@ -1,6 +1,8 @@
 package ca.mcgill.ecse223.quoridor.features;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.sql.Time;
 import java.util.List;
@@ -144,8 +146,7 @@ public class CucumberStepDefinitions {
 	@And ("White player chooses a username")
 	public void whitePlayerChoosesAUsername() throws Throwable{
 		GameController G= new GameController();
-		String name = null;
-		G.assignUsername(quoridor, "white",name);
+		G.assignUsername(quoridor, "white");
 	}
 	
 	/**
@@ -155,8 +156,7 @@ public class CucumberStepDefinitions {
 	@And ("Black player chooses a username")
 	public void blackPlayerChoosesAUsername() throws Throwable{
 		GameController G= new GameController();
-		String name=null;
-		G.assignUsername(quoridor, "black",name);
+		G.assignUsername(quoridor, "black");
 	}
 	
 	/**
@@ -198,8 +198,7 @@ public class CucumberStepDefinitions {
 	 */ 
 	@And ("The board is initialized")
 	public void theBoardIsInitialized() throws Throwable{
-		GameController G= new GameController();
-		G.initBoard(quoridor);
+		assertNotNull(quoridor.getBoard());
 	}
 	
 	/**
@@ -242,7 +241,7 @@ public class CucumberStepDefinitions {
 	@When ("The player selects existing? (.*)")
 	public void thePlayerSelectsExisting(String name) throws Throwable{
 		GameController G= new GameController();
-		G.doesUserExist(quoridor, name);
+		G.selectUsername(quoridor, name);
 	}
 	
 	/**
@@ -266,7 +265,6 @@ public class CucumberStepDefinitions {
 	@And ("There is no existing user?(.*)")
 	public void thereIsNoExistingUser(User name) throws Throwable{
 		quoridor.removeUser(name);
-		//
 	}
 	
 	/**
@@ -275,9 +273,8 @@ public class CucumberStepDefinitions {
 	 */ 
 	@When ("The player provides new user name: ?(.*)")
 	public void thePlayerProvidesNewUserName(String name) throws Throwable{
-		
-		//this is a GUI/View Method
-		
+		GameController G= new GameController();
+		G.createUsername(quoridor, name);
 	}
 	
 	/**
@@ -286,8 +283,9 @@ public class CucumberStepDefinitions {
 	 */ 
 	@Then ("The player shall be warned that (.*) already exists")
 	public void thePlayerShallBeWarnedThatAlreadyExists(String name) throws Throwable{
-		
-		//GUI method
+		GameController G= new GameController();
+		String msg= name+ " already exists";
+		assertEquals(G.createUsername(quoridor, name),msg);
 	}
 	
 	/*
