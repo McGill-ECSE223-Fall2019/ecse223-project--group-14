@@ -160,7 +160,6 @@ public class CucumberStepDefinitions {
 	 	public void FileFilenameExistsInTheFileSystem () throws Throwable{
 		boolean filename_exists = true;
 		 
-	
 	 }
 	 
 	 @Then ("File with <filename> is updated in the filesystem")

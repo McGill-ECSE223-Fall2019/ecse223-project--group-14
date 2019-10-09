@@ -32,6 +32,23 @@ public class GameController {
 	}
 	
 	/**
+	 * For Start New Game feature 
+	 * 
+	 * @author AmineMallek
+	 * 
+	 * @throws UnsupportedOperationException
+	 */
+	
+	
+	public void setTime (int <min>, int <sec>) {
+		int min = <min>;
+		int sec = <sec>;
+		
+	}
+	
+	
+	
+	/**
 	 * For Rotate Wall feature 
 	 * 
 	 * @author louismollick
