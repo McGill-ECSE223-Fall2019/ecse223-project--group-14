@@ -43,6 +43,10 @@ public class GameController {
 		throw new UnsupportedOperationException();
 	}
 	
+	public void SaveGame(Game g) {
+		throw new UnsupportedOperationException();	
+		
+	}
 	
 	
 	/**

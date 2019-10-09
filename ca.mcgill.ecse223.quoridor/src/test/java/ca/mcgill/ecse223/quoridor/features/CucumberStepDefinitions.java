@@ -130,18 +130,24 @@ public class CucumberStepDefinitions {
 		assertEquals(quoridor.getgame.getblackplayer.getTime(), min*60+sec);
 	 }
 
+	 @Given ("File <filename> exists in the filesystem")
+	 
+	 	public void FileFilenameExistsInTheFileSystem () throws Throwable{
+		boolean filename_exists = true;
+	 }
 	 
 	 @Given ("No file <filename> exists in the filesystem")
 	 	public void NoFileExistsInTheFilesystem() throws Throwable{
 		 boolean filename_exists = false;
-		 
+	//todo	 
 	 }
 	 
 	 
 	 @When ("The user initiates to save the game with name <filename>")
-	 
 	 	public void TheUserInitiatesToSaveTheGameWithNameFilename () throws Throwable{
-		GameController.SaveGame();
+		 GameController G= new GameController();
+		 G.SaveGame();
+		
 	 }
 	 
 	 @Then ("A file with <filename> is created in the filesystem")
@@ -150,19 +156,18 @@ public class CucumberStepDefinitions {
 		 assertEquals(game.getCreatefile(), aCreateFile);
 	 }
 	 
-	 @Given ("File <filename> exists in the filesystem")
-	 
-	 	public void FileFilenameExistsInTheFileSystem () throws Throwable{
-		boolean filename_exists = true;
-		 
-	 }
-	 
 	 @Then ("File with <filename> is updated in the filesystem")
 	 
 	 	public void FileWithFilenameIsUpdatedInTheFilesystem () throws Throwable{
 		 assertEquals(game.getUpdatefile(), aUpdateFile);
 		 }
-		 
+	
+	 @Then ("File <filename> is not changed in the filesystem")
+	 
+	 public void FileFilenameIsNotChangedInTheFilesystem () throws Throwable{
+		 assertEquals(game.getNotChangedfile(), aNotChangedFile);
+			 }
+	 
 	 
 	 @And ("The user cancels to overwrite existing file")
 	 
@@ -176,12 +181,7 @@ public class CucumberStepDefinitions {
 		 assertEquals(game.getNotOverwritefile(), aNotOverwriteFile);
 			 }
 	 
-	 @Then ("File <filename> is not changed in the filesystem")
-	 
-	 public void FileFilenameIsNotChangedInTheFilesystem () throws Throwable{
-		 assertEquals(game.getNotChangedfile(), aNotChangedFile);
-			 }
-	 
+	  
 	
 	
 	/**
