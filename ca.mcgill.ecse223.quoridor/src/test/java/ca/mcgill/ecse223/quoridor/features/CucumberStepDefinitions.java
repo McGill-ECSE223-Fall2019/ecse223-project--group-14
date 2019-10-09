@@ -115,26 +115,23 @@ public class CucumberStepDefinitions {
 	 */ 
 	
 	@When ("<min>:<sec> is set as the thinking time")
-	public void IsSetAsTheThinkingTime(int min, int sec) throws Throwable{
+	public void IsSetAsTheThinkingTime(int <min>, int <sec>) throws Throwable{
 		GameController G= new GameController();
-		G.setTime(min, sec);
+		G.setTime(<min>, <sec>);
 	}
 	
 	@Given("A new game is initializing")
 	public void aNewGameIsInitializing() throws Throwable{
-		GameController G=new GameController();
 		G.initGame(quoridor);
 	}
 	
 	 @Then ("Both players shall have <min>:<sec> remaining time left")
 	 	public void BothPlayersShallHaveMinSecRemainingTimeLeft(int min, int sec) throws Throwable{
-		 GameController G = new GameController();
 		 G.setTime(min, sec);
 	 }
 	
 	 @Given ("The Game is Running")
 	 	public void TheGameIsRunning() throws Throwable{
-		 GameController G = new GameController();
 		 G.RunGame();
 		
 	 }
