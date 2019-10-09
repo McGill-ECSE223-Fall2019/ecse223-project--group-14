@@ -117,7 +117,7 @@ public class CucumberStepDefinitions {
 	@When ("<min>:<sec> is set as the thinking time")
 	public void IsSetAsTheThinkingTime(int <min>, int <sec>) throws Throwable{
 		GameController G= new GameController();
-		G.setTime(<min>, <sec>);
+		G.setTime(min, sec, q);
 	}
 	
 	@Given("A new game is initializing")
@@ -127,14 +127,9 @@ public class CucumberStepDefinitions {
 	
 	 @Then ("Both players shall have <min>:<sec> remaining time left")
 	 	public void BothPlayersShallHaveMinSecRemainingTimeLeft(int min, int sec) throws Throwable{
-		 G.setTime(min, sec);
+		assertEquals(quoridor.getgame.getblackplayer.getTime(), min*60+sec);
 	 }
-	
-	 @Given ("The Game is Running")
-	 	public void TheGameIsRunning() throws Throwable{
-		 G.RunGame();
-		
-	 }
+
 	 
 	 @Given ("No file <filename> exists in the filesystem")
 	 	public void NoFileExistsInTheFilesystem() throws Throwable{

@@ -39,11 +39,8 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	
-	
-	public void setTime (int <min>, int <sec>) {
-		int min = <min>;
-		int sec = <sec>;
-		
+	public void setTime (int min, int sec, quoridor q) {
+		throw new UnsupportedOperationException();
 	}
 	
 	
