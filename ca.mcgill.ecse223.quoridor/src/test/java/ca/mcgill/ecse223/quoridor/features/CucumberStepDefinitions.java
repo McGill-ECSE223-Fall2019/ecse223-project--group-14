@@ -136,7 +136,7 @@ public class CucumberStepDefinitions {
 	 	public void TheGameIsRunning() throws Throwable{
 		 GameController G = new GameController();
 		 G.RunGame();
-		 //code missing
+		
 	 }
 	 
 	 @Given ("No file <filename> exists in the filesystem")
@@ -161,7 +161,9 @@ public class CucumberStepDefinitions {
 	 @Given ("File <filename> exists in the filesystem")
 	 
 	 	public void FileFilenameExistsInTheFileSystem () throws Throwable{
-		//code missing
+		boolean filename_exists = true;
+		 
+		 //code missing
 	 }
 	 
 	 @Then ("File with <filename> is updated in the filesystem")
