@@ -156,4 +156,29 @@ public class GameController {
 	public void grabWall(Game g, Player currentplayer) throws UnsupportedOperationException{
 		throw new UnsupportedOperationException();
 	}
+	
+	/**
+	 * For move wall feature
+	 * 
+	 * @author Saifullah
+	 * 
+	 * @throws UnsupportedOperationException
+	 */
+	public void moveWall() throws UnsupportedOperationException{
+  		throw new UnsupportedOperationException();
+  	}
+
+	/**
+	 * For drop wall feature
+	 * 
+	 * @author Saifullah
+	 * 
+	 * @throws UnsupportedOperationException
+	 */
+	public void dropWall() throws UnsupportedOperationException{
+		throw new UnsupportedOperationException();
+	}
+
 }
+
+  	
