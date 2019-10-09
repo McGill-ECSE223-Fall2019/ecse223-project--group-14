@@ -1,6 +1,7 @@
 package ca.mcgill.ecse223.quoridor.features;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.sql.Time;
 import java.util.List;
@@ -70,7 +71,9 @@ public class CucumberStepDefinitions {
 			Integer wcol = Integer.decode(map.get("wcol"));
 			// Wall to place
 			// Walls are placed on an alternating basis wrt. the owners
-			Wall wall = Wall.getWithId(playerIdx * 10 + wallIdxForPlayer);
+			//Wall wall = Wall.getWithId(playerIdx * 10 + wallIdxForPlayer);
+			Wall wall = players[playerIdx].getWall(wallIdxForPlayer); // above implementation sets wall to null
+
 
 			String dir = map.get("wdir");
 
@@ -123,7 +126,7 @@ public class CucumberStepDefinitions {
 	// ***********************************************
 
 	/**
-	 * @author dariu
+	 * @author DariusPi
 	 * @throws Throwable
 	 */
 	@When("A new game is initializing")
@@ -233,100 +236,131 @@ public class CucumberStepDefinitions {
 	}
 	
 	/**
-	 * @author dariu
+	 * @author DariusPi
+	 * @throws Throwable
+	 */
+	@And ("White player chooses a username")
+	public void whitePlayerChoosesAUsername() throws Throwable{
+		GameController G= new GameController();
+		G.assignUsername(quoridor, "white");
+	}
+	
+	/**
+	 * @author DariusPi
 	 * @throws Throwable
 	 */ 
 	@And ("Black player chooses a username")
 	public void blackPlayerChoosesAUsername() throws Throwable{
-		//todo
+		GameController G= new GameController();
+		G.assignUsername(quoridor, "black");
 	}
 	
 	/**
-	 * @author dariu
+	 * @author DariusPi
 	 * @throws Throwable
 	 */ 
 	@And ("Total thinking time is set")
 	public void totalThinkingTimeIsSet() throws Throwable{
+		int min=0; int sec=0;
+		//setThinkingTime(min, sec,quoridor);
 		//todo call thinking time method
+		GameStatus aGameStatus = GameStatus.ReadyToStart;
+		game.setGameStatus(aGameStatus);
 	}
 	
 	/**
-	 * @author dariu
+	 * @author DariusPi
 	 * @throws Throwable
 	 */ 
 	@Then ("The game is ready to start")
 	public void theGameIsReadyToStart() throws Throwable{
-		//todo 
+		GameStatus aGameStatus = GameStatus.ReadyToStart;
+		assertEquals(game.getGameStatus(),aGameStatus); 
 	}
 	
 	/**
-	 * @author dariu
+	 * @author DariusPi
 	 * @throws Throwable
 	 */ 
 	@When ("I start the clock")
 	public void iStartTheClock() throws Throwable{
-		
-		//todo create clock controller
+		GameController G= new GameController();
+		G.startTheClock(game);
 	}
 	
 	/**
-	 * @author dariu
+	 * @author DariusPi
 	 * @throws Throwable
 	 */ 
 	@And ("The board is initialized")
 	public void theBoardIsInitialized() throws Throwable{
-		
-		//todo
+		assertNotNull(quoridor.getBoard());
 	}
 	
 	/**
-	 * @author dariu
+	 * @author DariusPi
 	 * @throws Throwable
 	 */ 
 	@Given ("Next player to set user name is? (.*)")
 	public void nextPlayerToSetUserNameIs(String colour) throws Throwable{
-			//needs somesortof color input
-			//todo
+		if (colour.compareTo("white")==1) {
+			if (player1.hasGameAsWhite()) {
+				currentPlayer=player1;
+			}
+			else {
+				currentPlayer=player2;
+			}
+		}
+		else {
+			if (player1.hasGameAsBlack()) {
+				currentPlayer=player1;
+			}
+			else {
+				currentPlayer=player2;
+			}
+		}
 	}
 	
 	/**
-	 * @author dariu
+	 * @author DariusPi
 	 * @throws Throwable
 	 */ 
 	@And ("There is existing user? (.*)")
-	public void thereIsExistingUser(String name) throws Throwable{
-		//needs somesortof name input
-		//todo
+	public void thereIsExistingUser(User name) throws Throwable{
+		quoridor.addUser(name);
 	}
 	
 	/**
-	 * @author dariu
+	 * @author DariusPi
 	 * @throws Throwable
 	 */ 
 	@When ("The player selects existing? (.*)")
 	public void thePlayerSelectsExisting(String name) throws Throwable{
-		//needs somesortof name input
-		//todo
+		GameController G= new GameController();
+		G.selectUsername(quoridor, name);
 	}
 	
 	/**
-	 * @author dariu
+	 * @author DariusPi
 	 * @throws Throwable
 	 */ 
 	@Then ("The name of player? (.*) in the new game shall be (.*)")
-	public void theNameOfPlayerInTheNewGameShallBe(String Colour, String name) throws Throwable{
-		//needs somesortof name input
-		//todo
+	public void theNameOfPlayerInTheNewGameShallBe(String Colour, String name)throws Throwable{
+		if (Colour.compareTo("white")==1) {
+			assertEquals(game.getWhitePlayer().getUser().getName(),name);
+		}
+		else {
+			assertEquals(game.getBlackPlayer().getUser().getName(),name);
+		}
 	}
 	
 	/**
-	 * @author dariu
+	 * @author DariusPi
 	 * @throws Throwable
 	 */ 
 	@And ("There is no existing user?(.*)")
-	public void thereIsNoExistingUser(String name) throws Throwable{
-		//needs somesortof name input
-		//todo
+	public void thereIsNoExistingUser(User name) throws Throwable{
+		quoridor.removeUser(name);
 	}
 	
 	/**
@@ -335,18 +369,19 @@ public class CucumberStepDefinitions {
 	 */ 
 	@When ("The player provides new user name: ?(.*)")
 	public void thePlayerProvidesNewUserName(String name) throws Throwable{
-		//needs somesortof name input
-		//todo
+		GameController G= new GameController();
+		G.createUsername(quoridor, name);
 	}
 	
 	/**
-	 * @author dariu
+	 * @author DariusPi
 	 * @throws Throwable
 	 */ 
 	@Then ("The player shall be warned that (.*) already exists")
 	public void thePlayerShallBeWarnedThatAlreadyExists(String name) throws Throwable{
-		//needs somesortof name input
-		//todo
+		GameController G= new GameController();
+		String msg= name+ " already exists";
+		assertEquals(G.createUsername(quoridor, name),msg);
 	}
 	
 	/*
@@ -364,8 +399,11 @@ public class CucumberStepDefinitions {
 	// After each scenario, the test model is discarded
 	@After
 	public void tearDown() {
-		quoridor.delete();
-		quoridor = null;
+		// Avoid null pointer for step definitions that are not yet implemented.
+		if (quoridor != null) {
+			quoridor.delete();
+			quoridor = null;
+		}
 	}
 
 	// ***********************************************
