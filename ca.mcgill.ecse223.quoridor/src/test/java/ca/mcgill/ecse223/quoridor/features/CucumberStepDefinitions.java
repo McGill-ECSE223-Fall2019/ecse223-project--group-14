@@ -108,7 +108,7 @@ public class CucumberStepDefinitions {
 	 * @author louismollick
 	 */
 	@Given("I have a wall in my hand over the board")
-	public void iHaveAWallInMyHandOverTheBoard() {
+	public void givenIHaveAWallInMyHandOverTheBoard() {
 		currentPlayer.getWall(0).setMove(new WallMove(1, 1, currentPlayer, board.getTile(0), game, Direction.Horizontal, currentPlayer.getWall(0)));
 		QuoridorApplication.getQuoridor().getCurrentGame().setWallMoveCandidate(currentPlayer.getWall(0).getMove());
 	}
@@ -118,6 +118,7 @@ public class CucumberStepDefinitions {
 	 */
 	@Given("I do not have a wall in my hand")
 	public void iDoNotHaveAWallInMyHand() {
+		// Set the wallMoveCandidate to null, just to verify that there was no wall in one's hand
 		QuoridorApplication.getQuoridor().getCurrentGame().setWallMoveCandidate(null);
 	}
 	
@@ -136,14 +137,21 @@ public class CucumberStepDefinitions {
 		G.initGame(quoridor);
 	}
 	
-//	/**
-//	 * @author louismollick
-//	 */
-//	@Given("A wall move candidate exists with {Direction} at position \\({int}, {int})")
-//	public void givenAWallMoveCandidateExistsAtPos(Direction dir, int row, int col) throws Throwable{
-//		currentPlayer.getWall(0).setMove(new WallMove(1, 1, currentPlayer, board.getTile(0), game, Direction.Horizontal, currentPlayer.getWall(0)));
-//		QuoridorApplication.getQuoridor().getCurrentGame().setWallMoveCandidate(currentPlayer.getWall(0).getMove());
-//	}
+	/**
+	 * @author louismollick
+	 * @throws Throwable
+	 */
+	@Given("A wall move candidate exists with (.*) at position ((.*), (.*))")
+	public void givenAWallMoveCandidateExistsAtPos(Direction dir, int row, int col) throws Throwable{
+		WallMove wmc = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+		// Check if the WallMoveCandidate belongs to the current player
+		if(currentPlayer.indexOfWall(wmc.getWallPlaced()) != -1) {
+			// Set the WallMoveCandidate's attributes to those specified in input
+			if(wmc.getWallDirection() != dir) wmc.setWallDirection(dir);
+			if(wmc.getTargetTile().getRow() != row || wmc.getTargetTile().getColumn() != col)
+				wmc.setTargetTile(QuoridorApplication.getQuoridor().getBoard().getTileByPos(row,col));
+		}
+	}
 	
 	/**
 	 * @author louismollick
@@ -196,6 +204,14 @@ public class CucumberStepDefinitions {
 	/**
 	 * @author louismollick
 	 */
+	@Then("I have a wall in my hand over the board")
+	public void iHaveAWallInMyHandOverTheBoard() {
+		assertEquals(true, QuoridorApplication.getQuoridor().getCurrentGame().hasWallMoveCandidate());
+	}
+	
+	/**
+	 * @author louismollick
+	 */
 	@And("The wall in my hand should disappear from my stock")
 	public void theWallInMyHandShouldDisappearFromMyStock() throws Throwable{
 		Game g = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -227,13 +243,13 @@ public class CucumberStepDefinitions {
 	}
 	
 	/**
+	 * GUI METHOD -- it shows a message to the player, but no action is taken on the model
 	 * @author louismollick
 	 */
-	@Then("I should be notified that I have no more walls")
-	public void iShouldBeNotifiedThatIHaveNoMoreWalls() {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new cucumber.api.PendingException();
-	}
+//	@Then("I should be notified that I have no more walls")
+//	public void iShouldBeNotifiedThatIHaveNoMoreWalls() {
+//	    // Write code here that turns the phrase above into concrete actions
+//	}
 	
 	/**
 	 * @author DariusPi
