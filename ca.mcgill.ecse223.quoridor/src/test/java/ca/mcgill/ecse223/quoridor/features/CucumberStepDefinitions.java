@@ -150,11 +150,11 @@ public class CucumberStepDefinitions {
 		} else { // If no WallMoveCandidate exists or it is other player's, make a new one with input
 			Wall w = pos.getWhiteWallsInStock(1);
 			int moveNum = game.numberOfMoves();
-			if(moveNum == 0) {
-				w.setMove(new WallMove(moveNum+1, 1, player, target, game, dir, w));
-			}else {
-				w.setMove(new WallMove(moveNum, game.getMove(moveNum-1).getRoundNumber(), player, target, game, dir, w));
+			int roundNum = 0;
+			if(moveNum != 0) {
+				roundNum = game.getMove(moveNum-1).getRoundNumber();
 			}
+			w.setMove(new WallMove(moveNum+1, roundNum, player, target, game, dir, w));
 			game.setWallMoveCandidate(w.getMove());
 		}
 	}
