@@ -131,10 +131,9 @@ public class CucumberStepDefinitions {
 	 */
 	@Given("A wall move candidate exists with {string} at position \\({int}, {int})")
 	public void givenAWallMoveCandidateExistsAtPos(String sdir, int row, int col) throws Throwable{
-		Direction dir = Direction.Horizontal;
-		if (sdir.equals("vertical")) {
-			dir = Direction.Vertical;
-		}
+		Direction dir;
+		if(sdir.equals("vertical")) dir = Direction.Vertical;
+		else dir = Direction.Horizontal;
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
 		GamePosition pos = game.getCurrentPosition();
 		Player player = pos.getPlayerToMove();
@@ -173,7 +172,9 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("The wall shall be rotated over the board to {string}")
 	public void theWallShallBeRotatedOverTheBoardTo(String sdir){
-		Direction dir = Direction.valueOf(sdir);
+		Direction dir;
+		if(sdir.equals("vertical")) dir = Direction.Vertical;
+		else dir = Direction.Horizontal;
 		assertEquals(dir, QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallDirection());
 	}
 	
@@ -182,7 +183,9 @@ public class CucumberStepDefinitions {
 	 */
 	@And("A wall move candidate shall exist with {string} at position \\({int}, {int})")
 	public void thenWallMoveCandidateExistsAtPos(String snewdir, int row, int col) throws Throwable{
-		Direction newdir = Direction.valueOf(snewdir);
+		Direction newdir;
+		if(snewdir.equals("vertical")) newdir = Direction.Vertical;
+		else newdir = Direction.Horizontal;
 		WallMove w = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
 		boolean b = (w.getWallDirection().equals(newdir) && w.getTargetTile().getRow() == row &&
 				w.getTargetTile().getColumn() == col);
