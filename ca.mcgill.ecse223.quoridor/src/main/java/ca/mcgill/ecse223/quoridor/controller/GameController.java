@@ -12,6 +12,9 @@ import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 
 public class GameController {
 	
+	//this static string is used to determine which player is going next, implemented here since I can't find that field in the model
+	public String CurrentPlayerColour;
+	
 	/**
 	 * For Start New Game feature 
 	 * initializes a game with null parameters
@@ -98,15 +101,15 @@ public class GameController {
 	 */
 	public String createUsername(Quoridor q, String name)throws UnsupportedOperationException {
 		int i=doesUserExist(q,name);
-		if (i==-1) {
+		throw new UnsupportedOperationException();
+		/*if (i==-1) {
 			q.addUser(name);
 			return name;
 		}
 		else {
 			String msg= name +" already exists";
 			return  msg;
-		}
-		//throw new UnsupportedOperationException();
+		}*/
 		
 	}
 	
@@ -119,15 +122,17 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	public int doesUserExist(Quoridor q, String name) throws UnsupportedOperationException{
-		
-		for (int i=0; i<q.numberOfUsers();i++) {
+		throw new UnsupportedOperationException();
+		/*for (int i=0; i<q.numberOfUsers();i++) {
 			if (q.getUser(i).getName().contentEquals(name)) {
 				return i;
 			}
 		}
-		return -1;
+		return -1;*/
 		
 	}
+	
+	
 	
 	
 	public Board initBoard(Quoridor q) throws UnsupportedOperationException{
