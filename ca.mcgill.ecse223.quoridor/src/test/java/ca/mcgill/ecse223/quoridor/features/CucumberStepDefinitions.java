@@ -115,17 +115,6 @@ public class CucumberStepDefinitions {
 	// ***********************************************
 
 	/**
-	 * @author DariusPi
-	 * @throws Throwable
-	 */
-	@When ("A new game is being initialized")
-	public void aNewGameIsBeingInitialized() throws Throwable{
-		GameController G= new GameController();
-		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		G.initGame(quoridor);
-	}
-	
-	/**
 	 * @author louismollick
 	 * @throws Throwable
 	 */
@@ -268,10 +257,24 @@ public class CucumberStepDefinitions {
 	public void iShouldBeNotifiedThatIHaveNoMoreWalls() {
 		// GUI-related feature -- TODO for later
 	}
-
-	@Then("I shall have no walls in my hand")
+	
+	/**
+	 * @author louismollick
+	 */
+	@And ("I shall have no walls in my hand")
 	public void iShallHaveNoWallsInMyHand() {
 	    assertEquals(false, QuoridorApplication.getQuoridor().getCurrentGame().hasWallMoveCandidate());
+	}
+	
+	/**
+	 * @author DariusPi
+	 * @throws Throwable
+	 */
+	@When ("A new game is being initialized")
+	public void aNewGameIsBeingInitialized() throws Throwable{
+		GameController G= new GameController();
+		Quoridor quoridor=QuoridorApplication.getQuoridor();
+		G.initGame(quoridor);
 	}
 	
 	/**
@@ -370,7 +373,10 @@ public class CucumberStepDefinitions {
 		assertNotNull(quoridor.getBoard());
 	}
 	
-	
+	/**
+	 * @author DariusPi
+	 * @throws Throwable
+	 */
 	 @Given ("A new game is initializing")
 	 public void aNewGameIsInitializing() {
 		 GameController G= new GameController();
@@ -469,6 +475,10 @@ public class CucumberStepDefinitions {
 		assertEquals(G.createUsername(quoridor, name),msg);
 	}
 	
+	/**
+	 * @author DariusPi
+	 * @throws Throwable
+	 */ 
 	@And ("Next player to set user name shall be (.*)")
 	public void nextlayerToSetUserNameShallBe(String color) throws Throwable{
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
