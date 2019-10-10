@@ -14,15 +14,6 @@ class Quoridor {
 
 class Board {
 	1 <@>- * Tile tiles;
-	/* @author louismollick */
-	Tile getTileByPos(int row, int col) Java{
-  		for(Tile t : this.getTiles()) {
-	  		if(t.getRow() == row && t.getColumn() == col) {
-		  		return t;
-	  		}
-  		}
-  		return null;
-	}
 }
 
 class Tile { 

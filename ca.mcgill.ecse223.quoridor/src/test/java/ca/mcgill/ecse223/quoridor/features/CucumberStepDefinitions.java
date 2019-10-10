@@ -139,7 +139,6 @@ public class CucumberStepDefinitions {
 		Player player = pos.getPlayerToMove();
 		WallMove wmc = game.getWallMoveCandidate();
 		
-		//Tile target = QuoridorApplication.getQuoridor().getBoard().getTileByPos(row,col);
 		Tile target = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(row, col));
 		// Check if the WallMoveCandidate belongs to the current player
 		if(wmc != null && player.indexOfWall(wmc.getWallPlaced()) != -1) {
@@ -150,7 +149,7 @@ public class CucumberStepDefinitions {
 		} else { // If no WallMoveCandidate exists or it is other player's, make a new one with input
 			Wall w = pos.getWhiteWallsInStock(1);
 			int moveNum = game.numberOfMoves();
-			int roundNum = 0;
+			int roundNum = 1;
 			if(moveNum != 0) {
 				roundNum = game.getMove(moveNum-1).getRoundNumber();
 			}
@@ -165,7 +164,8 @@ public class CucumberStepDefinitions {
 	@When("I try to flip the wall")
 	public void iTryToFlipTheWall() throws Throwable{
 		GameController gc = new GameController();
-		gc.rotateWall();
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		gc.rotateWall(game);
 	}
 	
 	/**
@@ -212,7 +212,8 @@ public class CucumberStepDefinitions {
 	@When("I try to grab a wall from my stock")
 	public void iTryToGrabAWallFromMyStock() throws Throwable{
 		GameController gc = new GameController();
-		gc.grabWall();
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		gc.grabWall(game);
 	}
 	
 	/**
@@ -221,7 +222,6 @@ public class CucumberStepDefinitions {
 	@Then("I shall have a wall in my hand over the board")
 	public void thenIHaveAWallInMyHandOverTheBoard() throws Throwable{
 		// GUI-related feature -- TODO for later
-		throw new cucumber.api.PendingException();
 	}
 	
 	/**

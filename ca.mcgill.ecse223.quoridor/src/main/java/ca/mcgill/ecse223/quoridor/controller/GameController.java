@@ -141,23 +141,25 @@ public class GameController {
 	
 	/**
 	 * For Rotate Wall feature 
+	 * Attempts to rotate the current WallMove candidate's Direction
 	 * 
 	 * @author louismollick
 	 * 
 	 * @throws UnsupportedOperationException
 	 */
-	public void rotateWall() throws UnsupportedOperationException{
+	public void rotateWall(Game game) throws UnsupportedOperationException{
 		throw new UnsupportedOperationException();
 	}
 	
 	/**
 	 * For Grab Wall feature 
+	 * Attempts to set current WallMove candidate using a Wall in current player's stock
 	 * 
 	 * @author louismollick
 	 * 
 	 * @throws UnsupportedOperationException
 	 */
-	public void grabWall() throws UnsupportedOperationException{
+	public void grabWall(Game game) throws UnsupportedOperationException{
 		throw new UnsupportedOperationException();
 	}
 	
