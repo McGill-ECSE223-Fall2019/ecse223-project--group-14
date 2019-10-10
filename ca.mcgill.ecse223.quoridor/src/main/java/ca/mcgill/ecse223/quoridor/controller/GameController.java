@@ -225,12 +225,24 @@ public class GameController {
 	
 	/**
 	 * For InitializeBoard Feature
+	 * Checks if Board Initialization is Initiated (such as when user selects new game and has 
+	 * entered in the necessary info (i.e. game is ready to start)
+	 * 
 	 * @author FSharp4
 	 * @throws UnsupportedOperationException
-
 	 */
 	public boolean isBoardInitializationInitiated(Quoridor quoridor) throws UnsupportedOperationException {
 		//Check if board going to be initialized @GUI
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * For InitializeBoard Feature
+	 * Checks if player's clock is counting down
+	 */
+	
+	public boolean isClockCountingDown(Player player) throws UnsupportedOperationException {
+		//This interacts with the clock Time object and checks GUI to see if a countdown is shown
 		throw new UnsupportedOperationException();
 	}
 }

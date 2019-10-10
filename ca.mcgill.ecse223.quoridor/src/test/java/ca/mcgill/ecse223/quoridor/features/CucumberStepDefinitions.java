@@ -615,7 +615,64 @@ public class CucumberStepDefinitions {
 	public void itShallBeWhitePlayerToMove() throws Throwable {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		assertEquals(quoridor.getCurrentGame().getMoves().size(), 0);
-		//correct if there are no moves, as this is a new game
+		//correct if there are no moves, as this is a new game and white moves first
+	}
+	
+	/**
+	 * @author FSharp4
+	 * @throws Throwable
+	 */
+	@And ("White's pawn shall be in its initial position")
+	public void whitesPawnShallBeInItsInitialPosition() throws Throwable {
+		//Initial white pawn position referenced from helper method createUsersAndPlayers
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		PlayerPosition whitePosition = quoridor.getCurrentGame()
+				.getCurrentPosition().getWhitePosition();
+		assertEquals(whitePosition.getTile(), quoridor.getBoard().getTile(36));
+	}
+	
+	/**
+	 * @author FSharp4
+	 * @throws Throwable
+	 */
+	@And ("Black's pawn shall be in its initial position")
+	public void blacksPawnShallBeInItsInitialPosition() throws Throwable {
+		//Initial black pawn position referenced from helper method createUsersAndPlayers
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		PlayerPosition blackPosition = quoridor.getCurrentGame()
+				.getCurrentPosition().getBlackPosition();
+		assertEquals(blackPosition.getTile(), quoridor.getBoard().getTile(44));
+	}
+	
+	/**
+	 * @author FSharp4
+	 * @throws Throwable
+	 */
+	@And ("All of White's walls shall be in stock")
+	public void allOfWhitesWallsShallBeInStock() throws Throwable {
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		assertEquals(game.getCurrentPosition().getWhiteWallsInStock().size(), 10);
+	}
+	
+	/**
+	 * @author FSharp4
+	 * @throws Throwable
+	 */
+	@And ("All of Black's walls shall be in stock")
+	public void allOfBlacksWallsShallBeInStock() throws Throwable {
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		assertEquals(game.getCurrentPosition().getBlackWallsInStock().size(), 10);
+	}
+	
+	/**
+	 * @author FSharp4
+	 * @throws Throwable
+	 */
+	@And ("White's clock shall be counting down")
+	public void whitesClockShallBeCountingDown() throws Throwable {
+		GameController G = new GameController();
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		assertTrue(G.isClockCountingDown(quoridor.getCurrentGame().getWhitePlayer()));
 	}
 	
 	/*
