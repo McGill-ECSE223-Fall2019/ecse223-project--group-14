@@ -612,8 +612,10 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */
 	@Then ("It shall be white player to move")
-	public void itShallBeWhitePlayerToMove() {
-		
+	public void itShallBeWhitePlayerToMove() throws Throwable {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		assertEquals(quoridor.getCurrentGame().getMoves().size(), 0);
+		//correct if there are no moves, as this is a new game
 	}
 	
 	/*
