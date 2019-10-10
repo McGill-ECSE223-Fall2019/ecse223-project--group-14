@@ -10,6 +10,7 @@ import ca.mcgill.ecse223.quoridor.model.Quoridor;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
 import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
+import ca.mcgill.ecse223.quoridor.model.GamePosition;
 
 public class GameController {
 	
@@ -157,6 +158,91 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	public void grabWall() throws UnsupportedOperationException{
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * For Load Position feature
+	 * Initiates loading a saved game
+	 * 
+	 * @author FSharp4
+	 * @throws UnsupportedOperationException
+	 */
+	public Game initSaveGameLoad(Quoridor quoridor, String filename) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * For Load Position feature
+	 * Validates position, returns whether position is valid
+	 * 
+	 * @author FSharp4
+	 * @throws UnsupportedOperationException
+	 */
+	
+	public boolean isValid(GamePosition gamePosition) {
+		throw new UnsupportedOperationException();
+		//todo: Do validation of of GamePosition
+	}
+	
+	
+	/**
+	 * For Load Position feature
+	 * Attempts to set load position. Returns an error if position is invalid
+	 * 
+	 * @author FSharp4
+	 * @throws UnsupportedOperationException
+	 */
+	public void loadGame(Quoridor quoridor) 
+			throws UnsupportedOperationException {
+		  //throws UnsupportedOperationException, IOException {
+		
+		GamePosition gamePosition = quoridor.getCurrentGame().getCurrentPosition();
+		
+		if (isValid(gamePosition)) {
+			//update GUI here
+			quoridor.getCurrentGame().setGameStatus(GameStatus.ReadyToStart);
+			//return true
+		} else {
+			//throw new IOException("Load error: Position invalid");
+		}
+		
+		
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * For Load Position feature
+	 * Sets current turn, returns true if this is successful
+	 * 
+	 * @author FSharp4
+	 * @throws UnsupportedOperationException
+	 */
+	public boolean setCurrentTurn(Player player, Quoridor quoridor) 
+			throws UnsupportedOperationException {
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * For InitializeBoard Feature
+	 * Checks if Board Initialization is Initiated (such as when user selects new game and has 
+	 * entered in the necessary info (i.e. game is ready to start)
+	 * 
+	 * @author FSharp4
+	 * @throws UnsupportedOperationException
+	 */
+	public boolean isBoardInitializationInitiated(Quoridor quoridor) throws UnsupportedOperationException {
+		//Check if board going to be initialized @GUI
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * For InitializeBoard Feature
+	 * Checks if player's clock is counting down
+	 */
+	
+	public boolean isClockCountingDown(Player player) throws UnsupportedOperationException {
+		//This interacts with the clock Time object and checks GUI to see if a countdown is shown
 		throw new UnsupportedOperationException();
 	}
 }
