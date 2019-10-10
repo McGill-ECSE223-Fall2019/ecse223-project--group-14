@@ -143,7 +143,8 @@ public class CucumberStepDefinitions {
 		Player player = pos.getPlayerToMove();
 		WallMove wmc = game.getWallMoveCandidate();
 		
-		Tile target = QuoridorApplication.getQuoridor().getBoard().getTileByPos(row,col);
+		//Tile target = QuoridorApplication.getQuoridor().getBoard().getTileByPos(row,col);
+		Tile target = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(row, col));
 		// Check if the WallMoveCandidate belongs to the current player
 		if(wmc != null && player.indexOfWall(wmc.getWallPlaced()) != -1) {
 			// Set the WallMoveCandidate's attributes to those specified in input
