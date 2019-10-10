@@ -285,7 +285,7 @@ public class CucumberStepDefinitions {
 	public void whitePlayerChoosesAUsername() throws Throwable{
 		GameController G= new GameController();
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		G.assignUsername(quoridor, "white");
+		G.assignUsername(quoridor, quoridor.getCurrentGame().getWhitePlayer());
 	}
 	
 	/**
@@ -296,7 +296,7 @@ public class CucumberStepDefinitions {
 	public void blackPlayerChoosesAUsername() throws Throwable{
 		GameController G= new GameController();
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		G.assignUsername(quoridor, "black");
+		G.assignUsername(quoridor, quoridor.getCurrentGame().getBlackPlayer());
 	}
 	
 	/**
@@ -376,31 +376,16 @@ public class CucumberStepDefinitions {
 	/**
 	 * @author DariusPi
 	 * @throws Throwable
-	 */
-	 @Given ("A new game is initializing")
-	 public void aNewGameIsInitializing() {
-		 GameController G= new GameController();
-		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		G.initGame(quoridor);
-		 
-		GameStatus aGameStatus = GameStatus.Initializing;
-		Game game=quoridor.getCurrentGame();
-		game.setGameStatus(aGameStatus);
-	 }
-	
-	/**
-	 * @author DariusPi
-	 * @throws Throwable
 	 */ 
 	@Given ("Next player to set user name is? (.*)")
 	public void nextPlayerToSetUserNameIs(String color) throws Throwable{
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		Player play=new Player(null,null,null);
+		//may need to initialize game position
 		if (color.compareTo("white")==0) {
-			quoridor.getCurrentGame().setWhitePlayer(play);
+			quoridor.getCurrentGame().getCurrentPosition().setPlayerToMove(quoridor.getCurrentGame().getWhitePlayer());
 		}
 		else {
-			quoridor.getCurrentGame().setWhitePlayer(play);
+			quoridor.getCurrentGame().getCurrentPosition().setPlayerToMove(quoridor.getCurrentGame().getBlackPlayer());
 		}
 		
 	}
@@ -483,10 +468,10 @@ public class CucumberStepDefinitions {
 	public void nextlayerToSetUserNameShallBe(String color) throws Throwable{
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
 		if (color.compareTo("white")==1) {
-			assertEquals(quoridor.getCurrentGame().getWhitePlayer().getUser(),quoridor.getUser(0));
+			assertEquals(quoridor.getCurrentGame().getCurrentPosition().getPlayerToMove(),quoridor.getCurrentGame().getWhitePlayer());
 		}
 		else {
-			assertEquals(quoridor.getCurrentGame().getBlackPlayer().getUser(),quoridor.getUser(0));
+			assertEquals(quoridor.getCurrentGame().getCurrentPosition().getPlayerToMove(),quoridor.getCurrentGame().getBlackPlayer());
 		}
 					
 	}

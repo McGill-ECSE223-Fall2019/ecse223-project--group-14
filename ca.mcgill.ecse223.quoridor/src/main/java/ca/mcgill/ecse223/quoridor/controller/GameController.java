@@ -38,7 +38,7 @@ public class GameController {
 	 * 
 	 * @throws UnsupportedOperationException
 	 */
-	public void assignUsername(Quoridor q, String colour)throws UnsupportedOperationException {
+	public void assignUsername(Quoridor q, Player colour)throws UnsupportedOperationException {
 		
 		throw new UnsupportedOperationException();
 		/*User user= new User(null,q);
