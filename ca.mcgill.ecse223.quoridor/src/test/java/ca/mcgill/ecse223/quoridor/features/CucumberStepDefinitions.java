@@ -537,9 +537,9 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */
 	@Then ("It shall be? (.*)'s turn")
-	public void itShallBeSTurn(Player player) throws Throwable {
+	public void itShallBeSTurn(String playerColor) throws Throwable {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Game game = quoridor.getCurrentGame();
+		Player player = getPlayer(playerColor);
 		GameController G = new GameController();
 		assertTrue(G.setCurrentTurn(player, quoridor));
 	}
@@ -549,12 +549,16 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */
 	@And ("(.*) shall be at (.*):(.*)")
-	public void shallBeAt(Player player, int row, int col) throws Throwable {
+	public void shallBeAt(String playerColor, int row, int col) throws Throwable {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game game = quoridor.getCurrentGame();
+		Player player = getPlayer(playerColor);
 		if (player.hasGameAsWhite()) {
 			assertEquals(quoridor.getBoard().getTile(getIndex(row, col)), 
 					game.getCurrentPosition().getWhitePosition().getTile());
+		} else {
+			assertEquals(quoridor.getBoard().getTile(getIndex(row, col)),
+					game.getCurrentPosition().getBlackPosition().getTile());
 		}
 	}
 	
@@ -563,10 +567,11 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */
 	@And ("(.*) shall have a (.*) wall at (.*):(.*)")
-	public void shallHaveAWallAt(Player player, Direction orientation, int row, int col) 
+	public void shallHaveAWallAt(String playerColor, Direction orientation, int row, int col) 
 			throws Throwable {
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
 		Wall[] walls;
+		Player player = getPlayer(playerColor);
 		if (player.hasGameAsWhite()) {
 			walls = new Wall[game.getCurrentPosition().getWhiteWallsOnBoard().size()];
 			walls = game.getCurrentPosition().getWhiteWallsInStock().toArray(walls);
@@ -685,6 +690,8 @@ public class CucumberStepDefinitions {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		assertTrue(G.isClockCountingDown(quoridor.getCurrentGame().getWhitePlayer()));
 	}
+	
+	
 	
 	/*
 	 * TODO Insert your missing step definitions here
@@ -818,6 +825,19 @@ public class CucumberStepDefinitions {
 		}
 		
 		return false;
+	}
+	
+	private Player getPlayer(String color) {
+		Player player;
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		if (color.contentEquals("white")) {
+			player = quoridor.getCurrentGame().getWhitePlayer();
+		} else if (color.contentEquals("black")) {
+			player = quoridor.getCurrentGame().getBlackPlayer();
+		} else {
+			player = null; //not supposed to happen
+		}
+		return player;
 	}
 
 }
