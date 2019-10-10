@@ -12,9 +12,6 @@ import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 
 public class GameController {
 	
-	//this static string is used to determine which player is going next, implemented here since I can't find that field in the model
-	public String CurrentPlayerColour;
-	
 	/**
 	 * For Start New Game feature 
 	 * initializes a game with null parameters
@@ -24,13 +21,12 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	public Game initGame(Quoridor q)throws UnsupportedOperationException{
-		
-		GameStatus aGameStatus = GameStatus.Initializing; MoveMode aMoveMode = null; Player aWhitePlayer = null; Player aBlackPlayer = null; 
+		throw new UnsupportedOperationException();
+		/*GameStatus aGameStatus = GameStatus.Initializing; MoveMode aMoveMode = null; Player aWhitePlayer = null; Player aBlackPlayer = null; 
 		
 		Game g = new Game(aGameStatus, aMoveMode, aWhitePlayer, aBlackPlayer, q);
 		q.setCurrentGame(g);
-		throw new UnsupportedOperationException();
-		//return g;
+		return g;*/
 	}
 	
 	/**
@@ -43,9 +39,8 @@ public class GameController {
 	 */
 	public void assignUsername(Quoridor q, String colour)throws UnsupportedOperationException {
 		
-		//todo
-		//call select or create use methods
-		User user= new User(null,q);
+		throw new UnsupportedOperationException();
+		/*User user= new User(null,q);
 		Time time =null;
 		Player play= new Player(null,user,null);
 		if (colour.equals("white")) {
@@ -54,7 +49,7 @@ public class GameController {
 		else {
 			q.getCurrentGame().setBlackPlayer(play);
 		}
-		throw new UnsupportedOperationException();
+		throw new UnsupportedOperationException();*/
 	}
 	
 	/**
@@ -66,9 +61,11 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	public void startTheClock(Game g)throws UnsupportedOperationException{
-		Time time=g.getBlackPlayer().getRemainingTime();
-		//todo
+		
 		throw new UnsupportedOperationException();
+		//Time time=g.getBlackPlayer().getRemainingTime();
+		
+		
 	}
 	
 	/**
@@ -80,14 +77,14 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	public String selectUsername(Quoridor q, String name)throws UnsupportedOperationException {
-		int i=doesUserExist(q,name);
+		throw new UnsupportedOperationException();
+		/*int i=doesUserExist(q,name);
 		if (i==-1) {
 			//error statement
 		}
 		else {
 			return q.getUser(i).getName();
-		}
-		throw new UnsupportedOperationException();
+		}*/
 		
 	}
 	
@@ -100,9 +97,9 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	public String createUsername(Quoridor q, String name)throws UnsupportedOperationException {
-		int i=doesUserExist(q,name);
 		throw new UnsupportedOperationException();
-		/*if (i==-1) {
+		/*int i=doesUserExist(q,name);
+		if (i==-1) {
 			q.addUser(name);
 			return name;
 		}

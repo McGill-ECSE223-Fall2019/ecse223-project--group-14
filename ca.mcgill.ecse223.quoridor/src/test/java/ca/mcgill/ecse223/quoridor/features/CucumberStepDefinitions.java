@@ -139,7 +139,7 @@ public class CucumberStepDefinitions {
 	@When("I try to flip the wall")
 	public void iTryToFlipTheWall(){
 		GameController G= new GameController();
-		G.rotateWall(game, currentPlayer);
+		//G.rotateWall(game, currentPlayer);
 	}
 
 	/**
@@ -172,8 +172,7 @@ public class CucumberStepDefinitions {
 	public void totalThinkingTimeIsSet() throws Throwable{
 		int min=0; int sec=0;
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		setTime(min, sec,quoridor);
-		//todo call thinking time method
+		//setTime(min, sec,quoridor);
 	}
 	
 	/**
@@ -193,7 +192,12 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */ 
 	@Given ("The game is ready to start")
-	public void theGameIsReadyToStart() {
+	public void theGameIsReadyToStart() throws Throwable{
+		aNewGameIsBeingInitialized();
+		whitePlayerChoosesAUsername();
+		blackPlayerChoosesAUsername();
+		totalThinkingTimeIsSet();
+		
 		GameStatus aGameStatus = GameStatus.ReadyToStart;
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
 		Game game=quoridor.getCurrentGame();
@@ -237,8 +241,11 @@ public class CucumberStepDefinitions {
 	
 	 @Given ("A new game is initializing")
 	 public void aNewGameIsInitializing() {
-		GameStatus aGameStatus = GameStatus.Initializing;
+		 GameController G= new GameController();
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
+		G.initGame(quoridor);
+		 
+		GameStatus aGameStatus = GameStatus.Initializing;
 		Game game=quoridor.getCurrentGame();
 		game.setGameStatus(aGameStatus);
 	 }
@@ -248,10 +255,15 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */ 
 	@Given ("Next player to set user name is? (.*)")
-	public void nextPlayerToSetUserNameIs(String colour) throws Throwable{
+	public void nextPlayerToSetUserNameIs(String color) throws Throwable{
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		GameController G= new GameController();
-		G.CurrentPlayerColour=colour; 				//there is nowhere in the model for this 
+		Player play=new Player(null,null,null);
+		if (color.compareTo("white")==0) {
+			quoridor.getCurrentGame().setWhitePlayer(play);
+		}
+		else {
+			quoridor.getCurrentGame().setWhitePlayer(play);
+		}
 		
 	}
 	
@@ -281,10 +293,10 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */ 
 	@Then ("The name of player? (.*) in the new game shall be (.*)")
-	public void theNameOfPlayerInTheNewGameShallBe(String Colour, String name)throws Throwable{
+	public void theNameOfPlayerInTheNewGameShallBe(String Color, String name)throws Throwable{
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
 		Game game=quoridor.getCurrentGame();
-		if (Colour.compareTo("white")==1) {
+		if (Color.compareTo("white")==1) {
 			assertEquals(game.getWhitePlayer().getUser().getName(),name);
 		}
 		else {
@@ -326,9 +338,15 @@ public class CucumberStepDefinitions {
 	}
 	
 	@And ("Next player to set user name shall be (.*)")
-	public void nextlayerToSetUserNameShallBe(String colour) throws Throwable{
-		GameController G= new GameController();
-		assertEquals(G.CurrentPlayerColour,colour);				//there is nowhere in the model for this 
+	public void nextlayerToSetUserNameShallBe(String color) throws Throwable{
+		Quoridor quoridor=QuoridorApplication.getQuoridor();
+		if (color.compareTo("white")==1) {
+			assertEquals(quoridor.getCurrentGame().getWhitePlayer().getUser(),quoridor.getUser(0));
+		}
+		else {
+			assertEquals(quoridor.getCurrentGame().getBlackPlayer().getUser(),quoridor.getUser(0));
+		}
+					
 	}
 	
 	/*
