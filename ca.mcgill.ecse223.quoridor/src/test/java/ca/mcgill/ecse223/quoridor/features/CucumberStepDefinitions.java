@@ -268,6 +268,14 @@ public class CucumberStepDefinitions {
 	public void iShouldBeNotifiedThatIHaveNoMoreWalls() {
 		// GUI-related feature -- TODO for later
 	}
+	/**
+	 * @author ohuss1
+	 */
+	@Given("A game position is supplied with pawn coordinate <row>:<col>")
+	public boolean aGamePositionSupplied(Direction dir, Tile tile) {
+		GameController G =newGameController();
+		return true;
+	}
 
 	@Then("I shall have no walls in my hand")
 	public void iShallHaveNoWallsInMyHand() {
