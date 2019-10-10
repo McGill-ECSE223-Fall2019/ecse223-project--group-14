@@ -480,6 +480,17 @@ public class CucumberStepDefinitions {
 		}
 					
 	}
+	/**
+	 * @author ohuss1
+	 * @throws Throwable
+	 */
+	@Given ("A game position is supplied with pawn coordinate {int}:{int}")//might have problems with : symbol
+	public void aGamePositionisSuppliedWithPawnCoordinate(int row, int col) throws Throwable{
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		
+	}
+			
+			
 	
 	/*
 	 * TODO Insert your missing step definitions here
