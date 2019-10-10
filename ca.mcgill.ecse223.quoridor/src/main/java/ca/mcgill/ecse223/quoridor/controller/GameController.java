@@ -143,7 +143,7 @@ public class GameController {
 	 * 
 	 * @throws UnsupportedOperationException
 	 */
-	public void rotateWall(Game g, Player currentplayer) throws UnsupportedOperationException{
+	public void rotateWall() throws UnsupportedOperationException{
 		throw new UnsupportedOperationException();
 	}
 	
@@ -154,7 +154,7 @@ public class GameController {
 	 * 
 	 * @throws UnsupportedOperationException
 	 */
-	public void grabWall(Game g, Player currentplayer) throws UnsupportedOperationException{
+	public void grabWall() throws UnsupportedOperationException{
 		throw new UnsupportedOperationException();
 	}
 }
