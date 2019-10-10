@@ -392,24 +392,32 @@ public class CucumberStepDefinitions {
 	@Given ("Next player to set user name is? (.*)")
 	public void nextPlayerToSetUserNameIs(String color) throws Throwable{
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		//may need to initialize game position
+		
+		//this creation of new game position was necessary as the currentPosition set by the background method is null
+		Tile player1StartPos = quoridor.getBoard().getTile(36);
+		Tile player2StartPos = quoridor.getBoard().getTile(44);
+		PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), player1StartPos);
+		PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
+		
 		if (color.compareTo("white")==0) {
-			quoridor.getCurrentGame().getCurrentPosition().setPlayerToMove(quoridor.getCurrentGame().getWhitePlayer());
+			GamePosition gamePos=new GamePosition(1, player1Position, player2Position, quoridor.getCurrentGame().getWhitePlayer(), quoridor.getCurrentGame());
+			quoridor.getCurrentGame().setCurrentPosition(gamePos);
 		}
 		else {
-			quoridor.getCurrentGame().getCurrentPosition().setPlayerToMove(quoridor.getCurrentGame().getBlackPlayer());
+			GamePosition gamePos=new GamePosition(1, player1Position, player2Position, quoridor.getCurrentGame().getBlackPlayer(), quoridor.getCurrentGame());
+			quoridor.getCurrentGame().setCurrentPosition(gamePos);
 		}
-		
 	}
 	
 	/**
 	 * @author DariusPi
 	 * @throws Throwable
 	 */ 
-	@And ("There is existing user? (.*)")
-	public void thereIsExistingUser(User name) throws Throwable{
+	@And ("There is existing user (.*)")
+	public void thereIsExistingUser(String name) throws Throwable{
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		quoridor.addUser(name);
+		User user=new User(name, quoridor);
+		quoridor.addUser(user);
 	}
 	
 	/**
@@ -444,9 +452,18 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */ 
 	@And ("There is no existing user?(.*)")
-	public void thereIsNoExistingUser(User name) throws Throwable{
+	public void thereIsNoExistingUser(String name) throws Throwable{
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		quoridor.removeUser(name);
+		List<User> li=quoridor.getUsers();
+		if (!li.isEmpty()) {
+			for (int index=0; index<li.size();index++) {
+				if (li.get(index).getName().compareTo(name)==0) {
+					quoridor.removeUser(li.get(index));
+					break;
+				}
+			}
+			
+		}
 	}
 	
 	/**
