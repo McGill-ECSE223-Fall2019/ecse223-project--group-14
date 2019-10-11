@@ -512,17 +512,23 @@ public class CucumberStepDefinitions {
 	public void aGamePositionisSuppliedWithPawnCoordinate(int row, int col) throws Throwable{
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
 		GamePosition position = game.getCurrentPosition();
-		Tile testTile = QuoridorApplication.getQuoridor().getBoard().getTileByPos(row,col);
-		PlayerPosition prevalid =new PlayerPosition( aPlayer, testTile)
-		GamePosition 
+		Tile testTile = QuoridorApplication.getQuoridor().getBoard().getTileByPos(row,col);//dont use this method
+		PlayerPosition prevalid =new PlayerPosition( aPlayer, testTile);
+		GamePosition testPosition=new GamePosition(prevalid)
 		
 		
 		
 	}
 	@When ("Validation of the position is initiated")
-	public void validationOfPositionisInitiated() {
+	public void validationOfPositionisInitiated()throws Throwable {
 		GameController gc = new GameController();
 		gc.validatePawnPos();
+		
+	}
+	@Then ("The position shall be \"<result>\"")
+	public void thePositionShallBeResult(int result) throws Throwable{
+		GameController G= new GameController();
+		
 		
 	}
 			
