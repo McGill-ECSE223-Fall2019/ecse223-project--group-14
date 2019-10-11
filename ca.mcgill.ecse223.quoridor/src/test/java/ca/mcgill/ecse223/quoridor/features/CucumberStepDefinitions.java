@@ -1,8 +1,12 @@
 package ca.mcgill.ecse223.quoridor.features;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
@@ -110,21 +114,17 @@ public class CucumberStepDefinitions {
 		// GUI-related feature -- TODO for later
 	}
 	
+	@Given("^A new game is initializing$")
+	public void aNewGameIsInitializing() throws Throwable {
+		initQuoridorAndBoard();
+		ArrayList<Player> players = createUsersAndPlayers("user1", "user2");
+		new Game(GameStatus.Initializing, MoveMode.PlayerMove, players.get(0), players.get(1), QuoridorApplication.getQuoridor());
+	}
+
 	// ***********************************************
 	// Scenario and scenario outline step definitions
 	// ***********************************************
 
-	/**
-	 * @author DariusPi
-	 * @throws Throwable
-	 */
-	@When ("A new game is being initialized")
-	public void aNewGameIsBeingInitialized() throws Throwable{
-		GameController G= new GameController();
-		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		G.initGame(quoridor);
-	}
-	
 	/**
 	 * @author louismollick
 	 * @throws Throwable
@@ -139,7 +139,7 @@ public class CucumberStepDefinitions {
 		Player player = pos.getPlayerToMove();
 		WallMove wmc = game.getWallMoveCandidate();
 		
-		Tile target = QuoridorApplication.getQuoridor().getBoard().getTileByPos(row,col);
+		Tile target = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(row, col));
 		// Check if the WallMoveCandidate belongs to the current player
 		if(wmc != null && player.indexOfWall(wmc.getWallPlaced()) != -1) {
 			// Set the WallMoveCandidate's attributes to those specified in input
@@ -149,7 +149,7 @@ public class CucumberStepDefinitions {
 		} else { // If no WallMoveCandidate exists or it is other player's, make a new one with input
 			Wall w = pos.getWhiteWallsInStock(1);
 			int moveNum = game.numberOfMoves();
-			int roundNum = 0;
+			int roundNum = 1;
 			if(moveNum != 0) {
 				roundNum = game.getMove(moveNum-1).getRoundNumber();
 			}
@@ -164,7 +164,8 @@ public class CucumberStepDefinitions {
 	@When("I try to flip the wall")
 	public void iTryToFlipTheWall() throws Throwable{
 		GameController gc = new GameController();
-		gc.rotateWall();
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		gc.rotateWall(game);
 	}
 	
 	/**
@@ -211,7 +212,8 @@ public class CucumberStepDefinitions {
 	@When("I try to grab a wall from my stock")
 	public void iTryToGrabAWallFromMyStock() throws Throwable{
 		GameController gc = new GameController();
-		gc.grabWall();
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		gc.grabWall(game);
 	}
 	
 	/**
@@ -220,7 +222,6 @@ public class CucumberStepDefinitions {
 	@Then("I shall have a wall in my hand over the board")
 	public void thenIHaveAWallInMyHandOverTheBoard() throws Throwable{
 		// GUI-related feature -- TODO for later
-		throw new cucumber.api.PendingException();
 	}
 	
 	/**
@@ -269,10 +270,23 @@ public class CucumberStepDefinitions {
 		// GUI-related feature -- TODO for later
 	}
 	
-
-	@Then("I shall have no walls in my hand")
+	/**
+	 * @author louismollick
+	 */
+	@And ("I shall have no walls in my hand")
 	public void iShallHaveNoWallsInMyHand() {
 	    assertEquals(false, QuoridorApplication.getQuoridor().getCurrentGame().hasWallMoveCandidate());
+	}
+	
+	/**
+	 * @author DariusPi
+	 * @throws Throwable
+	 */
+	@When ("A new game is being initialized")
+	public void aNewGameIsBeingInitialized() throws Throwable{
+		GameController G= new GameController();
+		Quoridor quoridor=QuoridorApplication.getQuoridor();
+		G.initGame(quoridor);
 	}
 	
 	/**
@@ -283,7 +297,7 @@ public class CucumberStepDefinitions {
 	public void whitePlayerChoosesAUsername() throws Throwable{
 		GameController G= new GameController();
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		G.assignUsername(quoridor, "white");
+		G.assignUsername(quoridor, quoridor.getCurrentGame().getWhitePlayer());
 	}
 	
 	/**
@@ -294,7 +308,7 @@ public class CucumberStepDefinitions {
 	public void blackPlayerChoosesAUsername() throws Throwable{
 		GameController G= new GameController();
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		G.assignUsername(quoridor, "black");
+		G.assignUsername(quoridor, quoridor.getCurrentGame().getBlackPlayer());
 	}
 	
 	/**
@@ -371,18 +385,6 @@ public class CucumberStepDefinitions {
 		assertNotNull(quoridor.getBoard());
 	}
 	
-	
-	 @Given ("A new game is initializing")
-	 public void aNewGameIsInitializing() {
-		 GameController G= new GameController();
-		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		G.initGame(quoridor);
-		 
-		GameStatus aGameStatus = GameStatus.Initializing;
-		Game game=quoridor.getCurrentGame();
-		game.setGameStatus(aGameStatus);
-	 }
-	
 	/**
 	 * @author DariusPi
 	 * @throws Throwable
@@ -390,24 +392,32 @@ public class CucumberStepDefinitions {
 	@Given ("Next player to set user name is? (.*)")
 	public void nextPlayerToSetUserNameIs(String color) throws Throwable{
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		Player play=new Player(null,null,null);
+		
+		//this creation of new game position was necessary as the currentPosition set by the background method is null
+		Tile player1StartPos = quoridor.getBoard().getTile(36);
+		Tile player2StartPos = quoridor.getBoard().getTile(44);
+		PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), player1StartPos);
+		PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
+		
 		if (color.compareTo("white")==0) {
-			quoridor.getCurrentGame().setWhitePlayer(play);
+			GamePosition gamePos=new GamePosition(1, player1Position, player2Position, quoridor.getCurrentGame().getWhitePlayer(), quoridor.getCurrentGame());
+			quoridor.getCurrentGame().setCurrentPosition(gamePos);
 		}
 		else {
-			quoridor.getCurrentGame().setWhitePlayer(play);
+			GamePosition gamePos=new GamePosition(1, player1Position, player2Position, quoridor.getCurrentGame().getBlackPlayer(), quoridor.getCurrentGame());
+			quoridor.getCurrentGame().setCurrentPosition(gamePos);
 		}
-		
 	}
 	
 	/**
 	 * @author DariusPi
 	 * @throws Throwable
 	 */ 
-	@And ("There is existing user? (.*)")
-	public void thereIsExistingUser(User name) throws Throwable{
+	@And ("There is existing user (.*)")
+	public void thereIsExistingUser(String name) throws Throwable{
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		quoridor.addUser(name);
+		User user=new User(name, quoridor);
+		quoridor.addUser(user);
 	}
 	
 	/**
@@ -442,9 +452,18 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */ 
 	@And ("There is no existing user?(.*)")
-	public void thereIsNoExistingUser(User name) throws Throwable{
+	public void thereIsNoExistingUser(String name) throws Throwable{
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		quoridor.removeUser(name);
+		List<User> li=quoridor.getUsers();
+		if (!li.isEmpty()) {
+			for (int index=0; index<li.size();index++) {
+				if (li.get(index).getName().compareTo(name)==0) {
+					quoridor.removeUser(li.get(index));
+					break;
+				}
+			}
+			
+		}
 	}
 	
 	/**
@@ -470,14 +489,18 @@ public class CucumberStepDefinitions {
 		assertEquals(G.createUsername(quoridor, name),msg);
 	}
 	
+	/**
+	 * @author DariusPi
+	 * @throws Throwable
+	 */ 
 	@And ("Next player to set user name shall be (.*)")
 	public void nextlayerToSetUserNameShallBe(String color) throws Throwable{
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
 		if (color.compareTo("white")==1) {
-			assertEquals(quoridor.getCurrentGame().getWhitePlayer().getUser(),quoridor.getUser(0));
+			assertEquals(quoridor.getCurrentGame().getCurrentPosition().getPlayerToMove(),quoridor.getCurrentGame().getWhitePlayer());
 		}
 		else {
-			assertEquals(quoridor.getCurrentGame().getBlackPlayer().getUser(),quoridor.getUser(0));
+			assertEquals(quoridor.getCurrentGame().getCurrentPosition().getPlayerToMove(),quoridor.getCurrentGame().getBlackPlayer());
 		}
 					
 	}
@@ -504,6 +527,203 @@ public class CucumberStepDefinitions {
 	}
 			
 			
+	
+	/**
+	 * @author FSharp4
+	 * @throws Throwable
+	 */
+	@When ("I initiate to load a saved game? (.*)")
+	public void iInitiateToLoadASavedGame(String filename) throws Throwable {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		GameController G = new GameController();
+		Game game = G.initSaveGameLoad(quoridor, filename);
+		game.setGameStatus(GameStatus.Initializing);
+		assertNotNull(game);
+		assertTrue(quoridor.setCurrentGame(game));
+	}
+	
+	/**
+	 * @author FSharp4
+	 * @throws Throwable
+	 */
+	@And ("The position to load is valid")
+	public void thePositionToLoadIsValid() throws Throwable {
+		GameController G = new GameController();
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		assertTrue(G.isValid(quoridor.getCurrentGame().getCurrentPosition()));
+	}
+	
+	/**
+	 * @author FSharp4
+	 * @throws Throwable
+	 */
+	@And ("The position to load is invalid")
+	public void thePositionToLoadIsInvalid() throws Throwable {
+		GameController G = new GameController();
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		assertFalse(G.isValid(quoridor.getCurrentGame().getCurrentPosition()));
+	}
+	
+	/**
+	 * @author FSharp4
+	 * @throws Throwable
+	 */
+	@Then ("It shall be? (.*)'s turn")
+	public void itShallBeSTurn(String playerColor) throws Throwable {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Player player = getPlayer(playerColor);
+		GameController G = new GameController();
+		assertTrue(G.setCurrentTurn(player, quoridor));
+	}
+	
+	/**
+	 * @author FSharp4
+	 * @throws Throwable
+	 */
+	@And ("(.*) shall be at (.*):(.*)")
+	public void shallBeAt(String playerColor, int row, int col) throws Throwable {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game game = quoridor.getCurrentGame();
+		Player player = getPlayer(playerColor);
+		if (player.hasGameAsWhite()) {
+			assertEquals(quoridor.getBoard().getTile(getIndex(row, col)), 
+					game.getCurrentPosition().getWhitePosition().getTile());
+		} else {
+			assertEquals(quoridor.getBoard().getTile(getIndex(row, col)),
+					game.getCurrentPosition().getBlackPosition().getTile());
+		}
+	}
+	
+	/**
+	 * @author FSharp4
+	 * @throws Throwable
+	 */
+	@And ("(.*) shall have a (.*) wall at (.*):(.*)")
+	public void shallHaveAWallAt(String playerColor, Direction orientation, int row, int col) 
+			throws Throwable {
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Wall[] walls;
+		Player player = getPlayer(playerColor);
+		if (player.hasGameAsWhite()) {
+			walls = new Wall[game.getCurrentPosition().getWhiteWallsOnBoard().size()];
+			walls = game.getCurrentPosition().getWhiteWallsInStock().toArray(walls);
+			assertTrue(wallPresent(row, col, walls, orientation));
+		} else {
+			walls = new Wall[game.getCurrentPosition().getBlackWallsOnBoard().size()];
+			walls = game.getCurrentPosition().getBlackWallsInStock().toArray(walls);
+			assertTrue(wallPresent(row, col, walls, orientation));
+		}
+	}
+	
+	/**
+	 * @author FSharp4
+	 * @throws Throwable
+	 */
+	@And ("Both players shall have (.*) in their stacks")
+	public void bothPlayersShallHaveInTheirStacks(int remainingWalls) throws Throwable {
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		assertEquals(game.getCurrentPosition().getWhiteWallsInStock().size(), remainingWalls);
+		assertEquals(game.getCurrentPosition().getBlackWallsInStock().size(), remainingWalls);
+	}
+	
+	/**
+	 * @author FSharp4
+	 * @throws Throwable
+	 */
+	@Then ("The load shall return an error")
+	public void theLoadShallReturnAnError() throws Throwable {
+		GameController G = new GameController();
+		boolean loadFail = false;
+		try {
+			G.loadGame(QuoridorApplication.getQuoridor());
+		} catch (Exception e) {
+			loadFail = (e instanceof IOException);
+		}
+		
+		assertTrue(loadFail);
+	}
+	
+	/**
+	 * @author FSharp4
+	 * @throws Throwable
+	 */
+	@When ("The initialization of the board is initiated")
+	public void theInitializationOfTheBoardIsInitiated() throws Throwable {
+		GameController G = new GameController();
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		assertNotNull(quoridor.getBoard());
+		assertTrue(G.isBoardInitializationInitiated(QuoridorApplication.getQuoridor()));
+	}
+	
+	/**
+	 * @author FSharp4
+	 * @throws Throwable
+	 */
+	@Then ("It shall be white player to move")
+	public void itShallBeWhitePlayerToMove() throws Throwable {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		assertEquals(quoridor.getCurrentGame().getMoves().size(), 0);
+		//correct if there are no moves, as this is a new game and white moves first
+	}
+	
+	/**
+	 * @author FSharp4
+	 * @throws Throwable
+	 */
+	@And ("White's pawn shall be in its initial position")
+	public void whitesPawnShallBeInItsInitialPosition() throws Throwable {
+		//Initial white pawn position referenced from helper method createUsersAndPlayers
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		PlayerPosition whitePosition = quoridor.getCurrentGame()
+				.getCurrentPosition().getWhitePosition();
+		assertEquals(whitePosition.getTile(), quoridor.getBoard().getTile(36));
+	}
+	
+	/**
+	 * @author FSharp4
+	 * @throws Throwable
+	 */
+	@And ("Black's pawn shall be in its initial position")
+	public void blacksPawnShallBeInItsInitialPosition() throws Throwable {
+		//Initial black pawn position referenced from helper method createUsersAndPlayers
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		PlayerPosition blackPosition = quoridor.getCurrentGame()
+				.getCurrentPosition().getBlackPosition();
+		assertEquals(blackPosition.getTile(), quoridor.getBoard().getTile(44));
+	}
+	
+	/**
+	 * @author FSharp4
+	 * @throws Throwable
+	 */
+	@And ("All of White's walls shall be in stock")
+	public void allOfWhitesWallsShallBeInStock() throws Throwable {
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		assertEquals(game.getCurrentPosition().getWhiteWallsInStock().size(), 10);
+	}
+	
+	/**
+	 * @author FSharp4
+	 * @throws Throwable
+	 */
+	@And ("All of Black's walls shall be in stock")
+	public void allOfBlacksWallsShallBeInStock() throws Throwable {
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		assertEquals(game.getCurrentPosition().getBlackWallsInStock().size(), 10);
+	}
+	
+	/**
+	 * @author FSharp4
+	 * @throws Throwable
+	 */
+	@And ("White's clock shall be counting down")
+	public void whitesClockShallBeCountingDown() throws Throwable {
+		GameController G = new GameController();
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		assertTrue(G.isClockCountingDown(quoridor.getCurrentGame().getWhitePlayer()));
+	}
+	
+	
 	
 	/*
 	 * TODO Insert your missing step definitions here
@@ -618,6 +838,38 @@ public class CucumberStepDefinitions {
 		}
 
 		game.setCurrentPosition(gamePosition);
+	}
+	
+	private int getIndex(int row, int col) {
+		return (col - 1) * 9 + row;
+	}
+	
+	private boolean wallPresent(int row, int col, Wall[] wallsOnBoard, Direction orientation) {
+		if (wallsOnBoard.length == 0)
+			return false;
+		
+		for (Wall wall : wallsOnBoard) {
+			if (wall.getMove().getTargetTile().getRow() == row 
+					&& wall.getMove().getTargetTile().getColumn() == col 
+					&& wall.getMove().getWallDirection().equals(orientation)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private Player getPlayer(String color) {
+		Player player;
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		if (color.contentEquals("white")) {
+			player = quoridor.getCurrentGame().getWhitePlayer();
+		} else if (color.contentEquals("black")) {
+			player = quoridor.getCurrentGame().getBlackPlayer();
+		} else {
+			player = null; //not supposed to happen
+		}
+		return player;
 	}
 
 }
