@@ -164,6 +164,42 @@ public class GameController {
 	}
 	
 	/**
+	 * For Move Wall feature
+	 * 
+	 * 
+	 * @author Saifullah
+	 * 
+	 * @throws UnsupportedOperationException
+	 */
+	public void moveWall(Game game, String side) throws UnsupportedOperationException{
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * For Drop Wall feature
+	 * 
+	 * 
+	 * @author Saifullah
+	 * 
+	 * @throws UnsupportedOperationException
+	 */
+	public void dropWall(Game game) throws UnsupportedOperationException{		
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * Testing method validatePosition
+	 * 
+	 *I just added this for the sake of testing till the actual method is done
+	 * @author Saifullah
+	 * @param game
+	 * @throws UnsupportedOperationException
+	 */
+	public boolean validatePosition(Game game) throws UnsupportedOperationException{
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
 	 * For Load Position feature
 	 * Initiates loading a saved game
 	 * 

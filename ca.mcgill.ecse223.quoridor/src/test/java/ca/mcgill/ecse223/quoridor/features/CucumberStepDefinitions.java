@@ -28,6 +28,7 @@ import ca.mcgill.ecse223.quoridor.model.Wall;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
+import io.cucumber.java.en.But;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
@@ -277,7 +278,215 @@ public class CucumberStepDefinitions {
 	public void iShallHaveNoWallsInMyHand() {
 	    assertEquals(false, QuoridorApplication.getQuoridor().getCurrentGame().hasWallMoveCandidate());
 	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	@Given("The wall move candidate with {string} at position \\({int}, {int}) is valid")
+	public void givenAWallMoveCandidateExistsAndValidAtPos(String sdir, int row, int col) throws Throwable{
+		Direction dir;
+		GameController gc = new GameController();
+		if(sdir.equals("vertical")) dir = Direction.Vertical;
+		else dir = Direction.Horizontal;
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		GamePosition pos = game.getCurrentPosition();
+		Player player = pos.getPlayerToMove();
+		WallMove wmc = game.getWallMoveCandidate();
+		Tile target = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(row ,col));
+		
+		// Check if the WallMoveCandidate belongs to the current player
+				if(wmc != null && player.indexOfWall(wmc.getWallPlaced()) != -1) {
+					// Set the WallMoveCandidate's attributes to those specified in input
+					if(wmc.getWallDirection() != dir) wmc.setWallDirection(dir);
+					if(wmc.getTargetTile().getRow() != row || wmc.getTargetTile().getColumn() != col)
+						wmc.setTargetTile(target);
+				} else { // If no WallMoveCandidate exists or it is other player's, make a new one with input
+					Wall w = pos.getWhiteWallsInStock(1);
+					int moveNum = game.numberOfMoves();
+					int roundNum = 1;
+					if(moveNum != 0) {
+						roundNum = game.getMove(moveNum-1).getRoundNumber();
+					}
+					w.setMove(new WallMove(moveNum+1, roundNum, player, target, game, dir, w));
+					game.setWallMoveCandidate(w.getMove());
+				}
+				
+				assertEquals(true, gc.validatePosition(game));
+		
+	}
 	
+	@Given("The wall move candidate with {string} at position \\({int}, {int}) is invalid")
+	public void givenAWallMoveCandidateExistsAndNotValidAtPos(String sdir, int row, int col) throws Throwable{
+		Direction dir;
+		GameController gc = new GameController();
+		if(sdir.equals("vertical")) dir = Direction.Vertical;
+		else dir = Direction.Horizontal;
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		GamePosition pos = game.getCurrentPosition();
+		Player player = pos.getPlayerToMove();
+		WallMove wmc = game.getWallMoveCandidate();
+		Tile target = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(row ,col));
+		
+		// Check if the WallMoveCandidate belongs to the current player
+				if(wmc != null && player.indexOfWall(wmc.getWallPlaced()) != -1) {
+					// Set the WallMoveCandidate's attributes to those specified in input
+					if(wmc.getWallDirection() != dir) wmc.setWallDirection(dir);
+					if(wmc.getTargetTile().getRow() != row || wmc.getTargetTile().getColumn() != col)
+						wmc.setTargetTile(target);
+				} else { // If no WallMoveCandidate exists or it is other player's, make a new one with input
+					Wall w = pos.getWhiteWallsInStock(1);
+					int moveNum = game.numberOfMoves();
+					int roundNum = 1;
+					if(moveNum != 0) {
+						roundNum = game.getMove(moveNum-1).getRoundNumber();
+					}
+					w.setMove(new WallMove(moveNum+1, roundNum, player, target, game, dir, w));
+					game.setWallMoveCandidate(w.getMove());
+				}
+				
+				assertNotEquals(true, gc.validatePosition(game));
+		
+	}
+	
+	@And("My move shall be completed")
+	public void MoveCompleted() {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Player currentPlayer = quoridor.getCurrentGame().getCurrentPosition().getPlayerToMove();
+		boolean b = false;
+		if(currentPlayer != quoridor.getCurrentGame().getWhitePlayer()) {
+			b = true;
+		}
+		assertEquals(true, b);	
+	}
+	
+	@But("No wall move shall be registered with {string} at position \\({int}, {int})")
+	public void WallMoveNotRegistered(String sdir, int row, int col) {
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		WallMove wmc = game.getWallMoveCandidate();
+		Tile target = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(row ,col));
+		assertNotEquals(target, wmc.getTargetTile());
+		assertEquals(false, wmc.getWallPlaced());
+		assertNotEquals(sdir, wmc.getWallDirection());
+	}
+		
+	@Then("A wall move shall be registered with {string} at position \\({int}, {int})")
+	public void WallMoveIsRegistered(String sdir, int row, int col) {
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		WallMove wmc = game.getWallMoveCandidate();
+		Tile target = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(row ,col));
+		assertEquals(true, wmc.getWallPlaced());
+		assertEquals(sdir, wmc.getWallDirection());
+		assertEquals(target, wmc.getTargetTile());
+	}
+	
+	
+	
+	@And("It shall not be my turn to move")
+	public void NotMyTurnToMove() {		
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Player currentPlayer = quoridor.getCurrentGame().getCurrentPosition().getPlayerToMove();
+		boolean b = false;
+		if(currentPlayer != quoridor.getCurrentGame().getWhitePlayer()) {
+			b = true;
+		}
+		assertEquals(true, b);
+	}
+	
+	@And("I shall not have a wall in my hand")
+	public void iShallNotHaveWallInMyHand() {
+		assertEquals(false, QuoridorApplication.getQuoridor().getCurrentGame().hasWallMoveCandidate());
+	}
+	
+	
+	@And("The wall candidate is at the {string} edge of the board")
+	public void WallCandidateAtSide(String side) {
+		WallMove wallCandidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+		Tile DesignatedTile = wallCandidate.getTargetTile();
+		boolean b = false;
+		if(side.equals("left") && DesignatedTile.getColumn() == 1) {
+			b = true;
+		}
+		
+		if(side.equals("right") && DesignatedTile.getColumn() == 8) {
+			b = true;
+		}
+		
+		if(side.equals("up") && DesignatedTile.getRow() == 1) {
+			b = true;
+		}
+		
+		if(side.equals("down") && DesignatedTile.getRow() == 8) {
+			b = true;
+		}
+		
+		assertEquals(true, b);		
+	}
+	
+	@And("The wall candidate is not at the {string} edge of the board")
+	public void WallCandidateNotAtSide(String side) {
+		WallMove wallCandidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+		Tile DesignatedTile = wallCandidate.getTargetTile();
+		boolean b = false;
+		if(side.equals("left") && DesignatedTile.getColumn() == 1) {
+			b = true;
+		}
+		
+		if(side.equals("right") && DesignatedTile.getColumn() == 8) {
+			b = true;
+		}
+		
+		if(side.equals("up") && DesignatedTile.getRow() == 1) {
+			b = true;
+		}
+		
+		if(side.equals("down") && DesignatedTile.getRow() == 8) {
+			b = true;
+		}
+		
+		assertEquals(false, b);		
+	}
+	
+	@Then("The wall shall be moved over the board to position \\({int}, {int})")
+	public void WallIsMovedToPosition(int nrow, int ncol) {
+		WallMove wallCandidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+		Tile DesignatedTile = wallCandidate.getTargetTile();
+		assertEquals(DesignatedTile.getRow(), nrow);
+		assertEquals(DesignatedTile.getColumn(), ncol);			
+	}
+	
+	@And("It shall be my turn to move")
+	public void IsMyTurnToMove() {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Player currentPlayer = quoridor.getCurrentGame().getCurrentPosition().getPlayerToMove();
+		boolean b = false;
+		if(currentPlayer == quoridor.getCurrentGame().getWhitePlayer()) {
+			b = true;
+		}
+		assertEquals(true, b);
+	}
+	
+	@When("I release the wall in my hand")
+	public void iReleaseTheWall() throws Throwable{
+		GameController gc = new GameController();
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		gc.dropWall(game);
+		
+	}
+	
+	@When("I try to move the wall {string}")
+	public void iMoveWall(String side) {
+		GameController gc = new GameController();
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		gc.moveWall(game, side);
+	}
+	
+	@Then("I shall be notified that my wall move is invalid")
+	public void isNotifiedOfInvalidWallMove() {
+		// GUI-related feature -- TODO for later
+	}
+	
+	@Then("I shall be notified that my move is illegal")
+	public void isNotifiedOfIllegalMove() {
+		// GUI-related feature -- TODO for later
+	}
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * @author DariusPi
 	 * @throws Throwable
