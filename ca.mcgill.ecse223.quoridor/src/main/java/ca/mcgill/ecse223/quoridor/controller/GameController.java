@@ -159,4 +159,16 @@ public class GameController {
 	public void grabWall() throws UnsupportedOperationException{
 		throw new UnsupportedOperationException();
 	}
+	/**
+	 * For ValidatePosition Feature 
+	 * 
+	 * @author ohuss1
+	 * 
+	 * @throws UnsupportedOperationException
+	 */
+	public void validatePawnPos() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
+		
+	}
 }

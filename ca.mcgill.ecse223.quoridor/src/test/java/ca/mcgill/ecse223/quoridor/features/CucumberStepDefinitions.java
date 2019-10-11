@@ -268,14 +268,7 @@ public class CucumberStepDefinitions {
 	public void iShouldBeNotifiedThatIHaveNoMoreWalls() {
 		// GUI-related feature -- TODO for later
 	}
-	/**
-	 * @author ohuss1
-	 */
-	@Given("A game position is supplied with pawn coordinate <row>:<col>")
-	public boolean aGamePositionSupplied(Direction dir, Tile tile) {
-		GameController G =newGameController();
-		return true;
-	}
+	
 
 	@Then("I shall have no walls in my hand")
 	public void iShallHaveNoWallsInMyHand() {
@@ -495,6 +488,18 @@ public class CucumberStepDefinitions {
 	@Given ("A game position is supplied with pawn coordinate {int}:{int}")//might have problems with : symbol
 	public void aGamePositionisSuppliedWithPawnCoordinate(int row, int col) throws Throwable{
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		GamePosition position = game.getCurrentPosition();
+		Tile testTile = QuoridorApplication.getQuoridor().getBoard().getTileByPos(row,col);
+		PlayerPosition prevalid =new PlayerPosition( aPlayer, testTile)
+		GamePosition 
+		
+		
+		
+	}
+	@When ("Validation of the position is initiated")
+	public void validationOfPositionisInitiated() {
+		GameController gc = new GameController();
+		gc.validatePawnPos();
 		
 	}
 			
