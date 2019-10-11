@@ -511,26 +511,35 @@ public class CucumberStepDefinitions {
 	@Given ("A game position is supplied with pawn coordinate {int}:{int}")//might have problems with : symbol
 	public void aGamePositionisSuppliedWithPawnCoordinate(int row, int col) throws Throwable{
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Quoridor quoridor=QuoridorApplication.getQuoridor();
 		GamePosition position = game.getCurrentPosition();
-		Tile testTile = QuoridorApplication.getQuoridor().getBoard().getTileByPos(row,col);//dont use this method
-		PlayerPosition prevalid =new PlayerPosition( aPlayer, testTile);
-		GamePosition testPosition=new GamePosition(prevalid)
-		
-		
-		
+		//Tile player1StartPos = quoridor.getBoard().getTile(36);
+		Tile player2StartPos = quoridor.getBoard().getTile(44);
+		Tile testTile = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(row,col));
+		//PlayerPosition prevalid =new PlayerPosition( game.getCurrentPosition().getPlayerToMove(), testTile);
+		//PlayerPosition prevalid2 =new PlayerPosition( game.getCurrentPosition().getPlayerToMove(), testTile);
+		PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), testTile);
+		PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
+		GamePosition testPosition=new GamePosition(1,player1Position,player2Position,(quoridor.getCurrentGame().getWhitePlayer()),game);//has id	
 	}
-	@When ("Validation of the position is initiated")
-	public void validationOfPositionisInitiated()throws Throwable {
+	/**
+	 * @author ohuss1
+	 * @throws Throwable
+	 */
+	/*@When ("Validation of the position is initiated")
+	public void validationOfPositionisInitiated()throws Throwable {//game position created in given pass it to game controller
 		GameController gc = new GameController();
-		gc.validatePawnPos();
+		gc.validatePawnPos();//pass game gc
 		
-	}
-	@Then ("The position shall be \"<result>\"")
-	public void thePositionShallBeResult(int result) throws Throwable{
+	}*/
+/*	@Then ("The position shall be {String}")
+	public void thePositionShallBeResult(String result) throws Throwable{
 		GameController G= new GameController();
+		//if string ok then set boolean to true 
+		//other wise false
 		
 		
-	}
+	}*/
 			
 			
 	
