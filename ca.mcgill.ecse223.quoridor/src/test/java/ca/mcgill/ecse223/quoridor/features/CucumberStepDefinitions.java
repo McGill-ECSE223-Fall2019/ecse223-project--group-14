@@ -278,7 +278,10 @@ public class CucumberStepDefinitions {
 	public void iShallHaveNoWallsInMyHand() {
 	    assertEquals(false, QuoridorApplication.getQuoridor().getCurrentGame().hasWallMoveCandidate());
 	}
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * @author Saifullah
+	 */
 	@Given("The wall move candidate with {string} at position \\({int}, {int}) is valid")
 	public void givenAWallMoveCandidateExistsAndValidAtPos(String sdir, int row, int col) throws Throwable{
 		Direction dir;
@@ -312,6 +315,9 @@ public class CucumberStepDefinitions {
 		
 	}
 	
+	/**
+	 * @author Saifullah
+	 */
 	@Given("The wall move candidate with {string} at position \\({int}, {int}) is invalid")
 	public void givenAWallMoveCandidateExistsAndNotValidAtPos(String sdir, int row, int col) throws Throwable{
 		Direction dir;
@@ -345,6 +351,9 @@ public class CucumberStepDefinitions {
 		
 	}
 	
+	/**
+	 * @author Saifullah
+	 */
 	@And("My move shall be completed")
 	public void MoveCompleted() {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
@@ -356,6 +365,9 @@ public class CucumberStepDefinitions {
 		assertEquals(true, b);	
 	}
 	
+	/**
+	 * @author Saifullah
+	 */
 	@But("No wall move shall be registered with {string} at position \\({int}, {int})")
 	public void WallMoveNotRegistered(String sdir, int row, int col) {
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -366,6 +378,9 @@ public class CucumberStepDefinitions {
 		assertNotEquals(sdir, wmc.getWallDirection());
 	}
 		
+	/**
+	 * @author Saifullah
+	 */
 	@Then("A wall move shall be registered with {string} at position \\({int}, {int})")
 	public void WallMoveIsRegistered(String sdir, int row, int col) {
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -377,7 +392,9 @@ public class CucumberStepDefinitions {
 	}
 	
 	
-	
+	/**
+	 * @author Saifullah
+	 */
 	@And("It shall not be my turn to move")
 	public void NotMyTurnToMove() {		
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
@@ -389,12 +406,18 @@ public class CucumberStepDefinitions {
 		assertEquals(true, b);
 	}
 	
+	/**
+	 * @author Saifullah
+	 */
 	@And("I shall not have a wall in my hand")
 	public void iShallNotHaveWallInMyHand() {
 		assertEquals(false, QuoridorApplication.getQuoridor().getCurrentGame().hasWallMoveCandidate());
 	}
 	
 	
+	/**
+	 * @author Saifullah
+	 */
 	@And("The wall candidate is at the {string} edge of the board")
 	public void WallCandidateAtSide(String side) {
 		WallMove wallCandidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
@@ -419,6 +442,9 @@ public class CucumberStepDefinitions {
 		assertEquals(true, b);		
 	}
 	
+	/**
+	 * @author Saifullah
+	 */
 	@And("The wall candidate is not at the {string} edge of the board")
 	public void WallCandidateNotAtSide(String side) {
 		WallMove wallCandidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
@@ -443,6 +469,9 @@ public class CucumberStepDefinitions {
 		assertEquals(false, b);		
 	}
 	
+	/**
+	 * @author Saifullah
+	 */
 	@Then("The wall shall be moved over the board to position \\({int}, {int})")
 	public void WallIsMovedToPosition(int nrow, int ncol) {
 		WallMove wallCandidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
@@ -451,6 +480,9 @@ public class CucumberStepDefinitions {
 		assertEquals(DesignatedTile.getColumn(), ncol);			
 	}
 	
+	/**
+	 * @author Saifullah
+	 */
 	@And("It shall be my turn to move")
 	public void IsMyTurnToMove() {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
@@ -462,6 +494,9 @@ public class CucumberStepDefinitions {
 		assertEquals(true, b);
 	}
 	
+	/**
+	 * @author Saifullah
+	 */
 	@When("I release the wall in my hand")
 	public void iReleaseTheWall() throws Throwable{
 		GameController gc = new GameController();
@@ -470,6 +505,9 @@ public class CucumberStepDefinitions {
 		
 	}
 	
+	/**
+	 * @author Saifullah
+	 */
 	@When("I try to move the wall {string}")
 	public void iMoveWall(String side) {
 		GameController gc = new GameController();
@@ -477,16 +515,22 @@ public class CucumberStepDefinitions {
 		gc.moveWall(game, side);
 	}
 	
+	/**
+	 * @author Saifullah
+	 */
 	@Then("I shall be notified that my wall move is invalid")
 	public void isNotifiedOfInvalidWallMove() {
 		// GUI-related feature -- TODO for later
 	}
 	
+	/**
+	 * @author Saifullah
+	 */
 	@Then("I shall be notified that my move is illegal")
 	public void isNotifiedOfIllegalMove() {
 		// GUI-related feature -- TODO for later
 	}
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * @author DariusPi
 	 * @throws Throwable
