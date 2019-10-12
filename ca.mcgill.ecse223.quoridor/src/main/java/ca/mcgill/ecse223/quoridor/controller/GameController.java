@@ -173,17 +173,19 @@ public class GameController {
 	 * @param FileName
 	 * @throws UnsupportedOperationException
 	 */
-	//
-	public static void SaveGame(String FileName) {
-		throw new UnsupportedOperationException();	
-		//This saves the game
-	}
 	
 	public static Boolean filename_exists (String FileName) {
 		File filename = new File(FileName);
 		if(filename.exists()) return true;
 		else return false;
 	}
+	
+	public static void SaveGame(String FileName) {
+		throw new UnsupportedOperationException();	
+		//This saves the game
+	}
+	
+	
 	
 	
 	/**
