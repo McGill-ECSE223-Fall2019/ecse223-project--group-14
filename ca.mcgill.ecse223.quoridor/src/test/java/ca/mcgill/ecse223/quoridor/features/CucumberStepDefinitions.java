@@ -964,7 +964,11 @@ public class CucumberStepDefinitions {
 		G.setTime(min, sec, quoridor);
 	}
 	
-	
+	@Then ("Both players shall have <min>:<sec> remaining time left")
+ 	public void BothPlayersShallHaveMinSecRemainingTimeLeft(int min, int sec) throws Throwable{
+	assertEquals(quoridor.getGame().getblackplayer.getTime(), min*60+sec);
+ }
+
 	
 	
 	/*
