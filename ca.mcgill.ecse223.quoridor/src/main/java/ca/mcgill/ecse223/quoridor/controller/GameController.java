@@ -173,7 +173,7 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	
-	public void SaveGame(Game game) {
+	public static void SaveGame(String FileName, Game game) {
 		throw new UnsupportedOperationException();	
 		
 	}
@@ -343,6 +343,8 @@ public class GameController {
 		//This interacts with the clock Time object and checks GUI to see if a countdown is shown
 		throw new UnsupportedOperationException();
 	}
+
+	
 
 	
 }

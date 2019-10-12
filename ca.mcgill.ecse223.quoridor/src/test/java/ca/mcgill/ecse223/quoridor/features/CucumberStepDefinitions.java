@@ -992,11 +992,10 @@ public class CucumberStepDefinitions {
 	}
  
 	@When ("The user initiates to save the game with name {FileName}>")
- 	public void TheUserInitiatesToSaveTheGameWithNameFilename (String FileName) throws Throwable{
+ 	public void TheUserInitiatesToSaveTheGameWithNameFilename (String FileName, Game game) throws Throwable{
 	 GameController G= new GameController();
-	 G.SaveGame();
+	 GameController.SaveGame(FileName, game);
 		
-	 QuoridorApplication.getQuoridor().SaveGame(FileName);
 	 
  }
  
