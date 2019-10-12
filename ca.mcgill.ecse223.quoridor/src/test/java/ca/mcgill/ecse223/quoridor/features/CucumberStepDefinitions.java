@@ -977,33 +977,31 @@ public class CucumberStepDefinitions {
 	@Given ("File {FileName} exists in the filesystem")
 	 
  	public void FileFilenameExistsInTheFileSystem (String FileName) throws Throwable{
-		boolean filename_exists = true;
+		boolean filename_exists_name = true;
 		GameController G = new GameController();
-		assertEquals(filename_exists, QuoridorController.FileFilenameExistsInTheFileSystem(FileName));
+		assertEquals(filename_exists_name, GameController.filename_exists(FileName));
 	}
 	
 	@Given ("No file <filename> exists in the filesystem")
  	public void NoFileExistsInTheFilesystem(String FileName) throws Throwable{
-	 boolean filename_exists = false;
+	 boolean filename_exists_name = false;
 	 GameController G = new GameController();
-	 assertEquals(filename_exists, QuoridorController.NoFileExistsInTheFilesystem(FileName));
+	 assertEquals(filename_exists_name, GameController.filename_exists(FileName));
 	//Quoridor Controller to figure out.
 	
 	}
  
-	@When ("The user initiates to save the game with name {FileName}>")
- 	public void TheUserInitiatesToSaveTheGameWithNameFilename (String FileName, Game game) throws Throwable{
+@When ("The user initiates to save the game with name {FileName}>")
+ 	public void TheUserInitiatesToSaveTheGameWithNameFilename (String FileName) throws Throwable{
 	 GameController G= new GameController();
-	 GameController.SaveGame(FileName, game);
+	 GameController.SaveGame(FileName);
  }
  
  @Then ("A file with {FileName} shall be created in the filesystem")
  
  	public void AFileWithFilenameIsCreatedInTheFilesystem (String FileName) throws Throwable{
-	 boolean File_Created = true;
-	 GameController G = new GameController();
-	 
-	 assertEquals(File_Created,QuoridorController.AFileWithFilenameIsCreatedInTheFilesystem(FileName));
+	 boolean File_Created_exists = true;
+	 assertEquals(File_Created_exists,GameController.filename_exists(FileName));
  }
  
  @Then ("File with {FileName} shall be updated in the filesystem")
@@ -1012,9 +1010,7 @@ public class CucumberStepDefinitions {
  	public void FileWithFilenameIsUpdatedInTheFilesystem (String FileName) throws Throwable{
 
 	 boolean File_Updated = true;
-	 GameController G = new GameController();
-	 
-	 assertEquals(File_Updated,QuoridorController.FileWithFilenameIsUpdatedInTheFilesystem(FileName) );
+	 assertEquals(File_Updated,GameController.filename_exists(FileName) );
 	 }
 
  @Then ("File  {FileName} shall not be changed in the filesystem")
@@ -1024,7 +1020,7 @@ public class CucumberStepDefinitions {
 	 boolean File_Updated = false;
 	 GameController G = new GameController();
 	 
-	 assertEquals(File_Updated, QuoridorController.FileFilenameIsNotChangedInTheFilesystem(FileName));
+	 assertEquals(File_Updated, GameController.filename_exists(FileName));
 		 }
  
  
@@ -1033,19 +1029,18 @@ public class CucumberStepDefinitions {
  public void TheUserCancelsToOverwriteExistingFile (String FileName) throws Throwable{
 
 	 boolean File_Overwrite = false;
-	 GameController G = new GameController();
-	 
-	 assertEquals(File_Overwrite, QuoridorController.TheUserCancelsToOverwriteExistingFile(FileName));
-		 }
+	 assertEquals(File_Overwrite, GameController.filename_exists(FileName));
+//GUI
+ }
  
  @And ("The user confirms to overwrite existing file") 
  
  public void TheUserConfirmsToOverwriteExistingFile (String FileName) throws Throwable{
 	 
-
-	 boolean File_Overwrite = true;
 	 GameController G = new GameController();
-	 assertEquals(File_Overwrite, QuoridorController.TheUserConfirmsToOverwriteExistingFile(FileName));
+	 boolean File_Overwrite = true;
+	 
+	 assertEquals(File_Overwrite, GameController.filename_exists(FileName));
 		 }
  
 

@@ -1,5 +1,6 @@
 package ca.mcgill.ecse223.quoridor.controller;
 
+import java.io.File;
 import java.sql.Time;
 
 import ca.mcgill.ecse223.quoridor.model.Board;
@@ -170,15 +171,19 @@ public class GameController {
 	 * 
 	 * @author AmineMallek
 	 * @param FileName
-	 * @param game
 	 * @throws UnsupportedOperationException
 	 */
-	
+	//
 	public static void SaveGame(String FileName) {
 		throw new UnsupportedOperationException();	
-		
+		//This saves the game
 	}
 	
+	public static Boolean filename_exists (String FileName) {
+		File filename = new File(FileName);
+		if(filename.exists()) return true;
+		else return false;
+	}
 	
 	
 	/**
@@ -344,6 +349,9 @@ public class GameController {
 		//This interacts with the clock Time object and checks GUI to see if a countdown is shown
 		throw new UnsupportedOperationException();
 	}
+
+	
+	
 
 	
 
