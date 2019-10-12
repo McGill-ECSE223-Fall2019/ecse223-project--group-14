@@ -19,7 +19,8 @@ public class GameController {
 	 * initializes a game with null parameters
 	 * 
 	 * @author DariusPi
-	 * 
+	 * @param q
+	 * @return
 	 * @throws UnsupportedOperationException
 	 */
 	public Game initGame(Quoridor q)throws UnsupportedOperationException{
@@ -36,7 +37,8 @@ public class GameController {
 	 * Assigns username to player with given colour by either choosing an existing one or creating a new one
 	 * 
 	 * @author DariusPi
-	 * 
+	 * @param q
+	 * @param colour
 	 * @throws UnsupportedOperationException
 	 */
 	public void assignUsername(Quoridor q, Player colour)throws UnsupportedOperationException {
@@ -55,11 +57,12 @@ public class GameController {
 	}
 	
 	/**
-	 * For Start New Game feature
+	 * * For Start New Game feature
 	 * Initilizes game clocks to be used for player time limits
 	 * 
 	 * @author DariusPi
 	 * 
+	 * @param g
 	 * @throws UnsupportedOperationException
 	 */
 	public void startTheClock(Game g)throws UnsupportedOperationException{
@@ -71,11 +74,14 @@ public class GameController {
 	}
 	
 	/**
-	 * For Provide Or Select User Name feature
+	 *  For Provide Or Select User Name feature
 	 * Selects and returns name
 	 * 
 	 * @author DariusPi
 	 * 
+	 * @param q
+	 * @param name
+	 * @return
 	 * @throws UnsupportedOperationException
 	 */
 	public String selectUsername(Quoridor q, String name)throws UnsupportedOperationException {
@@ -91,11 +97,14 @@ public class GameController {
 	}
 	
 	/**
-	 * For Provide Or Select User Name feature
+	 *  * For Provide Or Select User Name feature
 	 * Creates new user, adds it to quoridor and returns its name
 	 * 
 	 * @author DariusPi
 	 * 
+	 * @param q
+	 * @param name
+	 * @return
 	 * @throws UnsupportedOperationException
 	 */
 	public String createUsername(Quoridor q, String name)throws UnsupportedOperationException {
@@ -113,11 +122,14 @@ public class GameController {
 	}
 	
 	/**
-	 * For Provide Or Select User Name feature
+	 * * For Provide Or Select User Name feature
 	 * Determines if a user with the given name has already been created, if so return index else return -1
 	 * 
 	 * @author DariusPi
 	 * 
+	 * @param q
+	 * @param name
+	 * @return
 	 * @throws UnsupportedOperationException
 	 */
 	public int doesUserExist(Quoridor q, String name) throws UnsupportedOperationException{
@@ -132,7 +144,9 @@ public class GameController {
 	}
 	
 	
-	
+	public void setTime(int min, int sec, Quoridor q) {
+		
+	}
 	
 	public Board initBoard(Quoridor q) throws UnsupportedOperationException{
 		Board board = new Board(q);
@@ -140,11 +154,12 @@ public class GameController {
 	}
 	
 	/**
-	 * For Rotate Wall feature 
+	 * * For Rotate Wall feature 
 	 * Attempts to rotate the current WallMove candidate's Direction
 	 * 
 	 * @author louismollick
 	 * 
+	 * @param game
 	 * @throws UnsupportedOperationException
 	 */
 	public void rotateWall(Game game) throws UnsupportedOperationException{
@@ -152,11 +167,12 @@ public class GameController {
 	}
 	
 	/**
-	 * For Grab Wall feature 
+	 *  * For Grab Wall feature 
 	 * Attempts to set current WallMove candidate using a Wall in current player's stock
 	 * 
 	 * @author louismollick
 	 * 
+	 * @param game
 	 * @throws UnsupportedOperationException
 	 */
 	public void grabWall(Game game) throws UnsupportedOperationException{
@@ -164,10 +180,52 @@ public class GameController {
 	}
 	
 	/**
-	 * For Load Position feature
+	 * For Move Wall feature
+	 * Attempts to move the wall between possible rows and columns of the board 
+	 * 
+	 * @author Saifullah
+	 * 
+	 * @param game
+	 * @param side
+	 * @throws UnsupportedOperationException
+	 */
+	public void moveWall(Game game, String side) throws UnsupportedOperationException{
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * For Move Wall feature
+	 * Attempts to drop the wall (place the wall) between possible rows and columns of the board 
+	 * 
+	 * @author Saifullah
+	 * 
+	 * @param game
+	 * @throws UnsupportedOperationException
+	 */
+	public void dropWall(Game game) throws UnsupportedOperationException{		
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * Testing method validatePosition
+	 * 
+	 *I just added this for the sake of testing till the actual method is done
+	 * @author Saifullah
+	 * @param game
+	 * @throws UnsupportedOperationException
+	 */
+	public boolean validatePosition(Game game) throws UnsupportedOperationException{
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * * For Load Position feature
 	 * Initiates loading a saved game
 	 * 
 	 * @author FSharp4
+	 * @param quoridor
+	 * @param filename
+	 * @return
 	 * @throws UnsupportedOperationException
 	 */
 	public Game initSaveGameLoad(Quoridor quoridor, String filename) throws UnsupportedOperationException {
@@ -175,11 +233,12 @@ public class GameController {
 	}
 	
 	/**
-	 * For Load Position feature
+	 * * For Load Position feature
 	 * Validates position, returns whether position is valid
 	 * 
 	 * @author FSharp4
-	 * @throws UnsupportedOperationException
+	 * @param gamePosition
+	 * @return
 	 */
 	
 	public boolean isValid(GamePosition gamePosition) {
@@ -189,10 +248,11 @@ public class GameController {
 	
 	
 	/**
-	 * For Load Position feature
+	 *  * For Load Position feature
 	 * Attempts to set load position. Returns an error if position is invalid
 	 * 
 	 * @author FSharp4
+	 * @param quoridor
 	 * @throws UnsupportedOperationException
 	 */
 	public void loadGame(Quoridor quoridor) 
@@ -214,10 +274,13 @@ public class GameController {
 	}
 	
 	/**
-	 * For Load Position feature
+	 * * For Load Position feature
 	 * Sets current turn, returns true if this is successful
 	 * 
 	 * @author FSharp4
+	 * @param player
+	 * @param quoridor
+	 * @return
 	 * @throws UnsupportedOperationException
 	 */
 	public boolean setCurrentTurn(Player player, Quoridor quoridor) 
@@ -226,11 +289,13 @@ public class GameController {
 	}
 	
 	/**
-	 * For InitializeBoard Feature
+	 *  * For InitializeBoard Feature
 	 * Checks if Board Initialization is Initiated (such as when user selects new game and has 
 	 * entered in the necessary info (i.e. game is ready to start)
 	 * 
 	 * @author FSharp4
+	 * @param quoridor
+	 * @return
 	 * @throws UnsupportedOperationException
 	 */
 	public boolean isBoardInitializationInitiated(Quoridor quoridor) throws UnsupportedOperationException {
@@ -239,8 +304,12 @@ public class GameController {
 	}
 	
 	/**
-	 * For InitializeBoard Feature
+	 * * For InitializeBoard Feature
 	 * Checks if player's clock is counting down
+	 * 
+	 * @param player
+	 * @return
+	 * @throws UnsupportedOperationException
 	 */
 	
 	public boolean isClockCountingDown(Player player) throws UnsupportedOperationException {
