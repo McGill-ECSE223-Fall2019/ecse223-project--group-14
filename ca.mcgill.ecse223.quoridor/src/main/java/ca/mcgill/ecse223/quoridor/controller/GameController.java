@@ -159,7 +159,7 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	
-	public void setTime (int min, int sec, Quoridor q) {
+	public static void setTime (int min, int sec) {
 		throw new UnsupportedOperationException();
 	}
 	
@@ -167,6 +167,7 @@ public class GameController {
 		throw new UnsupportedOperationException();	
 		
 	}
+	
 	
 	
 	/**
@@ -332,4 +333,6 @@ public class GameController {
 		//This interacts with the clock Time object and checks GUI to see if a countdown is shown
 		throw new UnsupportedOperationException();
 	}
+
+	
 }

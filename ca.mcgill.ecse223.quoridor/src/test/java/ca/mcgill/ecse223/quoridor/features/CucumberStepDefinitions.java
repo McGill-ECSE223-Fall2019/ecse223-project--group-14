@@ -961,25 +961,35 @@ public class CucumberStepDefinitions {
 	@When ("{int}:{int} is set as the thinking time")
 	public void IsSetAsTheThinkingTime(int min, int sec) throws Throwable{
 		GameController G= new GameController();
-		G.setTime(min, sec, quoridor);
+		GameController.setTime(min, sec);
 	}
 	
 	@Then ("Both players shall have <min>:<sec> remaining time left")
  	public void BothPlayersShallHaveMinSecRemainingTimeLeft(int min, int sec) throws Throwable{
-	assertEquals(quoridor.getGame().getblackplayer.getTime(), min*60+sec);
- }
+	
+		int time = min*60+sec;
+		
+		Time left = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getRemainingTime();
+	
+		assertEquals(left, time);
+	 }
 
-	@Given ("File <filename> exists in the filesystem")
+	@Given ("File {FileName} exists in the filesystem")
 	 
- 	public void FileFilenameExistsInTheFileSystem () throws Throwable{
-	boolean filename_exists = true;
- }
+ 	public void FileFilenameExistsInTheFileSystem (String FileName) throws Throwable{
+		boolean filename_exists = true;
+		GameController G = new GameController();
+		assertEquals(filename_exists, QuoridorController.FileFilenameExistsInTheFileSystem(FileName));
+	}
 	
 	@Given ("No file <filename> exists in the filesystem")
- 	public void NoFileExistsInTheFilesystem() throws Throwable{
+ 	public void NoFileExistsInTheFilesystem(String FileName) throws Throwable{
 	 boolean filename_exists = false;
-//todo	 
- }
+	 GameController G = new GameController();
+	 assertEquals(filename_exists, QuoridorController.NoFileExistsInTheFilesystem(FileName));
+	//Quoridor Controller to figure out.
+	
+	}
  
 	@When ("The user initiates to save the game with name <filename>")
  	public void TheUserInitiatesToSaveTheGameWithNameFilename () throws Throwable{
