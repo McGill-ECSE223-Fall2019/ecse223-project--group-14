@@ -952,96 +952,151 @@ public class CucumberStepDefinitions {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		assertTrue(G.isClockCountingDown(quoridor.getCurrentGame().getWhitePlayer()));
 	}
-	
+
 	/**
 	 * @author AmineMallek
 	 * @throws Throwable
 	 */ 
-	
+
 	@When ("{int}:{int} is set as the thinking time")
 	public void IsSetAsTheThinkingTime(int min, int sec) throws Throwable{
 		GameController G= new GameController();
 		GameController.setTime(min, sec);
 	}
-	
+
+	/**
+	 * @author AmineMallek
+	 * @throws Throwable
+	 */ 
+
+
 	@Then ("Both players shall have <min>:<sec> remaining time left")
- 	public void BothPlayersShallHaveMinSecRemainingTimeLeft(int min, int sec) throws Throwable{
-	
+	public void BothPlayersShallHaveMinSecRemainingTimeLeft(int min, int sec) throws Throwable{
+
 		int time = min*60+sec;
-		
+
 		Time left = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getRemainingTime();
-	
+
 		assertEquals(left, time);
-	 }
+	}
+
+
+	/**
+	 * @author AmineMallek
+	 * @throws Throwable
+	 */ 
+
 
 	@Given ("File {FileName} exists in the filesystem")
-	 
- 	public void FileFilenameExistsInTheFileSystem (String FileName) throws Throwable{
+
+	public void FileFilenameExistsInTheFileSystem (String FileName) throws Throwable{
 		boolean filename_exists_name = true;
 		GameController G = new GameController();
 		assertEquals(filename_exists_name, GameController.filename_exists(FileName));
 	}
-	
+
+	/**
+	 * @author AmineMallek
+	 * @throws Throwable
+	 */ 
+
+
 	@Given ("No file <filename> exists in the filesystem")
- 	public void NoFileExistsInTheFilesystem(String FileName) throws Throwable{
-	 boolean filename_exists_name = false;
-	 GameController G = new GameController();
-	 assertEquals(filename_exists_name, GameController.filename_exists(FileName));
-	//Quoridor Controller to figure out.
-	
+	public void NoFileExistsInTheFilesystem(String FileName) throws Throwable{
+		boolean filename_exists_name = false;
+		GameController G = new GameController();
+		assertEquals(filename_exists_name, GameController.filename_exists(FileName));
+		//Quoridor Controller to figure out.
+
 	}
- 
-@When ("The user initiates to save the game with name {FileName}>")
- 	public void TheUserInitiatesToSaveTheGameWithNameFilename (String FileName) throws Throwable{
-	 GameController G= new GameController();
-	 GameController.SaveGame(FileName);
- }
- 
- @Then ("A file with {FileName} shall be created in the filesystem")
- 
- 	public void AFileWithFilenameIsCreatedInTheFilesystem (String FileName) throws Throwable{
-	 boolean File_Created_exists = true;
-	 assertEquals(File_Created_exists,GameController.filename_exists(FileName));
- }
- 
- @Then ("File with {FileName} shall be updated in the filesystem")
- 
- 
- 	public void FileWithFilenameIsUpdatedInTheFilesystem (String FileName) throws Throwable{
 
-	 boolean File_Updated = true;
-	 assertEquals(File_Updated,GameController.filename_exists(FileName) );
-	 }
+	/**
+	 * @author AmineMallek
+	 * @throws Throwable
+	 */ 
 
- @Then ("File  {FileName} shall not be changed in the filesystem")
- 
- public void FileFilenameIsNotChangedInTheFilesystem (String FileName) throws Throwable{
 
-	 boolean File_Updated = false;
-	 GameController G = new GameController();
-	 
-	 assertEquals(File_Updated, GameController.filename_exists(FileName));
-		 }
- 
- 
- @And ("The user cancels to overwrite existing file")
- 
- public void TheUserCancelsToOverwriteExistingFile (String FileName) throws Throwable{
+	@When ("The user initiates to save the game with name {FileName}>")
+	public void TheUserInitiatesToSaveTheGameWithNameFilename (String FileName) throws Throwable{
+		GameController G= new GameController();
+		GameController.SaveGame(FileName);
+	}
 
-	 boolean File_Overwrite = false;
-	 assertEquals(File_Overwrite, GameController.filename_exists(FileName));
-//GUI
- }
- 
- @And ("The user confirms to overwrite existing file") 
- 
- public void TheUserConfirmsToOverwriteExistingFile (String FileName) throws Throwable{
-	 
-	 GameController G = new GameController();
-	 boolean File_Overwrite = true;
-	 
-	 assertEquals(File_Overwrite, GameController.filename_exists(FileName));
-		 }
+	/**
+	 * @author AmineMallek
+	 * @throws Throwable
+	 */ 
+
+
+	@Then ("A file with {FileName} shall be created in the filesystem")
+
+	public void AFileWithFilenameIsCreatedInTheFilesystem (String FileName) throws Throwable{
+		boolean File_Created_exists = true;
+		assertEquals(File_Created_exists,GameController.filename_exists(FileName));
+	}
+
+	/**
+	 * @author AmineMallek
+	 * @throws Throwable
+	 */ 
+
+
+	@Then ("File with {FileName} shall be updated in the filesystem")
+
+
+	public void FileWithFilenameIsUpdatedInTheFilesystem (String FileName) throws Throwable{
+
+		boolean File_Updated = true;
+		assertEquals(File_Updated,GameController.filename_exists(FileName) );
+	}
+
+	/**
+	 * @author AmineMallek
+	 * @throws Throwable
+	 */ 
+
+
+	@Then ("File  {FileName} shall not be changed in the filesystem")
+
+	public void FileFilenameIsNotChangedInTheFilesystem (String FileName) throws Throwable{
+
+		boolean File_Updated = false;
+		GameController G = new GameController();
+
+		assertEquals(File_Updated, GameController.filename_exists(FileName));
+	}
+
+
+	/**
+	 * @author AmineMallek
+	 * @throws Throwable
+	 */ 
+
+
+	@And ("The user cancels to overwrite existing file")
+
+	public void TheUserCancelsToOverwriteExistingFile (String FileName) throws Throwable{
+
+		boolean File_Overwrite = false;
+		assertEquals(File_Overwrite, GameController.filename_exists(FileName));
+		//GUI
+	}
+
+	/**
+	 * @author AmineMallek
+	 * @throws Throwable
+	 */ 
+
+
+	@And ("The user confirms to overwrite existing file") 
+
+	public void TheUserConfirmsToOverwriteExistingFile (String FileName) throws Throwable{
+
+		GameController G = new GameController();
+		boolean File_Overwrite = true;
+
+		assertEquals(File_Overwrite, GameController.filename_exists(FileName));
+	}
  
 
 
