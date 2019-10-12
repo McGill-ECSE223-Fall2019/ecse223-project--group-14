@@ -570,9 +570,10 @@ public class CucumberStepDefinitions {
 	 */ 
 	@And ("Total thinking time is set")
 	public void totalThinkingTimeIsSet() throws Throwable{
+		GameController G= new GameController();
 		int min=0; int sec=0;
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		//setTime(min, sec,quoridor);
+		G.setTime(min, sec,quoridor);
 	}
 	
 	/**
