@@ -152,6 +152,24 @@ public class GameController {
 	}
 	
 	/**
+	 * For Start New Game feature 
+	 * 
+	 * @author AmineMallek
+	 * 
+	 * @throws UnsupportedOperationException
+	 */
+	
+	public void setTime (int min, int sec, Quoridor q) {
+		throw new UnsupportedOperationException();
+	}
+	
+	public void SaveGame(Game g) {
+		throw new UnsupportedOperationException();	
+		
+	}
+	
+	
+	/**
 	 * * For Rotate Wall feature 
 	 * Attempts to rotate the current WallMove candidate's Direction
 	 * 
