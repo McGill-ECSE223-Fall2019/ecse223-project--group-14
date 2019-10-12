@@ -155,8 +155,8 @@ public class GameController {
 	 * For setThinkingTime feature 
 	 * 
 	 * @author AmineMallek
-	 * @param min
-	 * @param sec
+	 * @param min (number of)
+	 * @param sec (number of)
 	 * @throws UnsupportedOperationException
 	 */
 	
@@ -174,7 +174,7 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	
-	public static void SaveGame(String FileName, Game game) {
+	public static void SaveGame(String FileName) {
 		throw new UnsupportedOperationException();	
 		
 	}
