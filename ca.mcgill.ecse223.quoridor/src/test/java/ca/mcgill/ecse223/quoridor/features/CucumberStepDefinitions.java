@@ -526,20 +526,28 @@ public class CucumberStepDefinitions {
 	 * @author ohuss1
 	 * @throws Throwable
 	 */
-	/*@When ("Validation of the position is initiated")
+	@When ("Validation of the position is initiated")
 	public void validationOfPositionisInitiated()throws Throwable {//game position created in given pass it to game controller
-		GameController gc = new GameController();
-		gc.validatePawnPos();//pass game gc
+		//try getting position from tile created in Atgiven
+		//not allowed to give argument to the above method
 		
-	}*/
-/*	@Then ("The position shall be {String}")
+		GamePosition Prev=GamePosition.getWithId(1);
+		GameController gc = new GameController();
+		gc.validatePawnPos(Prev);//Takes the GamePosition to get the pawn position we are testing from it
+	}
+	
+	@Then ("The position shall be {string}")//cumcumber syntax for String
 	public void thePositionShallBeResult(String result) throws Throwable{
-		GameController G= new GameController();
+		//GameController G= new GameController();
 		//if string ok then set boolean to true 
 		//other wise false
+		Quoridor quoridor=QuoridorApplication.getQuoridor();
+		GameController G= new GameController();
+		GamePosition Prev=GamePosition.getWithId(1);
+		Game game=quoridor.getCurrentGame();
+		assertEquals(result,G.validatePawnPos(Prev));
 		
-		
-	}*/
+	}
 			
 			
 	

@@ -254,8 +254,12 @@ public class GameController {
 	 * 
 	 * @throws UnsupportedOperationException
 	 */
-	public void validatePawnPos() {
+	public String validatePawnPos(GamePosition posToValidate) {
 		// TODO Auto-generated method stub
+		//Checks if pawn position overlaps with another pawn or with a wall or out of track pawn
+		//if yes returns error
+		//if no returns ok
+		//will compare this with String result in @then
 		throw new UnsupportedOperationException();
 		
 	}
