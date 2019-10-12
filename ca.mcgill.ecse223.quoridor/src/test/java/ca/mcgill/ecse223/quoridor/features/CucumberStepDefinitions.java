@@ -995,8 +995,6 @@ public class CucumberStepDefinitions {
  	public void TheUserInitiatesToSaveTheGameWithNameFilename (String FileName, Game game) throws Throwable{
 	 GameController G= new GameController();
 	 GameController.SaveGame(FileName, game);
-		
-	 
  }
  
  @Then ("A file with {FileName} shall be created in the filesystem")
@@ -1005,7 +1003,7 @@ public class CucumberStepDefinitions {
 	 boolean File_Created = true;
 	 GameController G = new GameController();
 	 
-	 assertEquals(File_Created, );
+	 assertEquals(File_Created,QuoridorController.AFileWithFilenameIsCreatedInTheFilesystem(FileName));
  }
  
  @Then ("File with {FileName} shall be updated in the filesystem")
@@ -1016,7 +1014,7 @@ public class CucumberStepDefinitions {
 	 boolean File_Updated = true;
 	 GameController G = new GameController();
 	 
-	 assertEquals(File_Updated, );
+	 assertEquals(File_Updated,QuoridorController.FileWithFilenameIsUpdatedInTheFilesystem(FileName) );
 	 }
 
  @Then ("File  {FileName} shall not be changed in the filesystem")
@@ -1026,7 +1024,7 @@ public class CucumberStepDefinitions {
 	 boolean File_Updated = false;
 	 GameController G = new GameController();
 	 
-	 assertEquals(File_Updated, );
+	 assertEquals(File_Updated, QuoridorController.FileFilenameIsNotChangedInTheFilesystem(FileName));
 		 }
  
  
@@ -1037,7 +1035,7 @@ public class CucumberStepDefinitions {
 	 boolean File_Overwrite = false;
 	 GameController G = new GameController();
 	 
-	 assertEquals(File_Overwrite, );
+	 assertEquals(File_Overwrite, QuoridorController.TheUserCancelsToOverwriteExistingFile(FileName));
 		 }
  
  @And ("The user confirms to overwrite existing file") 
@@ -1047,7 +1045,7 @@ public class CucumberStepDefinitions {
 
 	 boolean File_Overwrite = true;
 	 GameController G = new GameController();
-	 assertEquals(File_Overwrite, );
+	 assertEquals(File_Overwrite, QuoridorController.TheUserConfirmsToOverwriteExistingFile(FileName));
 		 }
  
 

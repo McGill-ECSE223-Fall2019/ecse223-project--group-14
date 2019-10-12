@@ -169,6 +169,7 @@ public class GameController {
 	 * For setThinkingTime feature 
 	 * 
 	 * @author AmineMallek
+	 * @param FileName
 	 * @param game
 	 * @throws UnsupportedOperationException
 	 */
