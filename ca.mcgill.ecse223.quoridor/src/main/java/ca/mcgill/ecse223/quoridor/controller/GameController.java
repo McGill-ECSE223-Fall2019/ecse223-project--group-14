@@ -154,6 +154,35 @@ public class GameController {
 	}
 	
 	/**
+	 * For setThinkingTime feature 
+	 * 
+	 * @author AmineMallek
+	 * @param min
+	 * @param sec
+	 * @throws UnsupportedOperationException
+	 */
+	
+	public static void setTime (int min, int sec) {
+		throw new UnsupportedOperationException();
+	}
+	
+	
+	/**
+	 * For setThinkingTime feature 
+	 * 
+	 * @author AmineMallek
+	 * @param game
+	 * @throws UnsupportedOperationException
+	 */
+	
+	public static void SaveGame(String FileName, Game game) {
+		throw new UnsupportedOperationException();	
+		
+	}
+	
+	
+	
+	/**
 	 * * For Rotate Wall feature 
 	 * Attempts to rotate the current WallMove candidate's Direction
 	 * 
@@ -316,4 +345,8 @@ public class GameController {
 		//This interacts with the clock Time object and checks GUI to see if a countdown is shown
 		throw new UnsupportedOperationException();
 	}
+
+	
+
+	
 }
