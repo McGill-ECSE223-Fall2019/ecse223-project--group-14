@@ -953,6 +953,18 @@ public class CucumberStepDefinitions {
 		assertTrue(G.isClockCountingDown(quoridor.getCurrentGame().getWhitePlayer()));
 	}
 	
+	/**
+	 * @author AmineMallek
+	 * @throws Throwable
+	 */ 
+	
+	@When ("{int}:{int} is set as the thinking time")
+	public void IsSetAsTheThinkingTime(int min, int sec) throws Throwable{
+		GameController G= new GameController();
+		G.setTime(min, sec, quoridor);
+	}
+	
+	
 	
 	
 	/*
