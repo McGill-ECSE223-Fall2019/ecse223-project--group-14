@@ -991,47 +991,69 @@ public class CucumberStepDefinitions {
 	
 	}
  
-	@When ("The user initiates to save the game with name <filename>")
- 	public void TheUserInitiatesToSaveTheGameWithNameFilename () throws Throwable{
+	@When ("The user initiates to save the game with name {FileName}>")
+ 	public void TheUserInitiatesToSaveTheGameWithNameFilename (String FileName) throws Throwable{
 	 GameController G= new GameController();
-	 G.SaveGame(game);
-	
+	 G.SaveGame();
+		
+	 QuoridorApplication.getQuoridor().SaveGame(FileName);
+	 
  }
  
- @Then ("A file with <filename> is created in the filesystem")
+ @Then ("A file with {FileName} shall be created in the filesystem")
  
- 	public void AFileWithFilenameIsCreatedInTheFilesystem () throws Throwable{
-	 assertEquals(game.getCreatefile(), aCreateFile);
+ 	public void AFileWithFilenameIsCreatedInTheFilesystem (String FileName) throws Throwable{
+	 boolean File_Created = true;
+	 GameController G = new GameController();
+	 
+	 assertEquals(File_Created, );
  }
  
- @Then ("File with <filename> is updated in the filesystem")
+ @Then ("File with {FileName} shall be updated in the filesystem")
  
- 	public void FileWithFilenameIsUpdatedInTheFilesystem () throws Throwable{
-	 assertEquals(game.getUpdatefile(), aUpdateFile);
+ 
+ 	public void FileWithFilenameIsUpdatedInTheFilesystem (String FileName) throws Throwable{
+
+	 boolean File_Updated = true;
+	 GameController G = new GameController();
+	 
+	 assertEquals(File_Updated, );
 	 }
 
- @Then ("File <filename> is not changed in the filesystem")
+ @Then ("File  {FileName} shall not be changed in the filesystem")
  
- public void FileFilenameIsNotChangedInTheFilesystem () throws Throwable{
-	 assertEquals(game.getNotChangedfile(), aNotChangedFile);
+ public void FileFilenameIsNotChangedInTheFilesystem (String FileName) throws Throwable{
+
+	 boolean File_Updated = false;
+	 GameController G = new GameController();
+	 
+	 assertEquals(File_Updated, );
 		 }
  
  
  @And ("The user cancels to overwrite existing file")
  
- public void TheUserCancelsToOverwriteExistingFile () throws Throwable{
-	 assertEquals(game.getOverwritefile(), aOverwriteFile);
+ public void TheUserCancelsToOverwriteExistingFile (String FileName) throws Throwable{
+
+	 boolean File_Overwrite = false;
+	 GameController G = new GameController();
+	 
+	 assertEquals(File_Overwrite, );
 		 }
  
  @And ("The user confirms to overwrite existing file") 
  
- public void TheUserConfirmsToOverwriteExistingFile () throws Throwable{
-	 assertEquals(game.getNotOverwritefile(), aNotOverwriteFile);
+ public void TheUserConfirmsToOverwriteExistingFile (String FileName) throws Throwable{
+	 
+
+	 boolean File_Overwrite = true;
+	 GameController G = new GameController();
+	 assertEquals(File_Overwrite, );
 		 }
  
-  
-	
-	
+
+
+
 	/*
 	 * TODO Insert your missing step definitions here
 	 * 

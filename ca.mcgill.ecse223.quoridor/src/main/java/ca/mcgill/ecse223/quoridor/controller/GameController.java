@@ -152,10 +152,11 @@ public class GameController {
 	}
 	
 	/**
-	 * For Start New Game feature 
+	 * For setThinkingTime feature 
 	 * 
 	 * @author AmineMallek
-	 * 
+	 * @param min
+	 * @param sec
 	 * @throws UnsupportedOperationException
 	 */
 	
@@ -163,7 +164,16 @@ public class GameController {
 		throw new UnsupportedOperationException();
 	}
 	
-	public void SaveGame(Game g) {
+	
+	/**
+	 * For setThinkingTime feature 
+	 * 
+	 * @author AmineMallek
+	 * @param game
+	 * @throws UnsupportedOperationException
+	 */
+	
+	public void SaveGame(Game game) {
 		throw new UnsupportedOperationException();	
 		
 	}
