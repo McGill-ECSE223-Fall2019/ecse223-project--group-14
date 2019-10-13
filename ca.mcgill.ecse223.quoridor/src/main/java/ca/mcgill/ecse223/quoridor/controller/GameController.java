@@ -24,38 +24,15 @@ public class GameController {
 	 * @return
 	 * @throws UnsupportedOperationException
 	 */
-	public Game initGame(Quoridor q)throws UnsupportedOperationException{
+	public void initGame(Quoridor q)throws UnsupportedOperationException{
 		throw new UnsupportedOperationException();
-		/*GameStatus aGameStatus = GameStatus.Initializing; MoveMode aMoveMode = null; Player aWhitePlayer = null; Player aBlackPlayer = null; 
+		/* 
 		
-		Game g = new Game(aGameStatus, aMoveMode, aWhitePlayer, aBlackPlayer, q);
-		q.setCurrentGame(g);
+		new Game(aGameStatus, aMoveMode, aWhitePlayer, aBlackPlayer, q);
+		
 		return g;*/
 	}
-	
-	/**
-	 * For Start New Game feature
-	 * Assigns username to player with given colour by either choosing an existing one or creating a new one
-	 * 
-	 * @author DariusPi
-	 * @param q
-	 * @param colour
-	 * @throws UnsupportedOperationException
-	 */
-	public void assignUsername(Quoridor q, Player colour)throws UnsupportedOperationException {
-		
-		throw new UnsupportedOperationException();
-		/*User user= new User(null,q);
-		Time time =null;
-		Player play= new Player(null,user,null);
-		if (colour.equals("white")) {
-			q.getCurrentGame().setWhitePlayer(play);
-		}
-		else {
-			q.getCurrentGame().setBlackPlayer(play);
-		}
-		throw new UnsupportedOperationException();*/
-	}
+
 	
 	/**
 	 * * For Start New Game feature
@@ -75,8 +52,8 @@ public class GameController {
 	}
 	
 	/**
-	 *  For Provide Or Select User Name feature
-	 * Selects and returns name
+	 * For Provide Or Select User Name feature
+	 * Selects user name and assigns to colour, returns name
 	 * 
 	 * @author DariusPi
 	 * 
@@ -85,7 +62,7 @@ public class GameController {
 	 * @return
 	 * @throws UnsupportedOperationException
 	 */
-	public String selectUsername(Quoridor q, String name)throws UnsupportedOperationException {
+	public String selectUsername(Quoridor q, String name, String colour)throws UnsupportedOperationException {
 		throw new UnsupportedOperationException();
 		/*int i=doesUserExist(q,name);
 		if (i==-1) {
@@ -99,7 +76,7 @@ public class GameController {
 	
 	/**
 	 *  * For Provide Or Select User Name feature
-	 * Creates new user, adds it to quoridor and returns its name
+	 * Creates new user, adds it to quoridor, assigns to colour and returns its name
 	 * 
 	 * @author DariusPi
 	 * 
@@ -108,7 +85,7 @@ public class GameController {
 	 * @return
 	 * @throws UnsupportedOperationException
 	 */
-	public String createUsername(Quoridor q, String name)throws UnsupportedOperationException {
+	public String createUsername(Quoridor q, String name, String colour)throws UnsupportedOperationException {
 		throw new UnsupportedOperationException();
 		/*int i=doesUserExist(q,name);
 		if (i==-1) {
@@ -144,10 +121,6 @@ public class GameController {
 		
 	}
 	
-	public Board initBoard(Quoridor q) throws UnsupportedOperationException{
-		Board board = new Board(q);
-		return board;
-	}
 	
 	/**
 	 * For setThinkingTime feature 
