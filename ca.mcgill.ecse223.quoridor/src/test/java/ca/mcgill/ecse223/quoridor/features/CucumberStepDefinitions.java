@@ -970,7 +970,7 @@ public class CucumberStepDefinitions {
 	 */ 
 
 
-	@Then ("Both players shall have {min}:{sec} remaining time left")
+	@Then ("Both players shall have {int}:{int} remaining time left")
 	public void BothPlayersShallHaveMinSecRemainingTimeLeft(int min, int sec) throws Throwable{
 
 		int time = min*60+sec;
@@ -987,7 +987,7 @@ public class CucumberStepDefinitions {
 	 */ 
 
 
-	@Given ("File {FileName} exists in the filesystem")
+	@Given ("File {String} exists in the filesystem")
 
 	public void FileFilenameExistsInTheFileSystem (String FileName) throws Throwable{
 		boolean filename_exists_name = true;
@@ -1016,7 +1016,7 @@ public class CucumberStepDefinitions {
 	 */ 
 
 
-	@When ("The user initiates to save the game with name {String}>")
+	@When ("The user initiates to save the game with name {String}")
 	public void TheUserInitiatesToSaveTheGameWithNameFilename (String FileName) throws Throwable{
 		GameController G= new GameController();
 		GameController.SaveGame(FileName);
