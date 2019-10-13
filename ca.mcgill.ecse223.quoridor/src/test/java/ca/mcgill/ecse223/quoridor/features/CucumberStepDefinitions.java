@@ -1276,7 +1276,8 @@ public class CucumberStepDefinitions {
 		}
 			
 			
-		return (col - 1) * 9 + (row - 1);
+		//return (col - 1) * 9 + (row - 1);
+		return ((((row-1)*9)+col)-1);
 	}
 	
 	private boolean wallPresent(int row, int col, Wall[] wallsOnBoard, Direction orientation) {
