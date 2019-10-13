@@ -971,7 +971,7 @@ public class CucumberStepDefinitions {
 	 */ 
 
 
-	@Then ("Both players shall have {min}:{sec} remaining time left")
+	@Then ("Both players shall have {int}:{int} remaining time left")
 	public void BothPlayersShallHaveMinSecRemainingTimeLeft(int min, int sec) throws Throwable{
 
 		int time = min*60+sec;
@@ -988,7 +988,7 @@ public class CucumberStepDefinitions {
 	 */ 
 
 
-	@Given ("File {FileName} exists in the filesystem")
+	@Given ("File (.*) exists in the filesystem")
 
 	public void FileFilenameExistsInTheFileSystem (String FileName) throws Throwable{
 		boolean filename_exists_name = true;
@@ -1002,7 +1002,7 @@ public class CucumberStepDefinitions {
 	 */ 
 
 
-	@Given ("No file {String} exists in the filesystem")
+	@Given ("No file (.*) exists in the filesystem")
 	public void NoFileExistsInTheFilesystem(String FileName) throws Throwable{
 		boolean filename_exists_name = false;
 		GameController G = new GameController();
@@ -1017,7 +1017,7 @@ public class CucumberStepDefinitions {
 	 */ 
 
 
-	@When ("The user initiates to save the game with name {String}>")
+	@When ("The user initiates to save the game with name (.*)")
 	public void TheUserInitiatesToSaveTheGameWithNameFilename (String FileName) throws Throwable{
 		GameController G= new GameController();
 		GameController.SaveGame(FileName);
@@ -1029,7 +1029,7 @@ public class CucumberStepDefinitions {
 	 */ 
 
 
-	@Then ("A file with {String} shall be created in the filesystem")
+	@Then ("A file with (.*) shall be created in the filesystem")
 
 	public void AFileWithFilenameIsCreatedInTheFilesystem (String FileName) throws Throwable{
 		boolean File_Created_exists = true;
@@ -1042,7 +1042,7 @@ public class CucumberStepDefinitions {
 	 */ 
 
 
-	@Then ("File with {String} shall be updated in the filesystem")
+	@Then ("File with (.*) shall be updated in the filesystem")
 
 
 	public void FileWithFilenameIsUpdatedInTheFilesystem (String FileName) throws Throwable{
@@ -1057,7 +1057,7 @@ public class CucumberStepDefinitions {
 	 */ 
 
 
-	@Then ("File  {String} shall not be changed in the filesystem")
+	@Then ("File  (.*) shall not be changed in the filesystem")
 
 	public void FileFilenameIsNotChangedInTheFilesystem (String FileName) throws Throwable{
 
