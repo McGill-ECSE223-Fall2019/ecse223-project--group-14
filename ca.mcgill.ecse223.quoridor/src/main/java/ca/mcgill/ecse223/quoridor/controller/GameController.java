@@ -145,6 +145,8 @@ public class GameController {
 	}
 	
 	
+	
+	
 	public Board initBoard(Quoridor q) throws UnsupportedOperationException{
 		Board board = new Board(q);
 		return board;
