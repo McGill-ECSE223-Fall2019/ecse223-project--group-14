@@ -961,7 +961,7 @@ public class CucumberStepDefinitions {
 	@When ("{int}:{int} is set as the thinking time")
 	public void IsSetAsTheThinkingTime(int min, int sec) throws Throwable{
 		GameController G= new GameController();
-		GameController.setTime(min, sec);
+		G.setTime(min, sec);
 	}
 
 	/**
@@ -974,7 +974,8 @@ public class CucumberStepDefinitions {
 	public void BothPlayersShallHaveMinSecRemainingTimeLeft(int min, int sec) throws Throwable{
 
 		int time = min*60+sec;
-
+		GameController G= new GameController();
+		
 		Time left = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getRemainingTime();
 
 		assertEquals(left, time);
@@ -992,7 +993,7 @@ public class CucumberStepDefinitions {
 	public void FileFilenameExistsInTheFileSystem (String FileName) throws Throwable{
 		boolean filename_exists_name = true;
 		GameController G = new GameController();
-		assertEquals(filename_exists_name, GameController.filename_exists(FileName));
+		assertEquals(filename_exists_name, G.filename_exists(FileName));
 	}
 
 	/**
@@ -1005,7 +1006,7 @@ public class CucumberStepDefinitions {
 	public void NoFileExistsInTheFilesystem(String FileName) throws Throwable{
 		boolean filename_exists_name = false;
 		GameController G = new GameController();
-		assertEquals(filename_exists_name, GameController.filename_exists(FileName));
+		assertEquals(filename_exists_name, G.filename_exists(FileName));
 		//Quoridor Controller to figure out.
 
 	}
@@ -1019,7 +1020,7 @@ public class CucumberStepDefinitions {
 	@When ("The user initiates to save the game with name (.*)")
 	public void TheUserInitiatesToSaveTheGameWithNameFilename (String FileName) throws Throwable{
 		GameController G= new GameController();
-		GameController.SaveGame(FileName);
+		G.SaveGame(FileName);
 	}
 
 	/**
@@ -1032,7 +1033,8 @@ public class CucumberStepDefinitions {
 
 	public void AFileWithFilenameIsCreatedInTheFilesystem (String FileName) throws Throwable{
 		boolean File_Created_exists = true;
-		assertEquals(File_Created_exists,GameController.filename_exists(FileName));
+		GameController G= new GameController();
+		assertEquals(File_Created_exists,G.filename_exists(FileName));
 	}
 
 	/**
@@ -1047,7 +1049,8 @@ public class CucumberStepDefinitions {
 	public void FileWithFilenameIsUpdatedInTheFilesystem (String FileName) throws Throwable{
 
 		boolean File_Updated = true;
-		assertEquals(File_Updated,GameController.filename_exists(FileName) );
+		GameController G= new GameController();
+		assertEquals(File_Updated,G.filename_exists(FileName) );
 	}
 
 	/**
@@ -1063,7 +1066,7 @@ public class CucumberStepDefinitions {
 		boolean File_Updated = false;
 		GameController G = new GameController();
 
-		assertEquals(File_Updated, GameController.filename_exists(FileName));
+		assertEquals(File_Updated, G.filename_exists(FileName));
 	}
 
 
@@ -1078,7 +1081,8 @@ public class CucumberStepDefinitions {
 	public void TheUserCancelsToOverwriteExistingFile (String FileName) throws Throwable{
 
 		boolean File_Overwrite = false;
-		assertEquals(File_Overwrite, GameController.filename_exists(FileName));
+		GameController G= new GameController();
+		assertEquals(File_Overwrite, G.filename_exists(FileName));
 		//GUI
 	}
 
@@ -1095,7 +1099,7 @@ public class CucumberStepDefinitions {
 		GameController G = new GameController();
 		boolean File_Overwrite = true;
 
-		assertEquals(File_Overwrite, GameController.filename_exists(FileName));
+		assertEquals(File_Overwrite, G.filename_exists(FileName));
 	}
  
 

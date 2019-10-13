@@ -161,7 +161,7 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	
-	public static void setTime (int min, int sec) {
+	public void setTime (int min, int sec) {
 		throw new UnsupportedOperationException();
 	}
 	
@@ -174,13 +174,13 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	
-	public static Boolean filename_exists (String FileName) {
+	public Boolean filename_exists (String FileName) {
 		File filename = new File(FileName);
 		if(filename.exists()) return true;
 		else return false;
 	}
 	
-	public static void SaveGame(String FileName) {
+	public void SaveGame(String FileName) {
 		throw new UnsupportedOperationException();	
 		//This saves the game
 	}
