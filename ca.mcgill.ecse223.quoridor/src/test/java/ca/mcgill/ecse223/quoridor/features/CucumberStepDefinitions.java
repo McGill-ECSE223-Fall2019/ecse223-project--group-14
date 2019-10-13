@@ -833,7 +833,7 @@ public class CucumberStepDefinitions {
 	public void thePositionToLoadIsValid() throws Throwable {
 		GameController G = new GameController();
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		assertTrue(G.isValid(quoridor.getCurrentGame().getCurrentPosition()));
+		assertTrue(G.validatePosition(quoridor.getCurrentGame()));
 	}
 	
 	/**
@@ -844,7 +844,7 @@ public class CucumberStepDefinitions {
 	public void thePositionToLoadIsInvalid() throws Throwable {
 		GameController G = new GameController();
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		assertFalse(G.isValid(quoridor.getCurrentGame().getCurrentPosition()));
+		assertFalse(G.validatePosition(quoridor.getCurrentGame()));
 	}
 	
 	/**
@@ -934,8 +934,11 @@ public class CucumberStepDefinitions {
 	public void theInitializationOfTheBoardIsInitiated() throws Throwable {
 		GameController G = new GameController();
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		ArrayList<Player> defaultPlayers = createUsersAndPlayers("White", "Black");
+		quoridor.setCurrentGame(new Game(GameStatus.Initializing, MoveMode.PlayerMove, 
+				defaultPlayers.get(0), defaultPlayers.get(1), quoridor));
+		G.initBoard(quoridor);
 		assertNotNull(quoridor.getBoard());
-		assertTrue(G.isBoardInitializationInitiated(QuoridorApplication.getQuoridor()));
 	}
 	
 	/**
@@ -945,8 +948,8 @@ public class CucumberStepDefinitions {
 	@Then ("It shall be white player to move")
 	public void itShallBeWhitePlayerToMove() throws Throwable {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		assertEquals(quoridor.getCurrentGame().getMoves().size(), 0);
-		//correct if there are no moves, as this is a new game and white moves first
+		GameController G = new GameController();
+		G.setCurrentTurn(quoridor.getCurrentGame().getWhitePlayer(), quoridor);
 	}
 	
 	/**

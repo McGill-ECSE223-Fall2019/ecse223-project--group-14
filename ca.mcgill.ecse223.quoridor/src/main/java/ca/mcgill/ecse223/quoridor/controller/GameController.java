@@ -8,6 +8,7 @@ import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Game;
 import ca.mcgill.ecse223.quoridor.model.Player;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
+import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
 import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
@@ -243,21 +244,6 @@ public class GameController {
 	}
 	
 	/**
-	 * * For Load Position feature
-	 * Validates position, returns whether position is valid
-	 * 
-	 * @author FSharp4
-	 * @param gamePosition
-	 * @return
-	 */
-	
-	public boolean isValid(GamePosition gamePosition) {
-		throw new UnsupportedOperationException();
-		//todo: Do validation of of GamePosition
-	}
-	
-	
-	/**
 	 *  * For Load Position feature
 	 * Attempts to set load position. Returns an error if position is invalid
 	 * 
@@ -269,9 +255,9 @@ public class GameController {
 			throws UnsupportedOperationException {
 		  //throws UnsupportedOperationException, IOException {
 		
-		GamePosition gamePosition = quoridor.getCurrentGame().getCurrentPosition();
+		Game game = quoridor.getCurrentGame();
 		
-		if (isValid(gamePosition)) {
+		if (validatePosition(game)) {
 			//update GUI here
 			quoridor.getCurrentGame().setGameStatus(GameStatus.ReadyToStart);
 			//return true
@@ -327,10 +313,22 @@ public class GameController {
 		throw new UnsupportedOperationException();
 	}
 
-	
-	
-
-	
-
-	
+	/**
+	 * For Initialize Board feature
+	 * Prepares a board populated with tiles in a 9x9 grid, returning it.
+	 * 
+	 * @author FSharp4
+	 * @param q
+	 * @return new Board
+	 * @throws UnsupportedOperationException
+	 */
+	public Board initBoard(Quoridor q) {
+		Board board = new Board(q);
+		for (int col = 1; col <= 9; col++) {
+			for(int row = 1; row <= 9; row ++) {
+				Tile tile = new Tile(row, col, board);
+			}
+		}
+		return board;
+	}
 }
