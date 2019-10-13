@@ -769,6 +769,16 @@ public class CucumberStepDefinitions {
 		GamePosition position = game.getCurrentPosition();
 		//Tile player1StartPos = quoridor.getBoard().getTile(36);
 		Tile player2StartPos = quoridor.getBoard().getTile(44);
+		if(getIndex(row,col)==-10) {
+			Tile testTile = QuoridorApplication.getQuoridor().getBoard().getTile(36);
+			PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), testTile);
+			PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
+			GamePosition testPosition=new GamePosition(-1,player1Position,player2Position,(quoridor.getCurrentGame().getWhitePlayer()),game);
+			//negative id in GamePosition to tell controller invalid tile coordinates. Controller doesnt have 
+			//access to row, col so it can only comment on whether if a pawn is there at that index of tiles
+			
+		}
+		else {
 		Tile testTile = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(row,col));
 		//PlayerPosition prevalid =new PlayerPosition( game.getCurrentPosition().getPlayerToMove(), testTile);
 		//PlayerPosition prevalid2 =new PlayerPosition( game.getCurrentPosition().getPlayerToMove(), testTile);
@@ -776,6 +786,7 @@ public class CucumberStepDefinitions {
 		//PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), exTile);
 		PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
 		GamePosition testPosition=new GamePosition(1,player1Position,player2Position,(quoridor.getCurrentGame().getWhitePlayer()),game);//has id	
+		}
 	}
 	/**
 	 * @author ohuss1
@@ -1158,8 +1169,14 @@ public class CucumberStepDefinitions {
 		/*if(row<0||row>9||col<0||col>9) {to avoid getting index in range for invalid coordinates due to -ve +ve cancelling
 			return -1;
 		}*/
+		if(row<=0||col<=0||row>9||col>9){
+			return -10;
+		}
+		else {
 		return ((((row-1)*9)+col)-1);//returning wrong values for incorrect row or col 
 		//may return out of bound value which can be handled by 
+		}
+		
 	}
 	
 	private boolean wallPresent(int row, int col, Wall[] wallsOnBoard, Direction orientation) {
