@@ -767,12 +767,19 @@ public class CucumberStepDefinitions {
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
 		GamePosition position = game.getCurrentPosition();
+		//Testing12Oct
+		Board currBoard=quoridor.getBoard();
+		Tile exTile=new Tile(row,col,currBoard);
+		int testingg=currBoard.indexOfTile(exTile);
+		System.out.println("myIndex is " +testingg);
+		//Testing12OCt
 		//Tile player1StartPos = quoridor.getBoard().getTile(36);
 		Tile player2StartPos = quoridor.getBoard().getTile(44);
 		Tile testTile = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(row,col));
 		//PlayerPosition prevalid =new PlayerPosition( game.getCurrentPosition().getPlayerToMove(), testTile);
 		//PlayerPosition prevalid2 =new PlayerPosition( game.getCurrentPosition().getPlayerToMove(), testTile);
 		PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), testTile);
+		//PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), exTile);
 		PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
 		GamePosition testPosition=new GamePosition(1,player1Position,player2Position,(quoridor.getCurrentGame().getWhitePlayer()),game);//has id	
 	}
@@ -1118,7 +1125,8 @@ public class CucumberStepDefinitions {
 	}
 	
 	private int getIndex(int row, int col) {
-		return (col - 1) * 9 + (row - 1);
+		//return (col - 1) * 9 + (row - 1);
+		return ((((row-1)*9)+col)-1);
 	}
 	
 	private boolean wallPresent(int row, int col, Wall[] wallsOnBoard, Direction orientation) {
