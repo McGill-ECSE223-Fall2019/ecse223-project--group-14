@@ -145,47 +145,50 @@ public class GameController {
 	}
 	
 	
-	
-	
 	public Board initBoard(Quoridor q) throws UnsupportedOperationException{
 		Board board = new Board(q);
 		return board;
 	}
 	
 	/**
-	 * For setThinkingTime feature 
+	 * For setTotalThinkingTime feature 
 	 * 
 	 * @author AmineMallek
+	 * 
 	 * @param min (number of)
+	 * 
 	 * @param sec (number of)
+	 * 
 	 * @throws UnsupportedOperationException
 	 */
-	
+
 	public void setTime (int min, int sec) {
 		throw new UnsupportedOperationException();
 	}
-	
-	
+
+
 	/**
-	 * For setThinkingTime feature 
+	 * For savePosition feature 
 	 * 
 	 * @author AmineMallek
+	 * 
 	 * @param FileName
+	 * 
 	 * @throws UnsupportedOperationException
 	 */
-	
+
 	public Boolean filename_exists (String FileName) {
 		File filename = new File(FileName);
 		if(filename.exists()) return true;
 		else return false;
 	}
-	
+
 	public void SaveGame(String FileName) {
 		throw new UnsupportedOperationException();	
 		//This saves the game
 	}
-	
-	
+
+
 	
 	
 	/**

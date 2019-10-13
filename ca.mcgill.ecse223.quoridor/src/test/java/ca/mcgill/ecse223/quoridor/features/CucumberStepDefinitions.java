@@ -975,7 +975,7 @@ public class CucumberStepDefinitions {
 
 		int time = min*60+sec;
 		GameController G= new GameController();
-		
+
 		Time left = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getRemainingTime();
 
 		assertEquals(left, time);
@@ -1007,7 +1007,6 @@ public class CucumberStepDefinitions {
 		boolean filename_exists_name = false;
 		GameController G = new GameController();
 		assertEquals(filename_exists_name, G.filename_exists(FileName));
-		//Quoridor Controller to figure out.
 
 	}
 
@@ -1065,7 +1064,6 @@ public class CucumberStepDefinitions {
 
 		boolean File_Updated = false;
 		GameController G = new GameController();
-
 		assertEquals(File_Updated, G.filename_exists(FileName));
 	}
 
@@ -1083,7 +1081,7 @@ public class CucumberStepDefinitions {
 		boolean File_Overwrite = false;
 		GameController G= new GameController();
 		assertEquals(File_Overwrite, G.filename_exists(FileName));
-		//GUI
+
 	}
 
 	/**
@@ -1098,7 +1096,6 @@ public class CucumberStepDefinitions {
 
 		GameController G = new GameController();
 		boolean File_Overwrite = true;
-
 		assertEquals(File_Overwrite, G.filename_exists(FileName));
 	}
  
