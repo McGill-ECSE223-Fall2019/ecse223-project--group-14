@@ -155,7 +155,7 @@ public class CucumberStepDefinitions {
 			if(moveNum != 0) {
 				roundNum = game.getMove(moveNum-1).getRoundNumber();
 			}
-			w.setMove(new WallMove(moveNum+1, roundNum, player, target, game, dir, w));
+			w.setMove(new WallMove(moveNum, roundNum, player, target, game, dir, w));
 			game.setWallMoveCandidate(w.getMove());
 		}
 	}
@@ -308,7 +308,7 @@ public class CucumberStepDefinitions {
 					if(moveNum != 0) {
 						roundNum = game.getMove(moveNum-1).getRoundNumber();
 					}
-					w.setMove(new WallMove(moveNum+1, roundNum, player, target, game, dir, w));
+					w.setMove(new WallMove(moveNum, roundNum, player, target, game, dir, w));
 					game.setWallMoveCandidate(w.getMove());
 				}
 				
@@ -368,9 +368,10 @@ public class CucumberStepDefinitions {
 	
 	/**
 	 * @author Saifullah
+	 * @throws Exception 
 	 */
 	@But("No wall move shall be registered with {string} at position \\({int}, {int})")
-	public void WallMoveNotRegistered(String sdir, int row, int col) {
+	public void WallMoveNotRegistered(String sdir, int row, int col) throws Exception {
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
 		WallMove wmc = game.getWallMoveCandidate();
 		Tile target = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(row ,col));
@@ -381,9 +382,10 @@ public class CucumberStepDefinitions {
 		
 	/**
 	 * @author Saifullah
+	 * @throws Exception 
 	 */
 	@Then("A wall move shall be registered with {string} at position \\({int}, {int})")
-	public void WallMoveIsRegistered(String sdir, int row, int col) {
+	public void WallMoveIsRegistered(String sdir, int row, int col) throws Exception {
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
 		WallMove wmc = game.getWallMoveCandidate();
 		Tile target = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(row ,col));
@@ -1271,7 +1273,12 @@ public class CucumberStepDefinitions {
 		game.setCurrentPosition(gamePosition);
 	}
 	
-	private int getIndex(int row, int col) {
+	private int getIndex(int row, int col) throws Exception {
+		if((row < 1) || (row > 9) || (col < 1) || (col > 9) ) {
+			throw new Exception("Index is out of bounds");
+		}
+			
+			
 		return (col - 1) * 9 + (row - 1);
 	}
 	
