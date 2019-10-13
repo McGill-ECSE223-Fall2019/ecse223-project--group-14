@@ -144,11 +144,6 @@ public class GameController {
 		
 	}
 	
-	
-	public void setTime(int min, int sec, Quoridor q) {
-		
-	}
-	
 	public Board initBoard(Quoridor q) throws UnsupportedOperationException{
 		Board board = new Board(q);
 		return board;

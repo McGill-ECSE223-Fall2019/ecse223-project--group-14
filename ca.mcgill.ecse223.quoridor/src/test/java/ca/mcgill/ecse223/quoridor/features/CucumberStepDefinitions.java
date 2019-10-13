@@ -573,7 +573,7 @@ public class CucumberStepDefinitions {
 		GameController G= new GameController();
 		int min=0; int sec=0;
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		G.setTime(min, sec,quoridor);
+		G.setTime(min, sec);
 	}
 	
 	/**
