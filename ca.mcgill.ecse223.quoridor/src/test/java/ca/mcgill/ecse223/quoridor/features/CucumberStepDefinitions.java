@@ -1057,7 +1057,7 @@ public class CucumberStepDefinitions {
 	 */ 
 
 
-	@Then ("File  (.*) shall not be changed in the filesystem")
+	@Then ("File (.*) shall not be changed in the filesystem")
 
 	public void FileFilenameIsNotChangedInTheFilesystem (String FileName) throws Throwable{
 
