@@ -819,35 +819,48 @@ public class CucumberStepDefinitions {
 	  ("A game position is supplied with wall coordinate {int}:{int}-{string}")
 	  public void aGamePositionisSuppliedWithWallCoordinate(int row, int col,String
 	  dir) throws Throwable{
-		  
-		 
-	  
 	  Game game = QuoridorApplication.getQuoridor().getCurrentGame(); 
 	  Quoridor quoridor=QuoridorApplication.getQuoridor();                                                                                
 	  GamePosition position = game.getCurrentPosition();
 	  //now want to add wall to players wall on board list.
-	  Tile player2StartPos = quoridor.getBoard().getTile(44); 
+	  if(getIndex(row,col)==-10) {
+		  Tile player2StartPos = quoridor.getBoard().getTile(44); 	  
+		  Tile testTile = QuoridorApplication.getQuoridor().getBoard().getTile(36);//has row col coordinates
+		  //Lets create a wall to save the direction as well	 
+		  PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), testTile);
+		  PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
+		  Player testPlayer=quoridor.getCurrentGame().getWhitePlayer();
+		  //Wall directionWall=new Wall(2,testPlayer);//duplicate id error
+		   Wall directionWall=game.getCurrentPosition().getWhiteWallsInStock(1);
+		  if("vertical"==dir) {
+			  WallMove correspWallMove =new WallMove(1,1,testPlayer,testTile,game,Direction.Vertical,directionWall);
+		  }
+		  else if("horizontal"==dir) {
+			  WallMove correspWallMove =new WallMove(1,1,testPlayer,testTile,game,Direction.Horizontal,directionWall);
+		  }
+		  GamePosition testPosition=new GamePosition(-1,player1Position,player2Position,(quoridor.getCurrentGame().getWhitePlayer()),game);//has id
+		  testPosition.addWhiteWallsOnBoard(directionWall);//negative GamePosition ID tells that invalid coordinates
+	  }
+	  else {
+	  Tile player2StartPos = quoridor.getBoard().getTile(44); 	  
 	  Tile testTile = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(row,col));//has row col coordinates
-	  //Lets create a wall to save the direction as well
-	  
-	 
+	  //Lets create a wall to save the direction as well	 
 	  PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), testTile);
-
 	  PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
 	  Player testPlayer=quoridor.getCurrentGame().getWhitePlayer();
-	  Wall directionWall=new Wall(1,testPlayer);
+	  //Wall directionWall=new Wall(3,testPlayer);
+	  Wall directionWall=game.getCurrentPosition().getWhiteWallsInStock(1);
 	  if("vertical"==dir) {
 		  WallMove correspWallMove =new WallMove(1,1,testPlayer,testTile,game,Direction.Vertical,directionWall);
 	  }
 	  else if("horizontal"==dir) {
 		  WallMove correspWallMove =new WallMove(1,1,testPlayer,testTile,game,Direction.Horizontal,directionWall);
 	  }
-	  //Now will add wall to board
-	  
-	 
 	  GamePosition testPosition=new GamePosition(1,player1Position,player2Position,(quoridor.getCurrentGame().getWhitePlayer()),game);//has id
 	  testPosition.addWhiteWallsOnBoard(directionWall);
+	  }
 	  
+	  //Now will add wall to board
 	  }
 	  
 	  
@@ -862,6 +875,17 @@ public class CucumberStepDefinitions {
 			GamePosition Prev=GamePosition.getWithId(1);
 			Game game=quoridor.getCurrentGame();
 			assertEquals("ok",G.validatePos(Prev));
+	  }
+	  @Then ("The position shall be invalid")
+	  public void thePositionShallBeInvalid() throws Throwable{
+		//GameController G= new GameController();
+			//if string ok then set boolean to true 
+			//other wise false
+			Quoridor quoridor=QuoridorApplication.getQuoridor();
+			GameController G= new GameController();
+			GamePosition Prev=GamePosition.getWithId(1);
+			Game game=quoridor.getCurrentGame();
+			assertEquals("error",G.validatePos(Prev));
 	  }
 			
 			
