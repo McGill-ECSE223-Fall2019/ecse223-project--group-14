@@ -799,7 +799,7 @@ public class CucumberStepDefinitions {
 		
 		GamePosition Prev=GamePosition.getWithId(1);
 		GameController gc = new GameController();
-		gc.validatePawnPos(Prev);//Takes the GamePosition to get the pawn position we are testing from it
+		gc.validatePos(Prev);//Takes the GamePosition to get the pawn position we are testing from it
 	}
 	
 	@Then ("The position shall be {string}")//cumcumber syntax for String
@@ -811,8 +811,9 @@ public class CucumberStepDefinitions {
 		GameController G= new GameController();
 		GamePosition Prev=GamePosition.getWithId(1);
 		Game game=quoridor.getCurrentGame();
-		assertEquals(result,G.validatePawnPos(Prev));
+		assertEquals(result,G.validatePos(Prev));
 	}
+	
 	
 	  @Given///To DO
 	  ("A game position is supplied with wall coordinate {int}:{int}-{string}")
@@ -845,11 +846,23 @@ public class CucumberStepDefinitions {
 	  
 	 
 	  GamePosition testPosition=new GamePosition(1,player1Position,player2Position,(quoridor.getCurrentGame().getWhitePlayer()),game);//has id
-	
+	  testPosition.addWhiteWallsOnBoard(directionWall);
 	  
 	  }
+	  
+	  
 	 
-	
+	  @Then ("The position shall be valid")
+	  public void thePositionShallBeValid() throws Throwable{
+		//GameController G= new GameController();
+			//if string ok then set boolean to true 
+			//other wise false
+			Quoridor quoridor=QuoridorApplication.getQuoridor();
+			GameController G= new GameController();
+			GamePosition Prev=GamePosition.getWithId(1);
+			Game game=quoridor.getCurrentGame();
+			assertEquals("ok",G.validatePos(Prev));
+	  }
 			
 			
 	
