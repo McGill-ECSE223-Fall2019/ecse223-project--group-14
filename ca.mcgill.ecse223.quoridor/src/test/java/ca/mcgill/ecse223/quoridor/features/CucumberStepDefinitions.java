@@ -835,13 +835,14 @@ public class CucumberStepDefinitions {
 	  PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
 	  Player testPlayer=quoridor.getCurrentGame().getWhitePlayer();
 	  Wall directionWall=new Wall(1,testPlayer);
-	  if(Direction.Vertical.toString()==dir) {
+	  if("vertical"==dir) {
 		  WallMove correspWallMove =new WallMove(1,1,testPlayer,testTile,game,Direction.Vertical,directionWall);
 	  }
-	  else {
+	  else if("horizontal"==dir) {
 		  WallMove correspWallMove =new WallMove(1,1,testPlayer,testTile,game,Direction.Horizontal,directionWall);
 	  }
 	  //Now will add wall to board
+	  
 	 
 	  GamePosition testPosition=new GamePosition(1,player1Position,player2Position,(quoridor.getCurrentGame().getWhitePlayer()),game);//has id
 	
