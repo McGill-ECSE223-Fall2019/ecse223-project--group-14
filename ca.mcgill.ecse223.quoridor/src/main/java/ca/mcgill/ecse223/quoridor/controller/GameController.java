@@ -312,6 +312,23 @@ public class GameController {
 		//This interacts with the clock Time object and checks GUI to see if a countdown is shown
 		throw new UnsupportedOperationException();
 	}
+	/**
+	 * For ValidatePosition Feature 
+	 * Checks if if pawn position is valid or not
+		
+	 * 
+	 * @author ohuss1
+	 * 
+	 * @throws UnsupportedOperationException
+	 */
+	public String validatePos(GamePosition posToValidate) {
+		// TODO Auto-generated method stub
+		//Checks if pawn position overlaps with another pawn or a wall position overlaps with a wall or out of track pawn or wall
+		//if yes returns error
+		//if no returns ok
+		//will compare this with String result in @then
+		throw new UnsupportedOperationException();
+		
 
 	/**
 	 * For Initialize Board feature

@@ -810,6 +810,150 @@ public class CucumberStepDefinitions {
 		}
 					
 	}
+	/**
+	 * @author ohuss1
+	 * @throws Throwable
+	 */
+	@Given ("A game position is supplied with pawn coordinate {int}:{int}")//might have problems with : symbol
+	public void aGamePositionisSuppliedWithPawnCoordinate(int row, int col) throws Throwable{
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Quoridor quoridor=QuoridorApplication.getQuoridor();
+		GamePosition position = game.getCurrentPosition();
+		//Tile player1StartPos = quoridor.getBoard().getTile(36);
+		Tile player2StartPos = quoridor.getBoard().getTile(44);
+		if(getIndex(row,col)==-10) {
+			Tile testTile = QuoridorApplication.getQuoridor().getBoard().getTile(36);
+			PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), testTile);
+			PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
+			GamePosition testPosition=new GamePosition(-1,player1Position,player2Position,(quoridor.getCurrentGame().getWhitePlayer()),game);
+			//negative id in GamePosition to tell controller invalid tile coordinates. Controller doesnt have 
+			//access to row, col so it can only comment on whether if a pawn is there at that index of tiles
+			
+		}
+		else {
+		Tile testTile = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(row,col));
+		//PlayerPosition prevalid =new PlayerPosition( game.getCurrentPosition().getPlayerToMove(), testTile);
+		//PlayerPosition prevalid2 =new PlayerPosition( game.getCurrentPosition().getPlayerToMove(), testTile);
+		PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), testTile);
+		//PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), exTile);
+		PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
+		GamePosition testPosition=new GamePosition(1,player1Position,player2Position,(quoridor.getCurrentGame().getWhitePlayer()),game);//has id	
+		}
+	}
+	/**
+	 * @author ohuss1
+	 * @throws Throwable
+	 */
+	@When ("Validation of the position is initiated")
+	public void validationOfPositionisInitiated()throws Throwable {//game position created in given pass it to game controller
+		//try getting position from tile created in Atgiven
+		//not allowed to give argument to the above method
+		
+		GamePosition Prev=GamePosition.getWithId(1);
+		GameController gc = new GameController();
+		gc.validatePos(Prev);//Takes the GamePosition to get the pawn position we are testing from it
+	}
+	/**
+	 * @author ohuss1
+	 * @throws Throwable
+	 */
+	@Then ("The position shall be {string}")//cumcumber syntax for String
+	public void thePositionShallBeResult(String result) throws Throwable{
+		//GameController G= new GameController();
+		//if string ok then set boolean to true 
+		//other wise false
+		Quoridor quoridor=QuoridorApplication.getQuoridor();
+		GameController G= new GameController();
+		GamePosition Prev=GamePosition.getWithId(1);
+		Game game=quoridor.getCurrentGame();
+		assertEquals(result,G.validatePos(Prev));
+	}
+	
+	/**
+	 * @author ohuss1
+	 * @throws Throwable
+	 */
+	  @Given///To DO
+	  ("A game position is supplied with wall coordinate {int}:{int}-{string}")
+	  public void aGamePositionisSuppliedWithWallCoordinate(int row, int col,String
+	  dir) throws Throwable{
+	  Game game = QuoridorApplication.getQuoridor().getCurrentGame(); 
+	  Quoridor quoridor=QuoridorApplication.getQuoridor();                                                                                
+	  GamePosition position = game.getCurrentPosition();
+	  //now want to add wall to players wall on board list.
+	  if(getIndex(row,col)==-10) {
+		  Tile player2StartPos = quoridor.getBoard().getTile(44); 	  
+		  Tile testTile = QuoridorApplication.getQuoridor().getBoard().getTile(36);//has row col coordinates
+		  //Lets create a wall to save the direction as well	 
+		  PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), testTile);
+		  PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
+		  Player testPlayer=quoridor.getCurrentGame().getWhitePlayer();
+		  //Wall directionWall=new Wall(2,testPlayer);//duplicate id error
+		   Wall directionWall=game.getCurrentPosition().getWhiteWallsInStock(1);
+		  if("vertical"==dir) {
+			  WallMove correspWallMove =new WallMove(1,1,testPlayer,testTile,game,Direction.Vertical,directionWall);
+		  }
+		  else if("horizontal"==dir) {
+			  WallMove correspWallMove =new WallMove(1,1,testPlayer,testTile,game,Direction.Horizontal,directionWall);
+		  }
+		  GamePosition testPosition=new GamePosition(-1,player1Position,player2Position,(quoridor.getCurrentGame().getWhitePlayer()),game);//has id
+		  testPosition.addWhiteWallsOnBoard(directionWall);//negative GamePosition ID tells that invalid coordinates
+	  }
+	  else {
+	  Tile player2StartPos = quoridor.getBoard().getTile(44); 	  
+	  Tile testTile = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(row,col));//has row col coordinates
+	  //Lets create a wall to save the direction as well	 
+	  PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), testTile);
+	  PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
+	  Player testPlayer=quoridor.getCurrentGame().getWhitePlayer();
+	  //Wall directionWall=new Wall(3,testPlayer);
+	  Wall directionWall=game.getCurrentPosition().getWhiteWallsInStock(1);
+	  if("vertical"==dir) {
+		  WallMove correspWallMove =new WallMove(1,1,testPlayer,testTile,game,Direction.Vertical,directionWall);
+	  }
+	  else if("horizontal"==dir) {
+		  WallMove correspWallMove =new WallMove(1,1,testPlayer,testTile,game,Direction.Horizontal,directionWall);
+	  }
+	  GamePosition testPosition=new GamePosition(1,player1Position,player2Position,(quoridor.getCurrentGame().getWhitePlayer()),game);//has id
+	  testPosition.addWhiteWallsOnBoard(directionWall);
+	  }
+	  
+	  //Now will add wall to board
+	  }
+	  
+	  
+	  /**
+		 * @author ohuss1
+		 * @throws Throwable
+		 */
+	  @Then ("The position shall be valid")
+	  public void thePositionShallBeValid() throws Throwable{
+		//GameController G= new GameController();
+			//if string ok then set boolean to true 
+			//other wise false
+			Quoridor quoridor=QuoridorApplication.getQuoridor();
+			GameController G= new GameController();
+			GamePosition Prev=GamePosition.getWithId(1);
+			Game game=quoridor.getCurrentGame();
+			assertEquals("ok",G.validatePos(Prev));
+	  }
+	  /**
+		 * @author ohuss1
+		 * @throws Throwable
+		 */
+	  @Then ("The position shall be invalid")
+	  public void thePositionShallBeInvalid() throws Throwable{
+		//GameController G= new GameController();
+			//if string ok then set boolean to true 
+			//other wise false
+			Quoridor quoridor=QuoridorApplication.getQuoridor();
+			GameController G= new GameController();
+			GamePosition Prev=GamePosition.getWithId(1);
+			Game game=quoridor.getCurrentGame();
+			assertEquals("error",G.validatePos(Prev));
+	  }
+			
+			
 	
 	/**
 	 * @author FSharp4
@@ -1273,14 +1417,19 @@ public class CucumberStepDefinitions {
 		game.setCurrentPosition(gamePosition);
 	}
 	
-	private int getIndex(int row, int col) throws Exception {
-		if((row < 1) || (row > 9) || (col < 1) || (col > 9) ) {
-			throw new Exception("Index is out of bounds");
+	private int getIndex(int row, int col) {
+		//return (col - 1) * 9 + (row - 1);Saif's
+		/*if(row<0||row>9||col<0||col>9) {to avoid getting index in range for invalid coordinates due to -ve +ve cancelling
+			return -1;
+		}*/
+		if(row<=0||col<=0||row>9||col>9){
+			return -10;
 		}
-			
-			
-		//return (col - 1) * 9 + (row - 1);
-		return ((((row-1)*9)+col)-1);
+		else {
+		return ((((row-1)*9)+col)-1);//returning wrong values for incorrect row or col 
+		//may return out of bound value which can be handled by 
+		}
+		
 	}
 	
 	private boolean wallPresent(int row, int col, Wall[] wallsOnBoard, Direction orientation) {
