@@ -801,7 +801,10 @@ public class CucumberStepDefinitions {
 		GameController gc = new GameController();
 		gc.validatePos(Prev);//Takes the GamePosition to get the pawn position we are testing from it
 	}
-	
+	/**
+	 * @author ohuss1
+	 * @throws Throwable
+	 */
 	@Then ("The position shall be {string}")//cumcumber syntax for String
 	public void thePositionShallBeResult(String result) throws Throwable{
 		//GameController G= new GameController();
@@ -814,7 +817,10 @@ public class CucumberStepDefinitions {
 		assertEquals(result,G.validatePos(Prev));
 	}
 	
-	
+	/**
+	 * @author ohuss1
+	 * @throws Throwable
+	 */
 	  @Given///To DO
 	  ("A game position is supplied with wall coordinate {int}:{int}-{string}")
 	  public void aGamePositionisSuppliedWithWallCoordinate(int row, int col,String
@@ -864,7 +870,10 @@ public class CucumberStepDefinitions {
 	  }
 	  
 	  
-	 
+	  /**
+		 * @author ohuss1
+		 * @throws Throwable
+		 */
 	  @Then ("The position shall be valid")
 	  public void thePositionShallBeValid() throws Throwable{
 		//GameController G= new GameController();
@@ -876,6 +885,10 @@ public class CucumberStepDefinitions {
 			Game game=quoridor.getCurrentGame();
 			assertEquals("ok",G.validatePos(Prev));
 	  }
+	  /**
+		 * @author ohuss1
+		 * @throws Throwable
+		 */
 	  @Then ("The position shall be invalid")
 	  public void thePositionShallBeInvalid() throws Throwable{
 		//GameController G= new GameController();

@@ -318,6 +318,8 @@ public class GameController {
 	}
 	/**
 	 * For ValidatePosition Feature 
+	 * Checks if if pawn position is valid or not
+		
 	 * 
 	 * @author ohuss1
 	 * 
