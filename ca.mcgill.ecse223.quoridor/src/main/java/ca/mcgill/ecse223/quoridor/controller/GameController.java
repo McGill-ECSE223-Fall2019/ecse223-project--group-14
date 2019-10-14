@@ -328,7 +328,7 @@ public class GameController {
 		//if no returns ok
 		//will compare this with String result in @then
 		throw new UnsupportedOperationException();
-		
+	}
 
 	/**
 	 * For Initialize Board feature
