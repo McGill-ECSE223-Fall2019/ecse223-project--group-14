@@ -1,5 +1,6 @@
 package ca.mcgill.ecse223.quoridor.controller;
 
+import java.io.File;
 import java.sql.Time;
 
 import ca.mcgill.ecse223.quoridor.model.Board;
@@ -7,6 +8,7 @@ import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Game;
 import ca.mcgill.ecse223.quoridor.model.Player;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
+import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
 import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
@@ -23,38 +25,15 @@ public class GameController {
 	 * @return
 	 * @throws UnsupportedOperationException
 	 */
-	public Game initGame(Quoridor q)throws UnsupportedOperationException{
+	public void initGame(Quoridor q)throws UnsupportedOperationException{
 		throw new UnsupportedOperationException();
-		/*GameStatus aGameStatus = GameStatus.Initializing; MoveMode aMoveMode = null; Player aWhitePlayer = null; Player aBlackPlayer = null; 
+		/* 
 		
-		Game g = new Game(aGameStatus, aMoveMode, aWhitePlayer, aBlackPlayer, q);
-		q.setCurrentGame(g);
+		new Game(aGameStatus, aMoveMode, aWhitePlayer, aBlackPlayer, q);
+		
 		return g;*/
 	}
-	
-	/**
-	 * For Start New Game feature
-	 * Assigns username to player with given colour by either choosing an existing one or creating a new one
-	 * 
-	 * @author DariusPi
-	 * @param q
-	 * @param colour
-	 * @throws UnsupportedOperationException
-	 */
-	public void assignUsername(Quoridor q, Player colour)throws UnsupportedOperationException {
-		
-		throw new UnsupportedOperationException();
-		/*User user= new User(null,q);
-		Time time =null;
-		Player play= new Player(null,user,null);
-		if (colour.equals("white")) {
-			q.getCurrentGame().setWhitePlayer(play);
-		}
-		else {
-			q.getCurrentGame().setBlackPlayer(play);
-		}
-		throw new UnsupportedOperationException();*/
-	}
+
 	
 	/**
 	 * * For Start New Game feature
@@ -74,8 +53,8 @@ public class GameController {
 	}
 	
 	/**
-	 *  For Provide Or Select User Name feature
-	 * Selects and returns name
+	 * For Provide Or Select User Name feature
+	 * Selects user name and assigns to colour, returns name
 	 * 
 	 * @author DariusPi
 	 * 
@@ -84,7 +63,7 @@ public class GameController {
 	 * @return
 	 * @throws UnsupportedOperationException
 	 */
-	public String selectUsername(Quoridor q, String name)throws UnsupportedOperationException {
+	public String selectUsername(Quoridor q, String name, String colour)throws UnsupportedOperationException {
 		throw new UnsupportedOperationException();
 		/*int i=doesUserExist(q,name);
 		if (i==-1) {
@@ -98,7 +77,7 @@ public class GameController {
 	
 	/**
 	 *  * For Provide Or Select User Name feature
-	 * Creates new user, adds it to quoridor and returns its name
+	 * Creates new user, adds it to quoridor, assigns to colour and returns its name
 	 * 
 	 * @author DariusPi
 	 * 
@@ -107,7 +86,7 @@ public class GameController {
 	 * @return
 	 * @throws UnsupportedOperationException
 	 */
-	public String createUsername(Quoridor q, String name)throws UnsupportedOperationException {
+	public String createUsername(Quoridor q, String name, String colour)throws UnsupportedOperationException {
 		throw new UnsupportedOperationException();
 		/*int i=doesUserExist(q,name);
 		if (i==-1) {
@@ -144,14 +123,46 @@ public class GameController {
 	}
 	
 	
-	public void setTime(int min, int sec, Quoridor q) {
-		
+	/**
+	 * For setTotalThinkingTime feature 
+	 * 
+	 * @author AmineMallek
+	 * 
+	 * @param min (number of)
+	 * 
+	 * @param sec (number of)
+	 * 
+	 * @throws UnsupportedOperationException
+	 */
+
+	public void setTime (int min, int sec) {
+		throw new UnsupportedOperationException();
 	}
+
+
+	/**
+	 * For savePosition feature 
+	 * 
+	 * @author AmineMallek
+	 * 
+	 * @param FileName
+	 * 
+	 * @throws UnsupportedOperationException
+	 */
+
+	public Boolean filename_exists (String FileName) {
+		File filename = new File(FileName);
+		if(filename.exists()) return true;
+		else return false;
+	}
+
+	public void SaveGame(String FileName) {
+		throw new UnsupportedOperationException();	
+		//This saves the game
+	}
+
+
 	
-	public Board initBoard(Quoridor q) throws UnsupportedOperationException{
-		Board board = new Board(q);
-		return board;
-	}
 	
 	/**
 	 * * For Rotate Wall feature 
@@ -233,21 +244,6 @@ public class GameController {
 	}
 	
 	/**
-	 * * For Load Position feature
-	 * Validates position, returns whether position is valid
-	 * 
-	 * @author FSharp4
-	 * @param gamePosition
-	 * @return
-	 */
-	
-	public boolean isValid(GamePosition gamePosition) {
-		throw new UnsupportedOperationException();
-		//todo: Do validation of of GamePosition
-	}
-	
-	
-	/**
 	 *  * For Load Position feature
 	 * Attempts to set load position. Returns an error if position is invalid
 	 * 
@@ -259,9 +255,9 @@ public class GameController {
 			throws UnsupportedOperationException {
 		  //throws UnsupportedOperationException, IOException {
 		
-		GamePosition gamePosition = quoridor.getCurrentGame().getCurrentPosition();
+		Game game = quoridor.getCurrentGame();
 		
-		if (isValid(gamePosition)) {
+		if (validatePosition(game)) {
 			//update GUI here
 			quoridor.getCurrentGame().setGameStatus(GameStatus.ReadyToStart);
 			//return true
@@ -333,5 +329,23 @@ public class GameController {
 		//will compare this with String result in @then
 		throw new UnsupportedOperationException();
 		
+
+	/**
+	 * For Initialize Board feature
+	 * Prepares a board populated with tiles in a 9x9 grid, returning it.
+	 * 
+	 * @author FSharp4
+	 * @param q
+	 * @return new Board
+	 * @throws UnsupportedOperationException
+	 */
+	public Board initBoard(Quoridor q) {
+		Board board = new Board(q);
+		for (int col = 1; col <= 9; col++) {
+			for(int row = 1; row <= 9; row ++) {
+				Tile tile = new Tile(row, col, board);
+			}
+		}
+		return board;
 	}
 }
