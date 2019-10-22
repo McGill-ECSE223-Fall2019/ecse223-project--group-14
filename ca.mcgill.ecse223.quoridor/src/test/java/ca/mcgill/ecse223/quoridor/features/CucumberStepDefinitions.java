@@ -634,7 +634,7 @@ public class CucumberStepDefinitions {
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
 		Player player1 = new Player(new Time(10), quoridor.getUser(0), 9, Direction.Horizontal);
 		Player player2 = new Player(new Time(10), quoridor.getUser(1), 1, Direction.Horizontal);
-		new Game (GameStatus.ReadyToStart, MoveMode.PlayerMove, player1, player2, QuoridorApplication.getQuoridor());
+		new Game (GameStatus.ReadyToStart, MoveMode.PlayerMove, QuoridorApplication.getQuoridor());
 		
 	}
 	
@@ -1079,8 +1079,9 @@ public class CucumberStepDefinitions {
 		GameController G = new GameController();
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		ArrayList<Player> defaultPlayers = createUsersAndPlayers("White", "Black");
-		quoridor.setCurrentGame(new Game(GameStatus.Initializing, MoveMode.PlayerMove, 
-				defaultPlayers.get(0), defaultPlayers.get(1), quoridor));
+		quoridor.setCurrentGame(new Game(GameStatus.Initializing, MoveMode.PlayerMove, quoridor));
+		/*quoridor.setCurrentGame(new Game(GameStatus.Initializing, MoveMode.PlayerMove, 
+				defaultPlayers.get(0), defaultPlayers.get(1), quoridor));*/
 		G.initBoard(quoridor);
 		assertNotNull(quoridor.getBoard());
 	}
