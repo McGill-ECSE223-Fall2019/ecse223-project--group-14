@@ -26,12 +26,8 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	public void initGame(Quoridor q)throws UnsupportedOperationException{
-		throw new UnsupportedOperationException();
-		/* 
+		new Game(GameStatus.Initializing, MoveMode.PlayerMove, q);
 		
-		new Game(aGameStatus, aMoveMode, aWhitePlayer, aBlackPlayer, q);
-		
-		return g;*/
 	}
 
 	
@@ -64,14 +60,26 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	public String selectUsername(Quoridor q, String name, String colour)throws UnsupportedOperationException {
-		throw new UnsupportedOperationException();
-		/*int i=doesUserExist(q,name);
+		//throw new UnsupportedOperationException();
+		int i=doesUserExist(q,name);
 		if (i==-1) {
-			//error statement
+			String msg= name +" does not exist";
+			return msg;
 		}
 		else {
-			return q.getUser(i).getName();
-		}*/
+			int thinkingTime=180;
+			if (colour.compareTo("white")==0) {
+				
+				Player player1 = new Player(new Time(thinkingTime), q.getUser(i), 9, Direction.Horizontal);
+				q.getCurrentGame().setWhitePlayer(player1);  //(new Player(null, q.getUser(i), null));
+			}
+			else {
+				Player player2 = new Player(new Time(thinkingTime), q.getUser(i), 1, Direction.Horizontal);
+				q.getCurrentGame().setBlackPlayer(player2);			//(new Player(null, q.getUser(i), null));
+			}
+			return name;
+			
+		}
 		
 	}
 	
@@ -87,16 +95,27 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	public String createUsername(Quoridor q, String name, String colour)throws UnsupportedOperationException {
-		throw new UnsupportedOperationException();
-		/*int i=doesUserExist(q,name);
+		//throw new UnsupportedOperationException();
+		int i=doesUserExist(q,name);
 		if (i==-1) {
-			q.addUser(name);
+			User u=new User(name, q);
+			q.addUser(u);
+			//int thinkingTime=180;
+			if (colour.compareTo("white")==0) {
+				/*Player player1 = new Player(new Time(thinkingTime), u, 9, Direction.Horizontal);
+				q.getCurrentGame().setWhitePlayer(player1);*/
+				q.getCurrentGame().getWhitePlayer().setUser(u);
+			}
+			else {
+				//Player player2 = new Player(new Time(thinkingTime), u, 1, Direction.Horizontal);
+				q.getCurrentGame().getBlackPlayer().setUser(u);
+			}
 			return name;
 		}
 		else {
 			String msg= name +" already exists";
 			return  msg;
-		}*/
+		}
 		
 	}
 	
@@ -112,13 +131,13 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	public int doesUserExist(Quoridor q, String name) throws UnsupportedOperationException{
-		throw new UnsupportedOperationException();
-		/*for (int i=0; i<q.numberOfUsers();i++) {
+		//throw new UnsupportedOperationException();
+		for (int i=0; i<q.numberOfUsers();i++) {
 			if (q.getUser(i).getName().contentEquals(name)) {
 				return i;
 			}
 		}
-		return -1;*/
+		return -1;
 		
 	}
 	

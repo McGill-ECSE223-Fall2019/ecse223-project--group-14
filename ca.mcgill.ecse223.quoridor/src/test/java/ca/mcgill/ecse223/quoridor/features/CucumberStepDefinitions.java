@@ -687,6 +687,11 @@ public class CucumberStepDefinitions {
 		
 		//the following creation of new game position was necessary as the currentPosition set by the background method is null, proven by the assertion error caused by uncommenting next line
 		//assertNotNull(quoridor.getCurrentGame().getCurrentPosition());
+		int thinkingTime=180;
+		Player player1 = new Player(new Time(thinkingTime), quoridor.getUser(0), 9, Direction.Horizontal);
+		Player player2 = new Player(new Time(thinkingTime), quoridor.getUser(1), 1, Direction.Horizontal);
+		quoridor.getCurrentGame().setBlackPlayer(player2);
+		quoridor.getCurrentGame().setWhitePlayer(player1);
 		
 		Tile player1StartPos = quoridor.getBoard().getTile(36);
 		Tile player2StartPos = quoridor.getBoard().getTile(44);
