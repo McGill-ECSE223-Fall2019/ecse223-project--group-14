@@ -632,9 +632,12 @@ public class CucumberStepDefinitions {
 	public void theGameIsReadyToStart() throws Throwable{
 		
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		Player player1 = new Player(new Time(10), quoridor.getUser(0), 9, Direction.Horizontal);
-		Player player2 = new Player(new Time(10), quoridor.getUser(1), 1, Direction.Horizontal);
-		new Game (GameStatus.ReadyToStart, MoveMode.PlayerMove, QuoridorApplication.getQuoridor());
+		Player p1=new Player(new Time(10), quoridor.getUser(0), 9, Direction.Horizontal);
+		Player p2 = new Player(new Time(10), quoridor.getUser(1), 1, Direction.Horizontal);
+		new Game (GameStatus.ReadyToStart, MoveMode.PlayerMove, quoridor);
+		
+		quoridor.getCurrentGame().setWhitePlayer(p1);
+		quoridor.getCurrentGame().setBlackPlayer(p2);
 		
 	}
 	
