@@ -3,6 +3,7 @@ package ca.mcgill.ecse223.quoridor.controller;
 import java.io.File;
 import java.sql.Time;
 
+import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.Board;
 import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Game;
@@ -16,6 +17,17 @@ import ca.mcgill.ecse223.quoridor.model.GamePosition;
 
 public class GameController {
 	
+	/**Helper method to be called when app starts to initialize board and default users
+	 * 
+	 * @author DariusPi
+	 * 
+	 */
+	public void initQuorridor(){
+		Quoridor q=QuoridorApplication.getQuoridor();
+		initBoard(q);
+		new User("user1",q);
+		new User("user2",q);
+	}
 	/**
 	 * For Start New Game feature 
 	 * initializes a game with null parameters

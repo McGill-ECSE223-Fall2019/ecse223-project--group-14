@@ -17,6 +17,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 
@@ -38,7 +39,20 @@ public class QuoridorPage extends JFrame{
 	private JLabel bannerMessage;
 	private String banner = "Main Menu";
 	
+	private JTextField p1NameField;
+	private JTextField p2NameField;
+	private JTextField minField;
+	private JTextField secField;
+	
+	
 	private JButton newGameButton;
+	private JButton createP1Button;
+	private JButton createP2Button;
+	private JButton selectP1Button;
+	private JButton selectP2Button;
+	private JButton timeSetButton;
+	
+	
 	private JButton saveGameButton;
 	private JButton loadGameButton;
 	private JButton resignGameButton;
@@ -56,10 +70,13 @@ public class QuoridorPage extends JFrame{
 	private JButton quitButton;
 	
 	private Quoridor q;
+	private GameController gc;
 	
 	private RectComp [][] tiles;
 	public QuoridorPage(){
 		q=QuoridorApplication.getQuoridor();
+		gc=new GameController();
+		gc.initQuorridor();
 		initComponents();
 		refreshData();
 	}
@@ -74,6 +91,15 @@ public class QuoridorPage extends JFrame{
 		errorMessage = new JLabel();
 		errorMessage.setForeground(Color.RED);
 		errorMessage.setText("");
+		
+		p1NameField=new JTextField();
+		p1NameField.setVisible(false);
+		p2NameField=new JTextField();
+		p2NameField.setVisible(false);
+		minField=new JTextField();
+		minField.setVisible(false);
+		secField=new JTextField();
+		secField.setVisible(false);
 		
 		title = new JLabel();
 		title.setFont(new Font("Serif",Font.PLAIN,36));
@@ -97,7 +123,7 @@ public class QuoridorPage extends JFrame{
 				tiles[i][j]=new RectComp();
 			}
 		}
-		toggleBoard();
+		toggleBoard(false);
 		
 		GroupLayout layout = new GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
@@ -201,10 +227,27 @@ public class QuoridorPage extends JFrame{
 						.addComponent(declineDrawButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
 						.addComponent(quitButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
 						.addComponent(replayGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(p1NameField,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(p2NameField,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addGroup(layout.createParallelGroup()
+								.addComponent(minField,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+								.addComponent(secField,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+								)
 					)
 				/*.addGroup(layout.createParallelGroup().addComponent(quitButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
 						.addComponent(replayGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE))*/
 					.addGroup(sq)
+					.addGroup(layout.createSequentialGroup()
+							.addGroup(layout.createParallelGroup()
+									.addComponent(createP1Button,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+									.addComponent(selectP1Button,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+									)
+							.addGroup(layout.createParallelGroup()
+									.addComponent(createP2Button,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+									.addComponent(selectP2Button,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+									)
+							.addComponent(timeSetButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+							)
 				));
 		layout.setHorizontalGroup(
 				layout.createParallelGroup().addComponent(title, GroupLayout.PREFERRED_SIZE, 600,GroupLayout.PREFERRED_SIZE)
@@ -225,10 +268,27 @@ public class QuoridorPage extends JFrame{
 						.addComponent(declineDrawButton,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
 						.addComponent(quitButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
 						.addComponent(replayGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+						.addComponent(p1NameField,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
+						.addComponent(p2NameField,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
+						.addGroup(layout.createSequentialGroup()
+								.addComponent(minField,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
+								.addComponent(secField,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
+								)
 					)
 						/*.addGroup(layout.createSequentialGroup().addComponent(quitButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
 								.addComponent(replayGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE))*/
 					.addGroup(pq)
+					.addGroup(layout.createParallelGroup()
+							.addGroup(layout.createSequentialGroup()
+									.addComponent(createP1Button,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
+									.addComponent(selectP1Button,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
+									)
+							.addGroup(layout.createSequentialGroup()
+									.addComponent(createP2Button,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
+									.addComponent(selectP2Button,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
+									)
+							.addComponent(timeSetButton,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
+							)
 				));
 		
 		//pack();
@@ -266,41 +326,174 @@ public class QuoridorPage extends JFrame{
 		replayGameButton.setVisible(true);
 		quitButton.setVisible(true);
 		
-		toggleBoard();
+		toggleBoard(false);
 		
 		refreshData();
 	}
 	
 	private void newGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message
-		GameController gc= new GameController();
+		//GameController gc= new GameController();
 		
 		error = "";
-		
-		saveGameButton.setVisible(true);
-		resignGameButton.setVisible(true);
-		drawGameButton.setVisible(true);
 		newGameButton.setVisible(false);
-		quitButton.setVisible(true);
-		
-		toggleBoard();
+		loadGameButton.setVisible(false);
+		saveGameButton.setVisible(false);
+		drawGameButton.setVisible(false);
+		resignGameButton.setVisible(false);
 		
 		// call the controller
-		//gc.initGame(q);
+		gc.initGame(q);
+		
+		p1NameField.setVisible(true);
+		//p2NameField.setVisible(true);
+		//minField.setVisible(true);
+		//secField.setVisible(true);
+		createP1Button.setVisible(true);
+		//createP2Button.setVisible(true);
+		selectP1Button.setVisible(true);
+		//selectP2Button.setVisible(true);
+		//timeSetButton.setVisible(true);
+		
+		
+		banner="New Game";
 		/*try {
 			gc.initGame();
 		} catch (InvalidInputException e) {
 			error = e.getMessage();
 		}*/
 		// update visuals
-		banner="GamePlay"; //for testing
+		
+		/*saveGameButton.setVisible(true);
+		resignGameButton.setVisible(true);
+		drawGameButton.setVisible(true);
+		newGameButton.setVisible(false);
+		quitButton.setVisible(true);
+		toggleBoard();
+		banner="GamePlay";*/
 		
 		refreshData();
 	}
 	
-	private void saveGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	private void createP1ButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message
 		//toggleBoard(); to be implemented
+		
+		error="";
+		String success= gc.createUsername(q,p1NameField.getText(),"white");
+		if (success.compareTo(p1NameField.getText())==0) {
+			p1NameField.setVisible(false);
+			p2NameField.setVisible(true);
+			createP1Button.setVisible(false);
+			createP2Button.setVisible(true);
+			selectP1Button.setVisible(false);
+			selectP2Button.setVisible(true);
+			refreshData();
+			
+		}
+		else {
+			error=success;
+			p1NameField.setText("");
+			refreshData();
+		}
+	}
+	
+	private void createP2ButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		error="";
+		String success= gc.createUsername(q,p2NameField.getText(),"black");
+		if (success.compareTo(p2NameField.getText())==0) {
+			p2NameField.setVisible(false);
+			createP2Button.setVisible(false);
+			selectP2Button.setVisible(false);
+			minField.setVisible(true);
+			secField.setVisible(true);
+			timeSetButton.setVisible(true);
+			refreshData();
+			
+		}
+		else {
+			error=success;
+			p2NameField.setText("");
+			refreshData();
+		}
+	}
+	
+	private void selectP1ButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		error="";
+		String success= gc.selectUsername(q,p1NameField.getText(),"white");
+		if (success.compareTo(p1NameField.getText())==0) {
+			p1NameField.setVisible(false);
+			p2NameField.setVisible(true);
+			createP1Button.setVisible(false);
+			createP2Button.setVisible(true);
+			selectP1Button.setVisible(false);
+			selectP2Button.setVisible(true);
+			refreshData();
+			
+		}
+		else {
+			error=success;
+			p1NameField.setText("");
+			refreshData();
+		}
+	}
+	
+	private void selectP2ButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		error="";
+		String success= gc.selectUsername(q,p2NameField.getText(),"black");
+		if (success.compareTo(p2NameField.getText())==0) {
+			p2NameField.setVisible(false);
+			createP2Button.setVisible(false);
+			selectP2Button.setVisible(false);
+			minField.setVisible(true);
+			secField.setVisible(true);
+			timeSetButton.setVisible(true);
+			refreshData();
+			
+		}
+		else {
+			error=success;
+			p2NameField.setText("");
+			refreshData();
+		}
+	}
+	
+	private void timeSetButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		error="";
+		//uncomment once implemented
+		/*try {
+			gc.setTime(Integer.parseInt(minField.getText()),Integer.parseInt(secField.getText()));
+		} catch (Exception e) {
+			error ="invalid input";
+		}*/
+		
+		if (error.compareTo("")==0) {
+			minField.setVisible(false);
+			secField.setVisible(false);
+			timeSetButton.setVisible(false);
+			saveGameButton.setVisible(true);
+			resignGameButton.setVisible(true);
+			drawGameButton.setVisible(true);
+			newGameButton.setVisible(false);
+			quitButton.setVisible(true);
+			toggleBoard(true);
+			banner="GamePlay";
+			refreshData();
+			
+		}
+		else {
+			secField.setText("");
+			minField.setText("");
+			refreshData();
+		}
+	}
+	
+	
+	
+	
+	private void saveGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		// clear error message
+		//toggleBoard(false); to be implemented
 		
 		GameController gc= new GameController();
 		error = "";
@@ -312,7 +505,7 @@ public class QuoridorPage extends JFrame{
 	
 	private void loadGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message
-		//toggleBoard(); to be implemented
+		//toggleBoard(false); to be implemented
 		
 		GameController gc= new GameController();
 		error = "";
@@ -335,7 +528,7 @@ public class QuoridorPage extends JFrame{
 	
 	private void drawGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message
-		toggleBoard();
+		toggleBoard(false);
 		GameController gc= new GameController();		
 		error = "";
 		
@@ -356,7 +549,7 @@ public class QuoridorPage extends JFrame{
 	private void acceptDrawButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message
 		//GameController gc= new GameController();		
-		toggleBoard();
+		//toggleBoard(false);
 		error = "";
 		
 		//todo
@@ -369,7 +562,7 @@ public class QuoridorPage extends JFrame{
 	private void declineDrawButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message
 		//GameController gc= new GameController();		
-		toggleBoard();
+		toggleBoard(true);
 		
 		error = "";
 		
@@ -392,7 +585,7 @@ public class QuoridorPage extends JFrame{
 	
 	private void replayGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message		
-		toggleBoard();
+		toggleBoard(true);
 		
 		error = "";
 		
@@ -451,12 +644,16 @@ public class QuoridorPage extends JFrame{
 	private void quitButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message
 		//GameController gc= new GameController();		
-		toggleBoard();
+		toggleBoard(false);
 		
 		error = "";
 		
 		newGameButton.setVisible(true);
 		loadGameButton.setVisible(true);
+		saveGameButton.setVisible(false);
+		resignGameButton.setVisible(false);
+		drawGameButton.setVisible(false);
+		
 		
 		replayGameButton.setVisible(false);
 		stepForwardButton.setVisible(false);
@@ -467,6 +664,7 @@ public class QuoridorPage extends JFrame{
 		
 		// update visuals
 		banner = "Main Menu"; //for testing
+		q.getCurrentGame().delete();
 		refreshData();
 	}
 	
@@ -474,6 +672,26 @@ public class QuoridorPage extends JFrame{
 		//regular
 		newGameButton = new JButton();
 		newGameButton.setText("New Game");
+		
+		createP1Button= new JButton();
+		createP1Button.setText("Create P1");
+		createP1Button.setVisible(false);
+		
+		createP2Button= new JButton();
+		createP2Button.setText("Create P2");
+		createP2Button.setVisible(false);
+		
+		selectP1Button= new JButton();
+		selectP1Button.setText("Select P1");
+		selectP1Button.setVisible(false);
+		
+		selectP2Button= new JButton();
+		selectP2Button.setText("Select P2");
+		selectP2Button.setVisible(false);
+		
+		timeSetButton= new JButton();
+		timeSetButton.setText("Set Time");
+		timeSetButton.setVisible(false);
 		
 		saveGameButton = new JButton();
 		saveGameButton.setText("Save Game");
@@ -531,6 +749,37 @@ public class QuoridorPage extends JFrame{
 				newGameButtonActionPerformed(evt);
 			}
 		});
+		
+		createP1Button.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				createP1ButtonActionPerformed(evt);
+			}
+		});
+		
+		createP2Button.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				createP2ButtonActionPerformed(evt);
+			}
+		});
+		
+		selectP1Button.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				selectP1ButtonActionPerformed(evt);
+			}
+		});
+		
+		selectP2Button.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				selectP2ButtonActionPerformed(evt);
+			}
+		});
+		
+		timeSetButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				timeSetButtonActionPerformed(evt);
+			}
+		});
+		
 		
 		saveGameButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -606,8 +855,8 @@ public class QuoridorPage extends JFrame{
 		
 	}
 	
-	private void toggleBoard() {
-		boolean vis=!tiles[0][0].isVisible();
+	private void toggleBoard(boolean vis) {
+		//boolean vis=!tiles[0][0].isVisible();
 		for (int i=0;i<9;i++) {
 			for (int j=0;j<9;j++) {
 				tiles[i][j].setVisible(vis);
