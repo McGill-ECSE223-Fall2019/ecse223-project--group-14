@@ -2,13 +2,23 @@ package ca.mcgill.ecse223.quoridor.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Group;
+import javax.swing.GroupLayout.ParallelGroup;
+import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.WindowConstants;
+import javax.swing.border.Border;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameController;
@@ -23,6 +33,10 @@ public class QuoridorPage extends JFrame{
 	
 	private JLabel errorMessage;
 	private String error = null;
+	
+	private JLabel title;
+	private JLabel bannerMessage;
+	private String banner = "Main Menu";
 	
 	private JButton newGameButton;
 	private JButton saveGameButton;
@@ -42,6 +56,8 @@ public class QuoridorPage extends JFrame{
 	private JButton quitButton;
 	
 	private Quoridor q;
+	
+	private RectComp [][] tiles;
 	public QuoridorPage(){
 		q=QuoridorApplication.getQuoridor();
 		initComponents();
@@ -57,7 +73,405 @@ public class QuoridorPage extends JFrame{
 		
 		errorMessage = new JLabel();
 		errorMessage.setForeground(Color.RED);
+		errorMessage.setText("");
 		
+		title = new JLabel();
+		title.setFont(new Font("Serif",Font.PLAIN,36));
+		title.setText("Quoridor");
+		
+		bannerMessage = new JLabel();
+		bannerMessage.setFont(new Font("Serif",Font.PLAIN,26));
+		bannerMessage.setForeground(Color.BLUE);
+		bannerMessage.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
+		bannerMessage.setText(banner);
+		
+		initButtons();
+		addListners();
+		
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		setTitle("Quoridor");
+		
+		tiles= new RectComp[9][9];
+		for (int i=0;i<9;i++) {
+			for (int j=0;j<9;j++) {
+				tiles[i][j]=new RectComp();
+			}
+		}
+		toggleBoard();
+		
+		GroupLayout layout = new GroupLayout(getContentPane());
+		getContentPane().setLayout(layout);
+		layout.setAutoCreateGaps(true);
+		layout.setAutoCreateContainerGaps(true);
+		
+		
+		ParallelGroup pq=layout.createParallelGroup();
+		SequentialGroup sq=layout.createSequentialGroup();
+		
+		SequentialGroup s1=layout.createSequentialGroup();
+		SequentialGroup s2=layout.createSequentialGroup();
+		SequentialGroup s3=layout.createSequentialGroup();
+		SequentialGroup s4=layout.createSequentialGroup();
+		SequentialGroup s5=layout.createSequentialGroup();
+		SequentialGroup s6=layout.createSequentialGroup();
+		SequentialGroup s7=layout.createSequentialGroup();
+		SequentialGroup s8=layout.createSequentialGroup();
+		SequentialGroup s9=layout.createSequentialGroup();
+		ParallelGroup p1=layout.createParallelGroup();
+		ParallelGroup p2=layout.createParallelGroup();
+		ParallelGroup p3=layout.createParallelGroup();
+		ParallelGroup p4=layout.createParallelGroup();
+		ParallelGroup p5=layout.createParallelGroup();
+		ParallelGroup p6=layout.createParallelGroup();
+		ParallelGroup p7=layout.createParallelGroup();
+		ParallelGroup p8=layout.createParallelGroup();
+		ParallelGroup p9=layout.createParallelGroup();
+		for (int i=0;i<9;i++) {
+			
+			s1.addComponent(tiles[1][i]);
+			p1.addComponent(tiles[1][i]);
+			
+			s2.addComponent(tiles[2][i]);
+			p2.addComponent(tiles[2][i]);
+			
+			s3.addComponent(tiles[3][i]);
+			p3.addComponent(tiles[3][i]);
+			
+			s4.addComponent(tiles[4][i]);
+			p4.addComponent(tiles[4][i]);
+			
+			s5.addComponent(tiles[5][i]);
+			p5.addComponent(tiles[5][i]);
+			
+			s6.addComponent(tiles[6][i]);
+			p6.addComponent(tiles[6][i]);
+			
+			s7.addComponent(tiles[7][i]);
+			p7.addComponent(tiles[7][i]);
+			
+			s8.addComponent(tiles[8][i]);
+			p8.addComponent(tiles[8][i]);
+			
+			s9.addComponent(tiles[0][i]);
+			p9.addComponent(tiles[0][i]);
+		}
+		
+		pq.addGroup(s1);
+		sq.addGroup(p1);
+		pq.addGroup(s2);
+		sq.addGroup(p2);
+		pq.addGroup(s3);
+		sq.addGroup(p3);
+		pq.addGroup(s4);
+		sq.addGroup(p4);
+		pq.addGroup(s5);
+		sq.addGroup(p5);
+		pq.addGroup(s6);
+		sq.addGroup(p6);
+		pq.addGroup(s7);
+		sq.addGroup(p7);
+		pq.addGroup(s8);
+		sq.addGroup(p8);
+		pq.addGroup(s9);
+		sq.addGroup(p9);
+
+		/*for (int i=0;i<9;i++) {
+			sq.addComponent(tiles);
+		}*/
+		
+		/*layout.setVerticalGroup(sq);
+		layout.setHorizontalGroup(sq);*/
+		
+		layout.setVerticalGroup(
+				layout.createSequentialGroup().addComponent(title, GroupLayout.PREFERRED_SIZE, 40,GroupLayout.PREFERRED_SIZE)
+				.addComponent(bannerMessage, GroupLayout.PREFERRED_SIZE, 40,GroupLayout.PREFERRED_SIZE)
+				.addComponent(errorMessage)
+				.addGroup(layout.createParallelGroup()
+					.addGroup(layout.createSequentialGroup()
+						.addComponent(newGameButton, GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(saveGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(loadGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(resignGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(drawGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(stepForwardButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(stepBackwardButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(jumpStartButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(jumpEndButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(acceptDrawButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(declineDrawButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(quitButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(replayGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+					)
+				/*.addGroup(layout.createParallelGroup().addComponent(quitButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(replayGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE))*/
+					.addGroup(sq)
+				));
+		layout.setHorizontalGroup(
+				layout.createParallelGroup().addComponent(title, GroupLayout.PREFERRED_SIZE, 600,GroupLayout.PREFERRED_SIZE)
+				.addComponent(bannerMessage, GroupLayout.PREFERRED_SIZE, 750,GroupLayout.PREFERRED_SIZE)
+				.addComponent(errorMessage)
+				.addGroup(layout.createSequentialGroup()
+					.addGroup(layout.createParallelGroup()
+						.addComponent(newGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+						.addComponent(saveGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+						.addComponent(loadGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+						.addComponent(resignGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+						.addComponent(drawGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+						.addComponent(stepForwardButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+						.addComponent(stepBackwardButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+						.addComponent(jumpStartButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+						.addComponent(jumpEndButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+						.addComponent(acceptDrawButton,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
+						.addComponent(declineDrawButton,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
+						.addComponent(quitButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+						.addComponent(replayGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+					)
+						/*.addGroup(layout.createSequentialGroup().addComponent(quitButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+								.addComponent(replayGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE))*/
+					.addGroup(pq)
+				));
+		
+		//pack();
+	}
+
+	private void refreshData() {
+		errorMessage.setText(error);
+		bannerMessage.setText(banner);
+		if (error == null || error.length() == 0) {
+			//update
+		}
+		
+	}
+	
+	private void createBoard() {
+		/*ParallelGroup pq=layout.createParallelGroup();
+		SequentialGroup sq=layout.createSequentialGroup();*/
+		
+	}
+	
+	private void finishGame() {
+		//set screen to results
+		
+		//todo
+		banner="Game Over";
+		newGameButton.setVisible(false);
+		saveGameButton.setVisible(false);
+		loadGameButton.setVisible(false);
+		resignGameButton.setVisible(false);
+		drawGameButton.setVisible(false);
+		
+		acceptDrawButton.setVisible(false);
+		declineDrawButton.setVisible(false);
+		
+		replayGameButton.setVisible(true);
+		quitButton.setVisible(true);
+		
+		toggleBoard();
+		
+		refreshData();
+	}
+	
+	private void newGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		// clear error message
+		GameController gc= new GameController();
+		
+		error = "";
+		
+		saveGameButton.setVisible(true);
+		resignGameButton.setVisible(true);
+		drawGameButton.setVisible(true);
+		newGameButton.setVisible(false);
+		quitButton.setVisible(true);
+		
+		toggleBoard();
+		
+		// call the controller
+		//gc.initGame(q);
+		/*try {
+			gc.initGame();
+		} catch (InvalidInputException e) {
+			error = e.getMessage();
+		}*/
+		// update visuals
+		banner="GamePlay"; //for testing
+		
+		refreshData();
+	}
+	
+	private void saveGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		// clear error message
+		//toggleBoard(); to be implemented
+		
+		GameController gc= new GameController();
+		error = "";
+		
+		// update visuals
+		banner = "Save Game"; //for testing
+		refreshData();
+	}
+	
+	private void loadGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		// clear error message
+		//toggleBoard(); to be implemented
+		
+		GameController gc= new GameController();
+		error = "";
+		
+		
+		// update visuals
+		banner = "Load Game"; //for testing
+		refreshData();
+	}
+	
+	private void resignGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		// clear error message
+		
+		GameController gc= new GameController();		
+		error = "";
+		//todo
+		
+		finishGame();
+	}
+	
+	private void drawGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		// clear error message
+		toggleBoard();
+		GameController gc= new GameController();		
+		error = "";
+		
+		quitButton.setVisible(false);
+		saveGameButton.setVisible(false);
+		loadGameButton.setVisible(false);
+		resignGameButton.setVisible(false);
+		drawGameButton.setVisible(false);
+		
+		acceptDrawButton.setVisible(true);
+		declineDrawButton.setVisible(true);
+		
+		// update visuals
+		banner = "Draw Proposal"; //for testing
+		refreshData();
+	}
+	
+	private void acceptDrawButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		// clear error message
+		//GameController gc= new GameController();		
+		toggleBoard();
+		error = "";
+		
+		//todo
+		
+		// update visuals
+		error = "accept draw"; //for testing
+		finishGame();
+	}
+	
+	private void declineDrawButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		// clear error message
+		//GameController gc= new GameController();		
+		toggleBoard();
+		
+		error = "";
+		
+		//todo
+		
+		
+		quitButton.setVisible(true);
+		saveGameButton.setVisible(true);
+		loadGameButton.setVisible(true);
+		resignGameButton.setVisible(true);
+		drawGameButton.setVisible(true);
+		
+		acceptDrawButton.setVisible(false);
+		declineDrawButton.setVisible(false);
+		// update visuals
+		banner = "GamePlay"; //for testing
+		
+	}
+	
+	
+	private void replayGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		// clear error message		
+		toggleBoard();
+		
+		error = "";
+		
+		replayGameButton.setVisible(false);
+		
+		stepForwardButton.setVisible(true);
+		stepBackwardButton.setVisible(true);
+		jumpStartButton.setVisible(true);
+		jumpEndButton.setVisible(true);
+		quitButton.setVisible(true);
+		
+		banner = "Replay Mode";
+		refreshData();
+	}
+	
+	private void stepForwardButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		// clear error message
+		GameController gc= new GameController();		
+		error = "";
+
+		// update visuals
+		error = "step for"; //for testing
+		refreshData();
+	}
+	
+	private void stepBackwardButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		// clear error message
+		GameController gc= new GameController();		
+		error = "";
+		
+		// update visuals
+		error = "step back"; //for testing
+		refreshData();
+	}
+	
+	private void jumpStartButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		// clear error message
+		GameController gc= new GameController();		
+		error = "";
+
+		// update visuals
+		error = "jump start"; //for testing
+		refreshData();
+	}
+	
+	private void jumpEndButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		// clear error message
+		GameController gc= new GameController();		
+		error = "";
+
+		// update visuals
+		error = "jump end"; //for testing
+		refreshData();
+	}
+	
+	private void quitButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		// clear error message
+		//GameController gc= new GameController();		
+		toggleBoard();
+		
+		error = "";
+		
+		newGameButton.setVisible(true);
+		loadGameButton.setVisible(true);
+		
+		replayGameButton.setVisible(false);
+		stepForwardButton.setVisible(false);
+		stepBackwardButton.setVisible(false);
+		jumpStartButton.setVisible(false);
+		jumpEndButton.setVisible(false);
+		quitButton.setVisible(false);
+		
+		// update visuals
+		banner = "Main Menu"; //for testing
+		refreshData();
+	}
+	
+	private void initButtons() {
+		//regular
 		newGameButton = new JButton();
 		newGameButton.setText("New Game");
 		
@@ -109,12 +523,9 @@ public class QuoridorPage extends JFrame{
 		quitButton = new JButton();
 		quitButton.setText("Quit");
 		quitButton.setVisible(false);
-		
-		//JFrame frame = new JFrame("Testing");
-		
-		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		setTitle("Quoridor");
-		
+	}
+	
+	private void addListners() {
 		newGameButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				newGameButtonActionPerformed(evt);
@@ -193,253 +604,54 @@ public class QuoridorPage extends JFrame{
 			}
 		});
 		
-		
-		GroupLayout layout = new GroupLayout(getContentPane());
-		getContentPane().setLayout(layout);
-		layout.setAutoCreateGaps(true);
-		layout.setAutoCreateContainerGaps(true);
-		layout.setVerticalGroup(
-				layout.createSequentialGroup().addComponent(errorMessage)
-				.addComponent(newGameButton, GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-				.addComponent(saveGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-				.addComponent(loadGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-				.addComponent(resignGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-				.addComponent(drawGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-				.addComponent(stepForwardButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-				.addComponent(stepBackwardButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-				.addComponent(jumpStartButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-				.addComponent(jumpEndButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-				.addComponent(acceptDrawButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-				.addComponent(declineDrawButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-				.addGroup(layout.createParallelGroup().addComponent(quitButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(replayGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE))
-				);
-		layout.setHorizontalGroup(layout.createParallelGroup().addComponent(errorMessage)
-				.addComponent(newGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-				.addComponent(saveGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-				.addComponent(loadGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-				.addComponent(resignGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-				.addComponent(drawGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-				.addComponent(stepForwardButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-				.addComponent(stepBackwardButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-				.addComponent(jumpStartButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-				.addComponent(jumpEndButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-				.addComponent(acceptDrawButton,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-				.addComponent(declineDrawButton,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-				.addGroup(layout.createSequentialGroup().addComponent(quitButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(replayGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE))
-				);
-		
-		//pack();
 	}
-
-	private void refreshData() {
-		errorMessage.setText(error);
-		if (error == null || error.length() == 0) {
-			//update
+	
+	private void toggleBoard() {
+		boolean vis=!tiles[0][0].isVisible();
+		for (int i=0;i<9;i++) {
+			for (int j=0;j<9;j++) {
+				tiles[i][j].setVisible(vis);
+			}
 		}
-		
 	}
 	
-	private void finishGame() {
-		//set screen to results
+	class RectComp extends JPanel {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		
-		//todo
-		
-		newGameButton.setVisible(false);
-		saveGameButton.setVisible(false);
-		loadGameButton.setVisible(false);
-		resignGameButton.setVisible(false);
-		drawGameButton.setVisible(false);
-		
-		acceptDrawButton.setVisible(false);
-		declineDrawButton.setVisible(false);
-		
-		replayGameButton.setVisible(true);
-		quitButton.setVisible(true);
-		//pack();
-	}
-	
-	private void newGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		GameController gc= new GameController();
-		
-		error = null;
-		
-		saveGameButton.setVisible(true);
-		resignGameButton.setVisible(true);
-		drawGameButton.setVisible(true);
-		
-		// call the controller
-		//gc.initGame(q);
-		/*try {
-			gc.initGame();
-		} catch (InvalidInputException e) {
-			error = e.getMessage();
-		}*/
-		//pack();
-		// update visuals
-		error = "new game"; //for testing
-		refreshData();
-	}
-	
-	private void saveGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		GameController gc= new GameController();
-		error = null;
-		
-		// update visuals
-		error = "save game"; //for testing
-		refreshData();
-	}
-	
-	private void loadGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		GameController gc= new GameController();
-		error = null;
-		
-		
-		// update visuals
-		error = "load game"; //for testing
-		refreshData();
-	}
-	
-	private void resignGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		GameController gc= new GameController();		
-		error = null;
-		//todo
-		
-		finishGame();
-	}
-	
-	private void drawGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		GameController gc= new GameController();		
-		error = null;
-		
-		newGameButton.setVisible(false);
-		saveGameButton.setVisible(false);
-		loadGameButton.setVisible(false);
-		resignGameButton.setVisible(false);
-		drawGameButton.setVisible(false);
-		
-		acceptDrawButton.setVisible(true);
-		declineDrawButton.setVisible(true);
-		
-		// update visuals
-		error = "draw game"; //for testing
-		refreshData();
-	}
-	
-	private void acceptDrawButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		//GameController gc= new GameController();		
-		error = null;
-		
-		//todo
-		
-		// update visuals
-		error = "accept draw"; //for testing
-		finishGame();
-	}
-	
-	private void declineDrawButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		//GameController gc= new GameController();		
-		error = null;
-		
-		//todo
-		
-		
-		newGameButton.setVisible(true);
-		saveGameButton.setVisible(true);
-		loadGameButton.setVisible(true);
-		resignGameButton.setVisible(true);
-		drawGameButton.setVisible(true);
-		
-		acceptDrawButton.setVisible(false);
-		declineDrawButton.setVisible(false);
-		// update visuals
-		error = "decline draw"; //for testing
-		
-	}
-	
-	
-	private void replayGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message		
-		error = null;
-		
-		replayGameButton.setVisible(false);
-		
-		stepForwardButton.setVisible(true);
-		stepBackwardButton.setVisible(true);
-		jumpStartButton.setVisible(true);
-		jumpEndButton.setVisible(true);
-		quitButton.setVisible(true);
-		
-		refreshData();
-	}
-	
-	private void stepForwardButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		GameController gc= new GameController();		
-		error = null;
+		Rectangle rect;
+		//Rectangle [][] tiles=new Rectangle[9][9];
+        public RectComp() {
+    		rect=new Rectangle(40,40);
+        	/*for (int i=0;i<9;i++) {
+    			for (int j=0;j<9;j++) {
+    				tiles[i][j]=new Rectangle(20,20);
+    			}
+    		}*/
+        }
 
-		// update visuals
-		error = "step for"; //for testing
-		refreshData();
-	}
-	
-	private void stepBackwardButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		GameController gc= new GameController();		
-		error = null;
-		
-		// update visuals
-		error = "step back"; //for testing
-		refreshData();
-	}
-	
-	private void jumpStartButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		GameController gc= new GameController();		
-		error = null;
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2 = (Graphics2D) g;
+            g2.draw(rect);
+            /*for (int i=0;i<9;i++) {
+    			for (int j=0;j<9;j++) {
+    				g2.draw(tiles[i][j]);
+    			}
+    		}*/
+            
+            g2.setColor(Color.ORANGE);
+            g2.fill(rect);
+            /*for (int i=0;i<9;i++) {
+    			for (int j=0;j<9;j++) {
+    				g2.fill(tiles[i][j]);
+    			}
+    		}*/
 
-		// update visuals
-		error = "jump start"; //for testing
-		refreshData();
-	}
-	
-	private void jumpEndButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		GameController gc= new GameController();		
-		error = null;
-
-		// update visuals
-		error = "jump end"; //for testing
-		refreshData();
-	}
-	
-	private void quitButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		//GameController gc= new GameController();		
-		error = null;
-		
-		newGameButton.setVisible(true);
-		loadGameButton.setVisible(true);
-		
-		replayGameButton.setVisible(false);
-		stepForwardButton.setVisible(false);
-		stepBackwardButton.setVisible(false);
-		jumpStartButton.setVisible(false);
-		jumpEndButton.setVisible(false);
-		quitButton.setVisible(false);
-		
-		// update visuals
-		error = "quit"; //for testing
-		refreshData();
-	}
+        }
+    }
 	
 	
 }
