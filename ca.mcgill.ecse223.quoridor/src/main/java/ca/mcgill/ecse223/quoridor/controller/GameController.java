@@ -119,14 +119,24 @@ public class GameController {
 			User u =q.getUser(i);
 			int thinkingTime=180;
 			if (colour.compareTo("white")==0) {
-				q.getCurrentGame().getWhitePlayer().setUser(u);
-				/*Player player1 = new Player(new Time(thinkingTime), q.getUser(i), 9, Direction.Horizontal);
-				q.getCurrentGame().setWhitePlayer(player1);  //(new Player(null, q.getUser(i), null));*/
+				if (q.getCurrentGame().getWhitePlayer()!=null) {
+					q.getCurrentGame().getWhitePlayer().setUser(u);
+				}
+				else {
+					Player player1 = new Player(new Time(thinkingTime), q.getUser(i), 9, Direction.Horizontal);
+					q.getCurrentGame().setWhitePlayer(player1);  //(new Player(null, q.getUser(i), null));
+				}
+				
+				
 			}
 			else {
-				q.getCurrentGame().getBlackPlayer().setUser(u);
-				/*Player player2 = new Player(new Time(thinkingTime), q.getUser(i), 1, Direction.Horizontal);
-				q.getCurrentGame().setBlackPlayer(player2);			//(new Player(null, q.getUser(i), null));*/
+				if (q.getCurrentGame().getBlackPlayer()!=null) {
+					q.getCurrentGame().getBlackPlayer().setUser(u);
+				}
+				else {
+					Player player2 = new Player(new Time(thinkingTime), q.getUser(i), 1, Direction.Horizontal);
+					q.getCurrentGame().setBlackPlayer(player2);
+				}
 			}
 			return name;
 			
@@ -151,16 +161,29 @@ public class GameController {
 		if (i==-1) {
 			User u=new User(name, q);
 			q.addUser(u);
-			//int thinkingTime=180;
+			int thinkingTime=180;
+			
 			if (colour.compareTo("white")==0) {
-				/*Player player1 = new Player(new Time(thinkingTime), u, 9, Direction.Horizontal);
-				q.getCurrentGame().setWhitePlayer(player1);*/
-				q.getCurrentGame().getWhitePlayer().setUser(u);
+				if (q.getCurrentGame().getWhitePlayer()!=null) {
+					q.getCurrentGame().getWhitePlayer().setUser(u);
+				}
+				else {
+					Player player1 = new Player(new Time(thinkingTime), u, 9, Direction.Horizontal);
+					q.getCurrentGame().setWhitePlayer(player1);  //(new Player(null, q.getUser(i), null));
+				}
+				
+				
 			}
 			else {
-				//Player player2 = new Player(new Time(thinkingTime), u, 1, Direction.Horizontal);
-				q.getCurrentGame().getBlackPlayer().setUser(u);
+				if (q.getCurrentGame().getBlackPlayer()!=null) {
+					q.getCurrentGame().getBlackPlayer().setUser(u);
+				}
+				else {
+					Player player2 = new Player(new Time(thinkingTime), u, 1, Direction.Horizontal);
+					q.getCurrentGame().setBlackPlayer(player2);
+				}
 			}
+			
 			return name;
 		}
 		else {
