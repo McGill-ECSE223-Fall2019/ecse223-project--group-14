@@ -8,6 +8,9 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.sql.Time;
 
 import javax.swing.BorderFactory;
@@ -16,10 +19,13 @@ import javax.swing.GroupLayout.Group;
 import javax.swing.GroupLayout.ParallelGroup;
 import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.LayoutStyle;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
@@ -28,7 +34,7 @@ import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameController;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
 
-public class QuoridorPage extends JFrame{
+public class QuoridorPage extends JFrame implements MouseMotionListener{
 
 	/**
 	 * default 
@@ -52,7 +58,6 @@ public class QuoridorPage extends JFrame{
 	private JTextField secField;
 	private JLabel timeRem1;
 	private JLabel timeRem2;
-	
 	
 	private JButton newGameButton;
 	private JButton createP1Button;
@@ -83,11 +88,23 @@ public class QuoridorPage extends JFrame{
 	private Quoridor q;
 	private GameController gc;
 	
+	
+	// Layered panes helps with managing Z index of walls and pawns, when being moved or grabbed
+	private JLayeredPane lp;
+	
 	private RectComp [][] tiles;
+	private WallComp []whiteWalls;
+	private WallComp []blackWalls;
+	
+	private WallComp grabbedWall;
+	
+	
 	public QuoridorPage(){
 		q=QuoridorApplication.getQuoridor();
 		gc=new GameController();
 		gc.initQuorridor();
+		lp = getLayeredPane();
+		lp.addMouseMotionListener(this);
 		initComponents();
 		refreshData();
 	}
@@ -137,7 +154,7 @@ public class QuoridorPage extends JFrame{
 		bannerMessage.setText(banner);
 		
 		initButtons();
-		addListners();
+		addListeners();
 		
 		ActionListener count=new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
@@ -167,13 +184,21 @@ public class QuoridorPage extends JFrame{
 				tiles[i][j]=new RectComp();
 			}
 		}
+		
+		// Creating all the rectangles symbolizing walls, 10 for each player
+		whiteWalls= new WallComp[10];
+		blackWalls= new WallComp[10];
+		for (int i=0;i<10;i++) {
+			whiteWalls[i] = new WallComp();
+			blackWalls[i] = new WallComp();
+		}
+		
 		toggleBoard(false);
 		
-		GroupLayout layout = new GroupLayout(getContentPane());
-		getContentPane().setLayout(layout);
+		GroupLayout layout = new GroupLayout(lp);
+		lp.setLayout(layout);
 		layout.setAutoCreateGaps(true);
 		layout.setAutoCreateContainerGaps(true);
-		
 		
 		ParallelGroup pq=layout.createParallelGroup();
 		SequentialGroup sq=layout.createSequentialGroup();
@@ -284,6 +309,36 @@ public class QuoridorPage extends JFrame{
 	}
 	
 	private void createBoard(ParallelGroup pq,SequentialGroup sq, GroupLayout layout) {
+		// In horizontal layout, walls are in same group
+		// while board is its own.
+		SequentialGroup sWalls = layout.createSequentialGroup();
+		SequentialGroup sBoard = layout.createSequentialGroup();
+		pq.addGroup(sWalls);
+		pq.addGroup(sBoard);
+		
+		// In vertical layout, first is black Stock, then the board, then the white Stock
+		ParallelGroup pBlackWalls = layout.createParallelGroup();
+		ParallelGroup pBoard = layout.createParallelGroup();
+		ParallelGroup pWhiteWalls = layout.createParallelGroup();
+		sq.addGroup(pBlackWalls);
+		sq.addGroup(pBoard);
+		sq.addGroup(pWhiteWalls);
+		
+		// Add walls to each layout
+		for(int i=0;i<=9;i++) {
+			// In horizontal layout, pairs of black&white walls are in parallel
+			sWalls.addGroup(layout.createParallelGroup()
+					.addComponent(blackWalls[i])
+					.addComponent(whiteWalls[i])
+			);
+			
+			// In vertical layout, all black walls are in parallel
+			// and white walls are in parallel
+			pBlackWalls.addComponent(blackWalls[i]);
+			pWhiteWalls.addComponent(whiteWalls[i]);
+		}
+		
+		// Create tiles rows and cols
 		SequentialGroup s1=layout.createSequentialGroup();
 		SequentialGroup s2=layout.createSequentialGroup();
 		SequentialGroup s3=layout.createSequentialGroup();
@@ -302,8 +357,9 @@ public class QuoridorPage extends JFrame{
 		ParallelGroup p7=layout.createParallelGroup();
 		ParallelGroup p8=layout.createParallelGroup();
 		ParallelGroup p9=layout.createParallelGroup();
+		
+		// Add tiles to rows and cols
 		for (int i=0;i<9;i++) {
-			
 			s1.addComponent(tiles[1][i]);
 			p1.addComponent(tiles[1][i]);
 			
@@ -331,26 +387,24 @@ public class QuoridorPage extends JFrame{
 			s9.addComponent(tiles[0][i]);
 			p9.addComponent(tiles[0][i]);
 		}
-		
-		pq.addGroup(s1);
-		sq.addGroup(p1);
-		pq.addGroup(s2);
-		sq.addGroup(p2);
-		pq.addGroup(s3);
-		sq.addGroup(p3);
-		pq.addGroup(s4);
-		sq.addGroup(p4);
-		pq.addGroup(s5);
-		sq.addGroup(p5);
-		pq.addGroup(s6);
-		sq.addGroup(p6);
-		pq.addGroup(s7);
-		sq.addGroup(p7);
-		pq.addGroup(s8);
-		sq.addGroup(p8);
-		pq.addGroup(s9);
-		sq.addGroup(p9);
-		
+		pBoard.addGroup(s1);
+		sBoard.addGroup(p1);
+		pBoard.addGroup(s2);
+		sBoard.addGroup(p2);
+		pBoard.addGroup(s3);
+		sBoard.addGroup(p3);
+		pBoard.addGroup(s4);
+		sBoard.addGroup(p4);
+		pBoard.addGroup(s5);
+		sBoard.addGroup(p5);
+		pBoard.addGroup(s6);
+		sBoard.addGroup(p6);
+		pBoard.addGroup(s7);
+		sBoard.addGroup(p7);
+		pBoard.addGroup(s8);
+		sBoard.addGroup(p8);
+		pBoard.addGroup(s9);
+		sBoard.addGroup(p9);
 	}
 	
 	private void finishGame() {
@@ -814,7 +868,7 @@ public class QuoridorPage extends JFrame{
 		quitButton.setVisible(false);
 	}
 	
-	private void addListners() {
+	private void addListeners() {
 		newGameButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				newGameButtonActionPerformed(evt);
@@ -935,6 +989,11 @@ public class QuoridorPage extends JFrame{
 				tiles[i][j].setVisible(vis);
 			}
 		}
+		// Hide the walls also
+		for (int i=0;i<10;i++) {
+			whiteWalls[i].setVisible(vis);
+			blackWalls[i].setVisible(vis);
+		}
 	}
 	
 	private String convT2S(Time t) {
@@ -944,21 +1003,33 @@ public class QuoridorPage extends JFrame{
 		return("Time Remainning: "+min+":"+sec);
 	}
 	
-	class RectComp extends JPanel {
+	class RectComp extends JComponent {
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
 		
 		Rectangle rect;
+		Color color;
 		//Rectangle [][] tiles=new Rectangle[9][9];
         public RectComp() {
     		rect=new Rectangle(40,40);
+    		color= Color.ORANGE;
         	/*for (int i=0;i<9;i++) {
     			for (int j=0;j<9;j++) {
     				tiles[i][j]=new Rectangle(20,20);
     			}
     		}*/
+        }
+        public Color getColor() {
+        	return this.color;
+        }
+        public void setColor(Color c) {
+        	this.color = c;
+        }
+        
+        public Rectangle getRect() {
+        	return this.rect;
         }
 
         public void paintComponent(Graphics g) {
@@ -971,7 +1042,7 @@ public class QuoridorPage extends JFrame{
     			}
     		}*/
             
-            g2.setColor(Color.ORANGE);
+            g2.setColor(color);
             g2.fill(rect);
             /*for (int i=0;i<9;i++) {
     			for (int j=0;j<9;j++) {
@@ -982,5 +1053,50 @@ public class QuoridorPage extends JFrame{
         }
     }
 	
+	public void mouseMoved(java.awt.event.MouseEvent e) {
+		System.out.println("yeet");
+    	if (grabbedWall != null) {
+    		System.out.println("in");
+    		grabbedWall.getRect().setLocation(e.getX(),e.getY());
+            grabbedWall.repaint();
+    	}
+    }
 	
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+	}
+	
+	class WallComp extends RectComp{
+		private boolean grabbed;
+		
+		public WallComp() {
+			this.rect = new Rectangle(10,40);
+    		this.color = Color.BLUE;
+    		this.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mousePressed(java.awt.event.MouseEvent e) {
+                	grab(e.getX(),e.getY());
+                    repaint();
+                }
+            });
+		}
+		
+		public void grab(int x,int y) {
+			this.color = Color.RED;
+        	lp.moveToFront(this); // remove from Group Layout
+        	grabbedWall = this;
+        	rect.setLocation(x,y);
+        	System.out.println(grabbedWall.toString());
+		}
+		
+		public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2 = (Graphics2D) g;
+            g2.draw(rect);
+            g2.setColor(color);
+            g2.fill(rect);
+        }
+
+	}
 }
