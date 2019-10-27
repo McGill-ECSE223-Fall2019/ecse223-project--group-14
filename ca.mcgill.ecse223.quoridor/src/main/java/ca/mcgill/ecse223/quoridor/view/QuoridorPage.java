@@ -8,24 +8,14 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.sql.Time;
 
 import javax.swing.BorderFactory;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Group;
-import javax.swing.GroupLayout.ParallelGroup;
-import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.LayoutStyle;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
@@ -34,7 +24,7 @@ import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameController;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
 
-public class QuoridorPage extends JFrame implements MouseMotionListener{
+public class QuoridorPage extends JFrame{
 
 	/**
 	 * default 
@@ -58,6 +48,7 @@ public class QuoridorPage extends JFrame implements MouseMotionListener{
 	private JTextField secField;
 	private JLabel timeRem1;
 	private JLabel timeRem2;
+	
 	
 	private JButton newGameButton;
 	private JButton createP1Button;
@@ -88,33 +79,26 @@ public class QuoridorPage extends JFrame implements MouseMotionListener{
 	private Quoridor q;
 	private GameController gc;
 	
-	
-	// Layered panes helps with managing Z index of walls and pawns, when being moved or grabbed
-	private JLayeredPane lp;
-	
 	private RectComp [][] tiles;
-	private WallComp []whiteWalls;
-	private WallComp []blackWalls;
-	
-	private WallComp grabbedWall;
-	
-	
+	private RectComp [] bwalls;
+	private RectComp [] wwalls;
 	public QuoridorPage(){
 		q=QuoridorApplication.getQuoridor();
 		gc=new GameController();
 		gc.initQuorridor();
-		lp = getLayeredPane();
-		lp.addMouseMotionListener(this);
 		initComponents();
 		refreshData();
 	}
 
 	private void initComponents() {
 		
-		setSize(800, 800);
+		setSize(650, 1000);
 		
 		int buttonH=30;
 		int buttonW=125;
+		
+		int wallH=70;
+		int wallW=12;
 		
 		errorMessage = new JLabel();
 		errorMessage.setForeground(Color.RED);
@@ -154,7 +138,7 @@ public class QuoridorPage extends JFrame implements MouseMotionListener{
 		bannerMessage.setText(banner);
 		
 		initButtons();
-		addListeners();
+		addListners();
 		
 		ActionListener count=new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
@@ -181,122 +165,112 @@ public class QuoridorPage extends JFrame implements MouseMotionListener{
 		tiles= new RectComp[9][9];
 		for (int i=0;i<9;i++) {
 			for (int j=0;j<9;j++) {
-				tiles[i][j]=new RectComp();
+				tiles[i][j]=new RectComp(40,40,0);
+			}
+		}
+		bwalls= new RectComp[10];
+		for (int i=0;i<10;i++) {
+			bwalls[i]=new RectComp(wallW,wallH,2);
+		}
+		
+		wwalls= new RectComp[10];
+		for (int i=0;i<10;i++) {
+			wwalls[i]=new RectComp(wallW,wallH,1);
+		}
+		//wwalls[0].contains(5, 5); can be used to determine valid wall placement
+		//JPanel board = new JPanel(new FlowLayout());
+		//board.addL
+		
+		toggleBoard(false);
+		getContentPane().setLayout(null);
+		int y=260;
+		
+		title.setBounds(10, 10, 600, 40);
+		add(title);
+		bannerMessage.setBounds(10, 60, 600, 40);
+		add(bannerMessage);
+		errorMessage.setBounds(10, 110, 600, 10);
+		add(errorMessage);
+		p1Name.setBounds(10, 125, 600, 10);
+		add(p1Name);
+		timeRem1.setBounds(10, 140, 600, 10);
+		add(timeRem1);
+		
+		newGameButton.setBounds(10, y, buttonW, buttonH);
+		add(newGameButton);
+		loadGameButton.setBounds(10, y+30, buttonW, buttonH);
+		add(loadGameButton);
+		saveGameButton.setBounds(10, y, buttonW, buttonH);
+		add(saveGameButton);
+		resignGameButton.setBounds(10, y+60, buttonW, buttonH);
+		add(resignGameButton);
+		drawGameButton.setBounds(10, y+90, buttonW, buttonH);
+		add(drawGameButton);
+		
+		stepForwardButton.setBounds(10, y, buttonW, buttonH);
+		add(stepForwardButton);
+		stepBackwardButton.setBounds(10, y+30, buttonW, buttonH);
+		add(stepBackwardButton);
+		jumpStartButton.setBounds(10, y+60, buttonW, buttonH);
+		add(jumpStartButton);
+		jumpEndButton.setBounds(10, y+90, buttonW, buttonH);
+		add(jumpEndButton);
+		quitButton.setBounds(10, y+120, buttonW, buttonH);
+		add(quitButton);
+		
+		acceptDrawButton.setBounds(10, y, buttonW, buttonH);
+		add(acceptDrawButton);
+		declineDrawButton.setBounds(10, y+30, buttonW, buttonH);
+		add(declineDrawButton);
+		
+		replayGameButton.setBounds(10, y, buttonW, buttonH);
+		add(replayGameButton);
+		
+		p1NameField.setBounds(10, 160, 200, buttonH);
+		add(p1NameField);
+		
+		p2NameField.setBounds(10, 160, 200, buttonH);
+		add(p2NameField);
+		
+		minField.setBounds(10, 160, buttonW, buttonH);
+		add(minField);
+		
+		secField.setBounds(140, 160, buttonW, buttonH);
+		add(secField);
+		
+		createP1Button.setBounds(270, 160, buttonW, buttonH);
+		add(createP1Button);
+		
+		selectP1Button.setBounds(400, 160, buttonW, buttonH);
+		add(selectP1Button);
+		
+		createP2Button.setBounds(270, 160, buttonW, buttonH);
+		add(createP2Button);
+		
+		selectP2Button.setBounds(400, 160, buttonW, buttonH);
+		add(selectP2Button);
+		
+		timeSetButton.setBounds(270, 160, buttonW, buttonH);
+		add(timeSetButton);
+		
+		p2Name.setBounds(10, 615, 600, 10);
+		add(p2Name);
+		timeRem2.setBounds(10, 630, 600, 10);
+		add(timeRem2);
+		
+		for (int i=0;i<9;i++) {
+			for (int j=0;j<9;j++) {
+				tiles[i][j].setBounds(150+50*i,210+50*j, 40, 40);
+				add(tiles[i][j]);
 			}
 		}
 		
-		// Creating all the rectangles symbolizing walls, 10 for each player
-		whiteWalls= new WallComp[10];
-		blackWalls= new WallComp[10];
 		for (int i=0;i<10;i++) {
-			whiteWalls[i] = new WallComp();
-			blackWalls[i] = new WallComp();
+			wwalls[i].setBounds(150+(wallW+10)*i, 125, wallW, wallH);
+			add(wwalls[i]);
+			bwalls[i].setBounds(150+(wallW+10)*i, 675, wallW, wallH);
+			add(bwalls[i]);
 		}
-		
-		toggleBoard(false);
-		
-		GroupLayout layout = new GroupLayout(lp);
-		lp.setLayout(layout);
-		layout.setAutoCreateGaps(true);
-		layout.setAutoCreateContainerGaps(true);
-		
-		ParallelGroup pq=layout.createParallelGroup();
-		SequentialGroup sq=layout.createSequentialGroup();
-		
-		createBoard(pq,sq,layout);
-		
-		layout.setVerticalGroup(
-				layout.createSequentialGroup().addComponent(title, GroupLayout.PREFERRED_SIZE, 40,GroupLayout.PREFERRED_SIZE)
-				.addComponent(bannerMessage, GroupLayout.PREFERRED_SIZE, 40,GroupLayout.PREFERRED_SIZE)
-				.addComponent(errorMessage)
-				.addComponent(p1Name)
-				.addComponent(timeRem1)
-				.addGroup(layout.createParallelGroup()
-					.addGroup(layout.createSequentialGroup()
-						.addComponent(newGameButton, GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(saveGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(loadGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(resignGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(drawGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(stepForwardButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(stepBackwardButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(jumpStartButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(jumpEndButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(acceptDrawButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(declineDrawButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(quitButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(replayGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(p1NameField,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(p2NameField,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addGroup(layout.createParallelGroup()
-								.addComponent(minField,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-								.addComponent(secField,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-								)
-					)
-				/*.addGroup(layout.createParallelGroup().addComponent(quitButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(replayGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE))*/
-					.addGroup(sq)
-					.addGroup(layout.createSequentialGroup()
-							.addGroup(layout.createParallelGroup()
-									.addComponent(createP1Button,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-									.addComponent(selectP1Button,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-									)
-							.addGroup(layout.createParallelGroup()
-									.addComponent(createP2Button,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-									.addComponent(selectP2Button,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-									)
-							.addComponent(timeSetButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-							)
-			).addComponent(p2Name)
-			.addComponent(timeRem2)
-		);
-		layout.setHorizontalGroup(
-				layout.createParallelGroup().addComponent(title, GroupLayout.PREFERRED_SIZE, 600,GroupLayout.PREFERRED_SIZE)
-				.addComponent(bannerMessage, GroupLayout.PREFERRED_SIZE, 750,GroupLayout.PREFERRED_SIZE)
-				.addComponent(errorMessage)
-				.addComponent(p1Name)
-				.addComponent(timeRem1)
-				.addGroup(layout.createSequentialGroup()
-					.addGroup(layout.createParallelGroup()
-						.addComponent(newGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(saveGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(loadGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(resignGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(drawGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(stepForwardButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(stepBackwardButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(jumpStartButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(jumpEndButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(acceptDrawButton,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-						.addComponent(declineDrawButton,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-						.addComponent(quitButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(replayGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(p1NameField,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-						.addComponent(p2NameField,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-						.addGroup(layout.createSequentialGroup()
-								.addComponent(minField,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-								.addComponent(secField,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-								)
-					)
-						/*.addGroup(layout.createSequentialGroup().addComponent(quitButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-								.addComponent(replayGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE))*/
-					.addGroup(pq)
-					.addGroup(layout.createParallelGroup()
-							.addGroup(layout.createSequentialGroup()
-									.addComponent(createP1Button,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-									.addComponent(selectP1Button,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-									)
-							.addGroup(layout.createSequentialGroup()
-									.addComponent(createP2Button,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-									.addComponent(selectP2Button,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-									)
-							.addComponent(timeSetButton,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-							)
-			).addComponent(p2Name)
-			.addComponent(timeRem2)
-		);
-		
-		//pack();
 	}
 
 	private void refreshData() {
@@ -308,104 +282,6 @@ public class QuoridorPage extends JFrame implements MouseMotionListener{
 		
 	}
 	
-	private void createBoard(ParallelGroup pq,SequentialGroup sq, GroupLayout layout) {
-		// In horizontal layout, walls are in same group
-		// while board is its own.
-		SequentialGroup sWalls = layout.createSequentialGroup();
-		SequentialGroup sBoard = layout.createSequentialGroup();
-		pq.addGroup(sWalls);
-		pq.addGroup(sBoard);
-		
-		// In vertical layout, first is black Stock, then the board, then the white Stock
-		ParallelGroup pBlackWalls = layout.createParallelGroup();
-		ParallelGroup pBoard = layout.createParallelGroup();
-		ParallelGroup pWhiteWalls = layout.createParallelGroup();
-		sq.addGroup(pBlackWalls);
-		sq.addGroup(pBoard);
-		sq.addGroup(pWhiteWalls);
-		
-		// Add walls to each layout
-		for(int i=0;i<=9;i++) {
-			// In horizontal layout, pairs of black&white walls are in parallel
-			sWalls.addGroup(layout.createParallelGroup()
-					.addComponent(blackWalls[i])
-					.addComponent(whiteWalls[i])
-			);
-			
-			// In vertical layout, all black walls are in parallel
-			// and white walls are in parallel
-			pBlackWalls.addComponent(blackWalls[i]);
-			pWhiteWalls.addComponent(whiteWalls[i]);
-		}
-		
-		// Create tiles rows and cols
-		SequentialGroup s1=layout.createSequentialGroup();
-		SequentialGroup s2=layout.createSequentialGroup();
-		SequentialGroup s3=layout.createSequentialGroup();
-		SequentialGroup s4=layout.createSequentialGroup();
-		SequentialGroup s5=layout.createSequentialGroup();
-		SequentialGroup s6=layout.createSequentialGroup();
-		SequentialGroup s7=layout.createSequentialGroup();
-		SequentialGroup s8=layout.createSequentialGroup();
-		SequentialGroup s9=layout.createSequentialGroup();
-		ParallelGroup p1=layout.createParallelGroup();
-		ParallelGroup p2=layout.createParallelGroup();
-		ParallelGroup p3=layout.createParallelGroup();
-		ParallelGroup p4=layout.createParallelGroup();
-		ParallelGroup p5=layout.createParallelGroup();
-		ParallelGroup p6=layout.createParallelGroup();
-		ParallelGroup p7=layout.createParallelGroup();
-		ParallelGroup p8=layout.createParallelGroup();
-		ParallelGroup p9=layout.createParallelGroup();
-		
-		// Add tiles to rows and cols
-		for (int i=0;i<9;i++) {
-			s1.addComponent(tiles[1][i]);
-			p1.addComponent(tiles[1][i]);
-			
-			s2.addComponent(tiles[2][i]);
-			p2.addComponent(tiles[2][i]);
-			
-			s3.addComponent(tiles[3][i]);
-			p3.addComponent(tiles[3][i]);
-			
-			s4.addComponent(tiles[4][i]);
-			p4.addComponent(tiles[4][i]);
-			
-			s5.addComponent(tiles[5][i]);
-			p5.addComponent(tiles[5][i]);
-			
-			s6.addComponent(tiles[6][i]);
-			p6.addComponent(tiles[6][i]);
-			
-			s7.addComponent(tiles[7][i]);
-			p7.addComponent(tiles[7][i]);
-			
-			s8.addComponent(tiles[8][i]);
-			p8.addComponent(tiles[8][i]);
-			
-			s9.addComponent(tiles[0][i]);
-			p9.addComponent(tiles[0][i]);
-		}
-		pBoard.addGroup(s1);
-		sBoard.addGroup(p1);
-		pBoard.addGroup(s2);
-		sBoard.addGroup(p2);
-		pBoard.addGroup(s3);
-		sBoard.addGroup(p3);
-		pBoard.addGroup(s4);
-		sBoard.addGroup(p4);
-		pBoard.addGroup(s5);
-		sBoard.addGroup(p5);
-		pBoard.addGroup(s6);
-		sBoard.addGroup(p6);
-		pBoard.addGroup(s7);
-		sBoard.addGroup(p7);
-		pBoard.addGroup(s8);
-		sBoard.addGroup(p8);
-		pBoard.addGroup(s9);
-		sBoard.addGroup(p9);
-	}
 	
 	private void finishGame() {
 		//set screen to results
@@ -581,6 +457,7 @@ public class QuoridorPage extends JFrame implements MouseMotionListener{
 			secField.setVisible(false);
 			timeSetButton.setVisible(false);
 			saveGameButton.setVisible(true);
+			loadGameButton.setVisible(true);
 			resignGameButton.setVisible(true);
 			drawGameButton.setVisible(true);
 			newGameButton.setVisible(false);
@@ -868,7 +745,7 @@ public class QuoridorPage extends JFrame implements MouseMotionListener{
 		quitButton.setVisible(false);
 	}
 	
-	private void addListeners() {
+	private void addListners() {
 		newGameButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				newGameButtonActionPerformed(evt);
@@ -988,12 +865,11 @@ public class QuoridorPage extends JFrame implements MouseMotionListener{
 			for (int j=0;j<9;j++) {
 				tiles[i][j].setVisible(vis);
 			}
+			wwalls[i].setVisible(vis);
+			bwalls[i].setVisible(vis);
 		}
-		// Hide the walls also
-		for (int i=0;i<10;i++) {
-			whiteWalls[i].setVisible(vis);
-			blackWalls[i].setVisible(vis);
-		}
+		wwalls[9].setVisible(vis);
+		bwalls[9].setVisible(vis);
 	}
 	
 	private String convT2S(Time t) {
@@ -1003,33 +879,23 @@ public class QuoridorPage extends JFrame implements MouseMotionListener{
 		return("Time Remainning: "+min+":"+sec);
 	}
 	
-	class RectComp extends JComponent {
+	class RectComp extends JPanel {
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
 		
 		Rectangle rect;
-		Color color;
+		int colour;
 		//Rectangle [][] tiles=new Rectangle[9][9];
-        public RectComp() {
-    		rect=new Rectangle(40,40);
-    		color= Color.ORANGE;
-        	/*for (int i=0;i<9;i++) {
+        public RectComp(int w, int h, int c) {
+    		rect=new Rectangle(w,h);
+        	colour=c;
+    		/*for (int i=0;i<9;i++) {
     			for (int j=0;j<9;j++) {
     				tiles[i][j]=new Rectangle(20,20);
     			}
     		}*/
-        }
-        public Color getColor() {
-        	return this.color;
-        }
-        public void setColor(Color c) {
-        	this.color = c;
-        }
-        
-        public Rectangle getRect() {
-        	return this.rect;
         }
 
         public void paintComponent(Graphics g) {
@@ -1042,7 +908,16 @@ public class QuoridorPage extends JFrame implements MouseMotionListener{
     			}
     		}*/
             
-            g2.setColor(color);
+            if (colour==0) {
+            	g2.setColor(Color.ORANGE);
+            }
+            else if (colour==1) {
+            	g2.setColor(Color.WHITE);
+            }
+            else {
+            	g2.setColor(Color.BLACK);
+            }
+       
             g2.fill(rect);
             /*for (int i=0;i<9;i++) {
     			for (int j=0;j<9;j++) {
@@ -1053,50 +928,5 @@ public class QuoridorPage extends JFrame implements MouseMotionListener{
         }
     }
 	
-	public void mouseMoved(java.awt.event.MouseEvent e) {
-		System.out.println("yeet");
-    	if (grabbedWall != null) {
-    		System.out.println("in");
-    		grabbedWall.getRect().setLocation(e.getX(),e.getY());
-            grabbedWall.repaint();
-    	}
-    }
 	
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
-	}
-	
-	class WallComp extends RectComp{
-		private boolean grabbed;
-		
-		public WallComp() {
-			this.rect = new Rectangle(10,40);
-    		this.color = Color.BLUE;
-    		this.addMouseListener(new java.awt.event.MouseAdapter() {
-                @Override
-                public void mousePressed(java.awt.event.MouseEvent e) {
-                	grab(e.getX(),e.getY());
-                    repaint();
-                }
-            });
-		}
-		
-		public void grab(int x,int y) {
-			this.color = Color.RED;
-        	lp.moveToFront(this); // remove from Group Layout
-        	grabbedWall = this;
-        	rect.setLocation(x,y);
-        	System.out.println(grabbedWall.toString());
-		}
-		
-		public void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            Graphics2D g2 = (Graphics2D) g;
-            g2.draw(rect);
-            g2.setColor(color);
-            g2.fill(rect);
-        }
-
-	}
 }

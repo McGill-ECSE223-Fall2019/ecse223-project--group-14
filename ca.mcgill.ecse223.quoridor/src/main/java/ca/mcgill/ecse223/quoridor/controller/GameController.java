@@ -271,13 +271,7 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	public void rotateWall(Game game) throws UnsupportedOperationException{
-		// Switch wall direction for current Wall Move candidate
-		if(game.hasWallMoveCandidate()) {
-			Direction dir = game.getWallMoveCandidate().getWallDirection(); // current
-			if (dir.equals(Direction.Horizontal)) dir = Direction.Vertical; // switch it
-			else dir = Direction.Horizontal;
-			game.getWallMoveCandidate().setWallDirection(dir); // apply new dir
-		}
+		throw new UnsupportedOperationException();
 	}
 	
 	/**
