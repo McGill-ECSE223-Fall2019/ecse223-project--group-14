@@ -3,14 +3,18 @@ package ca.mcgill.ecse223.quoridor.controller;
 import java.io.File;
 import java.sql.Time;
 
+import javax.swing.Timer;
+
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.Board;
 import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Game;
 import ca.mcgill.ecse223.quoridor.model.Player;
+import ca.mcgill.ecse223.quoridor.model.PlayerPosition;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
 import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
+import ca.mcgill.ecse223.quoridor.view.QuoridorPage;
 import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
 import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 import ca.mcgill.ecse223.quoridor.model.GamePosition;
@@ -46,6 +50,17 @@ public class GameController {
 		q.getCurrentGame().setWhitePlayer(p1);
 		q.getCurrentGame().setBlackPlayer(p2);
 		
+		//this can be taken out when init board is correct
+		Tile player1StartPos = q.getBoard().getTile(36);
+		Tile player2StartPos = q.getBoard().getTile(44);
+		PlayerPosition player1Position = new PlayerPosition(q.getCurrentGame().getWhitePlayer(), player1StartPos);
+		PlayerPosition player2Position = new PlayerPosition(q.getCurrentGame().getBlackPlayer(), player2StartPos);
+		
+		GamePosition gamePos=new GamePosition(1, player1Position, player2Position, q.getCurrentGame().getWhitePlayer(), q.getCurrentGame());
+		q.getCurrentGame().setCurrentPosition(gamePos);
+		
+		//q.getCurrentGame().getCurrentPosition().setPlayerToMove(p1);
+		
 	}
 
 	
@@ -58,12 +73,28 @@ public class GameController {
 	 * @param g
 	 * @throws UnsupportedOperationException
 	 */
-	public void startTheClock(Game g)throws UnsupportedOperationException{
-		
-		throw new UnsupportedOperationException();
+	public void startTheClock(Quoridor q, Timer t)throws UnsupportedOperationException{
+		t.start();
+		q.getCurrentGame().setGameStatus(GameStatus.Running);
 		//Time time=g.getBlackPlayer().getRemainingTime();
 		
 		
+	}
+	
+	/**
+	 * Helper method to count down clock
+	 * 
+	 * @author Darius Piecaitis
+	 * 
+	 */
+	public boolean countdown(Quoridor q) {
+		long tb=q.getCurrentGame().getCurrentPosition().getPlayerToMove().getRemainingTime().getTime();
+		long ta=tb-1000;
+		if (ta<=0) {
+			return true;
+		}
+		q.getCurrentGame().getCurrentPosition().getPlayerToMove().setRemainingTime(new Time(ta));
+		return false;
 	}
 	
 	/**
@@ -85,15 +116,17 @@ public class GameController {
 			return msg;
 		}
 		else {
+			User u =q.getUser(i);
 			int thinkingTime=180;
 			if (colour.compareTo("white")==0) {
-				
-				Player player1 = new Player(new Time(thinkingTime), q.getUser(i), 9, Direction.Horizontal);
-				q.getCurrentGame().setWhitePlayer(player1);  //(new Player(null, q.getUser(i), null));
+				q.getCurrentGame().getWhitePlayer().setUser(u);
+				/*Player player1 = new Player(new Time(thinkingTime), q.getUser(i), 9, Direction.Horizontal);
+				q.getCurrentGame().setWhitePlayer(player1);  //(new Player(null, q.getUser(i), null));*/
 			}
 			else {
-				Player player2 = new Player(new Time(thinkingTime), q.getUser(i), 1, Direction.Horizontal);
-				q.getCurrentGame().setBlackPlayer(player2);			//(new Player(null, q.getUser(i), null));
+				q.getCurrentGame().getBlackPlayer().setUser(u);
+				/*Player player2 = new Player(new Time(thinkingTime), q.getUser(i), 1, Direction.Horizontal);
+				q.getCurrentGame().setBlackPlayer(player2);			//(new Player(null, q.getUser(i), null));*/
 			}
 			return name;
 			
@@ -172,8 +205,12 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 
-	public void setTime (int min, int sec) {
-		throw new UnsupportedOperationException();
+	public void setTime (Quoridor q, int min, int sec) {
+		//throw new UnsupportedOperationException();
+		long time=(min*60+sec)*1000;		//time takes in ms
+		q.getCurrentGame().getBlackPlayer().setRemainingTime(new Time(time));
+		q.getCurrentGame().getWhitePlayer().setRemainingTime(new Time(time));
+		q.getCurrentGame().setGameStatus(GameStatus.ReadyToStart);
 	}
 
 

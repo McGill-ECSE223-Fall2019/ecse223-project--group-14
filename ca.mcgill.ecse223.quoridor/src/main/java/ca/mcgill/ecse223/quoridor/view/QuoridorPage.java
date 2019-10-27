@@ -7,6 +7,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Time;
 
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
@@ -18,6 +20,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 
@@ -40,9 +43,15 @@ public class QuoridorPage extends JFrame{
 	private String banner = "Main Menu";
 	
 	private JTextField p1NameField;
+	private JLabel p1Name;
+	
 	private JTextField p2NameField;
+	private JLabel p2Name;
+	
 	private JTextField minField;
 	private JTextField secField;
+	private JLabel timeRem1;
+	private JLabel timeRem2;
 	
 	
 	private JButton newGameButton;
@@ -69,6 +78,8 @@ public class QuoridorPage extends JFrame{
 	private JButton jumpEndButton;
 	private JButton quitButton;
 	
+	private Timer timer;
+	
 	private Quoridor q;
 	private GameController gc;
 	
@@ -94,12 +105,26 @@ public class QuoridorPage extends JFrame{
 		
 		p1NameField=new JTextField();
 		p1NameField.setVisible(false);
+		p1Name=new JLabel();
+		p1Name.setText("");
+		p1Name.setVisible(false);
+		
 		p2NameField=new JTextField();
 		p2NameField.setVisible(false);
+		p2Name=new JLabel();
+		p2Name.setText("");
+		p2Name.setVisible(false);
+		
 		minField=new JTextField();
 		minField.setVisible(false);
 		secField=new JTextField();
 		secField.setVisible(false);
+		timeRem1=new JLabel();
+		timeRem1.setText("");
+		timeRem1.setVisible(false);
+		timeRem2=new JLabel();
+		timeRem2.setText("");
+		timeRem2.setVisible(false);
 		
 		title = new JLabel();
 		title.setFont(new Font("Serif",Font.PLAIN,36));
@@ -114,6 +139,25 @@ public class QuoridorPage extends JFrame{
 		initButtons();
 		addListners();
 		
+		ActionListener count=new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				boolean over=gc.countdown(q);
+				if (over) {
+					finishGame();
+				}
+				else {
+					if (q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsBlack()) {
+						Time t=q.getCurrentGame().getBlackPlayer().getRemainingTime();
+						timeRem2.setText(convT2S(t));
+					}
+					else {
+						Time t=q.getCurrentGame().getWhitePlayer().getRemainingTime();
+						timeRem1.setText(convT2S(t));
+					}
+				}
+			}
+		};
+		timer=new Timer(1000,count);
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setTitle("Quoridor");
 		
@@ -134,6 +178,112 @@ public class QuoridorPage extends JFrame{
 		ParallelGroup pq=layout.createParallelGroup();
 		SequentialGroup sq=layout.createSequentialGroup();
 		
+		createBoard(pq,sq,layout);
+		
+		layout.setVerticalGroup(
+				layout.createSequentialGroup().addComponent(title, GroupLayout.PREFERRED_SIZE, 40,GroupLayout.PREFERRED_SIZE)
+				.addComponent(bannerMessage, GroupLayout.PREFERRED_SIZE, 40,GroupLayout.PREFERRED_SIZE)
+				.addComponent(errorMessage)
+				.addComponent(p1Name)
+				.addComponent(timeRem1)
+				.addGroup(layout.createParallelGroup()
+					.addGroup(layout.createSequentialGroup()
+						.addComponent(newGameButton, GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(saveGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(loadGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(resignGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(drawGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(stepForwardButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(stepBackwardButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(jumpStartButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(jumpEndButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(acceptDrawButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(declineDrawButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(quitButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(replayGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(p1NameField,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(p2NameField,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addGroup(layout.createParallelGroup()
+								.addComponent(minField,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+								.addComponent(secField,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+								)
+					)
+				/*.addGroup(layout.createParallelGroup().addComponent(quitButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+						.addComponent(replayGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE))*/
+					.addGroup(sq)
+					.addGroup(layout.createSequentialGroup()
+							.addGroup(layout.createParallelGroup()
+									.addComponent(createP1Button,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+									.addComponent(selectP1Button,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+									)
+							.addGroup(layout.createParallelGroup()
+									.addComponent(createP2Button,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+									.addComponent(selectP2Button,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+									)
+							.addComponent(timeSetButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
+							)
+			).addComponent(p2Name)
+			.addComponent(timeRem2)
+		);
+		layout.setHorizontalGroup(
+				layout.createParallelGroup().addComponent(title, GroupLayout.PREFERRED_SIZE, 600,GroupLayout.PREFERRED_SIZE)
+				.addComponent(bannerMessage, GroupLayout.PREFERRED_SIZE, 750,GroupLayout.PREFERRED_SIZE)
+				.addComponent(errorMessage)
+				.addComponent(p1Name)
+				.addComponent(timeRem1)
+				.addGroup(layout.createSequentialGroup()
+					.addGroup(layout.createParallelGroup()
+						.addComponent(newGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+						.addComponent(saveGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+						.addComponent(loadGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+						.addComponent(resignGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+						.addComponent(drawGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+						.addComponent(stepForwardButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+						.addComponent(stepBackwardButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+						.addComponent(jumpStartButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+						.addComponent(jumpEndButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+						.addComponent(acceptDrawButton,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
+						.addComponent(declineDrawButton,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
+						.addComponent(quitButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+						.addComponent(replayGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+						.addComponent(p1NameField,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
+						.addComponent(p2NameField,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
+						.addGroup(layout.createSequentialGroup()
+								.addComponent(minField,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
+								.addComponent(secField,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
+								)
+					)
+						/*.addGroup(layout.createSequentialGroup().addComponent(quitButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
+								.addComponent(replayGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE))*/
+					.addGroup(pq)
+					.addGroup(layout.createParallelGroup()
+							.addGroup(layout.createSequentialGroup()
+									.addComponent(createP1Button,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
+									.addComponent(selectP1Button,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
+									)
+							.addGroup(layout.createSequentialGroup()
+									.addComponent(createP2Button,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
+									.addComponent(selectP2Button,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
+									)
+							.addComponent(timeSetButton,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
+							)
+			).addComponent(p2Name)
+			.addComponent(timeRem2)
+		);
+		
+		//pack();
+	}
+
+	private void refreshData() {
+		errorMessage.setText(error);
+		bannerMessage.setText(banner);
+		if (error == null || error.length() == 0) {
+			//update
+		}
+		
+	}
+	
+	private void createBoard(ParallelGroup pq,SequentialGroup sq, GroupLayout layout) {
 		SequentialGroup s1=layout.createSequentialGroup();
 		SequentialGroup s2=layout.createSequentialGroup();
 		SequentialGroup s3=layout.createSequentialGroup();
@@ -200,112 +350,6 @@ public class QuoridorPage extends JFrame{
 		sq.addGroup(p8);
 		pq.addGroup(s9);
 		sq.addGroup(p9);
-
-		/*for (int i=0;i<9;i++) {
-			sq.addComponent(tiles);
-		}*/
-		
-		/*layout.setVerticalGroup(sq);
-		layout.setHorizontalGroup(sq);*/
-		
-		layout.setVerticalGroup(
-				layout.createSequentialGroup().addComponent(title, GroupLayout.PREFERRED_SIZE, 40,GroupLayout.PREFERRED_SIZE)
-				.addComponent(bannerMessage, GroupLayout.PREFERRED_SIZE, 40,GroupLayout.PREFERRED_SIZE)
-				.addComponent(errorMessage)
-				.addGroup(layout.createParallelGroup()
-					.addGroup(layout.createSequentialGroup()
-						.addComponent(newGameButton, GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(saveGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(loadGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(resignGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(drawGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(stepForwardButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(stepBackwardButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(jumpStartButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(jumpEndButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(acceptDrawButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(declineDrawButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(quitButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(replayGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(p1NameField,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(p2NameField,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addGroup(layout.createParallelGroup()
-								.addComponent(minField,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-								.addComponent(secField,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-								)
-					)
-				/*.addGroup(layout.createParallelGroup().addComponent(quitButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(replayGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE))*/
-					.addGroup(sq)
-					.addGroup(layout.createSequentialGroup()
-							.addGroup(layout.createParallelGroup()
-									.addComponent(createP1Button,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-									.addComponent(selectP1Button,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-									)
-							.addGroup(layout.createParallelGroup()
-									.addComponent(createP2Button,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-									.addComponent(selectP2Button,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-									)
-							.addComponent(timeSetButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-							)
-				));
-		layout.setHorizontalGroup(
-				layout.createParallelGroup().addComponent(title, GroupLayout.PREFERRED_SIZE, 600,GroupLayout.PREFERRED_SIZE)
-				.addComponent(bannerMessage, GroupLayout.PREFERRED_SIZE, 750,GroupLayout.PREFERRED_SIZE)
-				.addComponent(errorMessage)
-				.addGroup(layout.createSequentialGroup()
-					.addGroup(layout.createParallelGroup()
-						.addComponent(newGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(saveGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(loadGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(resignGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(drawGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(stepForwardButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(stepBackwardButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(jumpStartButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(jumpEndButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(acceptDrawButton,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-						.addComponent(declineDrawButton,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-						.addComponent(quitButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(replayGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(p1NameField,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-						.addComponent(p2NameField,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-						.addGroup(layout.createSequentialGroup()
-								.addComponent(minField,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-								.addComponent(secField,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-								)
-					)
-						/*.addGroup(layout.createSequentialGroup().addComponent(quitButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-								.addComponent(replayGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE))*/
-					.addGroup(pq)
-					.addGroup(layout.createParallelGroup()
-							.addGroup(layout.createSequentialGroup()
-									.addComponent(createP1Button,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-									.addComponent(selectP1Button,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-									)
-							.addGroup(layout.createSequentialGroup()
-									.addComponent(createP2Button,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-									.addComponent(selectP2Button,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-									)
-							.addComponent(timeSetButton,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-							)
-				));
-		
-		//pack();
-	}
-
-	private void refreshData() {
-		errorMessage.setText(error);
-		bannerMessage.setText(banner);
-		if (error == null || error.length() == 0) {
-			//update
-		}
-		
-	}
-	
-	private void createBoard() {
-		/*ParallelGroup pq=layout.createParallelGroup();
-		SequentialGroup sq=layout.createSequentialGroup();*/
 		
 	}
 	
@@ -313,6 +357,9 @@ public class QuoridorPage extends JFrame{
 		//set screen to results
 		
 		//todo
+		timer.stop();
+		timeRem1.setVisible(false);
+		timeRem2.setVisible(false);
 		banner="Game Over";
 		newGameButton.setVisible(false);
 		saveGameButton.setVisible(false);
@@ -388,6 +435,8 @@ public class QuoridorPage extends JFrame{
 			createP2Button.setVisible(true);
 			selectP1Button.setVisible(false);
 			selectP2Button.setVisible(true);
+			
+			p1Name.setText(success);
 			refreshData();
 			
 		}
@@ -408,6 +457,8 @@ public class QuoridorPage extends JFrame{
 			minField.setVisible(true);
 			secField.setVisible(true);
 			timeSetButton.setVisible(true);
+			
+			p2Name.setText(success);
 			refreshData();
 			
 		}
@@ -428,6 +479,8 @@ public class QuoridorPage extends JFrame{
 			createP2Button.setVisible(true);
 			selectP1Button.setVisible(false);
 			selectP2Button.setVisible(true);
+			
+			p1Name.setText(success);
 			refreshData();
 			
 		}
@@ -448,6 +501,8 @@ public class QuoridorPage extends JFrame{
 			minField.setVisible(true);
 			secField.setVisible(true);
 			timeSetButton.setVisible(true);
+			
+			p2Name.setText(success);
 			refreshData();
 			
 		}
@@ -461,11 +516,11 @@ public class QuoridorPage extends JFrame{
 	private void timeSetButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		error="";
 		//uncomment once implemented
-		/*try {
-			gc.setTime(Integer.parseInt(minField.getText()),Integer.parseInt(secField.getText()));
+		try {
+			gc.setTime(q,Integer.parseInt(minField.getText()),Integer.parseInt(secField.getText()));
 		} catch (Exception e) {
 			error ="invalid input";
-		}*/
+		}
 		
 		if (error.compareTo("")==0) {
 			minField.setVisible(false);
@@ -478,6 +533,18 @@ public class QuoridorPage extends JFrame{
 			quitButton.setVisible(true);
 			toggleBoard(true);
 			banner="GamePlay";
+			
+			Time t=q.getCurrentGame().getBlackPlayer().getRemainingTime();
+			timeRem1.setText(convT2S(t));
+			timeRem2.setText(convT2S(t));
+			timeRem1.setVisible(true);
+			
+			p1Name.setVisible(true);
+			p2Name.setVisible(true);
+			
+			gc.startTheClock(q,timer);
+			//timer.start();
+			
 			refreshData();
 			
 		}
@@ -647,13 +714,17 @@ public class QuoridorPage extends JFrame{
 		toggleBoard(false);
 		
 		error = "";
-		
+		timer.stop();
 		newGameButton.setVisible(true);
 		loadGameButton.setVisible(true);
 		saveGameButton.setVisible(false);
 		resignGameButton.setVisible(false);
 		drawGameButton.setVisible(false);
 		
+		p1Name.setVisible(false);
+		p2Name.setVisible(false);
+		timeRem1.setVisible(false);
+		timeRem2.setVisible(false);
 		
 		replayGameButton.setVisible(false);
 		stepForwardButton.setVisible(false);
@@ -855,6 +926,8 @@ public class QuoridorPage extends JFrame{
 		
 	}
 	
+	
+	
 	private void toggleBoard(boolean vis) {
 		//boolean vis=!tiles[0][0].isVisible();
 		for (int i=0;i<9;i++) {
@@ -862,6 +935,13 @@ public class QuoridorPage extends JFrame{
 				tiles[i][j].setVisible(vis);
 			}
 		}
+	}
+	
+	private String convT2S(Time t) {
+		long tt=t.getTime();
+		int min=(int)(tt/1000)/60;
+		int sec=(int)(tt/1000)%60;
+		return("Time Remainning: "+min+":"+sec);
 	}
 	
 	class RectComp extends JPanel {

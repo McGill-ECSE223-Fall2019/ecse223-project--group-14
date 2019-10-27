@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.Timer;
+
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.Board;
 import ca.mcgill.ecse223.quoridor.model.Direction;
@@ -606,7 +608,7 @@ public class CucumberStepDefinitions {
 		
 		GameController G= new GameController();
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		G.setTime(min, sec);
+		G.setTime(quoridor,min, sec);
 	}
 	
 	/**
@@ -630,14 +632,10 @@ public class CucumberStepDefinitions {
 	 */ 
 	@Given ("The game is ready to start")
 	public void theGameIsReadyToStart() throws Throwable{
-		
+		GameController gc=new GameController();
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		Player p1=new Player(new Time(10), quoridor.getUser(0), 9, Direction.Horizontal);
-		Player p2 = new Player(new Time(10), quoridor.getUser(1), 1, Direction.Horizontal);
-		new Game (GameStatus.ReadyToStart, MoveMode.PlayerMove, quoridor);
-		
-		quoridor.getCurrentGame().setWhitePlayer(p1);
-		quoridor.getCurrentGame().setBlackPlayer(p2);
+		//gc.initQuorridor();
+		gc.initGame(quoridor);
 		
 	}
 	
@@ -649,8 +647,7 @@ public class CucumberStepDefinitions {
 	public void iStartTheClock() throws Throwable{
 		GameController G= new GameController();
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		Game game=quoridor.getCurrentGame();
-		G.startTheClock(game);
+		G.startTheClock(quoridor,new Timer(0, null));
 	}
 	
 	/**
@@ -1170,7 +1167,7 @@ public class CucumberStepDefinitions {
 	@When ("{int}:{int} is set as the thinking time")
 	public void IsSetAsTheThinkingTime(int min, int sec) throws Throwable{
 		GameController G= new GameController();
-		G.setTime(min, sec);
+		G.setTime(QuoridorApplication.getQuoridor(),min, sec);
 	}
 
 	/**
