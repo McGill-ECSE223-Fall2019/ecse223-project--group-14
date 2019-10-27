@@ -11,10 +11,6 @@ import java.awt.event.ActionListener;
 import java.sql.Time;
 
 import javax.swing.BorderFactory;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Group;
-import javax.swing.GroupLayout.ParallelGroup;
-import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -84,6 +80,8 @@ public class QuoridorPage extends JFrame{
 	private GameController gc;
 	
 	private RectComp [][] tiles;
+	private RectComp [] bwalls;
+	private RectComp [] wwalls;
 	public QuoridorPage(){
 		q=QuoridorApplication.getQuoridor();
 		gc=new GameController();
@@ -94,10 +92,13 @@ public class QuoridorPage extends JFrame{
 
 	private void initComponents() {
 		
-		setSize(800, 800);
+		setSize(650, 1000);
 		
 		int buttonH=30;
 		int buttonW=125;
+		
+		int wallH=70;
+		int wallW=12;
 		
 		errorMessage = new JLabel();
 		errorMessage.setForeground(Color.RED);
@@ -164,114 +165,112 @@ public class QuoridorPage extends JFrame{
 		tiles= new RectComp[9][9];
 		for (int i=0;i<9;i++) {
 			for (int j=0;j<9;j++) {
-				tiles[i][j]=new RectComp();
+				tiles[i][j]=new RectComp(40,40,0);
 			}
 		}
+		bwalls= new RectComp[10];
+		for (int i=0;i<10;i++) {
+			bwalls[i]=new RectComp(wallW,wallH,2);
+		}
+		
+		wwalls= new RectComp[10];
+		for (int i=0;i<10;i++) {
+			wwalls[i]=new RectComp(wallW,wallH,1);
+		}
+		//wwalls[0].contains(5, 5); can be used to determine valid wall placement
+		//JPanel board = new JPanel(new FlowLayout());
+		//board.addL
+		
 		toggleBoard(false);
+		getContentPane().setLayout(null);
+		int y=260;
 		
-		GroupLayout layout = new GroupLayout(getContentPane());
-		getContentPane().setLayout(layout);
-		layout.setAutoCreateGaps(true);
-		layout.setAutoCreateContainerGaps(true);
+		title.setBounds(10, 10, 600, 40);
+		add(title);
+		bannerMessage.setBounds(10, 60, 600, 40);
+		add(bannerMessage);
+		errorMessage.setBounds(10, 110, 600, 10);
+		add(errorMessage);
+		p1Name.setBounds(10, 125, 600, 10);
+		add(p1Name);
+		timeRem1.setBounds(10, 140, 600, 10);
+		add(timeRem1);
 		
+		newGameButton.setBounds(10, y, buttonW, buttonH);
+		add(newGameButton);
+		loadGameButton.setBounds(10, y+30, buttonW, buttonH);
+		add(loadGameButton);
+		saveGameButton.setBounds(10, y, buttonW, buttonH);
+		add(saveGameButton);
+		resignGameButton.setBounds(10, y+60, buttonW, buttonH);
+		add(resignGameButton);
+		drawGameButton.setBounds(10, y+90, buttonW, buttonH);
+		add(drawGameButton);
 		
-		ParallelGroup pq=layout.createParallelGroup();
-		SequentialGroup sq=layout.createSequentialGroup();
+		stepForwardButton.setBounds(10, y, buttonW, buttonH);
+		add(stepForwardButton);
+		stepBackwardButton.setBounds(10, y+30, buttonW, buttonH);
+		add(stepBackwardButton);
+		jumpStartButton.setBounds(10, y+60, buttonW, buttonH);
+		add(jumpStartButton);
+		jumpEndButton.setBounds(10, y+90, buttonW, buttonH);
+		add(jumpEndButton);
+		quitButton.setBounds(10, y+120, buttonW, buttonH);
+		add(quitButton);
 		
-		createBoard(pq,sq,layout);
+		acceptDrawButton.setBounds(10, y, buttonW, buttonH);
+		add(acceptDrawButton);
+		declineDrawButton.setBounds(10, y+30, buttonW, buttonH);
+		add(declineDrawButton);
 		
-		layout.setVerticalGroup(
-				layout.createSequentialGroup().addComponent(title, GroupLayout.PREFERRED_SIZE, 40,GroupLayout.PREFERRED_SIZE)
-				.addComponent(bannerMessage, GroupLayout.PREFERRED_SIZE, 40,GroupLayout.PREFERRED_SIZE)
-				.addComponent(errorMessage)
-				.addComponent(p1Name)
-				.addComponent(timeRem1)
-				.addGroup(layout.createParallelGroup()
-					.addGroup(layout.createSequentialGroup()
-						.addComponent(newGameButton, GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(saveGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(loadGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(resignGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(drawGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(stepForwardButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(stepBackwardButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(jumpStartButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(jumpEndButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(acceptDrawButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(declineDrawButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(quitButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(replayGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(p1NameField,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(p2NameField,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addGroup(layout.createParallelGroup()
-								.addComponent(minField,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-								.addComponent(secField,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-								)
-					)
-				/*.addGroup(layout.createParallelGroup().addComponent(quitButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-						.addComponent(replayGameButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE))*/
-					.addGroup(sq)
-					.addGroup(layout.createSequentialGroup()
-							.addGroup(layout.createParallelGroup()
-									.addComponent(createP1Button,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-									.addComponent(selectP1Button,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-									)
-							.addGroup(layout.createParallelGroup()
-									.addComponent(createP2Button,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-									.addComponent(selectP2Button,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-									)
-							.addComponent(timeSetButton,GroupLayout.PREFERRED_SIZE, buttonH,GroupLayout.PREFERRED_SIZE)
-							)
-			).addComponent(p2Name)
-			.addComponent(timeRem2)
-		);
-		layout.setHorizontalGroup(
-				layout.createParallelGroup().addComponent(title, GroupLayout.PREFERRED_SIZE, 600,GroupLayout.PREFERRED_SIZE)
-				.addComponent(bannerMessage, GroupLayout.PREFERRED_SIZE, 750,GroupLayout.PREFERRED_SIZE)
-				.addComponent(errorMessage)
-				.addComponent(p1Name)
-				.addComponent(timeRem1)
-				.addGroup(layout.createSequentialGroup()
-					.addGroup(layout.createParallelGroup()
-						.addComponent(newGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(saveGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(loadGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(resignGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(drawGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(stepForwardButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(stepBackwardButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(jumpStartButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(jumpEndButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(acceptDrawButton,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-						.addComponent(declineDrawButton,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-						.addComponent(quitButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(replayGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-						.addComponent(p1NameField,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-						.addComponent(p2NameField,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-						.addGroup(layout.createSequentialGroup()
-								.addComponent(minField,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-								.addComponent(secField,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-								)
-					)
-						/*.addGroup(layout.createSequentialGroup().addComponent(quitButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE)
-								.addComponent(replayGameButton, GroupLayout.PREFERRED_SIZE, buttonW ,GroupLayout.PREFERRED_SIZE))*/
-					.addGroup(pq)
-					.addGroup(layout.createParallelGroup()
-							.addGroup(layout.createSequentialGroup()
-									.addComponent(createP1Button,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-									.addComponent(selectP1Button,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-									)
-							.addGroup(layout.createSequentialGroup()
-									.addComponent(createP2Button,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-									.addComponent(selectP2Button,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-									)
-							.addComponent(timeSetButton,GroupLayout.PREFERRED_SIZE, buttonW,GroupLayout.PREFERRED_SIZE)
-							)
-			).addComponent(p2Name)
-			.addComponent(timeRem2)
-		);
+		replayGameButton.setBounds(10, y, buttonW, buttonH);
+		add(replayGameButton);
 		
-		//pack();
+		p1NameField.setBounds(10, 160, 200, buttonH);
+		add(p1NameField);
+		
+		p2NameField.setBounds(10, 160, 200, buttonH);
+		add(p2NameField);
+		
+		minField.setBounds(10, 160, buttonW, buttonH);
+		add(minField);
+		
+		secField.setBounds(140, 160, buttonW, buttonH);
+		add(secField);
+		
+		createP1Button.setBounds(270, 160, buttonW, buttonH);
+		add(createP1Button);
+		
+		selectP1Button.setBounds(400, 160, buttonW, buttonH);
+		add(selectP1Button);
+		
+		createP2Button.setBounds(270, 160, buttonW, buttonH);
+		add(createP2Button);
+		
+		selectP2Button.setBounds(400, 160, buttonW, buttonH);
+		add(selectP2Button);
+		
+		timeSetButton.setBounds(270, 160, buttonW, buttonH);
+		add(timeSetButton);
+		
+		p2Name.setBounds(10, 615, 600, 10);
+		add(p2Name);
+		timeRem2.setBounds(10, 630, 600, 10);
+		add(timeRem2);
+		
+		for (int i=0;i<9;i++) {
+			for (int j=0;j<9;j++) {
+				tiles[i][j].setBounds(150+50*i,210+50*j, 40, 40);
+				add(tiles[i][j]);
+			}
+		}
+		
+		for (int i=0;i<10;i++) {
+			wwalls[i].setBounds(150+(wallW+10)*i, 125, wallW, wallH);
+			add(wwalls[i]);
+			bwalls[i].setBounds(150+(wallW+10)*i, 675, wallW, wallH);
+			add(bwalls[i]);
+		}
 	}
 
 	private void refreshData() {
@@ -283,75 +282,6 @@ public class QuoridorPage extends JFrame{
 		
 	}
 	
-	private void createBoard(ParallelGroup pq,SequentialGroup sq, GroupLayout layout) {
-		SequentialGroup s1=layout.createSequentialGroup();
-		SequentialGroup s2=layout.createSequentialGroup();
-		SequentialGroup s3=layout.createSequentialGroup();
-		SequentialGroup s4=layout.createSequentialGroup();
-		SequentialGroup s5=layout.createSequentialGroup();
-		SequentialGroup s6=layout.createSequentialGroup();
-		SequentialGroup s7=layout.createSequentialGroup();
-		SequentialGroup s8=layout.createSequentialGroup();
-		SequentialGroup s9=layout.createSequentialGroup();
-		ParallelGroup p1=layout.createParallelGroup();
-		ParallelGroup p2=layout.createParallelGroup();
-		ParallelGroup p3=layout.createParallelGroup();
-		ParallelGroup p4=layout.createParallelGroup();
-		ParallelGroup p5=layout.createParallelGroup();
-		ParallelGroup p6=layout.createParallelGroup();
-		ParallelGroup p7=layout.createParallelGroup();
-		ParallelGroup p8=layout.createParallelGroup();
-		ParallelGroup p9=layout.createParallelGroup();
-		for (int i=0;i<9;i++) {
-			
-			s1.addComponent(tiles[1][i]);
-			p1.addComponent(tiles[1][i]);
-			
-			s2.addComponent(tiles[2][i]);
-			p2.addComponent(tiles[2][i]);
-			
-			s3.addComponent(tiles[3][i]);
-			p3.addComponent(tiles[3][i]);
-			
-			s4.addComponent(tiles[4][i]);
-			p4.addComponent(tiles[4][i]);
-			
-			s5.addComponent(tiles[5][i]);
-			p5.addComponent(tiles[5][i]);
-			
-			s6.addComponent(tiles[6][i]);
-			p6.addComponent(tiles[6][i]);
-			
-			s7.addComponent(tiles[7][i]);
-			p7.addComponent(tiles[7][i]);
-			
-			s8.addComponent(tiles[8][i]);
-			p8.addComponent(tiles[8][i]);
-			
-			s9.addComponent(tiles[0][i]);
-			p9.addComponent(tiles[0][i]);
-		}
-		
-		pq.addGroup(s1);
-		sq.addGroup(p1);
-		pq.addGroup(s2);
-		sq.addGroup(p2);
-		pq.addGroup(s3);
-		sq.addGroup(p3);
-		pq.addGroup(s4);
-		sq.addGroup(p4);
-		pq.addGroup(s5);
-		sq.addGroup(p5);
-		pq.addGroup(s6);
-		sq.addGroup(p6);
-		pq.addGroup(s7);
-		sq.addGroup(p7);
-		pq.addGroup(s8);
-		sq.addGroup(p8);
-		pq.addGroup(s9);
-		sq.addGroup(p9);
-		
-	}
 	
 	private void finishGame() {
 		//set screen to results
@@ -527,6 +457,7 @@ public class QuoridorPage extends JFrame{
 			secField.setVisible(false);
 			timeSetButton.setVisible(false);
 			saveGameButton.setVisible(true);
+			loadGameButton.setVisible(true);
 			resignGameButton.setVisible(true);
 			drawGameButton.setVisible(true);
 			newGameButton.setVisible(false);
@@ -934,7 +865,11 @@ public class QuoridorPage extends JFrame{
 			for (int j=0;j<9;j++) {
 				tiles[i][j].setVisible(vis);
 			}
+			wwalls[i].setVisible(vis);
+			bwalls[i].setVisible(vis);
 		}
+		wwalls[9].setVisible(vis);
+		bwalls[9].setVisible(vis);
 	}
 	
 	private String convT2S(Time t) {
@@ -951,10 +886,12 @@ public class QuoridorPage extends JFrame{
 		private static final long serialVersionUID = 1L;
 		
 		Rectangle rect;
+		int colour;
 		//Rectangle [][] tiles=new Rectangle[9][9];
-        public RectComp() {
-    		rect=new Rectangle(40,40);
-        	/*for (int i=0;i<9;i++) {
+        public RectComp(int w, int h, int c) {
+    		rect=new Rectangle(w,h);
+        	colour=c;
+    		/*for (int i=0;i<9;i++) {
     			for (int j=0;j<9;j++) {
     				tiles[i][j]=new Rectangle(20,20);
     			}
@@ -971,7 +908,16 @@ public class QuoridorPage extends JFrame{
     			}
     		}*/
             
-            g2.setColor(Color.ORANGE);
+            if (colour==0) {
+            	g2.setColor(Color.ORANGE);
+            }
+            else if (colour==1) {
+            	g2.setColor(Color.WHITE);
+            }
+            else {
+            	g2.setColor(Color.BLACK);
+            }
+       
             g2.fill(rect);
             /*for (int i=0;i<9;i++) {
     			for (int j=0;j<9;j++) {
