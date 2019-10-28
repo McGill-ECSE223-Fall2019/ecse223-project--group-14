@@ -2,8 +2,7 @@ package ca.mcgill.ecse223.quoridor.view;
 
 import java.awt.Color;
 
-
-public class WallComponent extends RectComponent{
+public class WallComponent extends HoldableComponent{
 	public static final int wallH=70;
 	public static final int wallW=12;
 	

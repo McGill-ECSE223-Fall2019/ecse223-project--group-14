@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 public class QuoridorMouseListener implements MouseListener, MouseMotionListener{
 	
 	private JFrame frame;
-	private WallComponent heldComponent;
+	private HoldableComponent heldComponent;
 	
 	private int offsetX;
 	private int offsetY;
@@ -30,9 +30,8 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 		// TODO Auto-generated method stub
 		if (heldComponent == null) {
 			Component c = frame.getContentPane().findComponentAt(e.getX(), e.getY());
-			if (c instanceof WallComponent) {
-				heldComponent = (WallComponent) c;
-				//frame.setComponentZOrder(heldComponent, 0);
+			if (c instanceof HoldableComponent) {
+				heldComponent = (HoldableComponent) c;
 				
 				this.offsetX = e.getX() - heldComponent.getX();
 	            this.offsetY = e.getY() - heldComponent.getY();
@@ -41,7 +40,7 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 			}
 		} else {
 			heldComponent = null;
-			
+	
 		}
 	}
 

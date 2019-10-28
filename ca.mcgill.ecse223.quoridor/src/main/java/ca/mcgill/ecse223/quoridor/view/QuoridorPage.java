@@ -96,6 +96,9 @@ public class QuoridorPage extends JFrame{
 	private JButton downButton;
 	private JButton leftButton;*/
 	
+	private final int buttonH=30;
+	private final int buttonW=125;
+	
 	private boolean currPlayer;	//true for white, false for black
 	
 	private Timer timer;
@@ -107,11 +110,8 @@ public class QuoridorPage extends JFrame{
 	private WallComponent [] bwalls;
 	private WallComponent [] wwalls;
 	
-	private final int buttonH=30;
-	private final int buttonW=125;
-	
-	private PawnComp wPawn;
-	private PawnComp bPawn;
+	private PawnComponent wPawn;
+	private PawnComponent bPawn;
 	
 	public QuoridorPage(){
 		q=QuoridorApplication.getQuoridor();
@@ -225,8 +225,8 @@ public class QuoridorPage extends JFrame{
 			wwalls[i]=new WallComponent(Color.WHITE);
 		}
 		
-		wPawn=new PawnComp(25,25,1);
-		bPawn=new PawnComp(25,25,2);
+		wPawn=new PawnComponent(Color.WHITE);
+		bPawn=new PawnComponent(Color.BLACK);
 		
 		wPawn.setBounds(157, 417, 25, 25);
 		bPawn.setBounds(557, 417, 25, 25);
