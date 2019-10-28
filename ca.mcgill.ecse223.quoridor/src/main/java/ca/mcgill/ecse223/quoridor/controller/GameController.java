@@ -14,6 +14,7 @@ import ca.mcgill.ecse223.quoridor.model.PlayerPosition;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
 import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
+import ca.mcgill.ecse223.quoridor.model.WallMove;
 import ca.mcgill.ecse223.quoridor.view.QuoridorPage;
 import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
 import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
@@ -257,9 +258,6 @@ public class GameController {
 		throw new UnsupportedOperationException();	
 		//This saves the game
 	}
-
-
-	
 	
 	/**
 	 * * For Rotate Wall feature 
@@ -270,8 +268,14 @@ public class GameController {
 	 * @param game
 	 * @throws UnsupportedOperationException
 	 */
-	public void rotateWall(Game game) throws UnsupportedOperationException{
-		throw new UnsupportedOperationException();
+	public void rotateWall() throws UnsupportedOperationException{
+		WallMove wmc = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+		if (wmc != null) {
+			Direction dir = wmc.getWallDirection();
+			if (dir.equals(Direction.Horizontal)) dir = Direction.Vertical;
+			else dir = Direction.Vertical;
+			wmc.setWallDirection(dir);
+		}
 	}
 	
 	/**
@@ -283,8 +287,11 @@ public class GameController {
 	 * @param game
 	 * @throws UnsupportedOperationException
 	 */
-	public void grabWall(Game game) throws UnsupportedOperationException{
-		throw new UnsupportedOperationException();
+	public void grabWall(Player player, int index) throws UnsupportedOperationException{
+		Player playerToMove = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		if (player.equals(playerToMove)) {
+			
+		}
 	}
 	
 	/**

@@ -169,7 +169,7 @@ public class CucumberStepDefinitions {
 	public void iTryToFlipTheWall() throws Throwable{
 		GameController gc = new GameController();
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
-		gc.rotateWall(game);
+		gc.rotateWall();
 	}
 	
 	/**
@@ -217,7 +217,7 @@ public class CucumberStepDefinitions {
 	public void iTryToGrabAWallFromMyStock() throws Throwable{
 		GameController gc = new GameController();
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
-		gc.grabWall(game);
+		//gc.grabWall();
 	}
 	
 	/**

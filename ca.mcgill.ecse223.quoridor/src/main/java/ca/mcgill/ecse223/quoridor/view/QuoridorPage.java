@@ -857,8 +857,6 @@ public class QuoridorPage extends JFrame{
 		
 	}
 	
-	
-	
 	private void toggleBoard(boolean vis) {
 		//boolean vis=!tiles[0][0].isVisible();
 		for (int i=0;i<9;i++) {
