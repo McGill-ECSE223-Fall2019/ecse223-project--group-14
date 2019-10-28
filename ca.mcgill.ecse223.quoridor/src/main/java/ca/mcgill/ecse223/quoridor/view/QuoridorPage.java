@@ -110,8 +110,8 @@ public class QuoridorPage extends JFrame{
 	private final int buttonH=30;
 	private final int buttonW=125;
 	
-	private RectComp wPawn;
-	private RectComp bPawn;
+	private PawnComp wPawn;
+	private PawnComp bPawn;
 	
 	public QuoridorPage(){
 		q=QuoridorApplication.getQuoridor();
@@ -225,8 +225,8 @@ public class QuoridorPage extends JFrame{
 			wwalls[i]=new WallComponent(Color.WHITE);
 		}
 		
-		wPawn=new RectComp(25,25,1);
-		bPawn=new RectComp(25,25,2);
+		wPawn=new PawnComp(25,25,1);
+		bPawn=new PawnComp(25,25,2);
 		
 		wPawn.setBounds(157, 417, 25, 25);
 		bPawn.setBounds(557, 417, 25, 25);
@@ -1118,13 +1118,14 @@ public class QuoridorPage extends JFrame{
 			timeRem2.setVisible(true);
 		}
 	}
+
 	
-	class RectComp extends JPanel {
+	class PawnComp extends JPanel {
 		private static final long serialVersionUID = 1L;
 		private Rectangle rect;
 		private int colour;
 		//Rectangle [][] tiles=new Rectangle[9][9];
-        public RectComp(int w, int h, int c) {
+        public PawnComp(int w, int h, int c) {
     		rect=new Rectangle(w,h);
         	colour=c;
     		/*for (int i=0;i<9;i++) {
@@ -1148,10 +1149,7 @@ public class QuoridorPage extends JFrame{
     			}
     		}*/
             
-            if (colour==0) {
-            	g2.setColor(Color.ORANGE);
-            }
-            else if (colour==1) {
+            if (colour==1) {
             	g2.setColor(Color.WHITE);
             }
             else {
@@ -1162,4 +1160,5 @@ public class QuoridorPage extends JFrame{
 
         }
     }
+
 }
