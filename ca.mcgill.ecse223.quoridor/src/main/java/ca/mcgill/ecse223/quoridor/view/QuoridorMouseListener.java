@@ -7,8 +7,6 @@ import java.awt.event.MouseMotionListener;
 
 import javax.swing.JFrame;
 
-import ca.mcgill.ecse223.quoridor.view.QuoridorPage.RectComp;
-
 public class QuoridorMouseListener implements MouseListener, MouseMotionListener{
 	
 	private JFrame frame;
