@@ -85,6 +85,11 @@ public class QuoridorPage extends JFrame{
 	
 	private JButton endTurnButton;
 	
+	private JButton upButton;
+	private JButton rightButton;
+	private JButton downButton;
+	private JButton leftButton;
+	
 	private boolean currPlayer;	//true for white, false for black
 	
 	private Timer timer;
@@ -825,6 +830,14 @@ public class QuoridorPage extends JFrame{
 		endTurnButton= new JButton();
 		endTurnButton.setText("End Turn");
 		endTurnButton.setVisible(false);
+		
+		upButton= new JButton();
+		upButton.setText("UP");
+		upButton.setVisible(false);
+		
+		rightButton= new JButton();
+		rightButton.setText("UP");
+		rightButton.setVisible(false);
 	}
 	
 	private void addListners() {
