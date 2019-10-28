@@ -34,6 +34,9 @@ public class QuoridorPage extends JFrame{
 	private JLabel errorMessage;
 	private String error = null;
 	
+	private JLabel turnMessage1;
+	private JLabel turnMessage2;
+	
 	private JLabel title;
 	private JLabel bannerMessage;
 	private String banner = "Main Menu";
@@ -49,6 +52,9 @@ public class QuoridorPage extends JFrame{
 	private JLabel timeRem1;
 	private JLabel timeRem2;
 	
+	private JTextField saveField;
+	private JTextField loadField;
+	
 	
 	private JButton newGameButton;
 	private JButton createP1Button;
@@ -60,6 +66,9 @@ public class QuoridorPage extends JFrame{
 	
 	private JButton saveGameButton;
 	private JButton loadGameButton;
+	private JButton saveFileButton;
+	private JButton loadFileButton;
+	
 	private JButton resignGameButton;
 	private JButton drawGameButton;
 	
@@ -73,6 +82,10 @@ public class QuoridorPage extends JFrame{
 	private JButton jumpStartButton;
 	private JButton jumpEndButton;
 	private JButton quitButton;
+	
+	private JButton endTurnButton;
+	
+	private boolean currPlayer;	//true for white, false for black
 	
 	private Timer timer;
 	
@@ -92,13 +105,25 @@ public class QuoridorPage extends JFrame{
 
 	private void initComponents() {
 		
-		setSize(650, 1000);
+		setSize(650, 800);
 		
 		int buttonH=30;
 		int buttonW=125;
 		
 		int wallH=70;
 		int wallW=12;
+		
+		currPlayer=true;
+		
+		turnMessage1= new JLabel();
+		turnMessage1.setForeground(Color.RED);
+		turnMessage1.setText("YOUR TURN!");
+		turnMessage1.setVisible(false);
+		
+		turnMessage2= new JLabel();
+		turnMessage2.setForeground(Color.RED);
+		turnMessage2.setText("YOUR TURN!");
+		turnMessage2.setVisible(false);
 		
 		errorMessage = new JLabel();
 		errorMessage.setForeground(Color.RED);
@@ -126,6 +151,11 @@ public class QuoridorPage extends JFrame{
 		timeRem2=new JLabel();
 		timeRem2.setText("");
 		timeRem2.setVisible(false);
+		
+		saveField=new JTextField();
+		saveField.setVisible(false);
+		loadField=new JTextField();
+		loadField.setVisible(false);
 		
 		title = new JLabel();
 		title.setFont(new Font("Serif",Font.PLAIN,36));
@@ -195,6 +225,8 @@ public class QuoridorPage extends JFrame{
 		add(p1Name);
 		timeRem1.setBounds(10, 140, 600, 10);
 		add(timeRem1);
+		turnMessage1.setBounds(10, 155, 100, 10);
+		add(turnMessage1);
 		
 		newGameButton.setBounds(10, y, buttonW, buttonH);
 		add(newGameButton);
@@ -226,6 +258,9 @@ public class QuoridorPage extends JFrame{
 		replayGameButton.setBounds(10, y, buttonW, buttonH);
 		add(replayGameButton);
 		
+		endTurnButton.setBounds(10, y-30, buttonW, buttonH);		//could be placed better
+		add(endTurnButton);
+		
 		p1NameField.setBounds(10, 160, 200, buttonH);
 		add(p1NameField);
 		
@@ -253,10 +288,25 @@ public class QuoridorPage extends JFrame{
 		timeSetButton.setBounds(270, 160, buttonW, buttonH);
 		add(timeSetButton);
 		
-		p2Name.setBounds(10, 615, 600, 10);
+		saveField.setBounds(10, 160, 200, buttonH);
+		add(saveField);
+		
+		saveFileButton.setBounds(270, 160, buttonW, buttonH);
+		add(saveFileButton);
+		
+		loadField.setBounds(10, 160, 200, buttonH);
+		add(loadField);
+		
+		loadFileButton.setBounds(270, 160, buttonW, buttonH);
+		add(loadFileButton);
+		
+		
+		p2Name.setBounds(10, 675, 600, 10);
 		add(p2Name);
-		timeRem2.setBounds(10, 630, 600, 10);
+		timeRem2.setBounds(10, 690, 600, 10);
 		add(timeRem2);
+		turnMessage2.setBounds(10, 705, 100, 10);
+		add(turnMessage2);
 		
 		for (int i=0;i<9;i++) {
 			for (int j=0;j<9;j++) {
@@ -286,7 +336,7 @@ public class QuoridorPage extends JFrame{
 	private void finishGame() {
 		//set screen to results
 		
-		//todo
+		//TODO
 		timer.stop();
 		timeRem1.setVisible(false);
 		timeRem2.setVisible(false);
@@ -309,28 +359,17 @@ public class QuoridorPage extends JFrame{
 	}
 	
 	private void newGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		//GameController gc= new GameController();
-		
 		error = "";
+		
 		newGameButton.setVisible(false);
 		loadGameButton.setVisible(false);
-		saveGameButton.setVisible(false);
-		drawGameButton.setVisible(false);
-		resignGameButton.setVisible(false);
 		
 		// call the controller
 		gc.initGame(q);
 		
 		p1NameField.setVisible(true);
-		//p2NameField.setVisible(true);
-		//minField.setVisible(true);
-		//secField.setVisible(true);
 		createP1Button.setVisible(true);
-		//createP2Button.setVisible(true);
 		selectP1Button.setVisible(true);
-		//selectP2Button.setVisible(true);
-		//timeSetButton.setVisible(true);
 		
 		
 		banner="New Game";
@@ -341,21 +380,10 @@ public class QuoridorPage extends JFrame{
 		}*/
 		// update visuals
 		
-		/*saveGameButton.setVisible(true);
-		resignGameButton.setVisible(true);
-		drawGameButton.setVisible(true);
-		newGameButton.setVisible(false);
-		quitButton.setVisible(true);
-		toggleBoard();
-		banner="GamePlay";*/
-		
 		refreshData();
 	}
 	
 	private void createP1ButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		//toggleBoard(); to be implemented
-		
 		error="";
 		String success= gc.createUsername(q,p1NameField.getText(),"white");
 		if (success.compareTo(p1NameField.getText())==0) {
@@ -456,12 +484,10 @@ public class QuoridorPage extends JFrame{
 			minField.setVisible(false);
 			secField.setVisible(false);
 			timeSetButton.setVisible(false);
-			saveGameButton.setVisible(true);
-			loadGameButton.setVisible(true);
-			resignGameButton.setVisible(true);
-			drawGameButton.setVisible(true);
+			
 			newGameButton.setVisible(false);
-			quitButton.setVisible(true);
+			
+			toggleMainButtons(true);
 			toggleBoard(true);
 			banner="GamePlay";
 			
@@ -474,7 +500,6 @@ public class QuoridorPage extends JFrame{
 			p2Name.setVisible(true);
 			
 			gc.startTheClock(q,timer);
-			//timer.start();
 			
 			refreshData();
 			
@@ -487,39 +512,74 @@ public class QuoridorPage extends JFrame{
 	}
 	
 	
-	
-	
 	private void saveGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		// clear error message
+		toggleBoard(false);
+		toggleMainButtons(false);
+		
+		saveFileButton.setVisible(true);
+		saveField.setVisible(true);
+		banner = "Save Game";
+		refreshData();
+	}
+	
+	private void saveFileButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message
 		//toggleBoard(false); to be implemented
 		
 		GameController gc= new GameController();
 		error = "";
+		//TODO
 		
 		// update visuals
-		banner = "Save Game"; //for testing
+		banner = "GamePlay"; 
+		saveFileButton.setVisible(false);
+		saveField.setVisible(false);
+		toggleMainButtons(true);
+		toggleBoard(true);
 		refreshData();
 	}
 	
 	private void loadGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message
+		newGameButton.setVisible(false);
+		toggleBoard(false); 
+		toggleMainButtons(false);
+		loadFileButton.setVisible(true);
+		loadField.setVisible(true);
+		
+		// update visuals
+		banner = "Load Game"; 
+		refreshData();
+	}
+	
+	private void loadFileButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		// clear error message
 		//toggleBoard(false); to be implemented
 		
 		GameController gc= new GameController();
 		error = "";
 		
+		//TODO
+		//reset view with new loaded file
+		//p1Name
+		//p2Name
+		//remTime?
+		
 		
 		// update visuals
-		banner = "Load Game"; //for testing
+		banner = "GamePlay"; 
+		loadFileButton.setVisible(false);
+		loadField.setVisible(false);
+		toggleMainButtons(true);
+		toggleBoard(true);
+		
+		
+		
 		refreshData();
 	}
 	
 	private void resignGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		
-		GameController gc= new GameController();		
-		error = "";
-		//todo
 		
 		finishGame();
 	}
@@ -530,11 +590,7 @@ public class QuoridorPage extends JFrame{
 		GameController gc= new GameController();		
 		error = "";
 		
-		quitButton.setVisible(false);
-		saveGameButton.setVisible(false);
-		loadGameButton.setVisible(false);
-		resignGameButton.setVisible(false);
-		drawGameButton.setVisible(false);
+		toggleMainButtons(false);
 		
 		acceptDrawButton.setVisible(true);
 		declineDrawButton.setVisible(true);
@@ -550,7 +606,7 @@ public class QuoridorPage extends JFrame{
 		//toggleBoard(false);
 		error = "";
 		
-		//todo
+		//TODO
 		
 		// update visuals
 		error = "accept draw"; //for testing
@@ -566,12 +622,7 @@ public class QuoridorPage extends JFrame{
 		
 		//todo
 		
-		
-		quitButton.setVisible(true);
-		saveGameButton.setVisible(true);
-		loadGameButton.setVisible(true);
-		resignGameButton.setVisible(true);
-		drawGameButton.setVisible(true);
+		toggleMainButtons(true);
 		
 		acceptDrawButton.setVisible(false);
 		declineDrawButton.setVisible(false);
@@ -670,6 +721,25 @@ public class QuoridorPage extends JFrame{
 		refreshData();
 	}
 	
+	private void endTurnButtonActionPerformed(java.awt.event.ActionEvent evt) {	//this is the same as switch player
+		//TODO
+		//set movable pawn and walls
+		//set current player in the model via controller method
+		currPlayer=!currPlayer;
+		if (currPlayer) {
+			timeRem1.setVisible(true);
+			timeRem2.setVisible(false);
+			turnMessage1.setVisible(true);
+			turnMessage2.setVisible(false);
+		}
+		else {
+			timeRem1.setVisible(false);
+			timeRem2.setVisible(true);
+			turnMessage1.setVisible(false);
+			turnMessage2.setVisible(true);
+		}
+	}
+	
 	private void initButtons() {
 		//regular
 		newGameButton = new JButton();
@@ -699,8 +769,16 @@ public class QuoridorPage extends JFrame{
 		saveGameButton.setText("Save Game");
 		saveGameButton.setVisible(false);
 		
+		saveFileButton=new JButton();
+		saveFileButton.setText("Save");
+		saveFileButton.setVisible(false);
+		
 		loadGameButton = new JButton();
 		loadGameButton.setText("Load Game");
+		
+		loadFileButton=new JButton();
+		loadFileButton.setText("Load");
+		loadFileButton.setVisible(false);
 		
 		resignGameButton = new JButton();
 		resignGameButton.setText("Resign Game");
@@ -743,6 +821,10 @@ public class QuoridorPage extends JFrame{
 		quitButton = new JButton();
 		quitButton.setText("Quit");
 		quitButton.setVisible(false);
+		
+		endTurnButton= new JButton();
+		endTurnButton.setText("End Turn");
+		endTurnButton.setVisible(false);
 	}
 	
 	private void addListners() {
@@ -789,9 +871,21 @@ public class QuoridorPage extends JFrame{
 			}
 		});
 		
+		saveFileButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				saveFileButtonActionPerformed(evt);
+			}
+		});
+		
 		loadGameButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				loadGameButtonActionPerformed(evt);
+			}
+		});
+		
+		loadFileButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				loadFileButtonActionPerformed(evt);
 			}
 		});
 		
@@ -855,6 +949,11 @@ public class QuoridorPage extends JFrame{
 			}
 		});
 		
+		endTurnButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				endTurnButtonActionPerformed(evt);
+			}
+		});
 	}
 	
 	
@@ -872,11 +971,41 @@ public class QuoridorPage extends JFrame{
 		bwalls[9].setVisible(vis);
 	}
 	
+	private void toggleMainButtons(boolean vis) {
+		quitButton.setVisible(vis);
+		saveGameButton.setVisible(vis);
+		loadGameButton.setVisible(vis);
+		resignGameButton.setVisible(vis);
+		drawGameButton.setVisible(vis);
+		endTurnButton.setVisible(vis);
+		
+		if (currPlayer) {
+			turnMessage1.setVisible(vis);
+		}
+		else {
+			turnMessage2.setVisible(vis);
+		}
+	}
+	
 	private String convT2S(Time t) {
 		long tt=t.getTime();
 		int min=(int)(tt/1000)/60;
 		int sec=(int)(tt/1000)%60;
 		return("Time Remainning: "+min+":"+sec);
+	}
+
+	private void switchPlayer() {			//should be called by either drop wall or end turn button
+		//TODO
+		
+		currPlayer=!currPlayer;
+		if (currPlayer) {
+			timeRem1.setVisible(true);
+			timeRem2.setVisible(false);
+		}
+		else {
+			timeRem1.setVisible(false);
+			timeRem2.setVisible(true);
+		}
 	}
 	
 	class RectComp extends JPanel {
