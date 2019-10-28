@@ -29,7 +29,7 @@ import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameController;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
 
-public class QuoridorPage extends JFrame implements MouseListener,MouseMotionListener{
+public class QuoridorPage extends JFrame{
 
 	/**
 	 * default 
@@ -102,18 +102,22 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 	private Quoridor q;
 	private GameController gc;
 	
-	private RectComp [][] tiles;
-	private RectComp [] bwalls;
-	private RectComp [] wwalls;
+	private TileComponent [][] tiles;
+	private WallComponent [] bwalls;
+	private WallComponent [] wwalls;
 	
-	private RectComp heldComponent;
+	private final int buttonH=30;
+	private final int buttonW=125;
 	
 	public QuoridorPage(){
 		q=QuoridorApplication.getQuoridor();
 		gc=new GameController();
 		gc.initQuorridor();
-		addMouseListener(this);
-		addMouseMotionListener(this);
+		
+		QuoridorMouseListener listener = new QuoridorMouseListener(this);
+        this.addMouseListener(listener);
+        this.addMouseMotionListener(listener);
+        
 		initComponents();
 		refreshData();
 	}
@@ -121,12 +125,6 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 	private void initComponents() {
 		
 		setSize(650, 800);
-		
-		int buttonH=30;
-		int buttonW=125;
-		
-		int wallH=70;
-		int wallW=12;
 		
 		currPlayer=true;
 		
@@ -207,20 +205,20 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setTitle("Quoridor");
 		
-		tiles= new RectComp[9][9];
+		tiles= new TileComponent[9][9];
 		for (int i=0;i<9;i++) {
 			for (int j=0;j<9;j++) {
-				tiles[i][j]=new RectComp(40,40,0);
+				tiles[i][j]=new TileComponent();
 			}
 		}
-		bwalls= new RectComp[10];
+		bwalls= new WallComponent[10];
 		for (int i=0;i<10;i++) {
-			bwalls[i]=new RectComp(wallW,wallH,2);
+			bwalls[i]=new WallComponent(Color.BLACK);
 		}
 		
-		wwalls= new RectComp[10];
+		wwalls= new WallComponent[10];
 		for (int i=0;i<10;i++) {
-			wwalls[i]=new RectComp(wallW,wallH,1);
+			wwalls[i]=new WallComponent(Color.WHITE);
 		}
 		//wwalls[0].contains(5, 5); can be used to determine valid wall placement
 		//JPanel board = new JPanel(new FlowLayout());
@@ -323,6 +321,13 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 		turnMessage2.setBounds(10, 705, 100, 10);
 		add(turnMessage2);
 		
+		for (int i=0;i<10;i++) {
+			wwalls[i].setBounds(150+(WallComponent.wallW+10)*i, 125, WallComponent.wallW, WallComponent.wallH);
+			add(wwalls[i]);
+			bwalls[i].setBounds(150+(WallComponent.wallW+10)*i, 675, WallComponent.wallW, WallComponent.wallH);
+			add(bwalls[i]);
+		}
+		
 		for (int i=0;i<9;i++) {
 			for (int j=0;j<9;j++) {
 				tiles[i][j].setBounds(150+50*i,210+50*j, 40, 40);
@@ -330,12 +335,7 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 			}
 		}
 		
-		for (int i=0;i<10;i++) {
-			wwalls[i].setBounds(150+(wallW+10)*i, 125, wallW, wallH);
-			add(wwalls[i]);
-			bwalls[i].setBounds(150+(wallW+10)*i, 675, wallW, wallH);
-			add(bwalls[i]);
-		}
+		
 	}
 
 	private void refreshData() {
@@ -1079,55 +1079,4 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 
         }
     }
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		heldComponent = null;
-		Component c = this.getContentPane().findComponentAt(e.getX(), e.getY());
-		if (c instanceof RectComp && ((RectComp) c).isWall()) {
-			heldComponent = (RectComp) c;
-			heldComponent.setLocation(e.getX(), e.getY());
-			repaint();
-		}
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		if(heldComponent != null) {
-			heldComponent.setLocation(e.getX(), e.getY());
-			repaint();
-		}
-		
-	}
 }
