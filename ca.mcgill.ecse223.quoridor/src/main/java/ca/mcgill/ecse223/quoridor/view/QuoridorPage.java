@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Ellipse2D;
 import java.sql.Time;
 
 import javax.swing.BorderFactory;
@@ -90,10 +91,10 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 	
 	private JButton endTurnButton;
 	
-	private JButton upButton;
+	/*private JButton upButton;
 	private JButton rightButton;
 	private JButton downButton;
-	private JButton leftButton;
+	private JButton leftButton;*/
 	
 	private boolean currPlayer;	//true for white, false for black
 	
@@ -107,6 +108,9 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 	private RectComp [] wwalls;
 	
 	private RectComp heldComponent;
+	
+	private RectComp wPawn;
+	private RectComp bPawn;
 	
 	public QuoridorPage(){
 		q=QuoridorApplication.getQuoridor();
@@ -222,9 +226,18 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 		for (int i=0;i<10;i++) {
 			wwalls[i]=new RectComp(wallW,wallH,1);
 		}
+		
+		wPawn=new RectComp(25,25,1);
+		bPawn=new RectComp(25,25,2);
+		
+		wPawn.setBounds(157, 417, 25, 25);
+		bPawn.setBounds(557, 417, 25, 25);
+		add(wPawn);
+		add(bPawn);
+		wPawn.setVisible(true);
+		bPawn.setVisible(true);
+		
 		//wwalls[0].contains(5, 5); can be used to determine valid wall placement
-		//JPanel board = new JPanel(new FlowLayout());
-		//board.addL
 		
 		toggleBoard(false);
 		getContentPane().setLayout(null);
@@ -234,13 +247,13 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 		add(title);
 		bannerMessage.setBounds(10, 60, 600, 40);
 		add(bannerMessage);
-		errorMessage.setBounds(10, 110, 600, 10);
+		errorMessage.setBounds(10, 110, 600, 15);
 		add(errorMessage);
-		p1Name.setBounds(10, 125, 600, 10);
+		p1Name.setBounds(10, 125, 600, 15);
 		add(p1Name);
-		timeRem1.setBounds(10, 140, 600, 10);
+		timeRem1.setBounds(10, 140, 600, 15);
 		add(timeRem1);
-		turnMessage1.setBounds(10, 155, 100, 10);
+		turnMessage1.setBounds(10, 165, 100, 15);
 		add(turnMessage1);
 		
 		newGameButton.setBounds(10, y, buttonW, buttonH);
@@ -264,6 +277,19 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 		add(jumpEndButton);
 		quitButton.setBounds(10, y+120, buttonW, buttonH);
 		add(quitButton);
+		
+		/*upButton.setFont(new Font("Serif",Font.PLAIN,11));
+		upButton.setBounds(35, y+180, 68, buttonH);
+		add(upButton);
+		rightButton.setFont(new Font("Serif",Font.PLAIN,11));
+		rightButton.setBounds(80, y+210, 68, buttonH);
+		add(rightButton);
+		downButton.setFont(new Font("Serif",Font.PLAIN,11));
+		downButton.setBounds(35, y+240, 68, buttonH);
+		add(downButton);
+		leftButton.setFont(new Font("Serif",Font.PLAIN,11));
+		leftButton.setBounds(10, y+210, 68, buttonH);
+		add(leftButton);*/
 		
 		acceptDrawButton.setBounds(10, y, buttonW, buttonH);
 		add(acceptDrawButton);
@@ -316,11 +342,11 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 		add(loadFileButton);
 		
 		
-		p2Name.setBounds(10, 675, 600, 10);
+		p2Name.setBounds(10, 675, 600, 15);
 		add(p2Name);
-		timeRem2.setBounds(10, 690, 600, 10);
+		timeRem2.setBounds(10, 690, 600, 15);
 		add(timeRem2);
-		turnMessage2.setBounds(10, 705, 100, 10);
+		turnMessage2.setBounds(10, 715, 100, 15);
 		add(turnMessage2);
 		
 		for (int i=0;i<9;i++) {
@@ -718,6 +744,11 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 		resignGameButton.setVisible(false);
 		drawGameButton.setVisible(false);
 		
+		/*upButton.setVisible(false);
+		leftButton.setVisible(false);
+		rightButton.setVisible(false);
+		downButton.setVisible(false);*/
+		
 		p1Name.setVisible(false);
 		p2Name.setVisible(false);
 		timeRem1.setVisible(false);
@@ -735,6 +766,22 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 		q.getCurrentGame().delete();
 		refreshData();
 	}
+	
+	/*private void upButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		//call gc 
+	}
+	
+	private void rightButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		//call gc 
+	}
+	
+	private void downButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		//call gc 
+	}
+	
+	private void leftButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		//call gc 
+	}*/
 	
 	private void endTurnButtonActionPerformed(java.awt.event.ActionEvent evt) {	//this is the same as switch player
 		//TODO
@@ -841,13 +888,21 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 		endTurnButton.setText("End Turn");
 		endTurnButton.setVisible(false);
 		
-		upButton= new JButton();
+		/*upButton= new JButton();
 		upButton.setText("UP");
 		upButton.setVisible(false);
 		
 		rightButton= new JButton();
-		rightButton.setText("UP");
+		rightButton.setText("RIGHT");
 		rightButton.setVisible(false);
+		
+		downButton= new JButton();
+		downButton.setText("DOWN");
+		downButton.setVisible(false);
+		
+		leftButton= new JButton();
+		leftButton.setText("LEFT");
+		leftButton.setVisible(false);*/
 	}
 	
 	private void addListners() {
@@ -977,6 +1032,30 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 				endTurnButtonActionPerformed(evt);
 			}
 		});
+		
+		/*upButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				upButtonActionPerformed(evt);
+			}
+		});
+		
+		rightButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				rightButtonActionPerformed(evt);
+			}
+		});
+		
+		downButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				downButtonActionPerformed(evt);
+			}
+		});
+		
+		leftButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				leftButtonActionPerformed(evt);
+			}
+		});*/
 	}
 	
 	
@@ -992,6 +1071,15 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 		}
 		wwalls[9].setVisible(vis);
 		bwalls[9].setVisible(vis);
+		
+		wPawn.setVisible(vis);
+		bPawn.setVisible(vis);
+		
+
+		/*upButton.setVisible(vis);
+		rightButton.setVisible(vis);
+		downButton.setVisible(vis);
+		leftButton.setVisible(vis);*/
 	}
 	
 	private void toggleMainButtons(boolean vis) {
@@ -1071,14 +1159,10 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
             }
        
             g2.fill(rect);
-            /*for (int i=0;i<9;i++) {
-    			for (int j=0;j<9;j++) {
-    				g2.fill(tiles[i][j]);
-    			}
-    		}*/
 
         }
     }
+	
 
 	@Override
 	public void mouseClicked(MouseEvent e) {

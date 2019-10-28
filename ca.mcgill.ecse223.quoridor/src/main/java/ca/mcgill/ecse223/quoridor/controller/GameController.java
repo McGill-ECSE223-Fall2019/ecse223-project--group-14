@@ -131,6 +131,10 @@ public class GameController {
 				
 			}
 			else {
+				if (q.getCurrentGame().getWhitePlayer().getUser().getName().compareTo(name)==0) {
+					return "User Already Selected";
+				}
+				
 				if (q.getCurrentGame().getBlackPlayer()!=null) {
 					q.getCurrentGame().getBlackPlayer().setUser(u);
 				}
@@ -159,6 +163,9 @@ public class GameController {
 	public String createUsername(Quoridor q, String name, String colour)throws UnsupportedOperationException {
 		//throw new UnsupportedOperationException();
 		int i=doesUserExist(q,name);
+		if (name==null || name.length()==0) {
+			return "Invalid Input";
+		}
 		if (i==-1) {
 			User u=new User(name, q);
 			q.addUser(u);
