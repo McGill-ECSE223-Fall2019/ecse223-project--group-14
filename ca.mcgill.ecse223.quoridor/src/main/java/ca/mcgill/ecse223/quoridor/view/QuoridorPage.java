@@ -1,6 +1,7 @@
 package ca.mcgill.ecse223.quoridor.view;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -8,12 +9,16 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.sql.Time;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.Timer;
@@ -24,7 +29,7 @@ import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameController;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
 
-public class QuoridorPage extends JFrame{
+public class QuoridorPage extends JFrame implements MouseListener,MouseMotionListener{
 
 	/**
 	 * default 
@@ -100,10 +105,15 @@ public class QuoridorPage extends JFrame{
 	private RectComp [][] tiles;
 	private RectComp [] bwalls;
 	private RectComp [] wwalls;
+	
+	private RectComp heldComponent;
+	
 	public QuoridorPage(){
 		q=QuoridorApplication.getQuoridor();
 		gc=new GameController();
 		gc.initQuorridor();
+		addMouseListener(this);
+		addMouseMotionListener(this);
 		initComponents();
 		refreshData();
 	}
@@ -1022,13 +1032,9 @@ public class QuoridorPage extends JFrame{
 	}
 	
 	class RectComp extends JPanel {
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 1L;
-		
-		Rectangle rect;
-		int colour;
+		private Rectangle rect;
+		private int colour;
 		//Rectangle [][] tiles=new Rectangle[9][9];
         public RectComp(int w, int h, int c) {
     		rect=new Rectangle(w,h);
@@ -1038,6 +1044,10 @@ public class QuoridorPage extends JFrame{
     				tiles[i][j]=new Rectangle(20,20);
     			}
     		}*/
+        }
+        public boolean isWall() {
+        	if(rect.width == 12) return true;
+        	else return false;
         }
 
         public void paintComponent(Graphics g) {
@@ -1069,6 +1079,55 @@ public class QuoridorPage extends JFrame{
 
         }
     }
-	
-	
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		heldComponent = null;
+		Component c = this.getContentPane().findComponentAt(e.getX(), e.getY());
+		if (c instanceof RectComp && ((RectComp) c).isWall()) {
+			heldComponent = (RectComp) c;
+			heldComponent.setLocation(e.getX(), e.getY());
+			repaint();
+		}
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		if(heldComponent != null) {
+			heldComponent.setLocation(e.getX(), e.getY());
+			repaint();
+		}
+		
+	}
 }
