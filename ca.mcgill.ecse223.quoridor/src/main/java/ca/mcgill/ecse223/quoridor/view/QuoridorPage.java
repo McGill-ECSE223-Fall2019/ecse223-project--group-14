@@ -1119,46 +1119,4 @@ public class QuoridorPage extends JFrame{
 		}
 	}
 
-	
-	class PawnComp extends JPanel {
-		private static final long serialVersionUID = 1L;
-		private Rectangle rect;
-		private int colour;
-		//Rectangle [][] tiles=new Rectangle[9][9];
-        public PawnComp(int w, int h, int c) {
-    		rect=new Rectangle(w,h);
-        	colour=c;
-    		/*for (int i=0;i<9;i++) {
-    			for (int j=0;j<9;j++) {
-    				tiles[i][j]=new Rectangle(20,20);
-    			}
-    		}*/
-        }
-        public boolean isWall() {
-        	if(rect.width == 12) return true;
-        	else return false;
-        }
-
-        public void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            Graphics2D g2 = (Graphics2D) g;
-            g2.draw(rect);
-            /*for (int i=0;i<9;i++) {
-    			for (int j=0;j<9;j++) {
-    				g2.draw(tiles[i][j]);
-    			}
-    		}*/
-            
-            if (colour==1) {
-            	g2.setColor(Color.WHITE);
-            }
-            else {
-            	g2.setColor(Color.BLACK);
-            }
-       
-            g2.fill(rect);
-
-        }
-    }
-
 }
