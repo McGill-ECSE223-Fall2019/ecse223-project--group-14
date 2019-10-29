@@ -129,6 +129,8 @@ public class QuoridorPage extends JFrame{
 	private void initComponents() {
 		
 		setSize(650, 800);
+		getContentPane().setBackground(Color.LIGHT_GRAY);
+		
 		
 		currPlayer=true;
 		
@@ -786,8 +788,9 @@ public class QuoridorPage extends JFrame{
 	private void endTurnButtonActionPerformed(java.awt.event.ActionEvent evt) {	//this is the same as switch player
 		//TODO
 		//set movable pawn and walls
-		//set current player in the model via controller method
+		
 		currPlayer=!currPlayer;
+		gc.switchPlayer(q);
 		if (currPlayer) {
 			timeRem1.setVisible(true);
 			timeRem2.setVisible(false);

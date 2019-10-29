@@ -459,4 +459,13 @@ public class GameController {
 		}
 		return board;
 	}
+	
+	public void switchPlayer(Quoridor q) {
+		if (q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite()) {
+			q.getCurrentGame().getCurrentPosition().setPlayerToMove(q.getCurrentGame().getBlackPlayer());
+		}
+		else {
+			q.getCurrentGame().getCurrentPosition().setPlayerToMove(q.getCurrentGame().getWhitePlayer());
+		}
+	}
 }
