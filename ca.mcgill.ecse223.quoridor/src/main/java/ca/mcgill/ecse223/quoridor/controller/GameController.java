@@ -1,5 +1,6 @@
 package ca.mcgill.ecse223.quoridor.controller;
 
+import java.awt.Color;
 import java.io.File;
 import java.sql.Time;
 
@@ -291,12 +292,17 @@ public class GameController {
 	 * 
 	 * @author louismollick
 	 * 
-	 * @param game
 	 * @throws UnsupportedOperationException
 	 */
-	public void grabWall(Player player, int index) throws UnsupportedOperationException{
-		Player playerToMove = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-		if (player.equals(playerToMove)) {
+	public void grabWall() throws UnsupportedOperationException{
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player playerToMove = game.getCurrentPosition().getPlayerToMove();
+		
+		if(playerToMove == null) throw new UnsupportedOperationException();
+		if(playerToMove.hasGameAsBlack()) {
+			
+		}
+		else if (playerToMove.hasGameAsWhite()) {
 			
 		}
 	}
@@ -467,5 +473,22 @@ public class GameController {
 		else {
 			q.getCurrentGame().getCurrentPosition().setPlayerToMove(q.getCurrentGame().getWhitePlayer());
 		}
+	}
+	
+	/**
+	 *  * For View, used in QuoridorMouseListener
+	 * Helper function which returns the Color of the current player
+	 * 
+	 * @author louismollick
+	 */
+	public Color getCurrentPlayerColor() {
+		Player p = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		if (p.hasGameAsBlack()) {
+			return Color.BLACK;
+		}
+		else if (p.hasGameAsWhite()) {
+			return Color.WHITE;
+		}
+		return null;
 	}
 }

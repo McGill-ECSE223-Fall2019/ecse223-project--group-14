@@ -16,6 +16,19 @@ public abstract class RectComponent extends JPanel{
 		this.rect=new Rectangle(w,h);
     	this.color=c;
     }
+    
+    public Color getColor() {
+    	return this.color;
+    }
+    
+    public Rectangle getRect() {
+    	return this.rect;
+    }
+    
+    public void setRect(Rectangle rect) {
+    	this.rect = rect;
+    }
+    
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;

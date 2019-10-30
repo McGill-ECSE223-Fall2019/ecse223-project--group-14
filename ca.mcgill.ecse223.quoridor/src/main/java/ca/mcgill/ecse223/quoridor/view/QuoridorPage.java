@@ -118,7 +118,7 @@ public class QuoridorPage extends JFrame{
 		gc=new GameController();
 		gc.initQuorridor();
 		
-		QuoridorMouseListener listener = new QuoridorMouseListener(this);
+		QuoridorMouseListener listener = new QuoridorMouseListener(this,gc);
         this.addMouseListener(listener);
         this.addMouseMotionListener(listener);
         
