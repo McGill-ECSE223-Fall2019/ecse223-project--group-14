@@ -16,7 +16,6 @@ import ca.mcgill.ecse223.quoridor.model.Quoridor;
 import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
-import ca.mcgill.ecse223.quoridor.view.QuoridorPage;
 import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
 import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 import ca.mcgill.ecse223.quoridor.model.GamePosition;
@@ -295,15 +294,23 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	public void grabWall() throws UnsupportedOperationException{
-		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
-		Player playerToMove = game.getCurrentPosition().getPlayerToMove();
+		Quoridor q = QuoridorApplication.getQuoridor();
+		Game game = q.getCurrentGame();
+		game.setMoveMode(MoveMode.WallMove);
 		
+		Player playerToMove = game.getCurrentPosition().getPlayerToMove();
 		if(playerToMove == null) throw new UnsupportedOperationException();
 		if(playerToMove.hasGameAsBlack()) {
-			
+			WallMove wmc = new WallMove(game.numberOfMoves(), 1, playerToMove, 
+					q.getBoard().getTile(0), game, Direction.Vertical, 
+					game.getCurrentPosition().getBlackWallsInStock().remove(0));
+			game.setWallMoveCandidate(wmc);
 		}
 		else if (playerToMove.hasGameAsWhite()) {
-			
+			WallMove wmc = new WallMove(game.numberOfMoves(), 1, playerToMove, 
+					q.getBoard().getTile(0), game, Direction.Vertical, 
+					game.getCurrentPosition().getWhiteWallsInStock().remove(0));
+			game.setWallMoveCandidate(wmc);
 		}
 	}
 	

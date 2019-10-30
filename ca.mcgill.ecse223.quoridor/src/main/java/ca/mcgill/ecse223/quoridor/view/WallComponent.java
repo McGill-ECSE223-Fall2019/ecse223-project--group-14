@@ -3,15 +3,11 @@ package ca.mcgill.ecse223.quoridor.view;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
 
 public class WallComponent extends HoldableComponent{
 	public static final int wallH=70;
 	public static final int wallW=12;
 	private String dir;
-	private AffineTransform transform;
 	
 	public WallComponent(Color c) {
 		super(wallW, wallH, c);
