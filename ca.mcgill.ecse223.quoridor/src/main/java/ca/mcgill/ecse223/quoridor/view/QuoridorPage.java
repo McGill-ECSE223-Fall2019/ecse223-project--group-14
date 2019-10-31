@@ -107,8 +107,8 @@ public class QuoridorPage extends JFrame{
 	private GameController gc;
 	
 	private TileComponent [][] tiles;
-	private WallComponent [] bwalls;
-	private WallComponent [] wwalls;
+	public WallComponent [] bwalls;
+	public WallComponent [] wwalls;
 	
 	private PawnComponent wPawn;
 	private PawnComponent bPawn;
@@ -251,7 +251,7 @@ public class QuoridorPage extends JFrame{
 		add(errorMessage);
 		p1Name.setBounds(10, 125, 600, 15);
 		add(p1Name);
-		timeRem1.setBounds(10, 140, 600, 15);
+		timeRem1.setBounds(10, 140, 150, 15);
 		add(timeRem1);
 		turnMessage1.setBounds(10, 165, 100, 15);
 		add(turnMessage1);
@@ -344,7 +344,7 @@ public class QuoridorPage extends JFrame{
 		
 		p2Name.setBounds(10, 675, 600, 15);
 		add(p2Name);
-		timeRem2.setBounds(10, 690, 600, 15);
+		timeRem2.setBounds(10, 690, 150, 15);
 		add(timeRem2);
 		turnMessage2.setBounds(10, 715, 100, 15);
 		add(turnMessage2);
