@@ -5,9 +5,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-public abstract class RectComponent extends JPanel{
+public abstract class RectComponent extends JComponent{
 	private static final long serialVersionUID = 1L;
 	private Rectangle rect;
 	private Color color;

@@ -12,7 +12,7 @@ import ca.mcgill.ecse223.quoridor.controller.GameController;
 
 public class QuoridorMouseListener implements MouseListener, MouseMotionListener{
 	
-	private JFrame frame;
+	private QuoridorPage frame;
 	private GameController gc;
 	private HoldableComponent heldComponent;
 	
@@ -22,7 +22,7 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 	private int offsetX;
 	private int offsetY;
 	
-	public QuoridorMouseListener(JFrame frame, GameController gc) {
+	public QuoridorMouseListener(QuoridorPage frame, GameController gc) {
 		this.frame = frame;
 		this.gc = gc;
 	}
@@ -35,7 +35,21 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		Component cursor = frame.getContentPane().findComponentAt(e.getX(), e.getY());
+		Component [] bcomponents= frame.bwalls;
+		Component [] wcomponents= frame.wwalls;
+		Component cursor=null;
+		
+		for (int i=0;i<bcomponents.length;i++) {
+			if (bcomponents[i].contains(e.getX(), e.getY())) {
+				cursor=bcomponents[i];
+				break;
+			}
+			if (wcomponents[i].contains(e.getX(), e.getY())) {
+				cursor=wcomponents[i];
+				break;
+			}
+		}
+		//Component cursor = frame.getContentPane().findComponentAt(e.getX(), e.getY());
 		//System.out.println(cursor.getClass().toString());
 		if (heldComponent == null) {
 			if (cursor instanceof HoldableComponent) {

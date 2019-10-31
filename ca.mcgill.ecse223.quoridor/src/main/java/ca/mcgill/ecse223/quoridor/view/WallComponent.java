@@ -32,6 +32,17 @@ public class WallComponent extends HoldableComponent{
 	}
 	
 	@Override
+	public boolean contains(int ex, int ey) {
+		int x=this.getX(); int y= this.getY();
+		if ((ex>=x+wallW/2)&&(ex<=x+wallW/2+wallW)&&((ey>=y+wallH/2-5)&&(ey<=y+wallH/2+wallH-5))) {
+			return true;
+		}
+		else {
+			return false;
+		}
+    }
+	
+	@Override
 	public void paintComponent(Graphics g) {
 		if(this.dir.contentEquals("horizontal")) {
 			((Graphics2D) g).rotate(Math.toRadians(-90));
