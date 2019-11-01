@@ -54,7 +54,7 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 		if (heldComponent == null) {
 			if (cursor instanceof HoldableComponent) {
 				HoldableComponent temp = (HoldableComponent) cursor;
-				if(temp.isHoldable() && temp.getColor().equals(gc.getCurrentPlayerColor())) {
+				if(temp.isHoldable() && temp.getColor().equals(gc.getCurrentPlayerColor()) && !frame.getStageMove() ) {
 					gc.grabWall();
 					heldComponent = temp;
 					
@@ -86,12 +86,15 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 			
 			// TODO For DropWall person: 
 			// If heldComponent has a position it's above, then drop it there
-//			if(heldComponent.hasPossiblePosition()) {
-//				heldComponent.setLocation(heldComponent.getPossiblePosition().getX(), heldComponent.getPossiblePosition().getY());
-//				frame.setStagedMove(true); // lock in move, and prevent player from picking up anything else
+			else if(heldComponent instanceof WallComponent && heldComponent.hasPossiblePosition()) {
+				//heldComponent.setLocation(heldComponent.getPossibleXPostition(), heldComponent.getPossibleYPostition());
+				frame.setStageMove(true); // lock in move, and prevent player from picking up anything else
 				// until he presses the End Turn button. Otherwise, the player can pick the pawn/wall back up,
 				// and chose another move.
-//			} 
+				this.pickedUpX = 0;
+				this.pickedUpY = 0;
+				heldComponent=null;
+			} 
 			else { // If no position is clicked (and not rotating), just put the component back
 				heldComponent.setLocation(this.pickedUpX, this.pickedUpY); // put back to position when pickedUp
 				this.pickedUpX = 0;

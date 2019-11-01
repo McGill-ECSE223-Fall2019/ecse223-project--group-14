@@ -100,6 +100,8 @@ public class QuoridorPage extends JFrame{
 	private final int buttonH=30;
 	private final int buttonW=125;
 	
+	private boolean stageMove;
+	
 	private boolean currPlayer;	//true for white, false for black
 	
 	private Timer timer;
@@ -133,6 +135,7 @@ public class QuoridorPage extends JFrame{
 		setSize(650, 800);
 		getContentPane().setBackground(Color.LIGHT_GRAY);
 		
+		stageMove=false;
 		
 		Point [][] points=new Point[8][8];
 		sq = new TileComponent [8][8];
@@ -816,6 +819,7 @@ public class QuoridorPage extends JFrame{
 			turnMessage1.setVisible(false);
 			turnMessage2.setVisible(true);
 		}
+		stageMove=false;
 	}
 	
 	private void initButtons() {
@@ -1119,6 +1123,11 @@ public class QuoridorPage extends JFrame{
 		}
 	}
 	
+	/**
+	 * Method converts Time to string
+	 * 
+	 * @author DariusPi
+	 */
 	private String convT2S(Time t) {
 		long tt=t.getTime();
 		int min=(int)(tt/1000)/60;
@@ -1126,6 +1135,11 @@ public class QuoridorPage extends JFrame{
 		return("Time Remainning: "+min+":"+sec);
 	}
 
+	/**
+	 * Method switches current player in view and model
+	 * 
+	 * @author DariusPi
+	 */
 	private void switchPlayer() {			//should be called by either drop wall or end turn button
 		//TODO
 		
@@ -1138,6 +1152,24 @@ public class QuoridorPage extends JFrame{
 			timeRem1.setVisible(false);
 			timeRem2.setVisible(true);
 		}
+	}
+	
+	/**
+	 * Method sets whether a wall move or player move was performed to block further ones
+	 * 
+	 * @author DariusPi
+	 */
+	public void setStageMove(boolean moved) {
+		stageMove=moved;
+	}
+	
+	/**
+	 * Method returns whether a wall move or player move was performed 
+	 * 
+	 * @author DariusPi
+	 */
+	public boolean getStageMove() {
+		return stageMove;
 	}
 
 }
