@@ -113,6 +113,7 @@ public class QuoridorPage extends JFrame{
 	public WallComponent [] bwalls;
 	public WallComponent [] wwalls;
 	private TileComponent[][] sq;
+	private TileComponent[][] sq2;
 	
 	private PawnComponent wPawn;
 	private PawnComponent bPawn;
@@ -137,14 +138,25 @@ public class QuoridorPage extends JFrame{
 		
 		stageMove=false;
 		
-		Point [][] points=new Point[8][8];
-		sq = new TileComponent [8][8];
+		Point [][] points=new Point[8][9];
+		sq = new TileComponent [8][9];
 		for (int i=0;i<8;i++) {
-			for (int j=0;j<8;j++) {
-				points[i][j]= new Point(192+i*50,252+j*50);
+			for (int j=0;j<9;j++) {
+				points[i][j]= new Point(192+i*50,232+j*50);
 				sq[i][j]=new TileComponent();
 				sq[i][j].setBounds((int)points[i][j].getX(), (int)points[i][j].getY(), 5, 5);
 				add(sq[i][j]);
+			}
+		}
+		
+		Point [][] points2=new Point[9][8];
+		sq2 = new TileComponent [9][8];
+		for (int i=0;i<9;i++) {
+			for (int j=0;j<8;j++) {
+				points2[i][j]= new Point(172+i*50,252+j*50);
+				sq2[i][j]=new TileComponent();
+				sq2[i][j].setBounds((int)points2[i][j].getX(), (int)points2[i][j].getY(), 5, 5);
+				add(sq2[i][j]);
 			}
 		}
 		
@@ -411,6 +423,8 @@ public class QuoridorPage extends JFrame{
 		
 		replayGameButton.setVisible(true);
 		quitButton.setVisible(true);
+		
+		endTurnButton.setVisible(false);
 		
 		toggleBoard(false);
 		
@@ -779,6 +793,8 @@ public class QuoridorPage extends JFrame{
 		jumpEndButton.setVisible(false);
 		quitButton.setVisible(false);
 		
+		endTurnButton.setVisible(false);
+		
 		// update visuals
 		banner = "Main Menu"; //for testing
 		q.getCurrentGame().delete();
@@ -1096,8 +1112,14 @@ public class QuoridorPage extends JFrame{
 		bPawn.setVisible(vis);
 		
 		for (int i=0;i<8;i++) {
-			for (int j=0;j<8;j++) {
+			for (int j=0;j<9;j++) {
 				sq[i][j].setVisible(vis);
+			}
+		}
+		
+		for (int i=0;i<9;i++) {
+			for (int j=0;j<8;j++) {
+				sq2[i][j].setVisible(vis);
 			}
 		}
 		

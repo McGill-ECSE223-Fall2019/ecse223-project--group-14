@@ -224,6 +224,10 @@ public class GameController {
 		
 	}
 	
+	public boolean viewValWallPosition(int x1,int y1, int x2, int y2) {
+		//GamePosition gp = new GamePosition();
+		return true;
+	}
 	
 	/**
 	 * For setTotalThinkingTime feature 
