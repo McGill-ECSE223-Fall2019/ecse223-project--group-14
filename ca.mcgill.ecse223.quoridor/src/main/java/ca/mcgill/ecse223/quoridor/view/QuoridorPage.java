@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -109,6 +110,7 @@ public class QuoridorPage extends JFrame{
 	private TileComponent [][] tiles;
 	public WallComponent [] bwalls;
 	public WallComponent [] wwalls;
+	private TileComponent[][] sq;
 	
 	private PawnComponent wPawn;
 	private PawnComponent bPawn;
@@ -131,6 +133,17 @@ public class QuoridorPage extends JFrame{
 		setSize(650, 800);
 		getContentPane().setBackground(Color.LIGHT_GRAY);
 		
+		
+		Point [][] points=new Point[8][8];
+		sq = new TileComponent [8][8];
+		for (int i=0;i<8;i++) {
+			for (int j=0;j<8;j++) {
+				points[i][j]= new Point(192+i*50,252+j*50);
+				sq[i][j]=new TileComponent();
+				sq[i][j].setBounds((int)points[i][j].getX(), (int)points[i][j].getY(), 5, 5);
+				add(sq[i][j]);
+			}
+		}
 		
 		currPlayer=true;
 		
@@ -1078,7 +1091,12 @@ public class QuoridorPage extends JFrame{
 		wPawn.setVisible(vis);
 		bPawn.setVisible(vis);
 		
-
+		for (int i=0;i<8;i++) {
+			for (int j=0;j<8;j++) {
+				sq[i][j].setVisible(vis);
+			}
+		}
+		
 		/*upButton.setVisible(vis);
 		rightButton.setVisible(vis);
 		downButton.setVisible(vis);
