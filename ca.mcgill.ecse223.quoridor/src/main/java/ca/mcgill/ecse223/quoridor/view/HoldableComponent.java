@@ -37,13 +37,13 @@ public abstract class HoldableComponent extends RectComponent{
 		this.points=new Point[8][9];	//for vertical placement
 		for (int i=0;i<8;i++) {
 			for (int j=0;j<9;j++) {
-				this.points[i][j]= new Point(202+i*50, 259+j*50);
+				this.points[i][j]= new Point(192+i*50,232+j*50);
 			}
 		}
 		this.points2=new Point[9][9];
 		for (int i=0;i<9;i++) {
 			for (int j=0;j<9;j++) {
-				this.points2[i][j]= new Point(172+i*50,295+j*50);
+				this.points2[i][j]= new Point(172+i*50,252+j*50);
 			}
 		}
 	}
@@ -72,7 +72,7 @@ public abstract class HoldableComponent extends RectComponent{
 			for (int i=0;i<8;i++) {
 				for (int j=0;j<9;j++) {
 					//if (this.contains((int)this.points[i][j].x,(int)this.points[i][j].y)){
-					if (this.contains(points[i][j])) {
+					if (this.getBounds().contains(points[i][j])) {
 						if (first) {
 							x1=this.getX();
 							y1=this.getY();
@@ -94,10 +94,9 @@ public abstract class HoldableComponent extends RectComponent{
 			}
 		}
 		else {
-			for (int i=0;i<8;i++) {
-				for (int j=0;j<9;j++) {
-					
-					if (this.contains(this.points2[i][j])) {
+			for (int i=0;i<9;i++) {
+				for (int j=0;j<8;j++) {
+					if (this.getBounds().contains(points2[i][j])) {
 						if (first) {
 							x1=this.getX();
 							y1=this.getY();

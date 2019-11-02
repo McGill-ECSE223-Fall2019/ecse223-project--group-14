@@ -839,6 +839,9 @@ public class QuoridorPage extends JFrame{
 		timeRem1.setVisible(false);
 		timeRem2.setVisible(false);
 		
+		turnMessage1.setVisible(false);
+		turnMessage2.setVisible(false);
+		
 		replayGameButton.setVisible(false);
 		stepForwardButton.setVisible(false);
 		stepBackwardButton.setVisible(false);
