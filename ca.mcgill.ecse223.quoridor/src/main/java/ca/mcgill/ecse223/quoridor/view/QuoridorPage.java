@@ -29,6 +29,7 @@ import javax.swing.border.Border;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameController;
+import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
 
 public class QuoridorPage extends JFrame{
@@ -652,12 +653,60 @@ public class QuoridorPage extends JFrame{
 		wPawn.setBounds(107+xw*50, 167+yw*50, 25, 25);
 		bPawn.setBounds(107+xb*50, 167+yb*50, 25, 25);
 		
+		int width,height,x,y;
+		for (int i=0;i<10;i++) {
+			if (q.getCurrentGame().getWhitePlayer().getWall(i).getMove()!=null) {
+				if (q.getCurrentGame().getWhitePlayer().getWall(i).getMove().getWallDirection()==Direction.Horizontal) {
+					width=WallComponent.wallH;
+					height=WallComponent.wallW;
+				}
+				else {
+					width=WallComponent.wallW;
+					height=WallComponent.wallH;
+				}
+				x=q.getCurrentGame().getWhitePlayer().getWall(i).getMove().getTargetTile().getRow();
+				y=q.getCurrentGame().getWhitePlayer().getWall(i).getMove().getTargetTile().getColumn();
+				
+				//TODO correctly set adjusted x and y coords
+				//wwalls[i].setBounds(x, y, width, height);
+			}
+			if (q.getCurrentGame().getBlackPlayer().getWall(i).getMove()!=null) {
+				if (q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getWallDirection()==Direction.Horizontal) {
+					width=WallComponent.wallH;
+					height=WallComponent.wallW;
+				}
+				else {
+					width=WallComponent.wallW;
+					height=WallComponent.wallH;
+				}
+				x=q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getTargetTile().getRow();
+				y=q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getTargetTile().getColumn();
+				
+				//TODO correctly set adjusted x and y coords
+				//wwalls[i].setBounds(x, y, width, height);
+				
+			}
+		}
+		
+		
+		
+		loadFileButton.setVisible(false);
+		loadField.setVisible(false);
+		
+		p1NameField.setVisible(true);
+		createP1Button.setVisible(true);
+		selectP1Button.setVisible(true);
+		
+		
+		banner="New Game";
+		
+		/*
 		// update visuals
 		banner = "GamePlay"; 
 		loadFileButton.setVisible(false);
 		loadField.setVisible(false);
 		toggleMainButtons(true);
-		toggleBoard(true);
+		toggleBoard(true);*/
 		
 		
 		refreshData();
