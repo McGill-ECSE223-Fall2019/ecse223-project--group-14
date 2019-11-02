@@ -280,18 +280,91 @@ public class GameController {
 			//if white playing, white should be on the first line
 			if(q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite())
 			{
-				writer.println("W: " + q.getCurrentGame().getCurrentPosition().getWhitePosition() + ", " +
-						q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard());
+				
+				int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+				
+				int columnW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+				
+				String ColumnW = "";
+				
+				switch(columnW) {
+				
+				case 1:  ColumnW = "a";
+					break;
+				
+				case 2:  ColumnW = "b";
+					break;
+					
+				case 3:   ColumnW = "c";
+					break;
+					
+				case 4:   ColumnW = "d";
+					break;
+					
+				case 5:  ColumnW = "e";
+					break;
+					
+				case 6:  ColumnW = "f";
+					break;
+					
+				case 7:  ColumnW = "g";
+					break;
+					
+				case 8:  ColumnW = "h";
+					break;
+					
+				case 9: ColumnW = "i";
+					
+				}
 				
 				
-				writer.println("B: "+ q.getCurrentGame().getCurrentPosition().getBlackPosition() + ", " +
-									q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard());
-				  
-//				System.out.println();
-//				System.out.println();
-//				
-//				System.out.println(q.getCurrentGame().getPositions());
-			    
+				
+				writer.println("W: " + ColumnW + rowW + ", " );
+				//writer.print("W: " + ColumnW + ", " + rowW);
+				
+
+int rowB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+				
+				int columnB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+				
+				String ColumnB = "";
+				
+				switch(columnB) {
+				
+				case 1:  ColumnB = "a";
+					break;
+				
+				case 2:  ColumnB = "b";
+					break;
+					
+				case 3:   ColumnB = "c";
+					break;
+					
+				case 4:   ColumnB = "d";
+					break;
+					
+				case 5:  ColumnB = "e";
+					break;
+					
+				case 6:  ColumnB = "f";
+					break;
+					
+				case 7:  ColumnB = "g";
+					break;
+					
+				case 8:  ColumnB = "h";
+					break;
+					
+				case 9: ColumnB = "i";
+					
+				}
+				
+				
+				writer.println("B: "+ rowB + ColumnB + ", " );
+			//	writer.print("B: "+ rowB + ", " + ColumnB);
+
+				
+				
 			    writer.close();	
 			}
 			
@@ -301,21 +374,98 @@ public class GameController {
 				
 			{
 				
-				writer.println("B: "+ q.getCurrentGame().getCurrentPosition().getBlackPosition() + ", " +
-						q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard());
+	
+
+int rowB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+				
+				int columnB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+				
+				String ColumnB = "";
+				
+				switch(columnB) {
+				
+				case 1:  ColumnB = "a";
+					break;
+				
+				case 2:  ColumnB = "b";
+					break;
+					
+				case 3:   ColumnB = "c";
+					break;
+					
+				case 4:   ColumnB = "d";
+					break;
+					
+				case 5:  ColumnB = "e";
+					break;
+					
+				case 6:  ColumnB = "f";
+					break;
+					
+				case 7:  ColumnB = "g";
+					break;
+					
+				case 8:  ColumnB = "h";
+					break;
+					
+				case 9: ColumnB = "i";
+					
+				}
+				
+				
+				writer.println("B: "+ rowB + ColumnB + ", ");
+			//	writer.print("B: "+ rowB + ", " + ColumnB);
 
 				
+int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
 				
-				writer.println("W: " + q.getCurrentGame().getCurrentPosition().getWhitePosition() + ", " +
-						q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard());
+				int columnW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+				
+				String ColumnW = "";
+				
+				switch(columnW) {
+				
+				case 1:  ColumnW = "a";
+					break;
+				
+				case 2:  ColumnW = "b";
+					break;
+					
+				case 3:   ColumnW = "c";
+					break;
+					
+				case 4:   ColumnW = "d";
+					break;
+					
+				case 5:  ColumnW = "e";
+					break;
+					
+				case 6:  ColumnW = "f";
+					break;
+					
+				case 7:  ColumnW = "g";
+					break;
+					
+				case 8:  ColumnW = "h";
+					break;
+					
+				case 9: ColumnW = "i";
+					
+				}
 				
 				
-			//	writer.println(String.valueOf(0));
-			    writer.close();
-			  //  System.out.println(q.getCurrentGame().getGameStatus());
-			    
+				
+				writer.println("W: " + ColumnW  + rowW + ", ");
+				//writer.print("W: " + ColumnW + ", " + rowW);
+				
+		
 				
 				
+			writer.println(q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard().toString());
+			writer.println(q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard().toString());
+			
+			
+				 writer.close();	
 			}
 			
 			    

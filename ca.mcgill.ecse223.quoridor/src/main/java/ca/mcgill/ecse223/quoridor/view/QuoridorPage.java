@@ -611,6 +611,12 @@ public class QuoridorPage extends JFrame{
 		toggleMainButtons(true);
 		toggleBoard(true);
 		refreshData();
+		
+		
+	
+	
+	
+			
 	}
 	
 	private void loadGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
