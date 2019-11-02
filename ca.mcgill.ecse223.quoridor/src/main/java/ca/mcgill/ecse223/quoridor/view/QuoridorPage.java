@@ -30,6 +30,7 @@ import javax.swing.border.Border;
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameController;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
+import ca.mcgill.ecse223.quoridor.model.Wall;
 
 public class QuoridorPage extends JFrame{
 
@@ -612,10 +613,7 @@ public class QuoridorPage extends JFrame{
 		toggleBoard(true);
 		refreshData();
 		
-		
-	
-	
-	
+
 			
 	}
 	

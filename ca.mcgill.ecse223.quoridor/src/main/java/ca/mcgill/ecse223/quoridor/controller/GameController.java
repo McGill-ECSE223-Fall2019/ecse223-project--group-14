@@ -6,8 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.sql.Time;
+import java.util.List;
 
 import javax.swing.Timer;
+import javax.swing.text.html.HTMLDocument.Iterator;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.Board;
@@ -18,6 +20,7 @@ import ca.mcgill.ecse223.quoridor.model.PlayerPosition;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
 import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
+import ca.mcgill.ecse223.quoridor.model.Wall;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
 import ca.mcgill.ecse223.quoridor.view.QuoridorPage;
 import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
@@ -319,8 +322,16 @@ public class GameController {
 				
 				
 				
-				writer.println("W: " + ColumnW + rowW + ", " );
+				writer.println("W: " + ColumnW + rowW);
 				//writer.print("W: " + ColumnW + ", " + rowW);
+				
+				List<Wall> wWall	= q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard();
+				
+				for(Wall pos: wWall)
+				{ 
+					writer.print(", "+ pos);
+				}
+				
 				
 
 int rowB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
@@ -360,9 +371,15 @@ int rowB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().
 				}
 				
 				
-				writer.println("B: "+ rowB + ColumnB + ", " );
+				writer.println("B: "+ rowB + ColumnB);
 			//	writer.print("B: "+ rowB + ", " + ColumnB);
 
+				List<Wall> bWall	= q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();
+				
+				for(Wall pos: bWall)
+				{ 
+					writer.print(", "+ pos);
+				}
 				
 				
 			    writer.close();	
@@ -413,9 +430,18 @@ int rowB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().
 				}
 				
 				
-				writer.println("B: "+ rowB + ColumnB + ", ");
+				writer.println("B: "+ rowB + ColumnB);
 			//	writer.print("B: "+ rowB + ", " + ColumnB);
 
+	List<Wall> bWall	= q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();
+				
+				for(Wall pos: bWall)
+				{ 
+					writer.print(", "+ pos);
+				}
+				
+				
+				
 				
 int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
 				
@@ -455,16 +481,16 @@ int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().
 				
 				
 				
-				writer.println("W: " + ColumnW  + rowW + ", ");
+				writer.println("W: " + ColumnW  + rowW);
 				//writer.print("W: " + ColumnW + ", " + rowW);
 				
+		List<Wall> wBall	= q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard();
 		
+		for(Wall pos: wBall)
+		{ 
+			writer.print(", "+ pos);
+		}
 				
-				
-			writer.println(q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard().toString());
-			writer.println(q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard().toString());
-			
-			
 				 writer.close();	
 			}
 			
