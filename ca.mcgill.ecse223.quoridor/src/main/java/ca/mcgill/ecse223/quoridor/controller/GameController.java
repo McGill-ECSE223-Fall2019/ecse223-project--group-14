@@ -776,6 +776,7 @@ int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().
 	 * @throws UnsupportedOperationException
 	 */
 	public Game initSaveGameLoad(Quoridor quoridor, String filename) /*throws UnsupportedOperationException*/ {
+		
 		File file = new File(filename);
 		Scanner fileSC = null;
 		try {
@@ -785,40 +786,54 @@ int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().
 			e.printStackTrace();
 			return null;
 		}
+		
 		//assume that file is well formed even if invalid
-		//line 1
-		StringTokenizer s1 = new StringTokenizer(fileSC.nextLine()); //set player
-		String playerString = s1.nextToken();
+		//firstplayer
+		StringTokenizer st = new StringTokenizer(fileSC.nextLine()); //set player
+		String playerString = st.nextToken();
 		
-		Player player;
-		boolean isWhite = false;
-		int moveCounter = 1;
-		int wallID = 1; //uniqueId for all walls
+		Game game = quoridor.getCurrentGame();
+		boolean isWhite = (playerString.contentEquals("W:")) ? true : false;
 		
-		if (playerString.contentEquals("W:")) {
-			player = quoridor.getCurrentGame().getWhitePlayer();
-			isWhite = true;
-		} else { //assume playerString.contentEquals("B:")
-			player = quoridor.getCurrentGame().getBlackPlayer();
-		}
+		Player player = (isWhite) ? game.getWhitePlayer() : game.getBlackPlayer();
+		
+		int moveID = 1;
+		int wallID = (isWhite) ? 1 : 11;
 		
 		try {
-			loadPlayerPosition(player, s1, wallID, quoridor, isWhite);
+			loadPlayerPosition(player, st, wallID, quoridor, isWhite);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			//notify that load failed without validation checking 
 			return null;
 		}
-		s1 = new StringTokenizer(fileSC.nextLine());
 		
+		//nextplayer
+		st = new StringTokenizer(fileSC.nextLine());
+		isWhite = !isWhite;
+		
+		playerString = st.nextToken();
+		player = (isWhite) ? game.getWhitePlayer() : game.getBlackPlayer();
+		
+		wallID = (isWhite) ? 1 : 11;
+		moveID = 1;
+		
+		try {
+			loadPlayerPosition(player, st, wallID, quoridor, isWhite);
+		} catch (Exception e) {
+			//same story
+			return null;
+		}
 		
 		//TODO: THink about separating this process into its subroutine
-			
-			
 		fileSC.close();
-		return null; //TODO: REPLACE
+		return game; //TODO: REPLACE
 		//throw new UnsupportedOperationException();
 	}
+	
+	//private static Player getPlayer(boolean isWhite, Game game) {
+	//	return (isWhite == true) ? game.getWhitePlayer() : game.getBlackPlayer();
+	//}
 	
 	/*
 	 * getIndex from Stepdefinitions, cleaned up a bit
@@ -850,24 +865,14 @@ int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().
 		return true;
 	}
 	
-	/*
-	 * Static getPlayer method that checks for color based on an input String 
-	 * (B: = black, W: = white)
-	 */
-	private static Player getPlayer(String playerToken, Quoridor quoridor) throws IOException {
-		if (playerToken.contentEquals("W:"))
-			return quoridor.getCurrentGame().getWhitePlayer();
-		else if (playerToken.contentEquals("B:"))
-			return quoridor.getCurrentGame().getBlackPlayer();
-		else throw new IOException("Save file is malformed:" 
-				+ " no player color specified at beginning of line");
-	}
+
 	
-	private static int loadPlayerPosition(Player player, StringTokenizer st, int wallID, Quoridor quoridor, boolean isWhite) throws Exception {
+	private static void loadPlayerPosition(Player player, StringTokenizer st, int wallID, Quoridor quoridor, boolean isWhite) throws Exception {
 		Game game = quoridor.getCurrentGame();
 		Board board = quoridor.getBoard();
 		GamePosition gP = game.getCurrentPosition();
 		int moveID = 1;
+		int runningWallID = wallID;
 		while (st.hasMoreTokens()) {
 			String move = st.nextToken(",");
 			int col = move.charAt(0) - 'a' + 1;
@@ -886,12 +891,13 @@ int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().
 					dir = Direction.Horizontal;
 				else
 					dir = Direction.Vertical;
-				Wall newWall = new Wall(wallID, player);
-				WallMove wM = new WallMove(moveID, 1, player, tile, game, dir, newWall);
-				wallID++;
+				Wall wall = player.getWall(runningWallID);
+				wall.setMove(new WallMove(moveID, 1, player, tile, game, dir, wall));
+				runningWallID++;
+				moveID++;
 			}
 		}
-		return wallID;
+		
 	}
 	
 	/**

@@ -974,7 +974,8 @@ public class CucumberStepDefinitions {
 		Game game = G.initSaveGameLoad(quoridor, filename);
 		game.setGameStatus(GameStatus.Initializing);
 		assertNotNull(game);
-		assertTrue(quoridor.setCurrentGame(game));
+		assertEquals(game, quoridor.getCurrentGame());
+		//assertTrue(quoridor.setCurrentGame(game));
 	}
 	
 	/**
