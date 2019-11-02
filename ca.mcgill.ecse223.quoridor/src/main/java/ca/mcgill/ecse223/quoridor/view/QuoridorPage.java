@@ -6,31 +6,30 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.sql.Time;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
-import javax.swing.border.Border;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameController;
+
 import ca.mcgill.ecse223.quoridor.model.Game;
+
+import ca.mcgill.ecse223.quoridor.model.Direction;
+
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
 
-public class QuoridorPage extends JFrame implements MouseListener,MouseMotionListener{
+public class QuoridorPage extends JFrame{
 
 	/**
 	 * default 
@@ -91,10 +90,15 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 	
 	private JButton endTurnButton;
 	
-	private JButton upButton;
+	/*private JButton upButton;
 	private JButton rightButton;
 	private JButton downButton;
-	private JButton leftButton;
+	private JButton leftButton;*/
+	
+	private final int buttonH=30;
+	private final int buttonW=125;
+	
+	private boolean stageMove;
 	
 	private boolean currPlayer;	//true for white, false for black
 	
@@ -103,18 +107,24 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 	private Quoridor q;
 	private GameController gc;
 	
-	private RectComp [][] tiles;
-	private RectComp [] bwalls;
-	private RectComp [] wwalls;
+	private TileComponent [][] tiles;
+	public WallComponent [] bwalls;
+	public WallComponent [] wwalls;
+	private TileComponent[][] sq;
+	private TileComponent[][] sq2;
 	
-	private RectComp heldComponent;
+	private PawnComponent wPawn;
+	private PawnComponent bPawn;
 	
 	public QuoridorPage(){
 		q=QuoridorApplication.getQuoridor();
 		gc=new GameController();
 		gc.initQuorridor();
-		addMouseListener(this);
-		addMouseMotionListener(this);
+		
+		QuoridorMouseListener listener = new QuoridorMouseListener(this,gc);
+        this.getContentPane().addMouseListener(listener);
+        this.getContentPane().addMouseMotionListener(listener);
+        
 		initComponents();
 		refreshData();
 	}
@@ -122,12 +132,31 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 	private void initComponents() {
 		
 		setSize(650, 800);
+		getContentPane().setBackground(Color.LIGHT_GRAY);
 		
-		int buttonH=30;
-		int buttonW=125;
+		stageMove=false;
 		
-		int wallH=70;
-		int wallW=12;
+		Point [][] points=new Point[8][9];
+		sq = new TileComponent [8][9];
+		for (int i=0;i<8;i++) {
+			for (int j=0;j<9;j++) {
+				points[i][j]= new Point(192+i*50,232+j*50);
+				sq[i][j]=new TileComponent();
+				sq[i][j].setBounds((int)points[i][j].getX(), (int)points[i][j].getY(), 5, 5);
+				add(sq[i][j]);
+			}
+		}
+		
+		Point [][] points2=new Point[9][8];
+		sq2 = new TileComponent [9][8];
+		for (int i=0;i<9;i++) {
+			for (int j=0;j<8;j++) {
+				points2[i][j]= new Point(172+i*50,252+j*50);
+				sq2[i][j]=new TileComponent();
+				sq2[i][j].setBounds((int)points2[i][j].getX(), (int)points2[i][j].getY(), 5, 5);
+				add(sq2[i][j]);
+			}
+		}
 		
 		currPlayer=true;
 		
@@ -208,24 +237,33 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setTitle("Quoridor");
 		
-		tiles= new RectComp[9][9];
+		tiles= new TileComponent[9][9];
 		for (int i=0;i<9;i++) {
 			for (int j=0;j<9;j++) {
-				tiles[i][j]=new RectComp(40,40,0);
+				tiles[i][j]=new TileComponent();
 			}
 		}
-		bwalls= new RectComp[10];
+		bwalls= new WallComponent[10];
 		for (int i=0;i<10;i++) {
-			bwalls[i]=new RectComp(wallW,wallH,2);
+			bwalls[i]=new WallComponent(Color.BLACK);
 		}
 		
-		wwalls= new RectComp[10];
+		wwalls= new WallComponent[10];
 		for (int i=0;i<10;i++) {
-			wwalls[i]=new RectComp(wallW,wallH,1);
+			wwalls[i]=new WallComponent(Color.WHITE);
 		}
+		
+		wPawn=new PawnComponent(Color.WHITE);
+		bPawn=new PawnComponent(Color.BLACK);
+		
+		wPawn.setBounds(157, 417, 25, 25);
+		bPawn.setBounds(557, 417, 25, 25);
+		add(wPawn);
+		add(bPawn);
+		wPawn.setVisible(true);
+		bPawn.setVisible(true);
+		
 		//wwalls[0].contains(5, 5); can be used to determine valid wall placement
-		//JPanel board = new JPanel(new FlowLayout());
-		//board.addL
 		
 		toggleBoard(false);
 		getContentPane().setLayout(null);
@@ -235,13 +273,13 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 		add(title);
 		bannerMessage.setBounds(10, 60, 600, 40);
 		add(bannerMessage);
-		errorMessage.setBounds(10, 110, 600, 10);
+		errorMessage.setBounds(10, 110, 600, 15);
 		add(errorMessage);
-		p1Name.setBounds(10, 125, 600, 10);
+		p1Name.setBounds(10, 125, 300, 15);
 		add(p1Name);
-		timeRem1.setBounds(10, 140, 600, 10);
+		timeRem1.setBounds(10, 140, 300, 15);
 		add(timeRem1);
-		turnMessage1.setBounds(10, 155, 100, 10);
+		turnMessage1.setBounds(10, 165, 100, 15);
 		add(turnMessage1);
 		
 		newGameButton.setBounds(10, y, buttonW, buttonH);
@@ -265,6 +303,19 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 		add(jumpEndButton);
 		quitButton.setBounds(10, y+120, buttonW, buttonH);
 		add(quitButton);
+		
+		/*upButton.setFont(new Font("Serif",Font.PLAIN,11));
+		upButton.setBounds(35, y+180, 68, buttonH);
+		add(upButton);
+		rightButton.setFont(new Font("Serif",Font.PLAIN,11));
+		rightButton.setBounds(80, y+210, 68, buttonH);
+		add(rightButton);
+		downButton.setFont(new Font("Serif",Font.PLAIN,11));
+		downButton.setBounds(35, y+240, 68, buttonH);
+		add(downButton);
+		leftButton.setFont(new Font("Serif",Font.PLAIN,11));
+		leftButton.setBounds(10, y+210, 68, buttonH);
+		add(leftButton);*/
 		
 		acceptDrawButton.setBounds(10, y, buttonW, buttonH);
 		add(acceptDrawButton);
@@ -317,12 +368,19 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 		add(loadFileButton);
 		
 		
-		p2Name.setBounds(10, 675, 600, 10);
+		p2Name.setBounds(10, 675, 300, 15);
 		add(p2Name);
-		timeRem2.setBounds(10, 690, 600, 10);
+		timeRem2.setBounds(10, 690, 300, 15);
 		add(timeRem2);
-		turnMessage2.setBounds(10, 705, 100, 10);
+		turnMessage2.setBounds(10, 715, 100, 15);
 		add(turnMessage2);
+		
+		for (int i=0;i<10;i++) {
+			wwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 125, WallComponent.wallW, WallComponent.wallH);
+			add(wwalls[i]);
+			bwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 675, WallComponent.wallW, WallComponent.wallH);
+			add(bwalls[i]);
+		}
 		
 		for (int i=0;i<9;i++) {
 			for (int j=0;j<9;j++) {
@@ -331,12 +389,7 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 			}
 		}
 		
-		for (int i=0;i<10;i++) {
-			wwalls[i].setBounds(150+(wallW+10)*i, 125, wallW, wallH);
-			add(wwalls[i]);
-			bwalls[i].setBounds(150+(wallW+10)*i, 675, wallW, wallH);
-			add(bwalls[i]);
-		}
+		
 	}
 
 	private void refreshData() {
@@ -368,6 +421,8 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 		
 		replayGameButton.setVisible(true);
 		quitButton.setVisible(true);
+		
+		endTurnButton.setVisible(false);
 		
 		toggleBoard(false);
 		
@@ -577,24 +632,88 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 		error = "";
 		
 		//TODO
+		//call load controller function to update model
 		//reset view with new loaded file
-		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		String filename = loadField.getText();
-		Game game = gc.initSaveGameLoad(quoridor, filename);
+
+		//Quoridor quoridor = QuoridorApplication.getQuoridor();
+		//String filename = loadField.getText();
+		//Game game = gc.initSaveGameLoad(quoridor, filename);
 		//p1Name
 		
 		//p2Name
 		
 		//remTime?
+
+		
+		p1Name.setText(q.getCurrentGame().getWhitePlayer().getUser().getName());
+		p2Name.setText(q.getCurrentGame().getBlackPlayer().getUser().getName());
+		
+		Time t=q.getCurrentGame().getBlackPlayer().getRemainingTime();
+		timeRem1.setText(convT2S(t));
+		timeRem2.setText(convT2S(t));
+		
+		int xb=q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+		int yb=q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+		int xw=q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+		int yw=q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+		
+		wPawn.setBounds(107+xw*50, 167+yw*50, 25, 25);
+		bPawn.setBounds(107+xb*50, 167+yb*50, 25, 25);
+		
+		int width,height,x,y;
+		for (int i=0;i<10;i++) {
+			if (q.getCurrentGame().getWhitePlayer().getWall(i).getMove()!=null) {
+				if (q.getCurrentGame().getWhitePlayer().getWall(i).getMove().getWallDirection()==Direction.Horizontal) {
+					width=WallComponent.wallH;
+					height=WallComponent.wallW;
+				}
+				else {
+					width=WallComponent.wallW;
+					height=WallComponent.wallH;
+				}
+				x=q.getCurrentGame().getWhitePlayer().getWall(i).getMove().getTargetTile().getRow();
+				y=q.getCurrentGame().getWhitePlayer().getWall(i).getMove().getTargetTile().getColumn();
+				
+				//TODO correctly set adjusted x and y coords
+				//wwalls[i].setBounds(x, y, width, height);
+			}
+			if (q.getCurrentGame().getBlackPlayer().getWall(i).getMove()!=null) {
+				if (q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getWallDirection()==Direction.Horizontal) {
+					width=WallComponent.wallH;
+					height=WallComponent.wallW;
+				}
+				else {
+					width=WallComponent.wallW;
+					height=WallComponent.wallH;
+				}
+				x=q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getTargetTile().getRow();
+				y=q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getTargetTile().getColumn();
+				
+				//TODO correctly set adjusted x and y coords
+				//wwalls[i].setBounds(x, y, width, height);
+				
+			}
+		}
 		
 		
+		
+		loadFileButton.setVisible(false);
+		loadField.setVisible(false);
+		
+		p1NameField.setVisible(true);
+		createP1Button.setVisible(true);
+		selectP1Button.setVisible(true);
+		
+		
+		banner="New Game";
+		
+		/*
 		// update visuals
 		banner = "GamePlay"; 
 		loadFileButton.setVisible(false);
 		loadField.setVisible(false);
 		toggleMainButtons(true);
-		toggleBoard(true);
-		
+		toggleBoard(true);*/
 		
 		
 		refreshData();
@@ -724,6 +843,11 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 		resignGameButton.setVisible(false);
 		drawGameButton.setVisible(false);
 		
+		/*upButton.setVisible(false);
+		leftButton.setVisible(false);
+		rightButton.setVisible(false);
+		downButton.setVisible(false);*/
+		
 		p1Name.setVisible(false);
 		p2Name.setVisible(false);
 		timeRem1.setVisible(false);
@@ -736,17 +860,36 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 		jumpEndButton.setVisible(false);
 		quitButton.setVisible(false);
 		
+		endTurnButton.setVisible(false);
+		
 		// update visuals
 		banner = "Main Menu"; //for testing
 		q.getCurrentGame().delete();
 		refreshData();
 	}
 	
+	/*private void upButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		//call gc 
+	}
+	
+	private void rightButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		//call gc 
+	}
+	
+	private void downButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		//call gc 
+	}
+	
+	private void leftButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		//call gc 
+	}*/
+	
 	private void endTurnButtonActionPerformed(java.awt.event.ActionEvent evt) {	//this is the same as switch player
 		//TODO
 		//set movable pawn and walls
-		//set current player in the model via controller method
+		
 		currPlayer=!currPlayer;
+		gc.switchPlayer(q);
 		if (currPlayer) {
 			timeRem1.setVisible(true);
 			timeRem2.setVisible(false);
@@ -759,6 +902,7 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 			turnMessage1.setVisible(false);
 			turnMessage2.setVisible(true);
 		}
+		stageMove=false;
 	}
 	
 	private void initButtons() {
@@ -847,13 +991,21 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 		endTurnButton.setText("End Turn");
 		endTurnButton.setVisible(false);
 		
-		upButton= new JButton();
+		/*upButton= new JButton();
 		upButton.setText("UP");
 		upButton.setVisible(false);
 		
 		rightButton= new JButton();
-		rightButton.setText("UP");
+		rightButton.setText("RIGHT");
 		rightButton.setVisible(false);
+		
+		downButton= new JButton();
+		downButton.setText("DOWN");
+		downButton.setVisible(false);
+		
+		leftButton= new JButton();
+		leftButton.setText("LEFT");
+		leftButton.setVisible(false);*/
 	}
 	
 	private void addListners() {
@@ -983,6 +1135,30 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 				endTurnButtonActionPerformed(evt);
 			}
 		});
+		
+		/*upButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				upButtonActionPerformed(evt);
+			}
+		});
+		
+		rightButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				rightButtonActionPerformed(evt);
+			}
+		});
+		
+		downButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				downButtonActionPerformed(evt);
+			}
+		});
+		
+		leftButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				leftButtonActionPerformed(evt);
+			}
+		});*/
 	}
 	
 	
@@ -998,6 +1174,26 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 		}
 		wwalls[9].setVisible(vis);
 		bwalls[9].setVisible(vis);
+		
+		wPawn.setVisible(vis);
+		bPawn.setVisible(vis);
+		
+		for (int i=0;i<8;i++) {
+			for (int j=0;j<9;j++) {
+				sq[i][j].setVisible(vis);
+			}
+		}
+		
+		for (int i=0;i<9;i++) {
+			for (int j=0;j<8;j++) {
+				sq2[i][j].setVisible(vis);
+			}
+		}
+		
+		/*upButton.setVisible(vis);
+		rightButton.setVisible(vis);
+		downButton.setVisible(vis);
+		leftButton.setVisible(vis);*/
 	}
 	
 	private void toggleMainButtons(boolean vis) {
@@ -1016,6 +1212,11 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 		}
 	}
 	
+	/**
+	 * Method converts Time to string
+	 * 
+	 * @author DariusPi
+	 */
 	private String convT2S(Time t) {
 		long tt=t.getTime();
 		int min=(int)(tt/1000)/60;
@@ -1023,6 +1224,11 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 		return("Time Remainning: "+min+":"+sec);
 	}
 
+	/**
+	 * Method switches current player in view and model
+	 * 
+	 * @author DariusPi
+	 */
 	private void switchPlayer() {			//should be called by either drop wall or end turn button
 		//TODO
 		
@@ -1037,103 +1243,22 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 		}
 	}
 	
-	class RectComp extends JPanel {
-		private static final long serialVersionUID = 1L;
-		private Rectangle rect;
-		private int colour;
-		//Rectangle [][] tiles=new Rectangle[9][9];
-        public RectComp(int w, int h, int c) {
-    		rect=new Rectangle(w,h);
-        	colour=c;
-    		/*for (int i=0;i<9;i++) {
-    			for (int j=0;j<9;j++) {
-    				tiles[i][j]=new Rectangle(20,20);
-    			}
-    		}*/
-        }
-        public boolean isWall() {
-        	if(rect.width == 12) return true;
-        	else return false;
-        }
-
-        public void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            Graphics2D g2 = (Graphics2D) g;
-            g2.draw(rect);
-            /*for (int i=0;i<9;i++) {
-    			for (int j=0;j<9;j++) {
-    				g2.draw(tiles[i][j]);
-    			}
-    		}*/
-            
-            if (colour==0) {
-            	g2.setColor(Color.ORANGE);
-            }
-            else if (colour==1) {
-            	g2.setColor(Color.WHITE);
-            }
-            else {
-            	g2.setColor(Color.BLACK);
-            }
-       
-            g2.fill(rect);
-            /*for (int i=0;i<9;i++) {
-    			for (int j=0;j<9;j++) {
-    				g2.fill(tiles[i][j]);
-    			}
-    		}*/
-
-        }
-    }
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+	/**
+	 * Method sets whether a wall move or player move was performed to block further ones
+	 * 
+	 * @author DariusPi
+	 */
+	public void setStageMove(boolean moved) {
+		stageMove=moved;
+	}
+	
+	/**
+	 * Method returns whether a wall move or player move was performed 
+	 * 
+	 * @author DariusPi
+	 */
+	public boolean getStageMove() {
+		return stageMove;
 	}
 
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		heldComponent = null;
-		Component c = this.getContentPane().findComponentAt(e.getX(), e.getY());
-		if (c instanceof RectComp && ((RectComp) c).isWall()) {
-			heldComponent = (RectComp) c;
-			heldComponent.setLocation(e.getX(), e.getY());
-			repaint();
-		}
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		if(heldComponent != null) {
-			heldComponent.setLocation(e.getX(), e.getY());
-			repaint();
-		}
-		
-	}
 }
