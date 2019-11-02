@@ -329,7 +329,47 @@ public class GameController {
 				
 				for(Wall pos: wWall)
 				{ 
-					writer.print(", "+ pos);
+				
+					int WallColumnWhite = pos.getMove().getTargetTile().getColumn();
+					String WallColumnLetterWhite = "";
+					
+					switch(WallColumnWhite) {
+					
+					case 1:  WallColumnLetterWhite = "a";
+						break;
+					
+					case 2:  WallColumnLetterWhite = "b";
+						break;
+						
+					case 3:   WallColumnLetterWhite = "c";
+						break;
+						
+					case 4:   WallColumnLetterWhite = "d";
+						break;
+						
+					case 5:  WallColumnLetterWhite = "e";
+						break;
+						
+					case 6:  WallColumnLetterWhite = "f";
+						break;
+						
+					case 7:  WallColumnLetterWhite = "g";
+						break;
+						
+					case 8:  WallColumnLetterWhite = "h";
+						break;
+						
+					case 9: WallColumnLetterWhite = "i";
+						
+					}
+				
+					
+					writer.print(", " + WallColumnLetterWhite + pos.getMove().getTargetTile().getRow() + pos.getMove().getWallDirection());
+					
+
+				//	writer.print();
+					
+					
 				}
 				
 				
@@ -376,9 +416,45 @@ int rowB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().
 
 				List<Wall> bWall	= q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();
 				
-				for(Wall pos: bWall)
+				for(Wall pos1: bWall)
 				{ 
-					writer.print(", "+ pos);
+				
+					int WallColumnBlack = pos1.getMove().getTargetTile().getColumn();
+					String WallColumnLetterBlack = "";
+					
+					switch(WallColumnBlack) {
+					
+					case 1:  WallColumnLetterBlack = "a";
+						break;
+					
+					case 2:  WallColumnLetterBlack = "b";
+						break;
+						
+					case 3:   WallColumnLetterBlack = "c";
+						break;
+						
+					case 4:   WallColumnLetterBlack = "d";
+						break;
+						
+					case 5:  WallColumnLetterBlack = "e";
+						break;
+						
+					case 6:  WallColumnLetterBlack = "f";
+						break;
+						
+					case 7:  WallColumnLetterBlack = "g";
+						break;
+						
+					case 8:  WallColumnLetterBlack = "h";
+						break;
+						
+					case 9: WallColumnLetterBlack = "i";
+						
+					}
+				
+					
+					writer.print(", " + WallColumnLetterBlack + pos1.getMove().getTargetTile().getRow() + pos1.getMove().getWallDirection());
+					
 				}
 				
 				
@@ -435,13 +511,46 @@ int rowB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().
 
 	List<Wall> bWall	= q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();
 				
-				for(Wall pos: bWall)
+				for(Wall pos1: bWall)
 				{ 
-					writer.print(", "+ pos);
+				
+					int WallColumnBlack = pos1.getMove().getTargetTile().getColumn();
+					String WallColumnLetterBlack = "";
+					
+					switch(WallColumnBlack) {
+					
+					case 1:  WallColumnLetterBlack = "a";
+						break;
+					
+					case 2:  WallColumnLetterBlack = "b";
+						break;
+						
+					case 3:   WallColumnLetterBlack = "c";
+						break;
+						
+					case 4:   WallColumnLetterBlack = "d";
+						break;
+						
+					case 5:  WallColumnLetterBlack = "e";
+						break;
+						
+					case 6:  WallColumnLetterBlack = "f";
+						break;
+						
+					case 7:  WallColumnLetterBlack = "g";
+						break;
+						
+					case 8:  WallColumnLetterBlack = "h";
+						break;
+						
+					case 9: WallColumnLetterBlack = "i";
+						
+					}
+				
+					
+					writer.print(", " + WallColumnLetterBlack + pos1.getMove().getTargetTile().getRow() + pos1.getMove().getWallDirection());
+					
 				}
-				
-				
-				
 				
 int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
 				
@@ -484,12 +593,51 @@ int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().
 				writer.println("W: " + ColumnW  + rowW);
 				//writer.print("W: " + ColumnW + ", " + rowW);
 				
-		List<Wall> wBall	= q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard();
+		List<Wall> wWall	= q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard();
 		
-		for(Wall pos: wBall)
+		for(Wall pos: wWall)
 		{ 
-						
-			writer.print(", "+ pos.getMove().getTargetTile() + pos.getMove().getWallDirection());
+		
+			int WallColumnWhite = pos.getMove().getTargetTile().getColumn();
+			String WallColumnLetterWhite = "";
+			
+			switch(WallColumnWhite) {
+			
+			case 1:  WallColumnLetterWhite = "a";
+				break;
+			
+			case 2:  WallColumnLetterWhite = "b";
+				break;
+				
+			case 3:   WallColumnLetterWhite = "c";
+				break;
+				
+			case 4:   WallColumnLetterWhite = "d";
+				break;
+				
+			case 5:  WallColumnLetterWhite = "e";
+				break;
+				
+			case 6:  WallColumnLetterWhite = "f";
+				break;
+				
+			case 7:  WallColumnLetterWhite = "g";
+				break;
+				
+			case 8:  WallColumnLetterWhite = "h";
+				break;
+				
+			case 9: WallColumnLetterWhite = "i";
+				
+			}
+		
+			
+			writer.print(", " + WallColumnLetterWhite + pos.getMove().getTargetTile().getRow() + pos.getMove().getWallDirection());
+			
+
+		//	writer.print();
+			
+			
 		}
 				
 				 writer.close();	
