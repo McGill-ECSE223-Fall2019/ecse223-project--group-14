@@ -2,6 +2,9 @@ package ca.mcgill.ecse223.quoridor.controller;
 
 import java.awt.Color;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.sql.Time;
 
 import javax.swing.Timer;
@@ -266,9 +269,64 @@ public class GameController {
 		else return false;
 	}
 
-	public void SaveGame(String FileName) {
-		throw new UnsupportedOperationException();	
-		//This saves the game
+	public void SaveGame(Quoridor q, String FileName) {
+	
+//		throw new UnsupportedOperationException();	
+
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter(FileName, "UTF-8");
+			
+			//if white playing, white should be on the first line
+			if(q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite())
+			{
+				writer.println("W: " + q.getCurrentGame().getCurrentPosition().getWhitePosition() + ", " +
+						q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard());
+				
+				
+				writer.println("B: "+ q.getCurrentGame().getCurrentPosition().getBlackPosition() + ", " +
+									q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard());
+				  
+//				System.out.println();
+//				System.out.println();
+//				
+//				System.out.println(q.getCurrentGame().getPositions());
+			    
+			    writer.close();	
+			}
+			
+			
+			//if black playing, black should be on the first line
+			else if (q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsBlack())
+				
+			{
+				
+				writer.println("B: "+ q.getCurrentGame().getCurrentPosition().getBlackPosition() + ", " +
+						q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard());
+
+				
+				
+				writer.println("W: " + q.getCurrentGame().getCurrentPosition().getWhitePosition() + ", " +
+						q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard());
+				
+				
+			//	writer.println(String.valueOf(0));
+			    writer.close();
+			  //  System.out.println(q.getCurrentGame().getGameStatus());
+			    
+				
+				
+			}
+			
+			    
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	/**
