@@ -24,6 +24,7 @@ import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameController;
 import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
+import ca.mcgill.ecse223.quoridor.model.Wall;
 
 public class QuoridorPage extends JFrame{
 
@@ -639,6 +640,8 @@ public class QuoridorPage extends JFrame{
 		toggleMainButtons(true);
 		toggleBoard(true);
 		refreshData();
+		
+			
 	}
 	
 	private void loadGameButtonActionPerformed(java.awt.event.ActionEvent evt) {

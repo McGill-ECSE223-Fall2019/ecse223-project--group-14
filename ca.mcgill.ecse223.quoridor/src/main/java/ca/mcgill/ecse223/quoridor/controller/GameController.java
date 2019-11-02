@@ -2,9 +2,14 @@ package ca.mcgill.ecse223.quoridor.controller;
 
 import java.awt.Color;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.sql.Time;
+import java.util.List;
 
 import javax.swing.Timer;
+import javax.swing.text.html.HTMLDocument.Iterator;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.Board;
@@ -15,6 +20,7 @@ import ca.mcgill.ecse223.quoridor.model.PlayerPosition;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
 import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
+import ca.mcgill.ecse223.quoridor.model.Wall;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
 import ca.mcgill.ecse223.quoridor.view.QuoridorPage;
 import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
@@ -289,9 +295,386 @@ public class GameController {
 		else return false;
 	}
 
-	public void SaveGame(String FileName) {
-		throw new UnsupportedOperationException();	
-		//This saves the game
+	public void SaveGame(Quoridor q, String FileName) {
+	
+//		throw new UnsupportedOperationException();	
+
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter(FileName, "UTF-8");
+			
+			//if white playing, white should be on the first line
+			if(q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite())
+			{
+				
+				int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+				
+				int columnW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+				
+				String ColumnW = "";
+				
+				switch(columnW) {
+				
+				case 1:  ColumnW = "a";
+					break;
+				
+				case 2:  ColumnW = "b";
+					break;
+					
+				case 3:   ColumnW = "c";
+					break;
+					
+				case 4:   ColumnW = "d";
+					break;
+					
+				case 5:  ColumnW = "e";
+					break;
+					
+				case 6:  ColumnW = "f";
+					break;
+					
+				case 7:  ColumnW = "g";
+					break;
+					
+				case 8:  ColumnW = "h";
+					break;
+					
+				case 9: ColumnW = "i";
+					
+				}
+				
+				
+				
+				writer.println("W: " + ColumnW + rowW);
+				//writer.print("W: " + ColumnW + ", " + rowW);
+				
+				List<Wall> wWall	= q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard();
+				
+				for(Wall pos: wWall)
+				{ 
+				
+					int WallColumnWhite = pos.getMove().getTargetTile().getColumn();
+					String WallColumnLetterWhite = "";
+					
+					switch(WallColumnWhite) {
+					
+					case 1:  WallColumnLetterWhite = "a";
+						break;
+					
+					case 2:  WallColumnLetterWhite = "b";
+						break;
+						
+					case 3:   WallColumnLetterWhite = "c";
+						break;
+						
+					case 4:   WallColumnLetterWhite = "d";
+						break;
+						
+					case 5:  WallColumnLetterWhite = "e";
+						break;
+						
+					case 6:  WallColumnLetterWhite = "f";
+						break;
+						
+					case 7:  WallColumnLetterWhite = "g";
+						break;
+						
+					case 8:  WallColumnLetterWhite = "h";
+						break;
+						
+					case 9: WallColumnLetterWhite = "i";
+						
+					}
+				
+					
+					writer.print(", " + WallColumnLetterWhite + pos.getMove().getTargetTile().getRow() + pos.getMove().getWallDirection());
+					
+
+				//	writer.print();
+					
+					
+				}
+				
+				
+
+int rowB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+				
+				int columnB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+				
+				String ColumnB = "";
+				
+				switch(columnB) {
+				
+				case 1:  ColumnB = "a";
+					break;
+				
+				case 2:  ColumnB = "b";
+					break;
+					
+				case 3:   ColumnB = "c";
+					break;
+					
+				case 4:   ColumnB = "d";
+					break;
+					
+				case 5:  ColumnB = "e";
+					break;
+					
+				case 6:  ColumnB = "f";
+					break;
+					
+				case 7:  ColumnB = "g";
+					break;
+					
+				case 8:  ColumnB = "h";
+					break;
+					
+				case 9: ColumnB = "i";
+					
+				}
+				
+				
+				writer.println("B: "+ rowB + ColumnB);
+			//	writer.print("B: "+ rowB + ", " + ColumnB);
+
+				List<Wall> bWall	= q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();
+				
+				for(Wall pos1: bWall)
+				{ 
+				
+					int WallColumnBlack = pos1.getMove().getTargetTile().getColumn();
+					String WallColumnLetterBlack = "";
+					
+					switch(WallColumnBlack) {
+					
+					case 1:  WallColumnLetterBlack = "a";
+						break;
+					
+					case 2:  WallColumnLetterBlack = "b";
+						break;
+						
+					case 3:   WallColumnLetterBlack = "c";
+						break;
+						
+					case 4:   WallColumnLetterBlack = "d";
+						break;
+						
+					case 5:  WallColumnLetterBlack = "e";
+						break;
+						
+					case 6:  WallColumnLetterBlack = "f";
+						break;
+						
+					case 7:  WallColumnLetterBlack = "g";
+						break;
+						
+					case 8:  WallColumnLetterBlack = "h";
+						break;
+						
+					case 9: WallColumnLetterBlack = "i";
+						
+					}
+				
+					
+					writer.print(", " + WallColumnLetterBlack + pos1.getMove().getTargetTile().getRow() + pos1.getMove().getWallDirection());
+					
+				}
+				
+				
+			    writer.close();	
+			}
+			
+			
+			//if black playing, black should be on the first line
+			else if (q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsBlack())
+				
+			{
+				
+	
+
+int rowB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+				
+				int columnB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+				
+				String ColumnB = "";
+				
+				switch(columnB) {
+				
+				case 1:  ColumnB = "a";
+					break;
+				
+				case 2:  ColumnB = "b";
+					break;
+					
+				case 3:   ColumnB = "c";
+					break;
+					
+				case 4:   ColumnB = "d";
+					break;
+					
+				case 5:  ColumnB = "e";
+					break;
+					
+				case 6:  ColumnB = "f";
+					break;
+					
+				case 7:  ColumnB = "g";
+					break;
+					
+				case 8:  ColumnB = "h";
+					break;
+					
+				case 9: ColumnB = "i";
+					
+				}
+				
+				
+				writer.println("B: "+ rowB + ColumnB);
+			//	writer.print("B: "+ rowB + ", " + ColumnB);
+
+	List<Wall> bWall	= q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();
+				
+				for(Wall pos1: bWall)
+				{ 
+				
+					int WallColumnBlack = pos1.getMove().getTargetTile().getColumn();
+					String WallColumnLetterBlack = "";
+					
+					switch(WallColumnBlack) {
+					
+					case 1:  WallColumnLetterBlack = "a";
+						break;
+					
+					case 2:  WallColumnLetterBlack = "b";
+						break;
+						
+					case 3:   WallColumnLetterBlack = "c";
+						break;
+						
+					case 4:   WallColumnLetterBlack = "d";
+						break;
+						
+					case 5:  WallColumnLetterBlack = "e";
+						break;
+						
+					case 6:  WallColumnLetterBlack = "f";
+						break;
+						
+					case 7:  WallColumnLetterBlack = "g";
+						break;
+						
+					case 8:  WallColumnLetterBlack = "h";
+						break;
+						
+					case 9: WallColumnLetterBlack = "i";
+						
+					}
+				
+					
+					writer.print(", " + WallColumnLetterBlack + pos1.getMove().getTargetTile().getRow() + pos1.getMove().getWallDirection());
+					
+				}
+				
+int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+				
+				int columnW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+				
+				String ColumnW = "";
+				
+				switch(columnW) {
+				
+				case 1:  ColumnW = "a";
+					break;
+				
+				case 2:  ColumnW = "b";
+					break;
+					
+				case 3:   ColumnW = "c";
+					break;
+					
+				case 4:   ColumnW = "d";
+					break;
+					
+				case 5:  ColumnW = "e";
+					break;
+					
+				case 6:  ColumnW = "f";
+					break;
+					
+				case 7:  ColumnW = "g";
+					break;
+					
+				case 8:  ColumnW = "h";
+					break;
+					
+				case 9: ColumnW = "i";
+					
+				}
+				
+				
+				
+				writer.println("W: " + ColumnW  + rowW);
+				//writer.print("W: " + ColumnW + ", " + rowW);
+				
+		List<Wall> wWall	= q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard();
+		
+		for(Wall pos: wWall)
+		{ 
+		
+			int WallColumnWhite = pos.getMove().getTargetTile().getColumn();
+			String WallColumnLetterWhite = "";
+			
+			switch(WallColumnWhite) {
+			
+			case 1:  WallColumnLetterWhite = "a";
+				break;
+			
+			case 2:  WallColumnLetterWhite = "b";
+				break;
+				
+			case 3:   WallColumnLetterWhite = "c";
+				break;
+				
+			case 4:   WallColumnLetterWhite = "d";
+				break;
+				
+			case 5:  WallColumnLetterWhite = "e";
+				break;
+				
+			case 6:  WallColumnLetterWhite = "f";
+				break;
+				
+			case 7:  WallColumnLetterWhite = "g";
+				break;
+				
+			case 8:  WallColumnLetterWhite = "h";
+				break;
+				
+			case 9: WallColumnLetterWhite = "i";
+				
+			}
+		
+			
+			writer.print(", " + WallColumnLetterWhite + pos.getMove().getTargetTile().getRow() + pos.getMove().getWallDirection());
+			
+
+		//	writer.print();
+			
+			
+		}
+				
+				 writer.close();	
+			}
+			
+			    
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	/**
