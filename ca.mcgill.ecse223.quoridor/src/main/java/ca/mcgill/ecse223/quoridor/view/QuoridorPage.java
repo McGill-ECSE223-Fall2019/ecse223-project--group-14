@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,6 +29,7 @@ import javax.swing.border.Border;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameController;
+import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
 
 public class QuoridorPage extends JFrame{
@@ -99,6 +101,8 @@ public class QuoridorPage extends JFrame{
 	private final int buttonH=30;
 	private final int buttonW=125;
 	
+	private boolean stageMove;
+	
 	private boolean currPlayer;	//true for white, false for black
 	
 	private Timer timer;
@@ -109,6 +113,8 @@ public class QuoridorPage extends JFrame{
 	private TileComponent [][] tiles;
 	public WallComponent [] bwalls;
 	public WallComponent [] wwalls;
+	private TileComponent[][] sq;
+	private TileComponent[][] sq2;
 	
 	private PawnComponent wPawn;
 	private PawnComponent bPawn;
@@ -131,6 +137,29 @@ public class QuoridorPage extends JFrame{
 		setSize(650, 800);
 		getContentPane().setBackground(Color.LIGHT_GRAY);
 		
+		stageMove=false;
+		
+		Point [][] points=new Point[8][9];
+		sq = new TileComponent [8][9];
+		for (int i=0;i<8;i++) {
+			for (int j=0;j<9;j++) {
+				points[i][j]= new Point(192+i*50,232+j*50);
+				sq[i][j]=new TileComponent();
+				sq[i][j].setBounds((int)points[i][j].getX(), (int)points[i][j].getY(), 5, 5);
+				add(sq[i][j]);
+			}
+		}
+		
+		Point [][] points2=new Point[9][8];
+		sq2 = new TileComponent [9][8];
+		for (int i=0;i<9;i++) {
+			for (int j=0;j<8;j++) {
+				points2[i][j]= new Point(172+i*50,252+j*50);
+				sq2[i][j]=new TileComponent();
+				sq2[i][j].setBounds((int)points2[i][j].getX(), (int)points2[i][j].getY(), 5, 5);
+				add(sq2[i][j]);
+			}
+		}
 		
 		currPlayer=true;
 		
@@ -396,6 +425,8 @@ public class QuoridorPage extends JFrame{
 		replayGameButton.setVisible(true);
 		quitButton.setVisible(true);
 		
+		endTurnButton.setVisible(false);
+		
 		toggleBoard(false);
 		
 		refreshData();
@@ -604,19 +635,78 @@ public class QuoridorPage extends JFrame{
 		error = "";
 		
 		//TODO
+		//call load controller function to update model
 		//reset view with new loaded file
-		//p1Name
-		//p2Name
-		//remTime?
+		
+		p1Name.setText(q.getCurrentGame().getWhitePlayer().getUser().getName());
+		p2Name.setText(q.getCurrentGame().getBlackPlayer().getUser().getName());
+		
+		Time t=q.getCurrentGame().getBlackPlayer().getRemainingTime();
+		timeRem1.setText(convT2S(t));
+		timeRem2.setText(convT2S(t));
+		
+		int xb=q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+		int yb=q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+		int xw=q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+		int yw=q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+		
+		wPawn.setBounds(107+xw*50, 167+yw*50, 25, 25);
+		bPawn.setBounds(107+xb*50, 167+yb*50, 25, 25);
+		
+		int width,height,x,y;
+		for (int i=0;i<10;i++) {
+			if (q.getCurrentGame().getWhitePlayer().getWall(i).getMove()!=null) {
+				if (q.getCurrentGame().getWhitePlayer().getWall(i).getMove().getWallDirection()==Direction.Horizontal) {
+					width=WallComponent.wallH;
+					height=WallComponent.wallW;
+				}
+				else {
+					width=WallComponent.wallW;
+					height=WallComponent.wallH;
+				}
+				x=q.getCurrentGame().getWhitePlayer().getWall(i).getMove().getTargetTile().getRow();
+				y=q.getCurrentGame().getWhitePlayer().getWall(i).getMove().getTargetTile().getColumn();
+				
+				//TODO correctly set adjusted x and y coords
+				//wwalls[i].setBounds(x, y, width, height);
+			}
+			if (q.getCurrentGame().getBlackPlayer().getWall(i).getMove()!=null) {
+				if (q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getWallDirection()==Direction.Horizontal) {
+					width=WallComponent.wallH;
+					height=WallComponent.wallW;
+				}
+				else {
+					width=WallComponent.wallW;
+					height=WallComponent.wallH;
+				}
+				x=q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getTargetTile().getRow();
+				y=q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getTargetTile().getColumn();
+				
+				//TODO correctly set adjusted x and y coords
+				//wwalls[i].setBounds(x, y, width, height);
+				
+			}
+		}
 		
 		
+		
+		loadFileButton.setVisible(false);
+		loadField.setVisible(false);
+		
+		p1NameField.setVisible(true);
+		createP1Button.setVisible(true);
+		selectP1Button.setVisible(true);
+		
+		
+		banner="New Game";
+		
+		/*
 		// update visuals
 		banner = "GamePlay"; 
 		loadFileButton.setVisible(false);
 		loadField.setVisible(false);
 		toggleMainButtons(true);
-		toggleBoard(true);
-		
+		toggleBoard(true);*/
 		
 		
 		refreshData();
@@ -763,6 +853,8 @@ public class QuoridorPage extends JFrame{
 		jumpEndButton.setVisible(false);
 		quitButton.setVisible(false);
 		
+		endTurnButton.setVisible(false);
+		
 		// update visuals
 		banner = "Main Menu"; //for testing
 		q.getCurrentGame().delete();
@@ -803,6 +895,7 @@ public class QuoridorPage extends JFrame{
 			turnMessage1.setVisible(false);
 			turnMessage2.setVisible(true);
 		}
+		stageMove=false;
 	}
 	
 	private void initButtons() {
@@ -1078,7 +1171,18 @@ public class QuoridorPage extends JFrame{
 		wPawn.setVisible(vis);
 		bPawn.setVisible(vis);
 		
-
+		for (int i=0;i<8;i++) {
+			for (int j=0;j<9;j++) {
+				sq[i][j].setVisible(vis);
+			}
+		}
+		
+		for (int i=0;i<9;i++) {
+			for (int j=0;j<8;j++) {
+				sq2[i][j].setVisible(vis);
+			}
+		}
+		
 		/*upButton.setVisible(vis);
 		rightButton.setVisible(vis);
 		downButton.setVisible(vis);
@@ -1101,6 +1205,11 @@ public class QuoridorPage extends JFrame{
 		}
 	}
 	
+	/**
+	 * Method converts Time to string
+	 * 
+	 * @author DariusPi
+	 */
 	private String convT2S(Time t) {
 		long tt=t.getTime();
 		int min=(int)(tt/1000)/60;
@@ -1108,6 +1217,11 @@ public class QuoridorPage extends JFrame{
 		return("Time Remainning: "+min+":"+sec);
 	}
 
+	/**
+	 * Method switches current player in view and model
+	 * 
+	 * @author DariusPi
+	 */
 	private void switchPlayer() {			//should be called by either drop wall or end turn button
 		//TODO
 		
@@ -1120,6 +1234,24 @@ public class QuoridorPage extends JFrame{
 			timeRem1.setVisible(false);
 			timeRem2.setVisible(true);
 		}
+	}
+	
+	/**
+	 * Method sets whether a wall move or player move was performed to block further ones
+	 * 
+	 * @author DariusPi
+	 */
+	public void setStageMove(boolean moved) {
+		stageMove=moved;
+	}
+	
+	/**
+	 * Method returns whether a wall move or player move was performed 
+	 * 
+	 * @author DariusPi
+	 */
+	public boolean getStageMove() {
+		return stageMove;
 	}
 
 }

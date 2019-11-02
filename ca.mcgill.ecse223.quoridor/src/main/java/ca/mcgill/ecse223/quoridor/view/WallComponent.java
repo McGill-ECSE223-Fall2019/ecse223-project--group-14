@@ -12,10 +12,12 @@ public class WallComponent extends HoldableComponent{
 	public static final int wallW=12;
 	private String dir;
 	private AffineTransform transform;
-	
+
 	public WallComponent(Color c) {
 		super(wallW, wallH, c);
 		this.dir = "vertical";
+		
+		
 	}
 	public String rotate() {
 		if (this.dir.contentEquals("vertical")) {
@@ -36,17 +38,6 @@ public class WallComponent extends HoldableComponent{
 	}
 	
 	@Override
-	public boolean contains(int ex, int ey) {
-		int x=this.getX(); int y= this.getY();
-		if ((ex>=x+wallW/2)&&(ex<=x+wallW/2+wallW)&&((ey>=y+wallH/2-5)&&(ey<=y+wallH/2+wallH-5))) {
-			return true;
-		}
-		else {
-			return false;
-		}
-    }
-	
-	@Override
 	public void paintComponent(Graphics g) {
 		if(this.dir.contentEquals("horizontal")) {
 			((Graphics2D) g).rotate(Math.toRadians(-90));
@@ -54,4 +45,5 @@ public class WallComponent extends HoldableComponent{
         }
         super.paintComponent(g);
     }
+	
 }
