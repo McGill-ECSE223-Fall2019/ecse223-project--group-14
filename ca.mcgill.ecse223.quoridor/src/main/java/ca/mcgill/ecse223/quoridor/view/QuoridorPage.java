@@ -27,6 +27,7 @@ import javax.swing.border.Border;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameController;
+import ca.mcgill.ecse223.quoridor.model.Game;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
 
 public class QuoridorPage extends JFrame implements MouseListener,MouseMotionListener{
@@ -577,8 +578,13 @@ public class QuoridorPage extends JFrame implements MouseListener,MouseMotionLis
 		
 		//TODO
 		//reset view with new loaded file
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		String filename = loadField.getText();
+		Game game = gc.initSaveGameLoad(quoridor, filename);
 		//p1Name
+		
 		//p2Name
+		
 		//remTime?
 		
 		

@@ -1,7 +1,11 @@
 package ca.mcgill.ecse223.quoridor.controller;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.sql.Time;
+import java.util.Scanner;
 
 import javax.swing.Timer;
 
@@ -344,6 +348,18 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	public Game initSaveGameLoad(Quoridor quoridor, String filename) throws UnsupportedOperationException {
+		File file = new File(filename);
+		//BufferedReader br;
+		Scanner fileSC = null;
+		try {
+			fileSC = new Scanner(file);
+			//br = new BufferedReader(new FileReader(file));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			return null;
+		}
+		
+		
 		throw new UnsupportedOperationException();
 	}
 	
