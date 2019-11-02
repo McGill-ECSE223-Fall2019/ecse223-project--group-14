@@ -10,22 +10,15 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.geom.Ellipse2D;
 import java.sql.Time;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
-import javax.swing.border.Border;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameController;
@@ -125,8 +118,8 @@ public class QuoridorPage extends JFrame{
 		gc.initQuorridor();
 		
 		QuoridorMouseListener listener = new QuoridorMouseListener(this,gc);
-        this.addMouseListener(listener);
-        this.addMouseMotionListener(listener);
+        this.getContentPane().addMouseListener(listener);
+        this.getContentPane().addMouseMotionListener(listener);
         
 		initComponents();
 		refreshData();
@@ -278,9 +271,9 @@ public class QuoridorPage extends JFrame{
 		add(bannerMessage);
 		errorMessage.setBounds(10, 110, 600, 15);
 		add(errorMessage);
-		p1Name.setBounds(10, 125, 600, 15);
+		p1Name.setBounds(10, 125, 300, 15);
 		add(p1Name);
-		timeRem1.setBounds(10, 140, 150, 15);
+		timeRem1.setBounds(10, 140, 300, 15);
 		add(timeRem1);
 		turnMessage1.setBounds(10, 165, 100, 15);
 		add(turnMessage1);
@@ -371,17 +364,17 @@ public class QuoridorPage extends JFrame{
 		add(loadFileButton);
 		
 		
-		p2Name.setBounds(10, 675, 600, 15);
+		p2Name.setBounds(10, 675, 300, 15);
 		add(p2Name);
-		timeRem2.setBounds(10, 690, 150, 15);
+		timeRem2.setBounds(10, 690, 300, 15);
 		add(timeRem2);
 		turnMessage2.setBounds(10, 715, 100, 15);
 		add(turnMessage2);
 		
 		for (int i=0;i<10;i++) {
-			wwalls[i].setBounds(150+(WallComponent.wallW+10)*i, 125, WallComponent.wallW, WallComponent.wallH);
+			wwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 125, WallComponent.wallW, WallComponent.wallH);
 			add(wwalls[i]);
-			bwalls[i].setBounds(150+(WallComponent.wallW+10)*i, 675, WallComponent.wallW, WallComponent.wallH);
+			bwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 675, WallComponent.wallW, WallComponent.wallH);
 			add(bwalls[i]);
 		}
 		

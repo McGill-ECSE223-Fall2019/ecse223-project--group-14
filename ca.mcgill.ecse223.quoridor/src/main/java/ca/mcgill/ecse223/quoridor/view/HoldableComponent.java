@@ -60,24 +60,6 @@ public abstract class HoldableComponent extends RectComponent{
 		// and these move Panels to set the location of the held component.
 	}
 	
-	
-	/**
-	 * Method returns if a mouse clicked on a wall
-	 * 
-	 * @param int ex, int ey
-	 * @author DariusPi
-	 */
-	@Override
-	public boolean contains(int ex, int ey) {
-		int x=this.getX(); int y= this.getY();
-		if ((ex>=x+wallW/2)&&(ex<=x+wallW/2+wallW)&&((ey>=y+wallH/2-5)&&(ey<=y+wallH/2+wallH-5))) {
-			return true;
-		}
-		else {
-			return false;
-		}
-    }
-	
 	/**
 	 * Method returns if a wall is dropped onto an acceptable point based on its position and direction and if so sets the posX and posY positions
 	 * 

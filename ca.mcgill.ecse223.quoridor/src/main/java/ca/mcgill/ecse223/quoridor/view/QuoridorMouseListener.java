@@ -5,7 +5,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import ca.mcgill.ecse223.quoridor.controller.GameController;
@@ -35,22 +34,7 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		Component [] bcomponents= frame.bwalls;
-		Component [] wcomponents= frame.wwalls;
-		Component cursor=null;
-		
-		for (int i=0;i<bcomponents.length;i++) {
-			if (bcomponents[i].contains(e.getX(), e.getY())) {
-				cursor=bcomponents[i];
-				break;
-			}
-			if (wcomponents[i].contains(e.getX(), e.getY())) {
-				cursor=wcomponents[i];
-				break;
-			}
-		}
-		//Component cursor = frame.getContentPane().findComponentAt(e.getX(), e.getY());
-		//System.out.println(cursor.getClass().toString());
+		Component cursor = frame.getContentPane().findComponentAt(e.getX(), e.getY());
 		if (heldComponent == null) {
 			if (cursor instanceof HoldableComponent) {
 				HoldableComponent temp = (HoldableComponent) cursor;
@@ -73,13 +57,11 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 				String d = ((WallComponent) heldComponent).rotate();
 				// Ugly way of keeping the offset after rotation
 				if (d.contentEquals("horizontal")) {
-					int temp = this.offsetX;
-					this.offsetX = WallComponent.wallH-this.offsetY;
-					this.offsetY = -temp+3*WallComponent.wallW;
+					this.offsetX = WallComponent.wallH/2;
+					this.offsetY = WallComponent.wallW/2;
 				}else {
-					int temp = this.offsetX;
-					this.offsetX = -this.offsetY+3*WallComponent.wallW;
-					this.offsetY = WallComponent.wallH-temp;
+					this.offsetX = WallComponent.wallW/2;
+					this.offsetY = WallComponent.wallH/2;
 				}
 				heldComponent.setLocation(e.getX()-this.offsetX, e.getY()-this.offsetY);
 			}
