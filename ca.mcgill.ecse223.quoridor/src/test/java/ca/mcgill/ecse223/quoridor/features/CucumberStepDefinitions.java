@@ -960,7 +960,33 @@ public class CucumberStepDefinitions {
 			Game game=quoridor.getCurrentGame();
 			assertEquals("error",G.validatePos(Prev));
 	  }
+	  @Given///To DO
+	  ("The player to move is {string}")
+	  public void thePlayerToMoveIs(String player) {
+		  int thinkingTime=180;
+		  Quoridor quoridor=QuoridorApplication.getQuoridor();
+		  Player player1 = new Player(new Time(thinkingTime),
+				  quoridor.getUser(0), 9, Direction.Horizontal);//not sure if should create with or without 
+		  //target number
+		  Player player2 = new Player(new Time(thinkingTime), quoridor.getUser(1), 1, Direction.Horizontal);
+		  Tile player1StartPos = quoridor.getBoard().getTile(36);
+			Tile player2StartPos = quoridor.getBoard().getTile(44);
+			PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), player1StartPos);
+			PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
 			
+			if (player.compareTo("white")==0) {//player variable is color coming from argument
+				GamePosition gamePos=new 
+			GamePosition(1, player1Position, player2Position,
+					quoridor.getCurrentGame().getWhitePlayer(), quoridor.getCurrentGame());//player to move is white	
+			}
+			else {
+				GamePosition gamePos=new 
+			GamePosition(1, player1Position, player2Position,
+					quoridor.getCurrentGame().getBlackPlayer(), quoridor.getCurrentGame());
+			}
+		  
+	  }
+	  
 			
 	
 	/**
