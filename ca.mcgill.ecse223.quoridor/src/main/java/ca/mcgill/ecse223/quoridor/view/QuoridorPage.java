@@ -613,7 +613,6 @@ public class QuoridorPage extends JFrame{
 		toggleBoard(true);
 		refreshData();
 		
-
 			
 	}
 	

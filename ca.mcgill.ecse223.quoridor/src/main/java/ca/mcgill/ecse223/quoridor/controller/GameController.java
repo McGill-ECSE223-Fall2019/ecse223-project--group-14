@@ -488,7 +488,8 @@ int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().
 		
 		for(Wall pos: wBall)
 		{ 
-			writer.print(", "+ pos);
+						
+			writer.print(", "+ pos.getMove().getTargetTile() + pos.getMove().getWallDirection());
 		}
 				
 				 writer.close();	
