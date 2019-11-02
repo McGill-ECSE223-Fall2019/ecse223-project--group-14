@@ -79,77 +79,63 @@ public abstract class HoldableComponent extends RectComponent{
     }
 	
 	/**
-	 * Method returns if a wall is dropped onto an acceptable point and if so sets the posX and posY positions
+	 * Method returns if a wall is dropped onto an acceptable point based on its position and direction and if so sets the posX and posY positions
 	 * 
+	 * @param String dir
 	 * @author DariusPi
 	 */
-	public boolean hasPossiblePosition() {
+	public boolean hasPossiblePosition(String dir) {
 		boolean first=true;
-		for (int i=0;i<8;i++) {
-			for (int j=0;j<9;j++) {
-				//if (this.contains((int)this.points[i][j].x,(int)this.points[i][j].y)){
-				if (this.contains(points[i][j])) {
-					if (first) {
-						x1=this.getX();
-						y1=this.getY();
-						first=false;
-						//return true;
-					}
-					else {
-						x2=this.getX();
-						y2=this.getY();
-					
-						//TODO
-						GameController gc= new GameController();
-						return gc.viewValWallPosition(x1,y1,x2,y2);
-						//call validate postion to ensure no overlapping walls
-						//return true;
+		if (dir.compareTo("vertical")==0) {
+			for (int i=0;i<8;i++) {
+				for (int j=0;j<9;j++) {
+					//if (this.contains((int)this.points[i][j].x,(int)this.points[i][j].y)){
+					if (this.contains(points[i][j])) {
+						if (first) {
+							x1=this.getX();
+							y1=this.getY();
+							first=false;
+							//return true;
+						}
+						else {
+							x2=this.getX();
+							y2=this.getY();
+						
+							//TODO
+							GameController gc= new GameController();
+							return gc.viewValWallPosition(x1,y1,x2,y2);
+							//call validate postion to ensure no overlapping walls
+							//return true;
+						}
 					}
 				}
 			}
 		}
-		first=true;
-		for (int i=0;i<9;i++) {
-			for (int j=0;j<9;j++) {
-				
-				if (this.contains(this.points2[i][j])) {
-					if (first) {
-						x1=this.getX();
-						y1=this.getY();
-						first=false;
-						//return true;
-					}
-					else {
-						x2=this.getX();
-						y2=this.getY();
+		else {
+			for (int i=0;i<8;i++) {
+				for (int j=0;j<9;j++) {
 					
-						//TODO
-						GameController gc= new GameController();
-						return gc.viewValWallPosition(x1,y1,x2,y2);
-						//call validate postion to ensure no overlapping walls
-						//return true;
+					if (this.contains(this.points2[i][j])) {
+						if (first) {
+							x1=this.getX();
+							y1=this.getY();
+							first=false;
+							//return true;
+						}
+						else {
+							x2=this.getX();
+							y2=this.getY();
+						
+							//TODO
+							GameController gc= new GameController();
+							return gc.viewValWallPosition(x1,y1,x2,y2);
+							//call validate postion to ensure no overlapping walls
+							//return true;
+						}
 					}
 				}
 			}
 		}
 		return false;
 	}
-	
-	/**
-	 * Method returns dropped x position
-	 * 
-	 * @author DariusPi
-	 */
-	/*public int getPossibleXPostition() {
-		return posX;
-	}*/
-	
-	/**
-	 * Method returns dropped y position
-	 * 
-	 * @author DariusPi
-	 */
-	/*public int getPossibleYPostition() {
-		return posY;
-	}*/
 }

@@ -634,11 +634,23 @@ public class QuoridorPage extends JFrame{
 		error = "";
 		
 		//TODO
+		//call load controller function to update model
 		//reset view with new loaded file
-		//p1Name
-		//p2Name
-		//remTime?
 		
+		p1Name.setText(q.getCurrentGame().getWhitePlayer().getUser().getName());
+		p2Name.setText(q.getCurrentGame().getBlackPlayer().getUser().getName());
+		
+		Time t=q.getCurrentGame().getBlackPlayer().getRemainingTime();
+		timeRem1.setText(convT2S(t));
+		timeRem2.setText(convT2S(t));
+		
+		int xb=q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+		int yb=q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+		int xw=q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+		int yw=q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+		
+		wPawn.setBounds(107+xw*50, 167+yw*50, 25, 25);
+		bPawn.setBounds(107+xb*50, 167+yb*50, 25, 25);
 		
 		// update visuals
 		banner = "GamePlay"; 
@@ -646,7 +658,6 @@ public class QuoridorPage extends JFrame{
 		loadField.setVisible(false);
 		toggleMainButtons(true);
 		toggleBoard(true);
-		
 		
 		
 		refreshData();

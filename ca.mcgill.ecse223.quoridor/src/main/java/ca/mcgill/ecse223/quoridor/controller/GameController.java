@@ -41,9 +41,8 @@ public class GameController {
 	 * @author DariusPi
 	 * @param q
 	 * @return
-	 * @throws UnsupportedOperationException
 	 */
-	public void initGame(Quoridor q)throws UnsupportedOperationException{
+	public void initGame(Quoridor q){
 		
 		Player p1=new Player(new Time(10), q.getUser(0), 9, Direction.Horizontal);
 		Player p2 = new Player(new Time(10), q.getUser(1), 1, Direction.Horizontal);
@@ -72,10 +71,9 @@ public class GameController {
 	 * 
 	 * @author DariusPi
 	 * 
-	 * @param g
-	 * @throws UnsupportedOperationException
+	 * @param q,t
 	 */
-	public void startTheClock(Quoridor q, Timer t)throws UnsupportedOperationException{
+	public void startTheClock(Quoridor q, Timer t){
 		t.start();
 		q.getCurrentGame().setGameStatus(GameStatus.Running);
 		//Time time=g.getBlackPlayer().getRemainingTime();
@@ -84,10 +82,11 @@ public class GameController {
 	}
 	
 	/**
-	 * Helper method to count down clock
+	 * Helper method to count down clock, returns true if time out, else false
 	 * 
 	 * @author Darius Piecaitis
-	 * 
+	 * @param q
+	 * @return boolean
 	 */
 	public boolean countdown(Quoridor q) {
 		long tb=q.getCurrentGame().getCurrentPosition().getPlayerToMove().getRemainingTime().getTime();
@@ -101,16 +100,16 @@ public class GameController {
 	
 	/**
 	 * For Provide Or Select User Name feature
-	 * Selects user name and assigns to colour, returns name
+	 * Selects user name and assigns to colour, returns name if correct, else error message
 	 * 
 	 * @author DariusPi
 	 * 
 	 * @param q
 	 * @param name
+	 * @param colour
 	 * @return
-	 * @throws UnsupportedOperationException
 	 */
-	public String selectUsername(Quoridor q, String name, String colour)throws UnsupportedOperationException {
+	public String selectUsername(Quoridor q, String name, String colour) {
 		//throw new UnsupportedOperationException();
 		int i=doesUserExist(q,name);
 		if (i==-1) {
@@ -152,16 +151,16 @@ public class GameController {
 	
 	/**
 	 *  * For Provide Or Select User Name feature
-	 * Creates new user, adds it to quoridor, assigns to colour and returns its name
+	 * Creates new user, adds it to quoridor, assigns to colour and returns its name if valid, error message if invalid
 	 * 
 	 * @author DariusPi
 	 * 
 	 * @param q
 	 * @param name
+	 * @param colour
 	 * @return
-	 * @throws UnsupportedOperationException
 	 */
-	public String createUsername(Quoridor q, String name, String colour)throws UnsupportedOperationException {
+	public String createUsername(Quoridor q, String name, String colour) {
 		//throw new UnsupportedOperationException();
 		int i=doesUserExist(q,name);
 		if (name==null || name.length()==0) {
@@ -213,8 +212,7 @@ public class GameController {
 	 * @return
 	 * @throws UnsupportedOperationException
 	 */
-	public int doesUserExist(Quoridor q, String name) throws UnsupportedOperationException{
-		//throw new UnsupportedOperationException();
+	public int doesUserExist(Quoridor q, String name){
 		for (int i=0; i<q.numberOfUsers();i++) {
 			if (q.getUser(i).getName().contentEquals(name)) {
 				return i;
@@ -224,8 +222,33 @@ public class GameController {
 		
 	}
 	
+	/**
+	 * View method that checks if wall move was valid and returns the result
+	 * 
+	 * @author DariusPi
+	 * 
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
+	 * @return
+	 */
 	public boolean viewValWallPosition(int x1,int y1, int x2, int y2) {
-		//GamePosition gp = new GamePosition();
+		Quoridor q =QuoridorApplication.getQuoridor();
+		GamePosition curr= q.getCurrentGame().getCurrentPosition();
+		/*if (curr.getPlayerToMove().hasGameAsBlack()) {
+			curr.setPlayerToMove(q.getCurrentGame().getWhitePlayer());
+		}
+		else {
+			curr.setPlayerToMove(q.getCurrentGame().getBlackPlayer());
+		}*/
+		
+		//TODO
+		//add wall into current position's walls in board, maybe use wall id in array to map 
+		
+		//GamePosition gp = new GamePosition(curr.getId()+1, curr.getWhitePosition(), curr.getBlackPosition(), curr.getPlayerToMove(), q.getCurrentGame());
+		
+		//return validatePos(curr);
 		return true;
 	}
 	
@@ -442,7 +465,7 @@ public class GameController {
 	 * 
 	 * @throws UnsupportedOperationException
 	 */
-	public String validatePos(GamePosition posToValidate) {
+	public Boolean validatePos(GamePosition posToValidate) {
 		// TODO Auto-generated method stub
 		//Checks if pawn position overlaps with another pawn or a wall position overlaps with a wall or out of track pawn or wall
 		//if yes returns error

@@ -86,7 +86,7 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 			
 			// TODO For DropWall person: 
 			// If heldComponent has a position it's above, then drop it there
-			else if(heldComponent instanceof WallComponent && heldComponent.hasPossiblePosition()) {
+			else if(heldComponent instanceof WallComponent && heldComponent.hasPossiblePosition(((WallComponent) heldComponent).getDirection())) {
 				//heldComponent.setLocation(heldComponent.getPossibleXPostition(), heldComponent.getPossibleYPostition());
 				frame.setStageMove(true); // lock in move, and prevent player from picking up anything else
 				// until he presses the End Turn button. Otherwise, the player can pick the pawn/wall back up,
