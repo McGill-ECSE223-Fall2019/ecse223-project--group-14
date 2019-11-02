@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.Time;
 import java.util.ArrayList;
@@ -1225,12 +1226,18 @@ public class CucumberStepDefinitions {
 
 
 	@When ("The user initiates to save the game with name (.*)")
-	public void TheUserInitiatesToSaveTheGameWithNameFilename (Quoridor q, String FileName) throws Throwable{
+	public void TheUserInitiatesToSaveTheGameWithNameFilename (String FileName) throws Throwable{
 		GameController G= new GameController();
 	
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		String file="";
+		StringBuilder sb = new StringBuilder();
 		
-		G.SaveGame(quoridor, FileName);
+		for (int i=0;i<FileName.length()-2;i++) {
+			sb.append(FileName.charAt(i+1));
+		}
+		file=sb.toString();
+		G.SaveGame(quoridor, file);
 	
 	}
 
@@ -1243,9 +1250,15 @@ public class CucumberStepDefinitions {
 	@Then ("A file with (.*) shall be created in the filesystem")
 
 	public void AFileWithFilenameIsCreatedInTheFilesystem (String FileName) throws Throwable{
-		boolean File_Created_exists = true;
-		GameController G= new GameController();
-		assertEquals(File_Created_exists,G.filename_exists(FileName));
+		String file="";
+		StringBuilder sb = new StringBuilder();
+		
+		for (int i=0;i<FileName.length()-2;i++) {
+			sb.append(FileName.charAt(i+1));
+		}
+		file=sb.toString();
+		File ffile=new File(file);
+		assertTrue(ffile.exists());
 	}
 
 	/**
