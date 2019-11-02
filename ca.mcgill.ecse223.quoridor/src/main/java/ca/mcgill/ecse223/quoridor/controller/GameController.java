@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.sql.Time;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 import javax.swing.Timer;
 
@@ -387,20 +388,91 @@ public class GameController {
 	 * @return
 	 * @throws UnsupportedOperationException
 	 */
-	public Game initSaveGameLoad(Quoridor quoridor, String filename) throws UnsupportedOperationException {
+	public Game initSaveGameLoad(Quoridor quoridor, String filename) /*throws UnsupportedOperationException*/ {
 		File file = new File(filename);
-		//BufferedReader br;
 		Scanner fileSC = null;
 		try {
 			fileSC = new Scanner(file);
-			//br = new BufferedReader(new FileReader(file));
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			System.err.println("File at filename does not exist!");
+			e.printStackTrace();
 			return null;
 		}
+		//assume that file is well formed even if invalid
+		//line 1
+		StringTokenizer s1 = new StringTokenizer(fileSC.nextLine()); //set player
+		String playerString = s1.nextToken();
+		Game game = quoridor.getCurrentGame();
+		Board board = quoridor.getBoard();
+		GamePosition gP = game.getCurrentPosition();
+		Player p1;
+		boolean isWhite = false;
 		
+		if (playerString.contentEquals("W:")) {
+			p1 = quoridor.getCurrentGame().getWhitePlayer();
+			isWhite = true;
+		} else { //assume playerString.contentEquals("B:")
+			p1 = quoridor.getCurrentGame().getBlackPlayer();
+		}
 		
-		throw new UnsupportedOperationException();
+		while (s1.hasMoreTokens()) {
+			String move = s1.nextToken(",");
+			if (move.length() == 2) { //pawn move
+				//need to find a playerpos at specified coord
+				//need to match to specified coord first
+				int col = move.charAt(0) - 'a' + 1;
+				int row = move.charAt(1);
+				Tile tile = board.getTile(getIndex(row, col));
+				PlayerPosition pp = new PlayerPosition(p1, tile);
+				if (!setPosition(pp, gP, isWhite)) {}
+					//throw error? wat do?
+			} else {	//wall move
+				int col = move.charAt(0) - 'a' + 1;
+				int row = move.charAt(1);
+				Direction dir;
+				if (move.charAt(2) == 'h')
+					dir = Direction.Horizontal;
+				else
+					dir = Direction.Vertical;
+				
+				//WallMove wM = new WallMove(int)
+			}
+		}
+		
+		//TODO: THink about separating this process into its subroutine
+			
+			
+		fileSC.close();
+		return game;
+		//throw new UnsupportedOperationException();
+	}
+	
+	/*
+	 * getIndex from Stepdefinitions, cleaned up a bit
+	 * Written by FSharp4, credit to Saifullah for getting it working properly in Iteration 2
+	 */
+	private static int getIndex(int row, int col) {
+		
+		if(row <= 0 || col <= 0 || row > 9 || col > 9) {
+			return -10;
+		}
+		else {
+		return ((((row-1)*9)+col)-1);//returning wrong values for incorrect row or col 
+		//may return out of bound value which can be handled by 
+		}
+		
+	}
+	
+	private static boolean setPosition(PlayerPosition aPlayerPosition, GamePosition aGamePosition, 
+			boolean isWhite) {
+		if (isWhite) {
+			if (!aGamePosition.setWhitePosition(aPlayerPosition))
+				return false;
+		} else {
+			if (!aGamePosition.setBlackPosition(aPlayerPosition))
+				return false;
+		}
+		return true;
 	}
 	
 	/**
