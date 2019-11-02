@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Time;
 import java.util.Scanner;
 import java.util.StringTokenizer;
@@ -788,67 +789,55 @@ int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().
 		//line 1
 		StringTokenizer s1 = new StringTokenizer(fileSC.nextLine()); //set player
 		String playerString = s1.nextToken();
-		Game game = quoridor.getCurrentGame();
-		Board board = quoridor.getBoard();
-		GamePosition gP = game.getCurrentPosition();
-		Player p1;
+		
+		Player player;
 		boolean isWhite = false;
+		int moveCounter = 1;
+		int wallID = 1; //uniqueId for all walls
 		
 		if (playerString.contentEquals("W:")) {
-			p1 = quoridor.getCurrentGame().getWhitePlayer();
+			player = quoridor.getCurrentGame().getWhitePlayer();
 			isWhite = true;
 		} else { //assume playerString.contentEquals("B:")
-			p1 = quoridor.getCurrentGame().getBlackPlayer();
+			player = quoridor.getCurrentGame().getBlackPlayer();
 		}
 		
-		while (s1.hasMoreTokens()) {
-			String move = s1.nextToken(",");
-			if (move.length() == 2) { //pawn move
-				//need to find a playerpos at specified coord
-				//need to match to specified coord first
-				int col = move.charAt(0) - 'a' + 1;
-				int row = move.charAt(1);
-				Tile tile = board.getTile(getIndex(row, col));
-				PlayerPosition pp = new PlayerPosition(p1, tile);
-				if (!setPosition(pp, gP, isWhite)) {}
-					//throw error? wat do?
-			} else {	//wall move
-				int col = move.charAt(0) - 'a' + 1;
-				int row = move.charAt(1);
-				Direction dir;
-				if (move.charAt(2) == 'h')
-					dir = Direction.Horizontal;
-				else
-					dir = Direction.Vertical;
-				
-				//WallMove wM = new WallMove(int)
-			}
+		try {
+			loadPlayerPosition(player, s1, wallID, quoridor, isWhite);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//notify that load failed without validation checking 
+			return null;
 		}
+		s1 = new StringTokenizer(fileSC.nextLine());
+		
 		
 		//TODO: THink about separating this process into its subroutine
 			
 			
 		fileSC.close();
-		return game;
+		return null; //TODO: REPLACE
 		//throw new UnsupportedOperationException();
 	}
 	
 	/*
 	 * getIndex from Stepdefinitions, cleaned up a bit
-	 * Written by FSharp4, credit to Saifullah for getting it working properly in Iteration 2
+	 * Credit to Saifullah for getting it working properly in Iteration 2
 	 */
 	private static int getIndex(int row, int col) {
 		
 		if(row <= 0 || col <= 0 || row > 9 || col > 9) {
-			return -10;
+			return -10; //sentinel for indexNotFound
 		}
 		else {
-		return ((((row-1)*9)+col)-1);//returning wrong values for incorrect row or col 
-		//may return out of bound value which can be handled by 
+		return ((((row-1)*9)+col)-1);
 		}
 		
 	}
 	
+	/*
+	 * Color-agnostic setPosition method for loadPosition feature
+	 */
 	private static boolean setPosition(PlayerPosition aPlayerPosition, GamePosition aGamePosition, 
 			boolean isWhite) {
 		if (isWhite) {
@@ -859,6 +848,50 @@ int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().
 				return false;
 		}
 		return true;
+	}
+	
+	/*
+	 * Static getPlayer method that checks for color based on an input String 
+	 * (B: = black, W: = white)
+	 */
+	private static Player getPlayer(String playerToken, Quoridor quoridor) throws IOException {
+		if (playerToken.contentEquals("W:"))
+			return quoridor.getCurrentGame().getWhitePlayer();
+		else if (playerToken.contentEquals("B:"))
+			return quoridor.getCurrentGame().getBlackPlayer();
+		else throw new IOException("Save file is malformed:" 
+				+ " no player color specified at beginning of line");
+	}
+	
+	private static int loadPlayerPosition(Player player, StringTokenizer st, int wallID, Quoridor quoridor, boolean isWhite) throws Exception {
+		Game game = quoridor.getCurrentGame();
+		Board board = quoridor.getBoard();
+		GamePosition gP = game.getCurrentPosition();
+		int moveID = 1;
+		while (st.hasMoreTokens()) {
+			String move = st.nextToken(",");
+			int col = move.charAt(0) - 'a' + 1;
+			int row = move.charAt(1);
+			Tile tile = board.getTile(getIndex(row, col));
+			if (move.length() == 2) { //pawn move
+				//need to find a playerpos at specified coord
+				//need to match to specified coord first
+				PlayerPosition pp = new PlayerPosition(player, tile);
+				if (!setPosition(pp, gP, isWhite)) {
+					throw new Exception("Unable to set position of player! (White = " + isWhite + ")");
+				}
+			} else {	//wall move
+				Direction dir;
+				if (move.charAt(2) == 'h')
+					dir = Direction.Horizontal;
+				else
+					dir = Direction.Vertical;
+				Wall newWall = new Wall(wallID, player);
+				WallMove wM = new WallMove(moveID, 1, player, tile, game, dir, newWall);
+				wallID++;
+			}
+		}
+		return wallID;
 	}
 	
 	/**
