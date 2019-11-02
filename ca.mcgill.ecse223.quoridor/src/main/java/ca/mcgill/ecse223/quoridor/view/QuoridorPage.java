@@ -66,6 +66,7 @@ public class QuoridorPage extends JFrame{
 	
 	
 	private JButton saveGameButton;
+	private JButton overwriteButton;
 	private JButton loadGameButton;
 	private JButton saveFileButton;
 	private JButton loadFileButton;
@@ -357,6 +358,9 @@ public class QuoridorPage extends JFrame{
 		saveFileButton.setBounds(270, 160, buttonW, buttonH);
 		add(saveFileButton);
 		
+		overwriteButton.setBounds(270, 160, buttonW, buttonH);
+		add(overwriteButton);
+		
 		loadField.setBounds(10, 160, 200, buttonH);
 		add(loadField);
 		
@@ -598,10 +602,40 @@ public class QuoridorPage extends JFrame{
 		error = "";
 		//TODO
 		
-		// update visuals
-		banner = "GamePlay"; 
+		
+		//call a does file exists method that returns true or false
+		Boolean fileExist=false;
+		
 		saveFileButton.setVisible(false);
 		saveField.setVisible(false);
+		
+		if (fileExist) {
+			overwriteButton.setVisible(true);
+			error = "File already exists, overwrite?";
+			refreshData();
+		}
+		else {
+			//call the save game controller method
+			
+			//TODO
+			
+			// update visuals
+			banner = "GamePlay"; 
+			toggleMainButtons(true);
+			toggleBoard(true);
+			refreshData();
+		}
+	}
+	
+	private void overwriteButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		error = "";
+		
+		//call save game controller method
+		//TODO
+		
+		// update visuals
+		banner = "GamePlay"; 
+		overwriteButton.setVisible(false);
 		toggleMainButtons(true);
 		toggleBoard(true);
 		refreshData();
@@ -927,6 +961,10 @@ public class QuoridorPage extends JFrame{
 		saveFileButton.setText("Save");
 		saveFileButton.setVisible(false);
 		
+		overwriteButton=new JButton();
+		overwriteButton.setText("Overwrite");
+		overwriteButton.setVisible(false);
+		
 		loadGameButton = new JButton();
 		loadGameButton.setText("Load Game");
 		
@@ -1044,6 +1082,12 @@ public class QuoridorPage extends JFrame{
 		saveFileButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				saveFileButtonActionPerformed(evt);
+			}
+		});
+		
+		overwriteButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				overwriteButtonActionPerformed(evt);
 			}
 		});
 		
