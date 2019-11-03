@@ -965,7 +965,9 @@ public class GameController {
 	public Game initSavedGameLoad(Quoridor quoridor, String filename) throws Exception /*throws UnsupportedOperationException*/ {
 		
 		
-		initGame(quoridor);
+		if (quoridor.getCurrentGame()==null) {
+			initGame(quoridor);
+		}
 		Game game = quoridor.getCurrentGame();
 		Board board = quoridor.getBoard();
 		GamePosition gp = game.getCurrentPosition();
@@ -1010,6 +1012,7 @@ public class GameController {
 			playerTwo = game.getWhitePlayer();
 			playerOneAbsoluteWallID += 10;
 		}
+		
 		if (!Wall.hasWithId(0)) {
 			for (int i = 0; i < 10; i++) {
 				new Wall(i, game.getWhitePlayer());
@@ -1038,7 +1041,9 @@ public class GameController {
 				boolean isWallMove = false;
 				if (move.length() == 3) {
 					isWallMove = true;
-					dir = (move.charAt(2) == 'h') ? Direction.Horizontal : Direction.Vertical;
+					dir = ((move.charAt(2) == 'h')||(move.charAt(2) == 'H')) ? Direction.Horizontal : Direction.Vertical;
+					
+					//dir = (move.charAt(2) == 'H') ? Direction.Horizontal : Direction.Vertical;
 				}
 				
 				if (!isWallMove) {
@@ -1068,7 +1073,8 @@ public class GameController {
 				boolean isWallMove = false;
 				if (move.length() == 3) {
 					isWallMove = true;
-					dir = (move.charAt(2) == 'h') ? Direction.Horizontal : Direction.Vertical;
+					dir = ((move.charAt(2) == 'h')||(move.charAt(2) == 'H')) ? Direction.Horizontal : Direction.Vertical;
+					//dir = (move.charAt(2) == 'H') ? Direction.Horizontal : Direction.Vertical;
 				}
 				
 				if (!isWallMove) {
