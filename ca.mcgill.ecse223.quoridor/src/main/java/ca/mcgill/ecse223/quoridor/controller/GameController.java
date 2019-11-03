@@ -277,7 +277,8 @@ public class GameController {
 	}
 	
 	/**
-	 * View method that checks if wall move was valid and returns the result, takes in the wall's highest anchor point, its direction and its id
+	 * For Validate Position Feature
+	 * Checks if wall move was valid and returns the result, takes in the wall's highest anchor point, its direction and its id
 	 * 
 	 * @author DariusPi
 	 * 
@@ -291,8 +292,8 @@ public class GameController {
 		Quoridor q =QuoridorApplication.getQuoridor();
 		GamePosition curr= q.getCurrentGame().getCurrentPosition();
 		
-		List<Wall> wWall = q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard();
-		List<Wall> bWall = q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();
+		List<Wall> wWall = curr.getWhiteWallsOnBoard();
+		List<Wall> bWall = curr.getBlackWallsOnBoard();
 		Direction dirc;
 		int col =x1;
 		int row=y1;
@@ -372,6 +373,26 @@ public class GameController {
 			q.getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(q.getCurrentGame().getBlackPlayer().getWall(id-10));
 		}
 		return true;
+	}
+	
+	/**
+	 * For Validate Position Feature
+	 * Checks if pawn position is within bounds of board
+	 * 
+	 * @author DariusPi
+	 * 
+	 * @param Quoridor q
+	 * @param int x1
+	 * @param int y1
+	 * @return
+	 */
+	public boolean valPawnPosition(Quoridor q,int x1,int y1) {
+		
+		if (x1>0 && x1<11 && y1>0 && y1<11) {
+			return true;
+		}
+		
+		return false;
 	}
 	
 	/**
