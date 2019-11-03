@@ -775,7 +775,14 @@ int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().
 	 * @return
 	 * @throws UnsupportedOperationException
 	 */
-	public Game initSaveGameLoad(Quoridor quoridor, String filename) /*throws UnsupportedOperationException*/ {
+	public Game initSavedGame(Quoridor quoridor, String filename) /*throws UnsupportedOperationException*/ {
+		
+		Player p1=new Player(new Time(10), quoridor.getUser(0), 9, Direction.Horizontal);
+		Player p2 = new Player(new Time(10), quoridor.getUser(1), 1, Direction.Horizontal);
+		new Game(GameStatus.Initializing, MoveMode.PlayerMove, quoridor);
+		
+		quoridor.getCurrentGame().setWhitePlayer(p1);
+		quoridor.getCurrentGame().setBlackPlayer(p2);
 		
 		File file = new File(filename);
 		Scanner fileSC = null;
@@ -805,6 +812,7 @@ int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			//notify that load failed without validation checking 
+			System.err.println("AAAAAAA");
 			return null;
 		}
 		
@@ -882,9 +890,9 @@ int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().
 				//need to find a playerpos at specified coord
 				//need to match to specified coord first
 				PlayerPosition pp = new PlayerPosition(player, tile);
-				if (!setPosition(pp, gP, isWhite)) {
-					throw new Exception("Unable to set position of player! (White = " + isWhite + ")");
-				}
+				//if (!setPosition(pp, gP, isWhite)) {
+				//	throw new Exception("Unable to set position of player! (White = " + isWhite + ")");
+				//}
 			} else {	//wall move
 				Direction dir;
 				if (move.charAt(2) == 'h')

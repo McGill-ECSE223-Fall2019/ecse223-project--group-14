@@ -118,6 +118,8 @@ public class QuoridorPage extends JFrame{
 	private PawnComponent wPawn;
 	private PawnComponent bPawn;
 	
+	private boolean isLoad;
+	
 	public QuoridorPage(){
 		q=QuoridorApplication.getQuoridor();
 		gc=new GameController();
@@ -436,6 +438,7 @@ public class QuoridorPage extends JFrame{
 	
 	private void newGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		error = "";
+		isLoad = false;
 		
 		newGameButton.setVisible(false);
 		loadGameButton.setVisible(false);
@@ -670,7 +673,7 @@ public class QuoridorPage extends JFrame{
 		
 		//TODO
 		//call load controller function to update model
-		gc.initSaveGameLoad(QuoridorApplication.getQuoridor(), loadField.getText());
+		gc.initSavedGame(QuoridorApplication.getQuoridor(), loadField.getText());
 		//reset view with new loaded file
 
 		//Quoridor quoridor = QuoridorApplication.getQuoridor();
