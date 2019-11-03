@@ -677,13 +677,13 @@ public class QuoridorPage extends JFrame{
 		refreshData();
 	}
 	
-	private void loadFileButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	private void loadFileButtonActionPerformed(java.awt.event.ActionEvent evt) throws Exception {
 		GameController gc= new GameController();
 		error = "";
 		
 		//TODO
 		//call load controller function to update model
-		
+		gc.initSavedGameLoad(q,loadField.getText());
 		//reset view with new loaded file
 		currPlayer=q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite();
 		
@@ -1112,7 +1112,12 @@ public class QuoridorPage extends JFrame{
 		
 		loadFileButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				loadFileButtonActionPerformed(evt);
+				try {
+					loadFileButtonActionPerformed(evt);
+				} catch (Exception e) {
+					error="File does not exists";
+					refreshData();
+				}
 			}
 		});
 		
