@@ -1114,7 +1114,7 @@ public class CucumberStepDefinitions {
 		GameController G = new GameController();
 		boolean loadFail = false;
 		try {
-			G.loadGame(QuoridorApplication.getQuoridor());
+			G.checkIfloadGameValid(QuoridorApplication.getQuoridor());
 		} catch (Exception e) {
 			loadFail = (e instanceof IOException);
 		}

@@ -683,8 +683,25 @@ public class QuoridorPage extends JFrame{
 		
 		//TODO
 		//call load controller function to update model
-		gc.initSavedGameLoad(q,loadField.getText());
 		//reset view with new loaded file
+		String filename = loadField.getText();
+		//try {
+			gc.initSavedGameLoad(QuoridorApplication.getQuoridor(), filename);
+			//gc.loadGame(QuoridorApplication.getQuoridor(), filename); //doesn't work
+		//} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//error = e.getMessage();
+			//return;
+		//}
+		
+		
+		//p1Name.setText(q.getCurrentGame().getWhitePlayer().getUser().getName());
+		//p2Name.setText(q.getCurrentGame().getBlackPlayer().getUser().getName());
+		
+		//Time t=q.getCurrentGame().getBlackPlayer().getRemainingTime();
+		//timeRem1.setText(convT2S(t));
+		//timeRem2.setText(convT2S(t));
+		
 		currPlayer=q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite();
 		
 		int xb=q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
@@ -1115,7 +1132,10 @@ public class QuoridorPage extends JFrame{
 				try {
 					loadFileButtonActionPerformed(evt);
 				} catch (Exception e) {
-					error="File does not exists";
+					//This allows for user to know exactly *which* error occurred in a concise 
+					//manner
+					error = e.getMessage();
+					QuoridorApplication.getQuoridor().getCurrentGame().delete();
 					refreshData();
 				}
 			}
