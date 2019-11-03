@@ -69,6 +69,7 @@ public class QuoridorPage extends JFrame{
 	
 	private JButton saveGameButton;
 	private JButton overwriteButton;
+	private JButton cancelButton;
 	private JButton loadGameButton;
 	private JButton saveFileButton;
 	private JButton loadFileButton;
@@ -362,8 +363,11 @@ public class QuoridorPage extends JFrame{
 		saveFileButton.setBounds(270, 160, buttonW, buttonH);
 		add(saveFileButton);
 		
-		overwriteButton.setBounds(270, 160, buttonW, buttonH);
+		overwriteButton.setBounds(10, y, buttonW, buttonH);
 		add(overwriteButton);
+		
+		cancelButton.setBounds(10, y+30, buttonW, buttonH);
+		add(cancelButton);
 		
 		loadField.setBounds(10, 160, 200, buttonH);
 		add(loadField);
@@ -457,12 +461,6 @@ public class QuoridorPage extends JFrame{
 		stageMove=false;
 		
 		banner="New Game";
-		/*try {
-			gc.initGame();
-		} catch (InvalidInputException e) {
-			error = e.getMessage();
-		}*/
-		// update visuals
 		
 		refreshData();
 	}
@@ -557,7 +555,6 @@ public class QuoridorPage extends JFrame{
 	
 	private void timeSetButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		error="";
-		//uncomment once implemented
 		try {
 			gc.setTime(q,Integer.parseInt(minField.getText()),Integer.parseInt(secField.getText()));
 		} catch (Exception e) {
@@ -598,6 +595,7 @@ public class QuoridorPage extends JFrame{
 	
 	private void saveGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message
+		error="";
 		toggleBoard(false);
 		toggleMainButtons(false);
 		
@@ -609,12 +607,8 @@ public class QuoridorPage extends JFrame{
 	
 	private void saveFileButtonActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
 		// clear error message
-		//toggleBoard(false); to be implemented
-		
-		GameController gc= new GameController();
 		error = "";	
 		
-		//call a does file exists method that returns true or false
 		Boolean fileExist=gc.filename_exists(saveField.getText());
 		
 		saveFileButton.setVisible(false);
@@ -622,6 +616,7 @@ public class QuoridorPage extends JFrame{
 		
 		if (fileExist) {
 			overwriteButton.setVisible(true);
+			cancelButton.setVisible(true);
 			error = "File already exists, overwrite?";
 			refreshData();
 		}
@@ -640,19 +635,26 @@ public class QuoridorPage extends JFrame{
 	
 	private void overwriteButtonActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
 		error = "";
-		
-		//call save game controller method
-		
 		gc.SaveGame(q, saveField.getText());
 		
 		// update visuals
 		banner = "GamePlay"; 
 		overwriteButton.setVisible(false);
+		cancelButton.setVisible(false);
 		toggleMainButtons(true);
 		toggleBoard(true);
-		refreshData();
-		
-			
+		refreshData();		
+	}
+	
+	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		// update visuals
+		error = "";
+		cancelButton.setVisible(false);
+		banner = "GamePlay"; 
+		overwriteButton.setVisible(false);
+		toggleMainButtons(true);
+		toggleBoard(true);
+		refreshData();		
 	}
 	
 	private void loadGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -669,22 +671,15 @@ public class QuoridorPage extends JFrame{
 	}
 	
 	private void loadFileButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		//toggleBoard(false); to be implemented
-		
 		GameController gc= new GameController();
 		error = "";
 		
 		//TODO
 		//call load controller function to update model
+		//check if file exists
+		
 		//reset view with new loaded file
-		
-		p1Name.setText(q.getCurrentGame().getWhitePlayer().getUser().getName());
-		p2Name.setText(q.getCurrentGame().getBlackPlayer().getUser().getName());
-		
-		Time t=q.getCurrentGame().getBlackPlayer().getRemainingTime();
-		timeRem1.setText(convT2S(t));
-		timeRem2.setText(convT2S(t));
+		currPlayer=q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite();
 		
 		int xb=q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
 		int yb=q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
@@ -747,91 +742,59 @@ public class QuoridorPage extends JFrame{
 			}
 		}
 		
-		
-		
 		loadFileButton.setVisible(false);
 		loadField.setVisible(false);
-		
 		p1NameField.setVisible(true);
 		createP1Button.setVisible(true);
 		selectP1Button.setVisible(true);
-		
-		
 		banner="New Game";
-		
-		/*
-		// update visuals
-		banner = "GamePlay"; 
-		loadFileButton.setVisible(false);
-		loadField.setVisible(false);
-		toggleMainButtons(true);
-		toggleBoard(true);*/
-		
-		
 		refreshData();
 	}
 	
 	private void resignGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		
+		//TODO in phase 2
 		finishGame();
 	}
 	
 	private void drawGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		toggleBoard(false);
-		GameController gc= new GameController();		
+		// update visuals
+		toggleBoard(false);		
 		error = "";
 		
 		toggleMainButtons(false);
-		
 		acceptDrawButton.setVisible(true);
 		declineDrawButton.setVisible(true);
-		
-		// update visuals
-		banner = "Draw Proposal"; //for testing
+		banner = "Draw Proposal";
 		refreshData();
 	}
 	
 	private void acceptDrawButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message
-		//GameController gc= new GameController();		
-		//toggleBoard(false);
 		error = "";
 		
-		//TODO
+		//TODO in phase 2
 		
 		// update visuals
-		error = "accept draw"; //for testing
+		error = "accept draw"; 
 		finishGame();
 	}
 	
 	private void declineDrawButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		//GameController gc= new GameController();		
+		// update visuals	
 		toggleBoard(true);
-		
 		error = "";
-		
-		//todo
-		
 		toggleMainButtons(true);
-		
 		acceptDrawButton.setVisible(false);
 		declineDrawButton.setVisible(false);
-		// update visuals
 		banner = "GamePlay"; //for testing
-		
 	}
 	
 	
 	private void replayGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message		
 		toggleBoard(true);
-		
 		error = "";
-		
 		replayGameButton.setVisible(false);
-		
 		stepForwardButton.setVisible(true);
 		stepBackwardButton.setVisible(true);
 		jumpStartButton.setVisible(true);
@@ -843,40 +806,36 @@ public class QuoridorPage extends JFrame{
 	}
 	
 	private void stepForwardButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		GameController gc= new GameController();		
+		// clear error message		
 		error = "";
-
+		//TODO in phase 2
 		// update visuals
 		error = "step for"; //for testing
 		refreshData();
 	}
 	
 	private void stepBackwardButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		GameController gc= new GameController();		
+		// clear error message		
 		error = "";
-		
+		//TODO in phase 2
 		// update visuals
 		error = "step back"; //for testing
 		refreshData();
 	}
 	
 	private void jumpStartButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		GameController gc= new GameController();		
+		// clear error message		
 		error = "";
-
+		//TODO in phase 2
 		// update visuals
 		error = "jump start"; //for testing
 		refreshData();
 	}
 	
 	private void jumpEndButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		GameController gc= new GameController();		
+		// clear error message	
 		error = "";
-
+		//TODO in phase 2
 		// update visuals
 		error = "jump end"; //for testing
 		refreshData();
@@ -940,8 +899,6 @@ public class QuoridorPage extends JFrame{
 	}*/
 	
 	private void endTurnButtonActionPerformed(java.awt.event.ActionEvent evt) {	//this is the same as switch player
-		//TODO
-		//set movable pawn and walls
 		
 		currPlayer=!currPlayer;
 		gc.switchPlayer(q);
@@ -996,6 +953,10 @@ public class QuoridorPage extends JFrame{
 		overwriteButton=new JButton();
 		overwriteButton.setText("Overwrite");
 		overwriteButton.setVisible(false);
+		
+		cancelButton=new JButton();
+		cancelButton.setText("Cancel");
+		cancelButton.setVisible(false);
 		
 		loadGameButton = new JButton();
 		loadGameButton.setText("Load Game");
@@ -1128,6 +1089,12 @@ public class QuoridorPage extends JFrame{
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+			}
+		});
+		
+		cancelButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				cancelButtonActionPerformed(evt);
 			}
 		});
 		
@@ -1295,25 +1262,6 @@ public class QuoridorPage extends JFrame{
 		int min=(int)(tt/1000)/60;
 		int sec=(int)(tt/1000)%60;
 		return("Time Remainning: "+min+":"+sec);
-	}
-
-	/**
-	 * Method switches current player in view and model
-	 * 
-	 * @author DariusPi
-	 */
-	private void switchPlayer() {			//should be called by either drop wall or end turn button
-		//TODO
-		
-		currPlayer=!currPlayer;
-		if (currPlayer) {
-			timeRem1.setVisible(true);
-			timeRem2.setVisible(false);
-		}
-		else {
-			timeRem1.setVisible(false);
-			timeRem2.setVisible(true);
-		}
 	}
 	
 	/**

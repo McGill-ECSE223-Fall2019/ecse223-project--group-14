@@ -29,7 +29,7 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
+		// Auto-generated method stub
 		
 	}
 
@@ -59,7 +59,7 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 			}
 		} else {
 			if(heldComponent instanceof WallComponent && SwingUtilities.isRightMouseButton(e)) {
-				System.out.println("right");
+				//System.out.println("right");
 				String d = ((WallComponent) heldComponent).rotate();
 				// Ugly way of keeping the offset after rotation
 				if (d.contentEquals("horizontal")) {
@@ -72,7 +72,6 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 				heldComponent.setLocation(e.getX()-this.offsetX, e.getY()-this.offsetY);
 			}
 			
-			// TODO For DropWall person: 
 			// If heldComponent has a position it's above, then drop it there
 			else if(heldComponent instanceof WallComponent && heldComponent.hasPossiblePosition(((WallComponent) heldComponent).getDirection())) {
 				//heldComponent.setLocation(heldComponent.getPossibleXPostition(), heldComponent.getPossibleYPostition());
@@ -95,19 +94,19 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
+		// Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
+		// Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
+		// Auto-generated method stub
 		
 	}
 
