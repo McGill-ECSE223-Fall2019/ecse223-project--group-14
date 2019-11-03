@@ -471,8 +471,38 @@ public class GameController {
 		//if yes returns error
 		//if no returns ok
 		//will compare this with String result in @then
+		if(posToValidate.getId()==-1) {//handles walls and pawn out of board
+			return false;
+		}
+		//cond1 same pawn pos
+		//cond2 out of board pos
+		//cond3 same wall
+		//cond4 if closed wall hard to implement
+		
+		//else we know id is 1.
+		//so
+		//now check if walls overlap or pawns overlap
+		//get game position player1position it has tile position which has row and col
+		GamePosition Prev=GamePosition.getWithId(1);
+		PlayerPosition Test=Prev.getWhitePosition();//want to get awhiteposition
+		Tile TestTile=Test.getTile();
+		int player1Row=TestTile.getRow();
+		int player1Col=TestTile.getColumn();
+		//now check if anything else at this place
+		//check blackposition if same
+		PlayerPosition Test2=Prev.getBlackPosition();
+		int player2Row=Test2.getTile().getRow();
+		int player2Col=Test2.getTile().getColumn();
+		if((player1Row==player2Row)&&(player1Col==player2Col)) {
+			return false;
+		}
+		
+		//For Walls 
+		//
+		
 		throw new UnsupportedOperationException();
 	}
+	
 
 	/**
 	 * For Initialize Board feature
