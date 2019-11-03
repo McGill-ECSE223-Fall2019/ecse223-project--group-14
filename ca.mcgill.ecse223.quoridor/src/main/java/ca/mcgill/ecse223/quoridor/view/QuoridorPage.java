@@ -678,9 +678,12 @@ public class QuoridorPage extends JFrame{
 	}
 	
 	private void loadFileButtonActionPerformed(java.awt.event.ActionEvent evt) throws Exception {
-		GameController gc= new GameController();
+		gc= new GameController();
 		error = "";
-		
+		//boolean newg;
+		/*if (p1Name.getText().compareTo("")==0) {
+			q.getCurrentGame().delete();
+		}*/
 		//TODO
 		//call load controller function to update model
 		//reset view with new loaded file
@@ -1124,7 +1127,14 @@ public class QuoridorPage extends JFrame{
 					//This allows for user to know exactly *which* error occurred in a concise 
 					//manner
 					error = e.getMessage();
+					timer.stop();
 					QuoridorApplication.getQuoridor().getCurrentGame().delete();
+					try {
+						loadFileButtonActionPerformed(evt);
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 					refreshData();
 				}
 			}
