@@ -22,8 +22,6 @@ public abstract class HoldableComponent extends RectComponent{
 	private Point [][] points2;
 	private int x1;
 	private int y1;
-	private int x2;
-	private int y2;
 	
 	public HoldableComponent(int w, int h, Color c) {
 		super(w,h,c);
@@ -31,8 +29,6 @@ public abstract class HoldableComponent extends RectComponent{
 		
 		x1=-1;
 		y1=-1;
-		x2=-1;
-		y2=-1;
 		
 		this.points=new Point[8][9];	//for vertical placement
 		for (int i=0;i<8;i++) {
@@ -52,14 +48,6 @@ public abstract class HoldableComponent extends RectComponent{
 		return this.holdable;
 	}
 	
-	public void generateMoves() {
-		// TODO
-		// To do, just call the game Controller to return the possible moves for
-		// the currently held HoldableComponent and make PositionComponents 
-		// for each possible move location. We will check the collision between the held component
-		// and these move Panels to set the location of the held component.
-	}
-	
 	/**
 	 * Method returns if a wall is dropped onto an acceptable point based on its position and direction and if so sets the posX and posY positions
 	 * 
@@ -71,23 +59,19 @@ public abstract class HoldableComponent extends RectComponent{
 		if (dir.compareTo("vertical")==0) {
 			for (int i=0;i<8;i++) {
 				for (int j=0;j<9;j++) {
-					//if (this.contains((int)this.points[i][j].x,(int)this.points[i][j].y)){
 					if (this.getBounds().contains(points[i][j])) {
 						if (first) {
-							x1=this.getX();
-							y1=this.getY();
+							x1=i;
+							y1=j;
 							first=false;
-							//return true;
 						}
 						else {
-							x2=this.getX();
-							y2=this.getY();
-						
-							//TODO
 							GameController gc= new GameController();
-							return gc.viewValWallPosition(x1,y1,x2,y2);
-							//call validate postion to ensure no overlapping walls
-							//return true;
+							Boolean valid=gc.valWallPosition(x1,y1, "vertical");
+							if (valid) {
+								gc.dropWall(x1,y1, "vertical",((WallComponent)this).wallId);
+							}
+							return valid;
 						}
 					}
 				}
@@ -98,20 +82,17 @@ public abstract class HoldableComponent extends RectComponent{
 				for (int j=0;j<8;j++) {
 					if (this.getBounds().contains(points2[i][j])) {
 						if (first) {
-							x1=this.getX();
-							y1=this.getY();
+							x1=i;
+							y1=j;
 							first=false;
-							//return true;
 						}
 						else {
-							x2=this.getX();
-							y2=this.getY();
-						
-							//TODO
 							GameController gc= new GameController();
-							return gc.viewValWallPosition(x1,y1,x2,y2);
-							//call validate postion to ensure no overlapping walls
-							//return true;
+							Boolean valid=gc.valWallPosition(x1,y1, "horizontal");
+							if (valid) {
+								gc.dropWall(x1,y1, "horizontal",((WallComponent)this).wallId);
+							}
+							return valid;
 						}
 					}
 				}
