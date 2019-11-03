@@ -972,7 +972,7 @@ public class CucumberStepDefinitions {
 	public void iInitiateToLoadASavedGame(String filename) throws Throwable {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		GameController G = new GameController();
-		Game game = G.initSavedGame(quoridor, filename);
+		Game game = G.initSavedGameLoad(quoridor, filename);
 		game.setGameStatus(GameStatus.Initializing);
 		assertNotNull(game);
 		assertEquals(game, quoridor.getCurrentGame());

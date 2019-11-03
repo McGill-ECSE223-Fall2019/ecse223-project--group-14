@@ -729,7 +729,8 @@ public class GameController {
 	 * @return
 	 * @throws UnsupportedOperationException
 	 */
-	public Game initSavedGame(Quoridor quoridor, String filename) /*throws UnsupportedOperationException*/ {
+	public Game initSavedGameLoad(Quoridor quoridor, String filename) /*throws UnsupportedOperationException*/ {
+		
 		
 		Player p1=new Player(new Time(10), quoridor.getUser(0), 9, Direction.Horizontal);
 		Player p2 = new Player(new Time(10), quoridor.getUser(1), 1, Direction.Horizontal);
@@ -750,46 +751,90 @@ public class GameController {
 		
 		//assume that file is well formed even if invalid
 		//firstplayer
-		StringTokenizer st = new StringTokenizer(fileSC.nextLine()); //set player
-		String playerString = st.nextToken();
-		
+		StringTokenizer s1 = new StringTokenizer(fileSC.nextLine());
+		StringTokenizer s2 = new StringTokenizer(fileSC.nextLine());
+		fileSC.close();
+		String playerOneString = s1.nextToken();
+		s2.nextToken(); //iterate past playerstring; we can infer this info from the first line
 		Game game = quoridor.getCurrentGame();
-		boolean isWhite = (playerString.contentEquals("W:")) ? true : false;
+		Board board = quoridor.getBoard();
+		GamePosition gp = game.getCurrentPosition();
+		//if (board == null) //uncomment if nullpointerexception @line with board manip
+		//	board = initBoard(quoridor);
 		
-		Player player = (isWhite) ? game.getWhitePlayer() : game.getBlackPlayer();
+		boolean isPlayerOneWhite = (playerOneString.contentEquals("W:")) ? true : false;
+		Player playerOne, playerTwo;
+		int playerOneWallID;
+		int playerTwoWallID;
 		
-		int moveID = 1;
-		int wallID = (isWhite) ? 1 : 11;
+		//int playerOneMoveID = 0;
+		//int playerTwoMoveID = 0;
+		if (isPlayerOneWhite) {
+			playerOne = game.getWhitePlayer();
+			playerOneWallID = 1;
+			playerTwo = game.getBlackPlayer();
+			playerTwoWallID = 11;
+		} else {
+			playerOne = game.getBlackPlayer();
+			playerOneWallID = 1;
+			playerTwo = game.getWhitePlayer();
+			playerTwoWallID = 11;
+		}
+		PlayerPosition playerOnePosition, playerTwoPosition;
 		
-		try {
-			loadPlayerPosition(player, st, wallID, quoridor, isWhite);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			//notify that load failed without validation checking 
-			System.err.println("AAAAAAA");
-			return null;
+		while (s1.hasMoreTokens() || s2.hasMoreTokens()) {
+			
+			if (s1.hasMoreTokens()) {
+				String move = s1.nextToken();
+				int row = move.charAt(0) - 'a' + 1;
+				int col = move.charAt(1);
+				Tile tile = board.getTile(getIndex(row, col));
+				Direction dir = null;
+				boolean isWallMove = false;
+				if (move.length() == 3) {
+					isWallMove = true;
+					dir = (move.charAt(2) == 'h') ? Direction.Horizontal : Direction.Vertical;
+				}
+				
+				if (!isWallMove) {
+					playerOnePosition = new PlayerPosition(playerOne, tile);
+				} else {
+					Wall wall = playerOne.getWall(playerOneWallID);
+					wall.setMove(new WallMove(game.numberOfMoves(), 1, playerOne, tile, game, dir, wall));
+					
+					playerOneWallID++;
+				}
+			}
+			
+			if (s2.hasMoreTokens()) {
+				String move = s1.nextToken();
+				int row = move.charAt(0) - 'a' + 1;
+				int col = move.charAt(1);
+				Tile tile = board.getTile(getIndex(row, col));
+				Direction dir = null;
+				boolean isWallMove = false;
+				
+				if (move.length() == 3) {
+					isWallMove = true;
+					dir = (move.charAt(2) == 'h') ? Direction.Horizontal : Direction.Vertical;
+				}
+				
+				if (!isWallMove) {
+					playerTwoPosition = new PlayerPosition(playerTwo, tile);
+				} else {
+					Wall wall = playerTwo.getWall(playerTwoWallID);
+					wall.setMove(new WallMove(game.numberOfMoves(), 1, playerTwo, tile, game, dir, wall));
+					
+					playerTwoWallID++;
+				}
+			}
 		}
 		
-		//nextplayer
-		st = new StringTokenizer(fileSC.nextLine());
-		isWhite = !isWhite;
 		
-		playerString = st.nextToken();
-		player = (isWhite) ? game.getWhitePlayer() : game.getBlackPlayer();
-		
-		wallID = (isWhite) ? 1 : 11;
-		moveID = 1;
-		
-		try {
-			loadPlayerPosition(player, st, wallID, quoridor, isWhite);
-		} catch (Exception e) {
-			//same story
-			return null;
-		}
 		
 		//TODO: THink about separating this process into its subroutine
-		fileSC.close();
-		return game; //TODO: REPLACE
+		game.setCurrentPosition(gp);
+		return game;
 		//throw new UnsupportedOperationException();
 	}
 	
@@ -827,38 +872,7 @@ public class GameController {
 		return true;
 	}
 	
-
-	
-	private static void loadPlayerPosition(Player player, StringTokenizer st, int wallID, Quoridor quoridor, boolean isWhite) throws Exception {
-		Game game = quoridor.getCurrentGame();
-		Board board = quoridor.getBoard();
-		GamePosition gP = game.getCurrentPosition();
-		int moveID = 1;
-		int runningWallID = wallID;
-		while (st.hasMoreTokens()) {
-			String move = st.nextToken(",");
-			int col = move.charAt(0) - 'a' + 1;
-			int row = move.charAt(1);
-			Tile tile = board.getTile(getIndex(row, col));
-			if (move.length() == 2) { //pawn move
-				//need to find a playerpos at specified coord
-				//need to match to specified coord first
-				PlayerPosition pp = new PlayerPosition(player, tile);
-				//if (!setPosition(pp, gP, isWhite)) {
-				//	throw new Exception("Unable to set position of player! (White = " + isWhite + ")");
-				//}
-			} else {	//wall move
-				Direction dir;
-				if (move.charAt(2) == 'h')
-					dir = Direction.Horizontal;
-				else
-					dir = Direction.Vertical;
-				Wall wall = player.getWall(runningWallID);
-				wall.setMove(new WallMove(moveID, 1, player, tile, game, dir, wall));
-				runningWallID++;
-				moveID++;
-			}
-		}
+	private static boolean addOrMoveWallsOnBoard(Player player, Wall wall) {
 		
 	}
 	
