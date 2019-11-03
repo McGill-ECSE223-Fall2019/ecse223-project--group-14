@@ -1084,7 +1084,7 @@ public class GameController {
 				int row = move.charAt(1) - '0';
 				Tile tile = board.getTile(getIndex(row, col));
 //H
-				Direction dir = (move.charAt(2) == 'h') ? Direction.Horizontal : Direction.Vertical;
+				Direction dir = ((move.charAt(2) == 'h')||(move.charAt(2) == 'H')) ? Direction.Horizontal : Direction.Vertical;
 //E
 				//Direction dir = null;
 				//boolean isWallMove = false;
@@ -1127,7 +1127,7 @@ public class GameController {
 				int row = move.charAt(1) - '0';
 				Tile tile = board.getTile(getIndex(row, col));
 //H
-				Direction dir = (move.charAt(2) == 'h') ? Direction.Horizontal : Direction.Vertical;
+				Direction dir = ((move.charAt(2) == 'h')||(move.charAt(2) == 'H')) ? Direction.Horizontal : Direction.Vertical;
 
 
 				Wall wall = Wall.getWithId(playerTwoAbsoluteWallID);
