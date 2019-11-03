@@ -700,6 +700,7 @@ public class QuoridorPage extends JFrame{
 		//TODO
 		//call load controller function to update model
 		//reset view with new loaded file
+		gc.deleteGame(QuoridorApplication.getQuoridor());
 		String filename = loadField.getText();
 		gc.initSavedGameLoad(QuoridorApplication.getQuoridor(), filename);
 		
@@ -1141,6 +1142,15 @@ public class QuoridorPage extends JFrame{
 				} catch (Exception e) {
 					//This allows for user to know exactly *which* error occurred in a concise 
 					//manner
+					//if (e.getMessage.contentEquals("Unable to create wall due to owner")) {
+					//	try  {
+					//		loadFileActionPerformed(evt)
+					//	} catch (Exception e1) {
+					//		error = e.getMessage();
+					//		timer.stop();
+					//		QuoridorApplication.getQuoridor().getCurrentGame().delete
+					//	}
+					//}
 					error = e.getMessage();
 					timer.stop();
 					QuoridorApplication.getQuoridor().getCurrentGame().delete();

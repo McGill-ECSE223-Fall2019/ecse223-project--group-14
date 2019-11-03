@@ -1340,6 +1340,10 @@ public class GameController {
 		return board;*/
 	}
 	
+	public void deleteGame(Quoridor q) {
+		q.getCurrentGame().delete();
+	}
+	
 	public void switchPlayer(Quoridor q) {
 		if (q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite()) {
 			q.getCurrentGame().getCurrentPosition().setPlayerToMove(q.getCurrentGame().getBlackPlayer());
