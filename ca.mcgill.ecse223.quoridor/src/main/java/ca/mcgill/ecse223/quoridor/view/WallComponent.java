@@ -12,11 +12,12 @@ public class WallComponent extends HoldableComponent{
 	public static final int wallW=12;
 	private String dir;
 	private AffineTransform transform;
+	public int wallId; 	//0-9 are white, 10-19 are black
 
-	public WallComponent(Color c) {
+	public WallComponent(Color c, int id) {
 		super(wallW, wallH, c);
 		this.dir = "vertical";
-		
+		this.wallId=id;
 		
 	}
 	public String rotate() {

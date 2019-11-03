@@ -39,10 +39,39 @@ public class GameController {
 	 */
 	public void initQuorridor(){
 		Quoridor q=QuoridorApplication.getQuoridor();
-		initBoard(q);
+		
+		Board board = new Board(q);
+		// Creating tiles by rows, i.e., the column index changes with every tile
+		// creation
+		for (int i = 1; i <= 9; i++) { // rows
+			for (int j = 1; j <= 9; j++) { // columns
+				board.addTile(i, j);
+			}
+		}
+		
 		new User("user1",q);
 		new User("user2",q);
+		
+		/*for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 10; j++) {
+				new Wall(i * 10 + j, players[i]);
+			}
+		}*/
+		
+		//initBoard(q);
 	}
+	
+	public void addWalls() {
+		Quoridor q=QuoridorApplication.getQuoridor();
+		GamePosition pos=q.getCurrentGame().getCurrentPosition();
+		for (int j = 0; j < 10; j++) {
+			pos.addWhiteWallsInStock(new Wall(j, q.getCurrentGame().getWhitePlayer()));
+			//new Wall(j+10, q.getCurrentGame().getBlackPlayer());
+			pos.addBlackWallsInStock(new Wall(j+10, q.getCurrentGame().getBlackPlayer()));
+		}
+	}
+	
+	
 	/**
 	 * For Start New Game feature 
 	 * initializes a game with null parameters
@@ -66,6 +95,12 @@ public class GameController {
 		PlayerPosition player1Position = new PlayerPosition(q.getCurrentGame().getWhitePlayer(), player1StartPos);
 		PlayerPosition player2Position = new PlayerPosition(q.getCurrentGame().getBlackPlayer(), player2StartPos);
 		
+		//for (int i = 0; i < 2; i++) {
+			/*for (int j = 0; j < 10; j++) {
+				new Wall(j, p1);
+				new Wall(j+10, p2);
+			}*/
+		//}
 		GamePosition gamePos=new GamePosition(1, player1Position, player2Position, q.getCurrentGame().getWhitePlayer(), q.getCurrentGame());
 		q.getCurrentGame().setCurrentPosition(gamePos);
 		
@@ -242,22 +277,62 @@ public class GameController {
 	 * @param y2
 	 * @return
 	 */
-	public boolean viewValWallPosition(int x1,int y1, int x2, int y2) {
+	public boolean valWallPosition(int x1,int y1, String dir, int id) {
 		Quoridor q =QuoridorApplication.getQuoridor();
 		GamePosition curr= q.getCurrentGame().getCurrentPosition();
-		/*if (curr.getPlayerToMove().hasGameAsBlack()) {
-			curr.setPlayerToMove(q.getCurrentGame().getWhitePlayer());
+		
+		List<Wall> wWall = q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard();
+		List<Wall> bWall = q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();
+		Direction dirc;
+		int col =x1;
+		int row=y1;
+		if (dir.compareTo("vertical")==0) {
+			dirc=Direction.Vertical;
+			for(Wall pos: wWall){
+				if (pos.getMove().getWallDirection().toString().compareTo("Vertical")==0) {
+					if ((pos.getMove().getTargetTile().getColumn()+1==col)||(pos.getMove().getTargetTile().getColumn()-1==col)) {
+						return false;
+					}
+				}
+				
+				//check for horizontal
+			}
+			
+			for(Wall pos: bWall){
+				if (pos.getMove().getWallDirection().toString().compareTo("Vertical")==0) {
+					if ((pos.getMove().getTargetTile().getColumn()+1==col)||(pos.getMove().getTargetTile().getColumn()-1==col)) {
+						return false;
+					}
+				}
+				
+				//check for horizontal
+			}
+			
+			
+			//check for overl in hors
+			
 		}
 		else {
-			curr.setPlayerToMove(q.getCurrentGame().getBlackPlayer());
-		}*/
+			dirc=Direction.Horizontal;
+		}
+		
+		if (id<10) { 	//white
+			Wall w=q.getCurrentGame().getWhitePlayer().getWall(id);
+			new WallMove(q.getCurrentGame().getMoves().size(), 0, q.getCurrentGame().getWhitePlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
+			q.getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(q.getCurrentGame().getWhitePlayer().getWall(id));
+			q.getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(q.getCurrentGame().getWhitePlayer().getWall(id));
+		}
+		
+		else {
+			Wall w=q.getCurrentGame().getBlackPlayer().getWall(id-10);
+			new WallMove(q.getCurrentGame().getMoves().size(), 1, q.getCurrentGame().getBlackPlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
+			q.getCurrentGame().getCurrentPosition().removeBlackWallsInStock(q.getCurrentGame().getBlackPlayer().getWall(id-10));
+			q.getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(q.getCurrentGame().getBlackPlayer().getWall(id-10));
+		}
 		
 		//TODO
 		//add wall into current position's walls in board, maybe use wall id in array to map 
 		
-		//GamePosition gp = new GamePosition(curr.getId()+1, curr.getWhitePosition(), curr.getBlackPosition(), curr.getPlayerToMove(), q.getCurrentGame());
-		
-		//return validatePos(curr);
 		return true;
 	}
 	
@@ -343,7 +418,7 @@ public class GameController {
 				case 9: ColumnW = "i";
 					
 				}
-				writer.println("W: " + ColumnW+rowW);
+				writer.print("W: " + ColumnW+rowW);
 				//writer.print("W: " + ColumnW + ", " + rowW);
 				
 				List<Wall> wWall	= q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard();
@@ -383,11 +458,11 @@ public class GameController {
 					case 9: WallColumnLetterWhite = "i";
 						
 					}					
-					writer.print("," + WallColumnLetterWhite + pos.getMove().getTargetTile().getRow() + pos.getMove().getWallDirection());
+					writer.print("," + WallColumnLetterWhite + pos.getMove().getTargetTile().getRow() + pos.getMove().getWallDirection().toString().charAt(0));
 
 				//	writer.print();
 				}
-
+				writer.println("");
 				int rowB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();				
 				int columnB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
 				String ColumnB = "";
@@ -421,7 +496,7 @@ public class GameController {
 					
 				}
 
-				writer.println("B: " + ColumnB+rowB);
+				writer.print("B: " + ColumnB+rowB);
 			//	writer.print("B: "+ rowB + ", " + ColumnB);
 
 				List<Wall> bWall	= q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();				
@@ -460,9 +535,9 @@ public class GameController {
 						
 					}
 				
-					writer.print("," + WallColumnLetterBlack + pos1.getMove().getTargetTile().getRow() + pos1.getMove().getWallDirection());
+					writer.print("," + WallColumnLetterBlack + pos1.getMove().getTargetTile().getRow() + pos1.getMove().getWallDirection().toString().charAt(0));
 				}
-				
+				//writer.println()
 			    writer.close();	
 			}
 			
@@ -503,7 +578,7 @@ public class GameController {
 					
 				}
 
-				writer.println("B: " + ColumnB+ rowB);
+				writer.print("B: " + ColumnB+ rowB);
 			//	writer.print("B: "+ rowB + ", " + ColumnB);
 
 				List<Wall> bWall	= q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();
@@ -543,9 +618,9 @@ public class GameController {
 						
 					}
 
-					writer.print("," + WallColumnLetterBlack + pos1.getMove().getTargetTile().getRow() + pos1.getMove().getWallDirection());
+					writer.print("," + WallColumnLetterBlack + pos1.getMove().getTargetTile().getRow() + pos1.getMove().getWallDirection().toString().charAt(0));
 				}
-				
+				writer.println("");
 				int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
 				int columnW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
 				String ColumnW = "";
@@ -579,7 +654,7 @@ public class GameController {
 					
 				}
 
-				writer.println("W: " + ColumnW  + rowW);
+				writer.print("W: " + ColumnW  + rowW);
 				//writer.print("W: " + ColumnW + ", " + rowW);
 				
 				List<Wall> wWall	= q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard();
@@ -616,7 +691,7 @@ public class GameController {
 							
 						case 9: WallColumnLetterWhite = "i";	
 					}
-				writer.print("," + WallColumnLetterWhite + pos.getMove().getTargetTile().getRow() + pos.getMove().getWallDirection());
+				writer.print("," + WallColumnLetterWhite + pos.getMove().getTargetTile().getRow() + pos.getMove().getWallDirection().toString().charAt(0));
 				//	writer.print();
 				}
 				 writer.close();	

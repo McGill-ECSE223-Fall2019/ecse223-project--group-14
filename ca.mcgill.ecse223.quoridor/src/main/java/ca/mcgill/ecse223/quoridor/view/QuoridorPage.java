@@ -244,12 +244,12 @@ public class QuoridorPage extends JFrame{
 		}
 		bwalls= new WallComponent[10];
 		for (int i=0;i<10;i++) {
-			bwalls[i]=new WallComponent(Color.BLACK);
+			bwalls[i]=new WallComponent(Color.BLACK,i+10);
 		}
 		
 		wwalls= new WallComponent[10];
 		for (int i=0;i<10;i++) {
-			wwalls[i]=new WallComponent(Color.WHITE);
+			wwalls[i]=new WallComponent(Color.WHITE,i);
 		}
 		
 		wPawn=new PawnComponent(Color.WHITE);
@@ -444,6 +444,14 @@ public class QuoridorPage extends JFrame{
 		createP1Button.setVisible(true);
 		selectP1Button.setVisible(true);
 		
+		for (int i=0;i<10;i++) {
+			wwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 125, WallComponent.wallW, WallComponent.wallH);
+			//add(wwalls[i]);
+			bwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 675, WallComponent.wallW, WallComponent.wallH);
+			//add(bwalls[i]);
+		}
+		
+		stageMove=false;
 		
 		banner="New Game";
 		/*try {
@@ -573,6 +581,9 @@ public class QuoridorPage extends JFrame{
 			p2Name.setVisible(true);
 			
 			gc.startTheClock(q,timer);
+			
+			gc=new GameController();
+			gc.addWalls();
 			
 			refreshData();
 			
@@ -1087,7 +1098,6 @@ public class QuoridorPage extends JFrame{
 				try {
 					saveFileButtonActionPerformed(evt);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -1098,7 +1108,6 @@ public class QuoridorPage extends JFrame{
 				try {
 					overwriteButtonActionPerformed(evt);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
