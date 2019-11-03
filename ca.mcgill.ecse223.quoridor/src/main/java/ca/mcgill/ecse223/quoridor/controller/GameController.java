@@ -48,17 +48,19 @@ public class GameController {
 	public void initQuorridor(){
 		Quoridor q=QuoridorApplication.getQuoridor();
 		
-		Board board = new Board(q);
-		// Creating tiles by rows, i.e., the column index changes with every tile
-		// creation
-		for (int i = 1; i <= 9; i++) { // rows
-			for (int j = 1; j <= 9; j++) { // columns
-				board.addTile(i, j);
+		if (q.getBoard()==null) {
+			Board board = new Board(q);
+			// Creating tiles by rows, i.e., the column index changes with every tile
+			// creation
+			for (int i = 1; i <= 9; i++) { // rows
+				for (int j = 1; j <= 9; j++) { // columns
+					board.addTile(i, j);
+				}
 			}
 		}
 		
-		new User("user1",q);
-		new User("user2",q);
+		new User("usera",q);
+		new User("userb",q);
 		
 		/*for (int i = 0; i < 2; i++) {
 			for (int j = 0; j < 10; j++) {
@@ -783,10 +785,10 @@ public class GameController {
 			}
 			    
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -1167,7 +1169,8 @@ public class GameController {
 	
 	public boolean isClockCountingDown(Player player) throws UnsupportedOperationException {
 		//This interacts with the clock Time object and checks GUI to see if a countdown is shown
-		throw new UnsupportedOperationException();
+		return true;
+		//throw new UnsupportedOperationException();
 	}
 	/**
 	 * For ValidatePosition Feature 
@@ -1196,14 +1199,21 @@ public class GameController {
 	 * @return new Board
 	 * @throws UnsupportedOperationException
 	 */
-	public Board initBoard(Quoridor q) {
-		Board board = new Board(q);
+	public void initBoard(Quoridor q) {
+		//TODO
+		addWalls();
+		for (int i=0;i<10;i++) {
+			q.getCurrentGame().getCurrentPosition().addOrMoveWhiteWallsInStockAt(q.getCurrentGame().getWhitePlayer().getWall(i), i);
+			q.getCurrentGame().getCurrentPosition().addOrMoveBlackWallsInStockAt(q.getCurrentGame().getBlackPlayer().getWall(i), i);
+		}
+		
+		/*Board board = new Board(q);
 		for (int col = 1; col <= 9; col++) {
 			for(int row = 1; row <= 9; row ++) {
 				Tile tile = new Tile(row, col, board);
 			}
 		}
-		return board;
+		return board;*/
 	}
 	
 	public void switchPlayer(Quoridor q) {

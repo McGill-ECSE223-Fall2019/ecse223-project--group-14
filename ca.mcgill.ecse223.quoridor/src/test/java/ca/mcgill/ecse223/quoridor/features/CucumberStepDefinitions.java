@@ -656,7 +656,7 @@ public class CucumberStepDefinitions {
 	public void theGameIsReadyToStart() throws Throwable{
 		GameController gc=new GameController();
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		//gc.initQuorridor();
+		gc.initQuorridor();
 		gc.initGame(quoridor);
 		/*Player player1 = new Player(new Time(10), quoridor.getUser(0), 9, Direction.Horizontal);
 		Player player2 = new Player(new Time(10), quoridor.getUser(1), 1, Direction.Horizontal);
@@ -1047,12 +1047,11 @@ public class CucumberStepDefinitions {
 	 * @author FSharp4
 	 * @throws Throwable
 	 */
-	@Then ("It shall be? (.*)'s turn")
-	public void itShallBeSTurn(String playerColor) throws Throwable {
+	@Then ("It shall be shown that this is White's turn")
+	public void itShallBeSTurn() throws Throwable {
+		//Player player = getPlayer(playerColor);
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Player player = getPlayer(playerColor);
-		GameController G = new GameController();
-		assertTrue(G.setCurrentTurn(player, quoridor));
+		assertEquals(quoridor.getCurrentGame().getCurrentPosition().getPlayerToMove(),quoridor.getCurrentGame().getWhitePlayer());
 	}
 	
 	/**
@@ -1128,14 +1127,17 @@ public class CucumberStepDefinitions {
 	 */
 	@When ("The initialization of the board is initiated")
 	public void theInitializationOfTheBoardIsInitiated() throws Throwable {
-		GameController G = new GameController();
+		
+		/*GameController G = new GameController();
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		ArrayList<Player> defaultPlayers = createUsersAndPlayers("White", "Black");
 		quoridor.setCurrentGame(new Game(GameStatus.Initializing, MoveMode.PlayerMove, quoridor));
 		/*quoridor.setCurrentGame(new Game(GameStatus.Initializing, MoveMode.PlayerMove, 
 				defaultPlayers.get(0), defaultPlayers.get(1), quoridor));*/
+		GameController G = new GameController();
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		G.initBoard(quoridor);
-		assertNotNull(quoridor.getBoard());
+		//assertNotNull(quoridor.getBoard());
 	}
 	
 	/**
@@ -1145,8 +1147,11 @@ public class CucumberStepDefinitions {
 	@Then ("It shall be white player to move")
 	public void itShallBeWhitePlayerToMove() throws Throwable {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		assertEquals(quoridor.getCurrentGame().getCurrentPosition().getPlayerToMove(),quoridor.getCurrentGame().getWhitePlayer());
+		
+		/*Quoridor quoridor = QuoridorApplication.getQuoridor();
 		GameController G = new GameController();
-		G.setCurrentTurn(quoridor.getCurrentGame().getWhitePlayer(), quoridor);
+		G.setCurrentTurn(quoridor.getCurrentGame().getWhitePlayer(), quoridor);*/
 	}
 	
 	/**
