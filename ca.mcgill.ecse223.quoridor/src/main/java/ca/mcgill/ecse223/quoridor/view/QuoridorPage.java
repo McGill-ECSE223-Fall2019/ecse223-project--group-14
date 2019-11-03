@@ -458,11 +458,22 @@ public class QuoridorPage extends JFrame{
 		selectP1Button.setVisible(true);
 		
 		for (int i=0;i<10;i++) {
+			if (wwalls[i].getDirection().compareTo("horizontal")==0) {
+				wwalls[i].rotate();
+			}
+			
+			if (bwalls[i].getDirection().compareTo("horizontal")==0) {
+				bwalls[i].rotate();
+			}
+			
 			wwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 125, WallComponent.wallW, WallComponent.wallH);
 			//add(wwalls[i]);
 			bwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 675, WallComponent.wallW, WallComponent.wallH);
 			//add(bwalls[i]);
 		}
+		
+		wPawn.setBounds(157, 417, 25, 25);
+		bPawn.setBounds(557, 417, 25, 25);
 		
 		gc.addWalls();
 		stageMove=false;
