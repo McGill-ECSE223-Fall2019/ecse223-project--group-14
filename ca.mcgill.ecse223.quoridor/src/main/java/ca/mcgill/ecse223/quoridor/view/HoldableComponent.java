@@ -75,7 +75,11 @@ public abstract class HoldableComponent extends RectComponent{
 						}
 						else {
 							GameController gc= new GameController();
-							return gc.valWallPosition(x1,y1, "vertical", ((WallComponent)this).wallId);
+							Boolean valid=gc.valWallPosition(x1,y1, "vertical");
+							if (valid) {
+								gc.dropWall(x1,y1, "vertical",((WallComponent)this).wallId);
+							}
+							return valid;
 						}
 					}
 				}
@@ -92,7 +96,11 @@ public abstract class HoldableComponent extends RectComponent{
 						}
 						else {
 							GameController gc= new GameController();
-							return gc.valWallPosition(x1,y1, "horizontal",((WallComponent)this).wallId);
+							Boolean valid=gc.valWallPosition(x1,y1, "horizontal");
+							if (valid) {
+								gc.dropWall(x1,y1, "horizontal",((WallComponent)this).wallId);
+							}
+							return valid;
 						}
 					}
 				}

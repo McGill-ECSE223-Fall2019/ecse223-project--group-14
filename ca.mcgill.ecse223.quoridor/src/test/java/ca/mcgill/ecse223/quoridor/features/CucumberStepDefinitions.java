@@ -39,7 +39,15 @@ import io.cucumber.java.en.Then;
 import ca.mcgill.ecse223.quoridor.controller.GameController;
 
 public class CucumberStepDefinitions {
-
+	
+	/*private variables used for testing GUI functions*/
+	private String create;
+	private int col;
+	private int row;
+	private String dir;
+	private boolean wvalid;
+	private boolean resvalid;
+	
 	// ***********************************************
 	// Background step definitions
 	// ***********************************************
@@ -66,47 +74,60 @@ public class CucumberStepDefinitions {
 
 	@Given("The following walls exist:")
 	public void theFollowingWallsExist(io.cucumber.datatable.DataTable dataTable) {
+		wvalid=true; int i=0;
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		List<Map<String, String>> valueMaps = dataTable.asMaps();
 		// keys: wrow, wcol, wdir
 		Player[] players = { quoridor.getCurrentGame().getWhitePlayer(), quoridor.getCurrentGame().getBlackPlayer() };
 		int playerIdx = 0;
 		int wallIdxForPlayer = 0;
+		
 		for (Map<String, String> map : valueMaps) {
-			Integer wrow = Integer.decode(map.get("wrow"));
-			Integer wcol = Integer.decode(map.get("wcol"));
-			// Wall to place
-			// Walls are placed on an alternating basis wrt. the owners
-			//Wall wall = Wall.getWithId(playerIdx * 10 + wallIdxForPlayer);
-			Wall wall = players[playerIdx].getWall(wallIdxForPlayer); // above implementation sets wall to null
+			if (i==0) {
+				Integer wrow = Integer.decode(map.get("wrow"));
+				Integer wcol = Integer.decode(map.get("wcol"));
+				// Wall to place
+				// Walls are placed on an alternating basis wrt. the owners
+				//Wall wall = Wall.getWithId(playerIdx * 10 + wallIdxForPlayer);
+				Wall wall = players[playerIdx].getWall(wallIdxForPlayer); // above implementation sets wall to null
 
-			String dir = map.get("wdir");
+				String dir = map.get("wdir");
 
-			Direction direction;
-			switch (dir) {
-			case "horizontal":
-				direction = Direction.Horizontal;
-				break;
-			case "vertical":
-				direction = Direction.Vertical;
-				break;
-			default:
-				throw new IllegalArgumentException("Unsupported wall direction was provided");
+				Direction direction;
+				switch (dir) {
+				case "horizontal":
+					direction = Direction.Horizontal;
+					break;
+				case "vertical":
+					direction = Direction.Vertical;
+					break;
+				default:
+					throw new IllegalArgumentException("Unsupported wall direction was provided");
+				}
+				new WallMove(0, 1, players[playerIdx], quoridor.getBoard().getTile((wrow - 1) * 9 + wcol - 1), quoridor.getCurrentGame(), direction, wall);
+				if (playerIdx == 0) {
+					quoridor.getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(wall);
+					quoridor.getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(wall);
+				} else {
+					quoridor.getCurrentGame().getCurrentPosition().removeBlackWallsInStock(wall);
+					quoridor.getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(wall);
+				}
+				wallIdxForPlayer = wallIdxForPlayer + playerIdx;
+				playerIdx++;
+				playerIdx = playerIdx % 2;
+				i++;
+				System.out.println();
 			}
-			new WallMove(0, 1, players[playerIdx], quoridor.getBoard().getTile((wrow - 1) * 9 + wcol - 1), quoridor.getCurrentGame(), direction, wall);
-			if (playerIdx == 0) {
-				quoridor.getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(wall);
-				quoridor.getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(wall);
-			} else {
-				quoridor.getCurrentGame().getCurrentPosition().removeBlackWallsInStock(wall);
-				quoridor.getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(wall);
+			else {
+				Integer wrow = Integer.decode(map.get("wrow"));
+				Integer wcol = Integer.decode(map.get("wcol"));
+				String dir = map.get("wdir");
+				this.row=wrow-1;
+				this.col=wcol-1;
+				this.dir=dir;
 			}
-			wallIdxForPlayer = wallIdxForPlayer + playerIdx;
-			playerIdx++;
-			playerIdx = playerIdx % 2;
 		}
-		System.out.println();
-
+		
 	}
 	
 	@Given("I do not have a wall in my hand")
@@ -129,9 +150,6 @@ public class CucumberStepDefinitions {
 	// ***********************************************
 	// Scenario and scenario outline step definitions
 	// ***********************************************
-
-	/*private variables used for testing GUI functions*/
-	private String create;
 	
 	/**
 	 * @author louismollick
@@ -827,7 +845,10 @@ public class CucumberStepDefinitions {
 	 */
 	@Given ("A game position is supplied with pawn coordinate {int}:{int}")//might have problems with : symbol
 	public void aGamePositionisSuppliedWithPawnCoordinate(int row, int col) throws Throwable{
-		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		this.row=row;
+		this.col=col;
+		this.wvalid=false;
+		/*Game game = QuoridorApplication.getQuoridor().getCurrentGame();
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
 		GamePosition position = game.getCurrentPosition();
 		//Tile player1StartPos = quoridor.getBoard().getTile(36);
@@ -849,7 +870,7 @@ public class CucumberStepDefinitions {
 		//PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), exTile);
 		PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
 		GamePosition testPosition=new GamePosition(1,player1Position,player2Position,(quoridor.getCurrentGame().getWhitePlayer()),game);//has id	
-		}
+		}*/
 	}
 	/**
 	 * @author ohuss1
@@ -859,10 +880,16 @@ public class CucumberStepDefinitions {
 	public void validationOfPositionisInitiated()throws Throwable {//game position created in given pass it to game controller
 		//try getting position from tile created in Atgiven
 		//not allowed to give argument to the above method
-		
+		Quoridor q=QuoridorApplication.getQuoridor();
 		GamePosition Prev=GamePosition.getWithId(1);
 		GameController gc = new GameController();
-		gc.validatePos(Prev);//Takes the GamePosition to get the pawn position we are testing from it
+		if (!wvalid) {
+			resvalid=gc.valPawnPosition(q, col, row);
+		}
+		else {
+			resvalid=gc.valWallPosition(col, row, dir);
+		}
+		//gc.validatePos(Prev);//Takes the GamePosition to get the pawn position we are testing from it
 	}
 	/**
 	 * @author ohuss1
@@ -873,11 +900,18 @@ public class CucumberStepDefinitions {
 		//GameController G= new GameController();
 		//if string ok then set boolean to true 
 		//other wise false
-		Quoridor quoridor=QuoridorApplication.getQuoridor();
+		/*Quoridor quoridor=QuoridorApplication.getQuoridor();
 		GameController G= new GameController();
 		GamePosition Prev=GamePosition.getWithId(1);
-		Game game=quoridor.getCurrentGame();
-		assertEquals(result,G.validatePos(Prev));
+		Game game=quoridor.getCurrentGame();*/
+		String success;
+		if (resvalid) {
+			success="ok";
+		}
+		else {
+			success="not ok";
+		}
+		assertEquals(result,success);
 	}
 	
 	/**
@@ -888,48 +922,52 @@ public class CucumberStepDefinitions {
 	  ("A game position is supplied with wall coordinate {int}:{int}-{string}")
 	  public void aGamePositionisSuppliedWithWallCoordinate(int row, int col,String
 	  dir) throws Throwable{
-	  Game game = QuoridorApplication.getQuoridor().getCurrentGame(); 
-	  Quoridor quoridor=QuoridorApplication.getQuoridor();                                                                                
-	  GamePosition position = game.getCurrentPosition();
-	  //now want to add wall to players wall on board list.
-	  if(getIndex(row,col)==-10) {
+		  this.row=row;
+		  this.col=col;
+		  this.dir=dir;
+		  
+		  /*Game game = QuoridorApplication.getQuoridor().getCurrentGame(); 
+		  Quoridor quoridor=QuoridorApplication.getQuoridor();                                                                                
+		  GamePosition position = game.getCurrentPosition();
+		  //now want to add wall to players wall on board list.
+		  if(getIndex(row,col)==-10) {
+			  Tile player2StartPos = quoridor.getBoard().getTile(44); 	  
+			  Tile testTile = QuoridorApplication.getQuoridor().getBoard().getTile(36);//has row col coordinates
+			  //Lets create a wall to save the direction as well	 
+			  PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), testTile);
+			  PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
+			  Player testPlayer=quoridor.getCurrentGame().getWhitePlayer();
+			  //Wall directionWall=new Wall(2,testPlayer);//duplicate id error
+			   Wall directionWall=game.getCurrentPosition().getWhiteWallsInStock(1);
+			  if("vertical"==dir) {
+				  WallMove correspWallMove =new WallMove(1,1,testPlayer,testTile,game,Direction.Vertical,directionWall);
+			  }
+			  else if("horizontal"==dir) {
+				  WallMove correspWallMove =new WallMove(1,1,testPlayer,testTile,game,Direction.Horizontal,directionWall);
+			  }
+			  GamePosition testPosition=new GamePosition(-1,player1Position,player2Position,(quoridor.getCurrentGame().getWhitePlayer()),game);//has id
+			  testPosition.addWhiteWallsOnBoard(directionWall);//negative GamePosition ID tells that invalid coordinates
+		  }
+		  else {
 		  Tile player2StartPos = quoridor.getBoard().getTile(44); 	  
-		  Tile testTile = QuoridorApplication.getQuoridor().getBoard().getTile(36);//has row col coordinates
+		  Tile testTile = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(row,col));//has row col coordinates
 		  //Lets create a wall to save the direction as well	 
 		  PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), testTile);
 		  PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
 		  Player testPlayer=quoridor.getCurrentGame().getWhitePlayer();
-		  //Wall directionWall=new Wall(2,testPlayer);//duplicate id error
-		   Wall directionWall=game.getCurrentPosition().getWhiteWallsInStock(1);
+		  //Wall directionWall=new Wall(3,testPlayer);
+		  Wall directionWall=game.getCurrentPosition().getWhiteWallsInStock(1);
 		  if("vertical"==dir) {
 			  WallMove correspWallMove =new WallMove(1,1,testPlayer,testTile,game,Direction.Vertical,directionWall);
 		  }
 		  else if("horizontal"==dir) {
 			  WallMove correspWallMove =new WallMove(1,1,testPlayer,testTile,game,Direction.Horizontal,directionWall);
 		  }
-		  GamePosition testPosition=new GamePosition(-1,player1Position,player2Position,(quoridor.getCurrentGame().getWhitePlayer()),game);//has id
-		  testPosition.addWhiteWallsOnBoard(directionWall);//negative GamePosition ID tells that invalid coordinates
-	  }
-	  else {
-	  Tile player2StartPos = quoridor.getBoard().getTile(44); 	  
-	  Tile testTile = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(row,col));//has row col coordinates
-	  //Lets create a wall to save the direction as well	 
-	  PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), testTile);
-	  PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
-	  Player testPlayer=quoridor.getCurrentGame().getWhitePlayer();
-	  //Wall directionWall=new Wall(3,testPlayer);
-	  Wall directionWall=game.getCurrentPosition().getWhiteWallsInStock(1);
-	  if("vertical"==dir) {
-		  WallMove correspWallMove =new WallMove(1,1,testPlayer,testTile,game,Direction.Vertical,directionWall);
-	  }
-	  else if("horizontal"==dir) {
-		  WallMove correspWallMove =new WallMove(1,1,testPlayer,testTile,game,Direction.Horizontal,directionWall);
-	  }
-	  GamePosition testPosition=new GamePosition(1,player1Position,player2Position,(quoridor.getCurrentGame().getWhitePlayer()),game);//has id
-	  testPosition.addWhiteWallsOnBoard(directionWall);
-	  }
-	  
-	  //Now will add wall to board
+		  GamePosition testPosition=new GamePosition(1,player1Position,player2Position,(quoridor.getCurrentGame().getWhitePlayer()),game);//has id
+		  testPosition.addWhiteWallsOnBoard(directionWall);
+		  }
+		  
+		  //Now will add wall to board*/
 	  }
 	  
 	  
@@ -942,11 +980,12 @@ public class CucumberStepDefinitions {
 		//GameController G= new GameController();
 			//if string ok then set boolean to true 
 			//other wise false
-			Quoridor quoridor=QuoridorApplication.getQuoridor();
+			/*Quoridor quoridor=QuoridorApplication.getQuoridor();
 			GameController G= new GameController();
 			GamePosition Prev=GamePosition.getWithId(1);
 			Game game=quoridor.getCurrentGame();
-			assertEquals("ok",G.validatePos(Prev));
+			assertEquals("ok",G.validatePos(Prev));*/
+		  assertTrue(resvalid);
 	  }
 	  /**
 		 * @author ohuss1
@@ -957,11 +996,12 @@ public class CucumberStepDefinitions {
 		//GameController G= new GameController();
 			//if string ok then set boolean to true 
 			//other wise false
-			Quoridor quoridor=QuoridorApplication.getQuoridor();
+			/*Quoridor quoridor=QuoridorApplication.getQuoridor();
 			GameController G= new GameController();
 			GamePosition Prev=GamePosition.getWithId(1);
 			Game game=quoridor.getCurrentGame();
-			assertEquals("error",G.validatePos(Prev));
+			assertEquals("error",G.validatePos(Prev));*/
+		  assertFalse(resvalid);
 	  }
 			
 			

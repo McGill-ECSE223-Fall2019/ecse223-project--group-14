@@ -288,7 +288,7 @@ public class GameController {
 	 * @param int id
 	 * @return boolean
 	 */
-	public boolean valWallPosition(int x1,int y1, String dir, int id) {
+	public boolean valWallPosition(int x1,int y1, String dir) {
 		Quoridor q =QuoridorApplication.getQuoridor();
 		GamePosition curr= q.getCurrentGame().getCurrentPosition();
 		
@@ -359,6 +359,33 @@ public class GameController {
 			
 		}
 		
+		/*if (id<10) { 	//white
+			Wall w=q.getCurrentGame().getWhitePlayer().getWall(id);
+			new WallMove(q.getCurrentGame().getMoves().size(), 0, q.getCurrentGame().getWhitePlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
+			q.getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(q.getCurrentGame().getWhitePlayer().getWall(id));
+			q.getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(q.getCurrentGame().getWhitePlayer().getWall(id));
+		}
+		
+		else {
+			Wall w=q.getCurrentGame().getBlackPlayer().getWall(id-10);
+			new WallMove(q.getCurrentGame().getMoves().size(), 1, q.getCurrentGame().getBlackPlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
+			q.getCurrentGame().getCurrentPosition().removeBlackWallsInStock(q.getCurrentGame().getBlackPlayer().getWall(id-10));
+			q.getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(q.getCurrentGame().getBlackPlayer().getWall(id-10));
+		}*/
+		return true;
+	}
+	
+	public void dropWall(int col, int row, String dir,int id) {
+		Quoridor q=QuoridorApplication.getQuoridor();
+		Direction dirc;
+		
+		if (dir.compareTo("vertical")==0) {
+			dirc=Direction.Vertical;
+		}
+		else {
+			dirc=Direction.Horizontal;
+		}
+		
 		if (id<10) { 	//white
 			Wall w=q.getCurrentGame().getWhitePlayer().getWall(id);
 			new WallMove(q.getCurrentGame().getMoves().size(), 0, q.getCurrentGame().getWhitePlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
@@ -372,7 +399,6 @@ public class GameController {
 			q.getCurrentGame().getCurrentPosition().removeBlackWallsInStock(q.getCurrentGame().getBlackPlayer().getWall(id-10));
 			q.getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(q.getCurrentGame().getBlackPlayer().getWall(id-10));
 		}
-		return true;
 	}
 	
 	/**
