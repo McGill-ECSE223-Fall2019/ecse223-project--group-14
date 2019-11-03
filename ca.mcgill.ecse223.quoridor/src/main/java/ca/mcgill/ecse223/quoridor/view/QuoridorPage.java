@@ -31,7 +31,7 @@ import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
 import ca.mcgill.ecse223.quoridor.model.Wall;
 
-public class QuoridorPage extends JFrame{
+public class QuoridorPage extends JFrame{ 
 
 	/**
 	 * default 
@@ -467,9 +467,7 @@ public class QuoridorPage extends JFrame{
 			}
 			
 			wwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 125, WallComponent.wallW, WallComponent.wallH);
-			//add(wwalls[i]);
 			bwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 675, WallComponent.wallW, WallComponent.wallH);
-			//add(bwalls[i]);
 		}
 		
 		wPawn.setBounds(157, 417, 25, 25);
@@ -693,6 +691,7 @@ public class QuoridorPage extends JFrame{
 		newGameButton.setVisible(false);
 		toggleBoard(false); 
 		toggleMainButtons(false);
+		loadGameButton.setVisible(false);
 		loadFileButton.setVisible(true);
 		loadField.setVisible(true);
 		
@@ -704,6 +703,20 @@ public class QuoridorPage extends JFrame{
 	private void loadFileButtonActionPerformed(java.awt.event.ActionEvent evt) throws Exception {
 		gc= new GameController();
 		error = "";
+		for (int i=0;i<10;i++) {
+			if (wwalls[i].getDirection().compareTo("horizontal")==0) {
+				wwalls[i].rotate();
+			}
+			
+			if (bwalls[i].getDirection().compareTo("horizontal")==0) {
+				bwalls[i].rotate();
+			}
+			
+			wwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 125, WallComponent.wallW, WallComponent.wallH);
+			bwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 675, WallComponent.wallW, WallComponent.wallH);
+		}
+		
+		timer.stop();
 		//boolean newg;
 		/*if (p1Name.getText().compareTo("")==0) {
 			q.getCurrentGame().delete();
@@ -711,7 +724,7 @@ public class QuoridorPage extends JFrame{
 		//TODO
 		//call load controller function to update model
 		//reset view with new loaded file
-		gc.deleteGame(QuoridorApplication.getQuoridor());
+		//gc.deleteGame(QuoridorApplication.getQuoridor());
 		String filename = loadField.getText();
 		gc.initSavedGameLoad(QuoridorApplication.getQuoridor(), filename);
 		
@@ -1167,6 +1180,12 @@ public class QuoridorPage extends JFrame{
 					try {
 						QuoridorApplication.getQuoridor().getCurrentGame().delete();
 					} catch (NullPointerException e1) {
+						try {
+							loadFileButtonActionPerformed(new java.awt.event.ActionEvent(null, buttonH, banner));
+						} catch (Exception e2) {
+							// TODO Auto-generated catch block
+							e2.printStackTrace();
+						}
 						//do nothing
 					}
 					//try {
@@ -1309,7 +1328,7 @@ public class QuoridorPage extends JFrame{
 	private void toggleMainButtons(boolean vis) {
 		quitButton.setVisible(vis);
 		saveGameButton.setVisible(vis);
-		loadGameButton.setVisible(vis);
+		//loadGameButton.setVisible(vis);
 		resignGameButton.setVisible(vis);
 		drawGameButton.setVisible(vis);
 		endTurnButton.setVisible(vis);
