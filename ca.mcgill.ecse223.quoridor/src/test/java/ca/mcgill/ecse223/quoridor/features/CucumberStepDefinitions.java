@@ -1014,10 +1014,24 @@ public class CucumberStepDefinitions {
 	public void iInitiateToLoadASavedGame(String filename) throws Throwable {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		GameController G = new GameController();
-		Game game = G.initSavedGameLoad(quoridor, filename);
+		
+		String file="";
+		StringBuilder sb = new StringBuilder();
+		
+		for (int i=0;i<filename.length()-2;i++) {
+			sb.append(filename.charAt(i+1));
+		}
+		file=sb.toString();
+		for (int i=0;i<20;i++) {
+			if (Wall.hasWithId(i)) {
+				Wall.getWithId(i).delete();
+			}
+		}
+		Game game = G.initSavedGameLoad(quoridor, file);
 		game.setGameStatus(GameStatus.Initializing);
-		assertNotNull(game);
-		assertEquals(game, quoridor.getCurrentGame());
+		quoridor.setCurrentGame(game);
+		/*assertNotNull(game);
+		assertEquals(game, quoridor.getCurrentGame());*/
 		//assertTrue(quoridor.setCurrentGame(game));
 	}
 	
@@ -1029,7 +1043,34 @@ public class CucumberStepDefinitions {
 	public void thePositionToLoadIsValid() throws Throwable {
 		GameController G = new GameController();
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		assertTrue(G.validatePosition(quoridor.getCurrentGame()));
+		G.valWallPosition(1, 1, "");
+		G.valPawnPosition(quoridor, 1, 1);
+		//assertTrue(G.validatePosition(quoridor.getCurrentGame()));
+	}
+	
+	/**
+	 * @author FSharp4
+	 * @throws Throwable
+	 */
+	@Then ("It shall be (.*)'s turn")
+	public void itShallBeSTurn(String playerColor) {
+		//Player player = getPlayer(playerColor);
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		
+		String file="";
+		StringBuilder sb = new StringBuilder();
+		
+		for (int i=0;i<playerColor.length()-2;i++) {
+			sb.append(playerColor.charAt(i+1));
+		}
+		file=sb.toString();
+		
+		if (file.compareTo("black")==0){
+			assertTrue(quoridor.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsBlack());
+		}
+		else {
+			assertTrue(quoridor.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite());
+		}
 	}
 	
 	/**
@@ -1047,28 +1088,25 @@ public class CucumberStepDefinitions {
 	 * @author FSharp4
 	 * @throws Throwable
 	 */
-	@Then ("It shall be shown that this is White's turn")
-	public void itShallBeSTurn() throws Throwable {
-		//Player player = getPlayer(playerColor);
-		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		assertEquals(quoridor.getCurrentGame().getCurrentPosition().getPlayerToMove(),quoridor.getCurrentGame().getWhitePlayer());
-	}
-	
-	/**
-	 * @author FSharp4
-	 * @throws Throwable
-	 */
 	@And ("(.*) shall be at (.*):(.*)")
 	public void shallBeAt(String playerColor, int row, int col) throws Throwable {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game game = quoridor.getCurrentGame();
+		String file="";
+		StringBuilder sb = new StringBuilder();
+		
+		for (int i=0;i<playerColor.length()-2;i++) {
+			sb.append(playerColor.charAt(i+1));
+		}
+		file=sb.toString();
+		
 		Player player = getPlayer(playerColor);
-		if (player.hasGameAsWhite()) {
-			assertEquals(quoridor.getBoard().getTile(getIndex(row, col)), 
-					game.getCurrentPosition().getWhitePosition().getTile());
+		if (file.compareTo("white")==0) {
+			assertEquals(row, game.getCurrentPosition().getWhitePosition().getTile().getRow());
+			assertEquals(col, game.getCurrentPosition().getWhitePosition().getTile().getColumn());
 		} else {
-			assertEquals(quoridor.getBoard().getTile(getIndex(row, col)),
-					game.getCurrentPosition().getBlackPosition().getTile());
+			assertEquals(row, game.getCurrentPosition().getBlackPosition().getTile().getRow());
+			assertEquals(col,game.getCurrentPosition().getBlackPosition().getTile().getColumn());
 		}
 	}
 	
