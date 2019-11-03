@@ -678,6 +678,7 @@ public class QuoridorPage extends JFrame{
 	}
 	
 	private void loadFileButtonActionPerformed(java.awt.event.ActionEvent evt) throws Exception {
+		System.out.println("q");
 		GameController gc= new GameController();
 		error = "";
 		
@@ -685,13 +686,14 @@ public class QuoridorPage extends JFrame{
 		//call load controller function to update model
 		//reset view with new loaded file
 		String filename = loadField.getText();
-		try {
+		//try {
 			gc.initSavedGameLoad(QuoridorApplication.getQuoridor(), filename);
 			//gc.loadGame(QuoridorApplication.getQuoridor(), filename); //doesn't work
-		} catch (Exception e) {
+		//} catch (Exception e) {
 			// TODO Auto-generated catch block
-			error = "Error during load saved game. Save file invalid";
-		}
+			//error = e.getMessage();
+			//return;
+		//}
 		
 		
 		//p1Name.setText(q.getCurrentGame().getWhitePlayer().getUser().getName());
@@ -1131,7 +1133,9 @@ public class QuoridorPage extends JFrame{
 				try {
 					loadFileButtonActionPerformed(evt);
 				} catch (Exception e) {
-					error="File does not exists";
+					error = e.getMessage();
+					//error="File does not exists";
+					QuoridorApplication.getQuoridor().getCurrentGame().delete();
 					refreshData();
 				}
 			}

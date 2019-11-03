@@ -848,16 +848,13 @@ public class GameController {
 	/**
 	 * For Load Position feature
 	 * Loads a saved game. Currently does not at all work.
+	 * @throws Exception 
 	 * 
 	 */
 	public void loadGame(Quoridor quoridor, String filename) throws Exception {
 		initSavedGameLoad(quoridor, filename);
-		try {
-			checkIfloadGameValid(quoridor);
-		} catch (Exception e) {
-			//load didn't happen
-			
-		}
+		checkIfloadGameValid(quoridor);
+		
 	}
 	
 	/**
@@ -888,9 +885,7 @@ public class GameController {
 		try {
 			fileSC = new Scanner(file);
 		} catch (FileNotFoundException e) {
-			System.err.println("File at filename does not exist!");
-			e.printStackTrace();
-			return null;
+			throw new Exception("File does not exist!");
 		}
 		
 		//Call Tokenizers
@@ -1061,24 +1056,26 @@ public class GameController {
 	 * 
 	 * @author FSharp4
 	 * @param quoridor
-	 * @throws UnsupportedOperationException
+	 * @throws IOException 
 	 */
 	public void checkIfloadGameValid(Quoridor quoridor) 
-			throws UnsupportedOperationException {
+			throws UnsupportedOperationException, IOException {
 		  //throws UnsupportedOperationException, IOException {
 		
 		Game game = quoridor.getCurrentGame();
 		
-		if (validatePosition(game)) {
+		//if (validatePosition(game)) {
+		try {
+			if (validatePos(game.getCurrentPosition())) {
 			//update GUI here
 			quoridor.getCurrentGame().setGameStatus(GameStatus.ReadyToStart);
 			//return true
-		} else {
-			//throw new IOException("Load error: Position invalid");
+			} else {
+				throw new IOException("Load error: Position invalid");
+			}
+		} catch (UnsupportedOperationException e) {
+			throw new UnsupportedOperationException("Validate position isn't fully working?");
 		}
-		
-		
-		throw new UnsupportedOperationException();
 	}
 	
 	/**
