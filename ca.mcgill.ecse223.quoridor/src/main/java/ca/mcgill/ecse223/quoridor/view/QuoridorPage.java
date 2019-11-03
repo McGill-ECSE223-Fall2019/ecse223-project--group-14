@@ -23,7 +23,11 @@ import javax.swing.WindowConstants;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameController;
+
+import ca.mcgill.ecse223.quoridor.model.Game;
+
 import ca.mcgill.ecse223.quoridor.model.Direction;
+
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
 import ca.mcgill.ecse223.quoridor.model.Wall;
 
@@ -117,6 +121,8 @@ public class QuoridorPage extends JFrame{
 	
 	private PawnComponent wPawn;
 	private PawnComponent bPawn;
+	
+	private boolean isLoad;
 	
 	public QuoridorPage(){
 		q=QuoridorApplication.getQuoridor();
@@ -439,6 +445,7 @@ public class QuoridorPage extends JFrame{
 	
 	private void newGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		error = "";
+		isLoad = false;
 		
 		newGameButton.setVisible(false);
 		loadGameButton.setVisible(false);
@@ -676,7 +683,6 @@ public class QuoridorPage extends JFrame{
 		
 		//TODO
 		//call load controller function to update model
-		//check if file exists
 		
 		//reset view with new loaded file
 		currPlayer=q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite();

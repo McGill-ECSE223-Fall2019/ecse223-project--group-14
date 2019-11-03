@@ -1,8 +1,15 @@
 package ca.mcgill.ecse223.quoridor.controller;
 
+import java.io.BufferedReader;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.sql.Time;
+import java.util.Scanner;
+import java.util.StringTokenizer;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -10,6 +17,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.sql.Time;
 import java.util.List;
+
 
 import javax.swing.Timer;
 import javax.swing.text.html.HTMLDocument.Iterator;
@@ -824,11 +832,199 @@ public class GameController {
 	 * @param quoridor
 	 * @param filename
 	 * @return
+	 * @throws Exception 
 	 * @throws UnsupportedOperationException
 	 */
-	public Game initSaveGameLoad(Quoridor quoridor, String filename) throws UnsupportedOperationException {
-		throw new UnsupportedOperationException();
+	public Game initSavedGameLoad(Quoridor quoridor, String filename) throws Exception /*throws UnsupportedOperationException*/ {
+		
+		
+		initGame(quoridor);
+		Game game = quoridor.getCurrentGame();
+		Board board = quoridor.getBoard();
+		GamePosition gp = game.getCurrentPosition();
+		//for (int i = 0; i < 10; i++) {
+			
+		//}
+		
+		//initialize scanning on file with position data
+		//assume that file is well formed even if invalid
+		File file = new File(filename);
+		Scanner fileSC = null;
+		try {
+			fileSC = new Scanner(file);
+		} catch (FileNotFoundException e) {
+			System.err.println("File at filename does not exist!");
+			e.printStackTrace();
+			return null;
+		}
+		
+		//Call Tokenizers
+		StringTokenizer s1 = new StringTokenizer(fileSC.nextLine());
+		StringTokenizer s2 = new StringTokenizer(fileSC.nextLine());
+		fileSC.close();
+		
+		//Set Players
+		String playerOneString = s1.nextToken();
+		s2.nextToken(); //iterate past playerstring; we can infer this info from the first line
+		
+		//if (board == null) //uncomment if nullpointerexception @line with board manip
+		//	board = initBoard(quoridor);
+		
+		boolean isPlayerOneWhite = (playerOneString.contentEquals("W:")) ? true : false;
+		Player playerOne, playerTwo;
+		int playerOneWallID = 0;
+		int playerOneAbsoluteWallID = 1;
+		int playerTwoWallID = 0;
+		int playerTwoAbsoluteWallID = 1;
+		
+		if (isPlayerOneWhite) {
+			playerOne = game.getWhitePlayer();
+			playerTwo = game.getBlackPlayer();
+			playerTwoAbsoluteWallID += 10;
+		} else {
+			playerOne = game.getBlackPlayer();
+			playerTwo = game.getWhitePlayer();
+			playerOneAbsoluteWallID += 10;
+		}
+		
+		PlayerPosition playerOnePosition = null;
+		PlayerPosition playerTwoPosition = null;
+		
+		while (s1.hasMoreTokens() || s2.hasMoreTokens()) {
+			
+			if (s1.hasMoreTokens()) {
+				String move = s1.nextToken(",");
+				if (move.charAt(0) == ' ' || move.charAt(0) == ',')
+					move = move.substring(1);
+				
+				int col = move.charAt(0) - 'a' + 1;
+				int row = move.charAt(1) - '0';
+				Tile tile = board.getTile(getIndex(row, col));
+				Direction dir = null;
+				boolean isWallMove = false;
+				if (move.length() == 3) {
+					isWallMove = true;
+					dir = (move.charAt(2) == 'h') ? Direction.Horizontal : Direction.Vertical;
+				}
+				
+				if (!isWallMove) {
+					playerOnePosition = new PlayerPosition(playerOne, tile);
+				} else {
+					Wall wall = Wall.getWithId(playerOneAbsoluteWallID);
+					wall.setMove(new WallMove(game.numberOfMoves(), 1, playerOne, tile, game, dir, 
+							wall));
+					if (!addOrMoveWallsOnBoard(gp, wall, isPlayerOneWhite))
+						throw new Exception("Unable to move wall from stock to board for player " 
+								+ "one");
+					
+					playerOneWallID++;
+					playerOneAbsoluteWallID++;
+				}
+			}
+			
+			if (s2.hasMoreTokens()) {
+				String move = s2.nextToken(",");
+				if (move.charAt(0) == ' ' || move.charAt(0) == ',')
+					move = move.substring(1);
+				
+				int col = move.charAt(0) - 'a' + 1;
+				int row = move.charAt(1) - '0';
+				Tile tile = board.getTile(getIndex(row, col));
+				Direction dir = null;
+				boolean isWallMove = false;
+				if (move.length() == 3) {
+					isWallMove = true;
+					dir = (move.charAt(2) == 'h') ? Direction.Horizontal : Direction.Vertical;
+				}
+				
+				if (!isWallMove) {
+					playerTwoPosition = new PlayerPosition(playerTwo, tile);
+				} else {
+					//LOOK HERE
+					Wall wall = Wall.getWithId(playerTwoAbsoluteWallID);
+					wall.setMove(new WallMove(game.numberOfMoves(), 1, playerTwo, tile, game, dir, 
+							wall));
+					if (!addOrMoveWallsOnBoard(gp, wall, !isPlayerOneWhite))
+						throw new Exception("Unable to move wall from stock to board for player " 
+								+ "two");
+					
+					playerTwoWallID++;
+					playerTwoAbsoluteWallID++;
+				}
+			}
+			
+			if (playerOnePosition == null)
+				playerOnePosition = new PlayerPosition(playerOne, board.getTile(isPlayerOneWhite ? 36 : 44));
+			if (playerTwoPosition == null)
+				playerTwoPosition = new PlayerPosition(playerTwo, board.getTile(isPlayerOneWhite ? 44 : 36));
+		}
+		
+		
+		
+		//TODO: THink about separating this process into its subroutine
+		game.setCurrentPosition(gp);
+		return game;
+		//throw new UnsupportedOperationException();
 	}
+	
+	//private static Player getPlayer(boolean isWhite, Game game) {
+	//	return (isWhite == true) ? game.getWhitePlayer() : game.getBlackPlayer();
+	//}
+	
+	/*
+	 * getIndex from Stepdefinitions, cleaned up a bit
+	 * Credit to Saifullah for getting it working properly in Iteration 2
+	 */
+	private static int getIndex(int row, int col) {
+		
+		if(row <= 0 || col <= 0 || row > 9 || col > 9) {
+			return -10; //sentinel for indexNotFound
+		}
+		else {
+		return ((((row-1)*9)+col)-1);
+		}
+		
+	}
+	
+	/*
+	 * Color-agnostic setPosition method for loadPosition feature
+	 */
+	private static boolean setPosition(PlayerPosition aPlayerPosition, GamePosition aGamePosition, 
+			boolean isWhite) {
+		if (isWhite) {
+			if (!aGamePosition.setWhitePosition(aPlayerPosition))
+				return false;
+		} else {
+			if (!aGamePosition.setBlackPosition(aPlayerPosition))
+				return false;
+		}
+		return true;
+	}
+	
+	/*
+	 * Color-agnostic combined addOrMoveWallsOnBoard and removeWallsInStock for loadPosiiton feature
+	 */
+	private static boolean addOrMoveWallsOnBoard(GamePosition gp, Wall wall, boolean isWhite) {
+		//boolean didRemove = false;
+		boolean didAdd = false;
+		if (isWhite) {
+			//didRemove = gp.removeWhiteWallsInStock(wall);
+			//if (!didRemove) {
+			//	return false;
+			//}
+			didAdd = gp.addOrMoveWhiteWallsOnBoardAt(wall, gp.getWhiteWallsOnBoard().size());
+			return didAdd;
+		} else {
+			//didRemove = gp.removeBlackWallsInStock(wall);
+			//if (!didRemove) {
+			//	return false;
+			//}
+			didAdd = gp.addOrMoveBlackWallsOnBoardAt(wall, gp.getBlackWallsOnBoard().size());
+			return didAdd;
+		}
+	}
+	
+	
 	
 	/**
 	 *  * For Load Position feature
