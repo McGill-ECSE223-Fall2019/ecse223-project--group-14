@@ -106,7 +106,6 @@ public class CucumberStepDefinitions {
 			playerIdx = playerIdx % 2;
 		}
 		System.out.println();
-
 	}
 	
 	@Given("I do not have a wall in my hand")
@@ -161,8 +160,8 @@ public class CucumberStepDefinitions {
 			if(moveNum != 0) {
 				roundNum = game.getMove(moveNum-1).getRoundNumber();
 			}
-			w.setMove(new WallMove(moveNum, roundNum, player, target, game, dir, w));
-			game.setWallMoveCandidate(w.getMove());
+			WallMove wm = new WallMove(moveNum, roundNum, player, target, game, dir, w);
+			game.setWallMoveCandidate(wm);
 		}
 	}
 	
@@ -221,7 +220,7 @@ public class CucumberStepDefinitions {
 	public void iTryToGrabAWallFromMyStock() throws Throwable{
 		GameController gc = new GameController();
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
-		//gc.grabWall();
+		gc.grabWall();
 	}
 	
 	/**
@@ -252,9 +251,9 @@ public class CucumberStepDefinitions {
 		Board b = q.getBoard();
 		Game game = q.getCurrentGame();
 		WallMove wmc = game.getWallMoveCandidate();
-		assertEquals(Direction.Horizontal, wmc.getWallDirection());
-		assertEquals(b.getTile(36).getRow(), wmc.getTargetTile().getRow());
-		assertEquals(b.getTile(36).getColumn(), wmc.getTargetTile().getColumn());
+		assertEquals(Direction.Vertical, wmc.getWallDirection());
+		assertEquals(b.getTile(40).getRow(), wmc.getTargetTile().getRow());
+		assertEquals(b.getTile(40).getColumn(), wmc.getTargetTile().getColumn());
 	}
 	
 	/**
@@ -283,7 +282,7 @@ public class CucumberStepDefinitions {
 	 */
 	@And ("I shall have no walls in my hand")
 	public void iShallHaveNoWallsInMyHand() {
-	    assertEquals(false, QuoridorApplication.getQuoridor().getCurrentGame().hasWallMoveCandidate());
+		// GUI-related feature -- TODO for later
 	}
 	
 	/**

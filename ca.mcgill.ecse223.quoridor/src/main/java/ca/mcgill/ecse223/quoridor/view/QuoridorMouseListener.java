@@ -45,7 +45,11 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 							return;
 						}
 					}
-					gc.grabWall();
+					try {
+						gc.grabWall();
+					} catch (Exception ex) {
+						System.out.println(ex.getMessage());
+					}
 					heldComponent = temp;
 					
 					this.pickedUpX = heldComponent.getX(); // Remember where it was last placed
@@ -121,21 +125,7 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		//Component cursor = frame.getContentPane().findComponentAt(e.getX(), e.getY());
 		if(heldComponent != null) {
-			// TODO For MoveWall person: 
-			// While you move your heldComponent over the board, snap to possible positions
-//			if(heldComponent instanceof WallComponent && cursor instanceof WallPositionComponent) {
-//				WallComponent tempWall =  (WallComponent) heldComponent;
-//				WallPositionComponent tempPosition = (WallPositionComponent) cursor;
-//				if(tempWall.getDirection().equals(tempPosition.getDirection())) {
-//					//heldComponent.setPossiblePosition(tempPosition);
-//					heldComponent.setLocation(tempPosition.getLocation());
-//				}
-//			}
-//			else if(heldComponent instanceof WallComponent/* && cursor instanceof PawnPositionComponent*/) {
-//				// TODO For anyone, once someone makes PositionComponent or equivalent
-//			}
 			heldComponent.setLocation(e.getX()-this.offsetX, e.getY()-this.offsetY);
 			frame.repaint();
 		}
