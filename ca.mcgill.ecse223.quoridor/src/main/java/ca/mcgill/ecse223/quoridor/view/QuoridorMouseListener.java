@@ -21,10 +21,12 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 	
 	private int offsetX;
 	private int offsetY;
+	int flag;
 	
 	public QuoridorMouseListener(QuoridorPage frame, GameController gc) {
 		this.frame = frame;
 		this.gc = gc;
+		flag=0;
 	}
 	
 	@Override
@@ -64,6 +66,7 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 		} else {
 			if(heldComponent instanceof WallComponent && SwingUtilities.isRightMouseButton(e)) {
 				//System.out.println("right");
+				flag=1;
 				String d = ((WallComponent) heldComponent).rotate();
 				// Ugly way of keeping the offset after rotation
 				if (d.contentEquals("horizontal")) {
@@ -87,7 +90,7 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 				this.pickedUpX = 0;
 				this.pickedUpY = 0;
 				heldComponent=null;
-			} 
+			}  
 
 			else { // If no position is clicked (and not rotating), just put the component back
 				heldComponent.setLocation(this.pickedUpX, this.pickedUpY); // put back to position when pickedUp
@@ -101,7 +104,35 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// Auto-generated method stub
+		if (heldComponent==null) {
+			return;
+		}
+		else if (SwingUtilities.isLeftMouseButton(e)) {
+			if (flag==1) {
+				flag=0;
+				return;
+			}
+			else if(heldComponent instanceof WallComponent && heldComponent.hasPossiblePosition(((WallComponent) heldComponent).getDirection())) {
+				//heldComponent.setLocation(heldComponent.getPossibleXPostition(), heldComponent.getPossibleYPostition());
+				frame.setStageMove(true); // lock in move, and prevent player from picking up anything else
+				// until he presses the End Turn button. Otherwise, the player can pick the pawn/wall back up,
+				// and chose another move.
+//			}
+			
+				this.pickedUpX = 0;
+				this.pickedUpY = 0;
+				heldComponent=null;
+			}  
+
+			else { // If no position is clicked (and not rotating), just put the component back
+				heldComponent.setLocation(this.pickedUpX, this.pickedUpY); // put back to position when pickedUp
+				this.pickedUpX = 0;
+				this.pickedUpY = 0;
+				if (heldComponent instanceof WallComponent) ((WallComponent) heldComponent).setDirection("vertical");
+				heldComponent = null;
+			}
+			// Auto-generated method stub
+		}
 		
 	}
 

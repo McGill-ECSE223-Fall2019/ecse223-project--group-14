@@ -582,7 +582,20 @@ public class QuoridorPage extends JFrame{
 			Time t=q.getCurrentGame().getBlackPlayer().getRemainingTime();
 			timeRem1.setText(convT2S(t));
 			timeRem2.setText(convT2S(t));
-			timeRem1.setVisible(true);
+			if (currPlayer) {
+				timeRem1.setVisible(true);
+				timeRem2.setVisible(false);
+				turnMessage1.setVisible(true);
+				turnMessage2.setVisible(false);
+			}
+			else {
+				timeRem1.setVisible(false);
+				timeRem2.setVisible(true);
+				turnMessage1.setVisible(false);
+				turnMessage2.setVisible(true);
+			}
+		
+			//timeRem1.setVisible(true);
 			
 			p1Name.setVisible(true);
 			p2Name.setVisible(true);
@@ -725,6 +738,7 @@ public class QuoridorPage extends JFrame{
 					wwalls[i].setBounds((int)points[x-1][y-1].getX(),(int)points[x-1][y-1].getY(),width,height);
 				}
 				else {
+					wwalls[i].rotate();
 					wwalls[i].setBounds((int)points2[x-1][y-1].getX(),(int)points2[x-1][y-1].getY(),width,height);
 				}
 			}
@@ -749,7 +763,8 @@ public class QuoridorPage extends JFrame{
 					bwalls[i].setBounds((int)points[x-1][y-1].getX(),(int)points[x-1][y-1].getY(),width,height);
 				}
 				else {
-					bwalls[i].setBounds((int)points2[x-1][y-1].getX(),(int)points2[x-1][y-1].getY(),width,height);
+					bwalls[i].rotate();
+					bwalls[i].setBounds((int)points2[x-1][y-1].getX(),(int)points2[x-1][y-1].getY(),WallComponent.wallH,WallComponent.wallW);
 				}
 			}
 			else {

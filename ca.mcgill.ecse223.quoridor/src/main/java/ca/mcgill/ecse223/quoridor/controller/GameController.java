@@ -965,14 +965,20 @@ public class GameController {
 	public Game initSavedGameLoad(Quoridor quoridor, String filename) throws Exception /*throws UnsupportedOperationException*/ {
 		
 		
-		//Borrowed code from initGame()
-		Player p1=new Player(new Time(10), quoridor.getUser(0), 9, Direction.Horizontal);
-		Player p2 = new Player(new Time(10), quoridor.getUser(1), 1, Direction.Horizontal);
-		new Game(GameStatus.Initializing, MoveMode.PlayerMove, quoridor);
+//H
+//		//Borrowed code from initGame()
+//		Player p1=new Player(new Time(10), quoridor.getUser(0), 9, Direction.Horizontal);
+//		Player p2 = new Player(new Time(10), quoridor.getUser(1), 1, Direction.Horizontal);
+//		new Game(GameStatus.Initializing, MoveMode.PlayerMove, quoridor);
+//		
+//		quoridor.getCurrentGame().setWhitePlayer(p1);
+//		quoridor.getCurrentGame().setBlackPlayer(p2);
 		
-		quoridor.getCurrentGame().setWhitePlayer(p1);
-		quoridor.getCurrentGame().setBlackPlayer(p2);
-		
+//E
+		if (quoridor.getCurrentGame()==null) {
+			initGame(quoridor);
+		}
+//M
 		Game game = quoridor.getCurrentGame();
 		Board board = quoridor.getBoard();
 		//GamePosition gp = game.getCurrentPosition();
@@ -1017,8 +1023,14 @@ public class GameController {
 			playerTwo = game.getWhitePlayer();
 			playerOneAbsoluteWallID += 10;
 		}
-		if (!Wall.hasWithId(1)) {
-			for (int i = 1; i <= 10; i++) {
+//H
+//		if (!Wall.hasWithId(1)) {
+//			for (int i = 1; i <= 10; i++) {
+//E
+		
+		if (!Wall.hasWithId(0)) {
+			for (int i = 0; i < 10; i++) {
+//M
 				new Wall(i, game.getWhitePlayer());
 				new Wall(i + 10, game.getBlackPlayer());
 			}
@@ -1066,7 +1078,18 @@ public class GameController {
 				int col = move.charAt(0) - 'a' + 1;
 				int row = move.charAt(1) - '0';
 				Tile tile = board.getTile(getIndex(row, col));
+//H
 				Direction dir = (move.charAt(2) == 'h') ? Direction.Horizontal : Direction.Vertical;
+//E
+				//Direction dir = null;
+				//boolean isWallMove = false;
+				//if (move.length() == 3) {
+				//	isWallMove = true;
+				//	dir = ((move.charAt(2) == 'h')||(move.charAt(2) == 'H')) ? Direction.Horizontal : Direction.Vertical;
+					
+					//dir = (move.charAt(2) == 'H') ? Direction.Horizontal : Direction.Vertical;
+				//}
+//M
 				
 				Wall wall = Wall.getWithId(playerOneAbsoluteWallID);
 				wall.setMove(new WallMove(game.numberOfMoves(), 1, playerOne, tile, game, dir, 
@@ -1087,6 +1110,7 @@ public class GameController {
 				int col = move.charAt(0) - 'a' + 1;
 				int row = move.charAt(1) - '0';
 				Tile tile = board.getTile(getIndex(row, col));
+//H
 				Direction dir = (move.charAt(2) == 'h') ? Direction.Horizontal : Direction.Vertical;
 
 
@@ -1096,6 +1120,26 @@ public class GameController {
 				if (!addOrMoveWallsOnBoard(gp, wall, !isPlayerOneWhite))
 					throw new Exception("Unable to move wall from stock to board for player " 
 							+ "two");
+//E
+				//Direction dir = null;
+				//boolean isWallMove = false;
+				//if (move.length() == 3) {
+				//	isWallMove = true;
+				//	dir = ((move.charAt(2) == 'h')||(move.charAt(2) == 'H')) ? Direction.Horizontal : Direction.Vertical;
+				//	//dir = (move.charAt(2) == 'H') ? Direction.Horizontal : Direction.Vertical;
+				//}
+				//
+				//if (!isWallMove) {
+				//	playerTwoPosition = new PlayerPosition(playerTwo, tile);
+				//} else {
+				//	//LOOK HERE
+				//	Wall wall = Wall.getWithId(playerTwoAbsoluteWallID);
+				//	wall.setMove(new WallMove(game.numberOfMoves(), 1, playerTwo, tile, game, dir, 
+				//			wall));
+				//	if (!addOrMoveWallsOnBoard(gp, wall, !isPlayerOneWhite))
+				//		throw new Exception("Unable to move wall from stock to board for player " 
+				//				+ "two");
+//M
 					
 				playerTwoWallID++;
 				playerTwoAbsoluteWallID++;
