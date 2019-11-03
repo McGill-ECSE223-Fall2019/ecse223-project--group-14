@@ -1217,9 +1217,9 @@ public class CucumberStepDefinitions {
 	 */ 
 
 	@When ("{int}:{int} is set as the thinking time")
-	public void IsSetAsTheThinkingTime(int min, int sec) throws Throwable{
+	public void IsSetAsTheThinkingTime(int min, int sec) throws Throwable{ 
 		GameController G= new GameController();
-		G.setTime(QuoridorApplication.getQuoridor(), min, sec);
+		G.setTime(QuoridorApplication.getQuoridor(), min, sec); //calls setTime method in the GameController Class
 	}
 
 	/**
@@ -1234,8 +1234,8 @@ public class CucumberStepDefinitions {
 		int time = min*60+sec;
 		GameController G= new GameController();
 
-		Time left = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getRemainingTime();
-		assertEquals(left.getTime()/1000, time);
+		Time left = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getRemainingTime(); //get time left
+		assertEquals(left.getTime()/1000, time); 
 	}
 
 
