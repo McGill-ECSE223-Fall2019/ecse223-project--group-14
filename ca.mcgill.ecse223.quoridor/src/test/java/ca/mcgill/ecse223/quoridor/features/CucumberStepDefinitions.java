@@ -1063,8 +1063,8 @@ public class CucumberStepDefinitions {
 		assertEquals(quoridor.getCurrentGame().getGameStatus(), GameStatus.ReadyToStart);
 		//if gameStatus signals that it isn't readyToStart, this means that initial loading failed
 		//and position isn't valid.
-		G.valWallPosition(1, 1, "");
-		G.valPawnPosition(quoridor, 1, 1);
+		assertTrue(G.valWallPosition(1, 1, ""));
+		assertTrue(G.valPawnOverlap(quoridor, 1, 1));
 		//assertTrue(G.validatePosition(quoridor.getCurrentGame()));
 	}
 	

@@ -400,6 +400,30 @@ public class GameController {
 	}
 	
 	/**
+	 * For Load Position Feature
+	 * Uses the pawn position bounds-checking method valPawnPosition in tandem with making sure
+	 * that the pawns occupy separate spaces to validate pawn positioning.
+	 * 
+	 * @author FSharp4
+	 * @param q Needed for valPawnPosition
+	 * @param x1 Needed for valPawnPosition
+	 * @param y1 Needed for valPawnPosition
+	 * @return
+	 */
+	public boolean valPawnOverlap(Quoridor q, int x1, int y1) {
+		
+		Tile whitePos = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile();
+		Tile blackPos = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile();
+		
+		if (whitePos.getRow() == blackPos.getRow() && whitePos.getColumn() == blackPos.getColumn())
+			return false;
+		
+		return valPawnPosition(q, x1, y1);
+	}
+	
+	
+	
+	/**
 	 * For setTotalThinkingTime feature, sets the thinking time and gives ready to start signal
 	 * 
 	 * @author AmineMallek
