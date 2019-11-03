@@ -823,6 +823,7 @@ public class CucumberStepDefinitions {
 	 * @author ohuss1
 	 * @throws Throwable
 	 */
+	/*//commented out before merge
 	@Given ("A game position is supplied with pawn coordinate {int}:{int}")//might have problems with : symbol
 	public void aGamePositionisSuppliedWithPawnCoordinate(int row, int col) throws Throwable{
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -849,11 +850,12 @@ public class CucumberStepDefinitions {
 		PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
 		GamePosition testPosition=new GamePosition(1,player1Position,player2Position,(quoridor.getCurrentGame().getWhitePlayer()),game);//has id	
 		}
-	}
+	}*///commented out before merge
 	/**
 	 * @author ohuss1
 	 * @throws Throwable
 	 */
+	/*//commented out before merge
 	@When ("Validation of the position is initiated")
 	public void validationOfPositionisInitiated()throws Throwable {//game position created in given pass it to game controller
 		//try getting position from tile created in Atgiven
@@ -872,11 +874,12 @@ public class CucumberStepDefinitions {
 		}
 		GameController gc = new GameController();
 		gc.validatePos(Prev);//Takes the GamePosition to get the pawn position we are testing from it
-	}
+	}*/////commented out before merge
 	/**
 	 * @author ohuss1
 	 * @throws Throwable
 	 */
+	/*//commented out before merge
 	@Then ("The position shall be {string}")
 	public void thePositionShallBeResult(String result) throws Throwable{
 		//GameController G= new GameController();
@@ -895,13 +898,13 @@ public class CucumberStepDefinitions {
 		else {
 			assertEquals(result,"not");
 		}//testing 3rd nov
-	}
+	}*///commented out before merge
 	
 	/**
 	 * @author ohuss1
 	 * @throws Throwable
 	 */
-	  @Given///To DO
+	  /*@Given///To DO//commented out before merge
 	  ("A game position is supplied with wall coordinate {int}:{int}-{string}")
 	  public void aGamePositionisSuppliedWithWallCoordinate(int row, int col,String
 	  dir) throws Throwable{
@@ -947,14 +950,14 @@ public class CucumberStepDefinitions {
 	  }
 	  
 	  //Now will add wall to board
-	  }
+	  }*///commented out before merge
 	  
 	  
 	  /**
 		 * @author ohuss1
 		 * @throws Throwable
 		 */
-	  @Then ("The position shall be valid")
+	 /* @Then ("The position shall be valid")//commented out before merge
 	  public void thePositionShallBeValid() throws Throwable{
 		//GameController G= new GameController();
 			//if string ok then set boolean to true 
@@ -964,12 +967,12 @@ public class CucumberStepDefinitions {
 			GamePosition Prev=GamePosition.getWithId(1);
 			Game game=quoridor.getCurrentGame();
 			assertEquals("ok",G.validatePos(Prev));
-	  }
+	  }*///commented out before merge
 	  /**
 		 * @author ohuss1
 		 * @throws Throwable
 		 */
-	  @Then ("The position shall be invalid") 
+	  /*@Then ("The position shall be invalid") //commented out before merge
 	  public void thePositionShallBeInvalid() throws Throwable{
 		//GameController G= new GameController();
 			//if string ok then set boolean to true 
@@ -979,12 +982,12 @@ public class CucumberStepDefinitions {
 			GamePosition Prev=GamePosition.getWithId(1);
 			Game game=quoridor.getCurrentGame();
 			assertEquals("error",G.validatePos(Prev));
-	  }
+	  }*///commented out before merge
 	    /**
 		 * @author ohuss1
 		 * @throws Throwable
 		 */
-	  @Given///
+	  @Given
 	  ("The player to move is {string}")
 	  public void thePlayerToMoveIs(String player) throws Throwable {
 		  int thinkingTime=180;
@@ -1053,6 +1056,8 @@ public class CucumberStepDefinitions {
 		  //Countdown method ensures these 2 (how to make sure test passes)
 		  
 		  
+		  
+		  
 	  }
 	  /**
 		 * @author ohuss1
@@ -1071,7 +1076,7 @@ public class CucumberStepDefinitions {
 		 * @author ohuss1
 		 * @throws Throwable
 		 */
-	  @When//TO Check
+	  @When
 	  ("Player {string} completes his move")
 	  public void playerPlayerCompletesHisMove(String player) throws Throwable {
 		  Quoridor q=QuoridorApplication.getQuoridor();
@@ -1090,6 +1095,11 @@ public class CucumberStepDefinitions {
 		  //QuoridorPage Q=new QuoridorPage();
 		  //Q.switchPlayer();
 		  
+		  //louis
+		  //getter in quoridor application
+		  //i will create getter in quoridor page to get JLabel for other player 
+		  //and assert
+		  
 	  }
 	  
 	    /**
@@ -1099,6 +1109,15 @@ public class CucumberStepDefinitions {
 	  @And
 	  ("The clock of {string} shall be stopped")
 	  public void theClockofPlayerShallBeStopped(String player) throws Throwable {
+		  //louis
+		  //check if timer is not running
+		  //check if player to move is argument player
+		  //assert
+		  
+		  
+		  //louis
+		  
+		  
 		//Stop clock then test if stopped
 		  Quoridor q=QuoridorApplication.getQuoridor();
 		  //need to check if player white or black or set player to move to that color
@@ -1122,6 +1141,14 @@ public class CucumberStepDefinitions {
 	  @And
 	  ("The clock of {string} shall be running")
 	  public void theClockofOtherShallBeRunning(String other) throws Throwable {//MIGHT BE WRONG
+		//louis
+		  //check if timer is running
+		  //check if player to move is argument player
+		  //assert
+		  
+		  
+		  //louis
+		  
 		//Stop clock then test if stopped
 		  Quoridor q=QuoridorApplication.getQuoridor();
 		  //need to check if player white or black or set player to move to that color
@@ -1147,6 +1174,13 @@ public class CucumberStepDefinitions {
 	  @And
 	  ("The next player to move shall be {string}")
 	  public void theNextPlayerToMoveShallbeOther(String other) throws Throwable {
+		  //louis
+		  //get current player's next player
+		  //check if same as argument player
+		  
+		  
+		  //louis
+		  
 		  int thinkingTime=180;
 		  Quoridor quoridor=QuoridorApplication.getQuoridor();
 		  Player player1 = new Player(new Time(thinkingTime),
