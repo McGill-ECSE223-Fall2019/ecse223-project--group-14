@@ -917,12 +917,18 @@ public class GameController {
 		}
 		if(id<10) {
 			Wall w = q.getCurrentGame().getWhitePlayer().getWall(id);
+			if (w.getMove()!=null) {
+				w.getMove().delete();
+			}
 			new WallMove(q.getCurrentGame().getMoves().size(),0,q.getCurrentGame().getWhitePlayer(),q.getBoard().getTile(col+row*9),q.getCurrentGame(),dirc,w);
 			q.getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(q.getCurrentGame().getWhitePlayer().getWall(id));
 			q.getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(q.getCurrentGame().getWhitePlayer().getWall(id));
 		}
 		else {
 			Wall w=q.getCurrentGame().getBlackPlayer().getWall(id-10);
+			if (w.getMove()!=null) {
+				w.getMove().delete();
+			}
 			new WallMove(q.getCurrentGame().getMoves().size(), 1, q.getCurrentGame().getBlackPlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
 			q.getCurrentGame().getCurrentPosition().removeBlackWallsInStock(q.getCurrentGame().getBlackPlayer().getWall(id-10));
 			q.getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(q.getCurrentGame().getBlackPlayer().getWall(id-10));
@@ -968,12 +974,23 @@ public class GameController {
 	public Game initSavedGameLoad(Quoridor quoridor, String filename) throws Exception /*throws UnsupportedOperationException*/ {
 		
 		
+//H
+//		//Borrowed code from initGame()
+//		Player p1=new Player(new Time(10), quoridor.getUser(0), 9, Direction.Horizontal);
+//		Player p2 = new Player(new Time(10), quoridor.getUser(1), 1, Direction.Horizontal);
+//		new Game(GameStatus.Initializing, MoveMode.PlayerMove, quoridor);
+//		
+//		quoridor.getCurrentGame().setWhitePlayer(p1);
+//		quoridor.getCurrentGame().setBlackPlayer(p2);
+		
+//E
 		if (quoridor.getCurrentGame()==null) {
 			initGame(quoridor);
 		}
+//M
 		Game game = quoridor.getCurrentGame();
 		Board board = quoridor.getBoard();
-		GamePosition gp = game.getCurrentPosition();
+		//GamePosition gp = game.getCurrentPosition();
 		
 		
 		
@@ -1015,21 +1032,50 @@ public class GameController {
 			playerTwo = game.getWhitePlayer();
 			playerOneAbsoluteWallID += 10;
 		}
+//H
+//		if (!Wall.hasWithId(1)) {
+//			for (int i = 1; i <= 10; i++) {
+//E
 		
-		if (!Wall.hasWithId(0)) {
-			for (int i = 0; i < 10; i++) {
+		if (!Wall.hasWithId(1)) {
+			for (int i = 1; i < 11; i++) {
 				new Wall(i, game.getWhitePlayer());
 				new Wall(i + 10, game.getBlackPlayer());
 			}
-			//for (int i = 0; i < 2; i++) {
-			//	for (int j = 0; j < 10; j++) {
-			//		new Wall(i * 10 + j, players[i]);
-			//	}
-			//}
 		}
+		
+		
 		PlayerPosition playerOnePosition = null;
 		PlayerPosition playerTwoPosition = null;
 		
+		{
+			String playerOnePositionString = s1.nextToken(",");
+			if (playerOnePositionString.charAt(0) == ' ')
+				playerOnePositionString = playerOnePositionString.substring(1);
+			
+			String playerTwoPositionString = s2.nextToken(",");
+			if (playerTwoPositionString.charAt(0) == ' ')
+				playerTwoPositionString = playerTwoPositionString.substring(1);
+			int col = playerOnePositionString.charAt(0) - 'a' + 1;
+			int row = playerOnePositionString.charAt(1) - '0';
+			Tile tile = board.getTile(getIndex(row, col));
+			playerOnePosition = new PlayerPosition(playerOne, tile);
+			
+			col = playerTwoPositionString.charAt(0) - 'a' + 1;
+			row = playerTwoPositionString.charAt(1) - '0';
+			tile = board.getTile(getIndex(row, col));
+			playerTwoPosition = new PlayerPosition(playerTwo, tile);
+		}
+		
+		GamePosition gp = makeInitialGamePosition(game, playerOnePosition, playerTwoPosition, 
+				playerOne, isPlayerOneWhite);
+		game.setCurrentPosition(gp);
+		for (int i = 1; i <= 10; i++) {
+			Wall whiteWall = Wall.getWithId(i);
+			gp.addWhiteWallsInStock(whiteWall);
+			Wall blackWall = Wall.getWithId(i + 10);
+			gp.addBlackWallsInStock(blackWall);
+		}
 		while (s1.hasMoreTokens() || s2.hasMoreTokens()) {
 			
 			if (s1.hasMoreTokens()) {
@@ -1040,28 +1086,39 @@ public class GameController {
 				int col = move.charAt(0) - 'a' + 1;
 				int row = move.charAt(1) - '0';
 				Tile tile = board.getTile(getIndex(row, col));
-				Direction dir = null;
-				boolean isWallMove = false;
-				if (move.length() == 3) {
-					isWallMove = true;
-					dir = ((move.charAt(2) == 'h')||(move.charAt(2) == 'H')) ? Direction.Horizontal : Direction.Vertical;
+//H
+				Direction dir = ((move.charAt(2) == 'h')||(move.charAt(2) == 'H')) ? Direction.Horizontal : Direction.Vertical;
+//E
+				//Direction dir = null;
+				//boolean isWallMove = false;
+				//if (move.length() == 3) {
+				//	isWallMove = true;
+				//	dir = ((move.charAt(2) == 'h')||(move.charAt(2) == 'H')) ? Direction.Horizontal : Direction.Vertical;
 					
 					//dir = (move.charAt(2) == 'H') ? Direction.Horizontal : Direction.Vertical;
-				}
+				//}
+//M
 				
-				if (!isWallMove) {
+				/*if (!isWallMove) {
 					playerOnePosition = new PlayerPosition(playerOne, tile);
 				} else {
 					Wall wall = Wall.getWithId(playerOneAbsoluteWallID);
-					wall.setMove(new WallMove(game.numberOfMoves(), 1, playerOne, tile, game, dir, 
+					wall.setMove(new WallMove(game.numberOfMoves(), 0, playerOne, tile, game, dir, 
 							wall));
 					if (!addOrMoveWallsOnBoard(gp, wall, isPlayerOneWhite))
 						throw new Exception("Unable to move wall from stock to board for player " 
 								+ "one");
+				*/
+				Wall wall = Wall.getWithId(playerOneAbsoluteWallID);
+				wall.setMove(new WallMove(game.numberOfMoves(), 1, playerOne, tile, game, dir, 
+						wall));
+				if (!addOrMoveWallsOnBoard(gp, wall, isPlayerOneWhite))
+					throw new Exception("Unable to move wall from stock to board for player " 
+							+ "one");
+
 					
-					playerOneWallID++;
-					playerOneAbsoluteWallID++;
-				}
+				playerOneWallID++;
+				playerOneAbsoluteWallID++;
 			}
 			
 			if (s2.hasMoreTokens()) {
@@ -1072,45 +1129,72 @@ public class GameController {
 				int col = move.charAt(0) - 'a' + 1;
 				int row = move.charAt(1) - '0';
 				Tile tile = board.getTile(getIndex(row, col));
-				Direction dir = null;
-				boolean isWallMove = false;
-				if (move.length() == 3) {
-					isWallMove = true;
-					dir = ((move.charAt(2) == 'h')||(move.charAt(2) == 'H')) ? Direction.Horizontal : Direction.Vertical;
-					//dir = (move.charAt(2) == 'H') ? Direction.Horizontal : Direction.Vertical;
-				}
-				
-				if (!isWallMove) {
-					playerTwoPosition = new PlayerPosition(playerTwo, tile);
-				} else {
-					//LOOK HERE
-					Wall wall = Wall.getWithId(playerTwoAbsoluteWallID);
-					wall.setMove(new WallMove(game.numberOfMoves(), 1, playerTwo, tile, game, dir, 
-							wall));
-					if (!addOrMoveWallsOnBoard(gp, wall, !isPlayerOneWhite))
-						throw new Exception("Unable to move wall from stock to board for player " 
-								+ "two");
+//H
+				Direction dir = ((move.charAt(2) == 'h')||(move.charAt(2) == 'H')) ? Direction.Horizontal : Direction.Vertical;
+
+
+				Wall wall = Wall.getWithId(playerTwoAbsoluteWallID);
+				wall.setMove(new WallMove(game.numberOfMoves(), 1, playerTwo, tile, game, dir, 
+						wall));
+				if (!addOrMoveWallsOnBoard(gp, wall, !isPlayerOneWhite))
+					throw new Exception("Unable to move wall from stock to board for player " 
+							+ "two");
+//E
+				//Direction dir = null;
+				//boolean isWallMove = false;
+				//if (move.length() == 3) {
+				//	isWallMove = true;
+				//	dir = ((move.charAt(2) == 'h')||(move.charAt(2) == 'H')) ? Direction.Horizontal : Direction.Vertical;
+				//	//dir = (move.charAt(2) == 'H') ? Direction.Horizontal : Direction.Vertical;
+				//}
+				//
+				//if (!isWallMove) {
+				//	playerTwoPosition = new PlayerPosition(playerTwo, tile);
+				//} else {
+				//	//LOOK HERE
+				//	Wall wall = Wall.getWithId(playerTwoAbsoluteWallID);
+				//	wall.setMove(new WallMove(game.numberOfMoves(), 1, playerTwo, tile, game, dir, 
+				//			wall));
+				//	if (!addOrMoveWallsOnBoard(gp, wall, !isPlayerOneWhite))
+				//		throw new Exception("Unable to move wall from stock to board for player " 
+				//				+ "two");
+//M
 					
-					playerTwoWallID++;
-					playerTwoAbsoluteWallID++;
-				}
+				playerTwoWallID++;
+				playerTwoAbsoluteWallID++;
 			}
-			
-			
 		}
 		
-		
-		
 		//TODO: THink about separating this process into its subroutine
-		game.setCurrentPosition(gp);
+		
 		gp.setPlayerToMove(playerOne);
+		quoridor.getCurrentGame().setGameStatus(GameStatus.ReadyToStart);
+		//quoridor.getCurrentGame().delete();
+		//game.setGameStatus(GameStatus.ReadyToStart); 
+		//quoridor.setCurrentGame(game);
+		//it isn't really but this is necessary for checking that this method finished in testing
+		//Wall[] walls 
 		return game;
 		//throw new UnsupportedOperationException();
 	}
 	
-	//private static Player getPlayer(boolean isWhite, Game game) {
-	//	return (isWhite == true) ? game.getWhitePlayer() : game.getBlackPlayer();
-	//}
+	/*
+	 * Helper method for load position
+	 * Constructs an initial game position from playerPosition data and player color data for a
+	 * given game.
+	 */
+	private static GamePosition makeInitialGamePosition(Game game, PlayerPosition playerOnePosition, 
+			PlayerPosition playerTwoPosition, Player playerOne, boolean isPlayerOneWhite) {
+		GamePosition aNewGamePosition;
+		if (isPlayerOneWhite) {
+			aNewGamePosition = new GamePosition(0, playerOnePosition, playerTwoPosition, playerOne, 
+					game);
+		} else {
+			aNewGamePosition = new GamePosition(0, playerTwoPosition, playerOnePosition, playerOne,
+					game);
+		}
+		return aNewGamePosition;
+	}
 	
 	/*
 	 * getIndex from Stepdefinitions, cleaned up a bit
@@ -1131,20 +1215,21 @@ public class GameController {
 	 * Color-agnostic combined addOrMoveWallsOnBoard and removeWallsInStock for loadPosiiton feature
 	 */
 	private static boolean addOrMoveWallsOnBoard(GamePosition gp, Wall wall, boolean isWhite) {
-		//boolean didRemove = false;
+		boolean didRemove = false;
 		boolean didAdd = false;
 		if (isWhite) {
-			//didRemove = gp.removeWhiteWallsInStock(wall);
-			//if (!didRemove) {
-			//	return false;
-			//}
+			didRemove = gp.removeWhiteWallsInStock(wall);
+			if (!didRemove) {
+				return false;
+			}
+			
 			didAdd = gp.addOrMoveWhiteWallsOnBoardAt(wall, gp.getWhiteWallsOnBoard().size());
 			return didAdd;
 		} else {
-			//didRemove = gp.removeBlackWallsInStock(wall);
-			//if (!didRemove) {
-			//	return false;
-			//}
+			didRemove = gp.removeBlackWallsInStock(wall);
+			if (!didRemove) {
+				return false;
+			}
 			didAdd = gp.addOrMoveBlackWallsOnBoardAt(wall, gp.getBlackWallsOnBoard().size());
 			return didAdd;
 		}
@@ -1191,9 +1276,14 @@ public class GameController {
 	 * @return
 	 * @throws UnsupportedOperationException
 	 */
-	public boolean setCurrentTurn(Player player, Quoridor quoridor) 
-			throws UnsupportedOperationException {
-		throw new UnsupportedOperationException();
+	public boolean setCurrentTurn(boolean isWhite, Quoridor quoridor)  {
+		Player player;
+		if (isWhite) {
+			player = quoridor.getCurrentGame().getWhitePlayer();
+		} else {
+			player = quoridor.getCurrentGame().getWhitePlayer();
+		}
+		return quoridor.getCurrentGame().getCurrentPosition().setPlayerToMove(player);
 	}
 	
 	/**
@@ -1267,6 +1357,10 @@ public class GameController {
 			}
 		}
 		return board;*/
+	}
+	
+	public void deleteGame(Quoridor q) {
+		q.getCurrentGame().delete();
 	}
 	
 	public void switchPlayer(Quoridor q) {

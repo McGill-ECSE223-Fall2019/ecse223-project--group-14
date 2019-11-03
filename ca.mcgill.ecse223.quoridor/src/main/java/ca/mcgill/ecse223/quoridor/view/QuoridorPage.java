@@ -31,7 +31,7 @@ import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
 import ca.mcgill.ecse223.quoridor.model.Wall;
 
-public class QuoridorPage extends JFrame{
+public class QuoridorPage extends JFrame{ 
 
 	/**
 	 * default 
@@ -459,11 +459,20 @@ public class QuoridorPage extends JFrame{
 		selectP1Button.setVisible(true);
 		
 		for (int i=0;i<10;i++) {
+			if (wwalls[i].getDirection().compareTo("horizontal")==0) {
+				wwalls[i].rotate();
+			}
+			
+			if (bwalls[i].getDirection().compareTo("horizontal")==0) {
+				bwalls[i].rotate();
+			}
+			
 			wwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 125, WallComponent.wallW, WallComponent.wallH);
-			//add(wwalls[i]);
 			bwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 675, WallComponent.wallW, WallComponent.wallH);
-			//add(bwalls[i]);
 		}
+		
+		wPawn.setBounds(157, 417, 25, 25);
+		bPawn.setBounds(557, 417, 25, 25);
 		
 		gc.addWalls();
 		stageMove=false;
@@ -683,6 +692,7 @@ public class QuoridorPage extends JFrame{
 		newGameButton.setVisible(false);
 		toggleBoard(false); 
 		toggleMainButtons(false);
+		loadGameButton.setVisible(false);
 		loadFileButton.setVisible(true);
 		loadField.setVisible(true);
 		
@@ -694,6 +704,20 @@ public class QuoridorPage extends JFrame{
 	private void loadFileButtonActionPerformed(java.awt.event.ActionEvent evt) throws Exception {
 		gc= new GameController();
 		error = "";
+		for (int i=0;i<10;i++) {
+			if (wwalls[i].getDirection().compareTo("horizontal")==0) {
+				wwalls[i].rotate();
+			}
+			
+			if (bwalls[i].getDirection().compareTo("horizontal")==0) {
+				bwalls[i].rotate();
+			}
+			
+			wwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 125, WallComponent.wallW, WallComponent.wallH);
+			bwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 675, WallComponent.wallW, WallComponent.wallH);
+		}
+		
+		timer.stop();
 		//boolean newg;
 		/*if (p1Name.getText().compareTo("")==0) {
 			q.getCurrentGame().delete();
@@ -701,15 +725,13 @@ public class QuoridorPage extends JFrame{
 		//TODO
 		//call load controller function to update model
 		//reset view with new loaded file
+		//gc.deleteGame(QuoridorApplication.getQuoridor());
 		String filename = loadField.getText();
-		//try {
-			gc.initSavedGameLoad(QuoridorApplication.getQuoridor(), filename);
-			//gc.loadGame(QuoridorApplication.getQuoridor(), filename); //doesn't work
-		//} catch (Exception e) {
-			// TODO Auto-generated catch block
-			//error = e.getMessage();
-			//return;
-		//}
+		gc.initSavedGameLoad(QuoridorApplication.getQuoridor(), filename);
+		
+		//gc.loadGame(QuoridorApplication.getQuoridor(), filename);
+		//will always throw exception due to unimplemented section
+
 		
 		currPlayer=q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite();
 		
@@ -1145,9 +1167,28 @@ public class QuoridorPage extends JFrame{
 				} catch (Exception e) {
 					//This allows for user to know exactly *which* error occurred in a concise 
 					//manner
+					//if (e.getMessage.contentEquals("Unable to create wall due to owner")) {
+					//	try  {
+					//		loadFileActionPerformed(evt)
+					//	} catch (Exception e1) {
+					//		error = e.getMessage();
+					//		timer.stop();
+					//		QuoridorApplication.getQuoridor().getCurrentGame().delete
+					//	}
+					//}
 					error = e.getMessage();
 					timer.stop();
-					QuoridorApplication.getQuoridor().getCurrentGame().delete();
+					try {
+						QuoridorApplication.getQuoridor().getCurrentGame().delete();
+					} catch (NullPointerException e1) {
+						try {
+							loadFileButtonActionPerformed(new java.awt.event.ActionEvent(null, buttonH, banner));
+						} catch (Exception e2) {
+							// TODO Auto-generated catch block
+							e2.printStackTrace();
+						}
+						//do nothing
+					}
 					//try {
 					//	loadFileButtonActionPerformed(evt);
 					//} catch (Exception e1) {
@@ -1288,7 +1329,7 @@ public class QuoridorPage extends JFrame{
 	private void toggleMainButtons(boolean vis) {
 		quitButton.setVisible(vis);
 		saveGameButton.setVisible(vis);
-		loadGameButton.setVisible(vis);
+		//loadGameButton.setVisible(vis);
 		resignGameButton.setVisible(vis);
 		drawGameButton.setVisible(vis);
 		endTurnButton.setVisible(vis);
