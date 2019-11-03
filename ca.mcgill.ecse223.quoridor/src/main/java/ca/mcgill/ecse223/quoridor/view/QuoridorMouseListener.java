@@ -9,6 +9,7 @@ import javax.swing.SwingUtilities;
 
 import ca.mcgill.ecse223.quoridor.controller.GameController;
 
+
 public class QuoridorMouseListener implements MouseListener, MouseMotionListener{
 	
 	private QuoridorPage frame;
@@ -39,6 +40,11 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 			if (cursor instanceof HoldableComponent) {
 				HoldableComponent temp = (HoldableComponent) cursor;
 				if(temp.isHoldable() && temp.getColor().equals(gc.getCurrentPlayerColor()) && !frame.getStageMove() ) {
+					if (temp instanceof WallComponent) {
+						if ((cursor.getY()>150)&&(cursor.getY()<660)) {	//wall already placed
+							return;
+						}
+					}
 					gc.grabWall();
 					heldComponent = temp;
 					
