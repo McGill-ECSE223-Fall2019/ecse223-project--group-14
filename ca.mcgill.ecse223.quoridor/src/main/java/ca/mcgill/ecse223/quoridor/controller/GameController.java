@@ -15,6 +15,7 @@ import ca.mcgill.ecse223.quoridor.model.PlayerPosition;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
 import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
+import ca.mcgill.ecse223.quoridor.model.Wall;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
 import ca.mcgill.ecse223.quoridor.view.QuoridorPage;
 import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
@@ -318,7 +319,52 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	public void moveWall(Game game, String side) throws UnsupportedOperationException{
-		throw new UnsupportedOperationException();
+		WallMove wmc = game.getWallMoveCandidate();
+		Tile originalTile = wmc.getTargetTile();
+		if(!validatePosition(game)){
+			throw new UnsupportedOperationException("The position is invalid");
+		}
+		if(side.equals("left") && originalTile.getColumn() == 1) { // Check if the wall is at the left edge
+			throw new UnsupportedOperationException("The wall is at the left edge of the board");
+		}
+		
+		if(side.equals("right") && originalTile.getColumn() == 8) { // Check if the wall is at the right edge
+			throw new UnsupportedOperationException("The wall is at the right edge of thr board");
+		}
+		
+		if(side.equals("up") && originalTile.getRow() == 1) { // Check if the wall is at the top edge
+			throw new UnsupportedOperationException("The wall is at the top edge of the board");	
+		}
+		
+		if(side.equals("down") && originalTile.getRow() == 8 ) { // Check if the wall is at the bottom edge
+			throw new UnsupportedOperationException("The wall is at the bottom edge of the board");
+			
+		}
+		
+		/*
+		 * Below, are the operations that are executed for each side.
+		 */
+		if(side.equals("left")){
+			Tile target = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(originalTile.getRow(),originalTile.getColumn()-1));
+			wmc.setTargetTile(target);
+		}
+		
+		if(side.equals("right")){
+			Tile target = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(originalTile.getRow(),originalTile.getColumn()+1));
+			wmc.setTargetTile(target);
+		}
+		
+		if(side.equals("up")){
+			Tile target = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(originalTile.getRow()-1,originalTile.getColumn()));
+			wmc.setTargetTile(target);
+		}
+		
+		if(side.equals("down")){
+			Tile target = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(originalTile.getRow()+1,originalTile.getColumn()));
+			wmc.setTargetTile(target);
+		}
+
+
 	}
 	
 	/**
@@ -331,7 +377,7 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	public void dropWall(Game game) throws UnsupportedOperationException{		
-		throw new UnsupportedOperationException();
+		
 	}
 	
 	/**
@@ -491,4 +537,25 @@ public class GameController {
 		}
 		return null;
 	}
+	
+	/*
+	 * I moved copied the getIndex method here for easier computation
+	 */
+	private int getIndex(int row, int col) {
+		//return (col - 1) * 9 + (row - 1);Saif's
+		/*if(row<0||row>9||col<0||col>9) {to avoid getting index in range for invalid coordinates due to -ve +ve cancelling
+			return -1;
+		}*/
+		if(row<=0||col<=0||row>9||col>9){
+			return -1;
+		}
+		else {
+		return ((((row-1)*9)+col)-1);//returning wrong values for incorrect row or col 
+		//may return out of bound value which can be handled by 
+		}
+		
+	}
+	
 }
+
+

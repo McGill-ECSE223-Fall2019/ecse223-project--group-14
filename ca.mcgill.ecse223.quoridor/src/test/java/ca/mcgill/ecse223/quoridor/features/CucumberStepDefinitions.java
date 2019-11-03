@@ -1433,7 +1433,7 @@ public class CucumberStepDefinitions {
 			return -1;
 		}*/
 		if(row<=0||col<=0||row>9||col>9){
-			return -10;
+			return -1;
 		}
 		else {
 		return ((((row-1)*9)+col)-1);//returning wrong values for incorrect row or col 
