@@ -499,8 +499,8 @@ public class GameController {
 		
 		//For Walls 
 		//
-		
-		throw new UnsupportedOperationException();
+		return true; //3rd nov
+		//throw new UnsupportedOperationException();//testing 3rd nov
 	}
 	
 

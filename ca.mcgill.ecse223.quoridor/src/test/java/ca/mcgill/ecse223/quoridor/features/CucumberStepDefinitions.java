@@ -836,7 +836,8 @@ public class CucumberStepDefinitions {
 			GamePosition testPosition=new GamePosition(-1,player1Position,player2Position,(quoridor.getCurrentGame().getWhitePlayer()),game);
 			//negative id in GamePosition to tell controller invalid tile coordinates. Controller doesnt have 
 			//access to row, col so it can only comment on whether if a pawn is there at that index of tiles
-			
+			//3rdNov keeping in mind darius's controller the above needs to chnage but 
+			//getTile 
 		}
 		else {
 		Tile testTile = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(row,col));
@@ -875,7 +876,7 @@ public class CucumberStepDefinitions {
 	 * @author ohuss1
 	 * @throws Throwable
 	 */
-	@Then ("The position shall be {string}")//cumcumber syntax for String
+	@Then ("The position shall be {string}")
 	public void thePositionShallBeResult(String result) throws Throwable{
 		//GameController G= new GameController();
 		//if string ok then set boolean to true 
@@ -886,7 +887,13 @@ public class CucumberStepDefinitions {
 		assertNotNull(quoridor.getCurrentGame());
 		Game game=quoridor.getCurrentGame();
 		
-		assertEquals(result,G.validatePos(Prev));
+		//assertEquals(result,G.validatePos(Prev));//orihinal3rd nov
+		if(G.validatePos(Prev)==true) {//testing 3rdnov
+			assertEquals(result,"ok");
+		}
+		else {
+			assertEquals(result,"not");
+		}//testing 3rd nov
 	}
 	
 	/**
@@ -989,7 +996,7 @@ public class CucumberStepDefinitions {
 			Tile player2StartPos = quoridor.getBoard().getTile(44);
 			PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), player1StartPos);
 			PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
-			
+			//PlayerPosition playerW=quoridor.getCurrentGame().//louis line
 			if (player.compareTo("white")==0) {//player variable is color coming from argument
 				GamePosition gamePos=new 
 			GamePosition(1, player1Position, player2Position,
