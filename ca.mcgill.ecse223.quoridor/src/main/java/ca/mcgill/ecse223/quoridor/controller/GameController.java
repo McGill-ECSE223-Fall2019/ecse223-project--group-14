@@ -871,10 +871,17 @@ public class GameController {
 	public Game initSavedGameLoad(Quoridor quoridor, String filename) throws Exception /*throws UnsupportedOperationException*/ {
 		
 		
-		initGame(quoridor);
+		//Borrowed code from initGame()
+		Player p1=new Player(new Time(10), quoridor.getUser(0), 9, Direction.Horizontal);
+		Player p2 = new Player(new Time(10), quoridor.getUser(1), 1, Direction.Horizontal);
+		new Game(GameStatus.Initializing, MoveMode.PlayerMove, quoridor);
+		
+		quoridor.getCurrentGame().setWhitePlayer(p1);
+		quoridor.getCurrentGame().setBlackPlayer(p2);
+		
 		Game game = quoridor.getCurrentGame();
 		Board board = quoridor.getBoard();
-		GamePosition gp = game.getCurrentPosition();
+		//GamePosition gp = game.getCurrentPosition();
 		
 		
 		
@@ -916,19 +923,37 @@ public class GameController {
 			playerTwo = game.getWhitePlayer();
 			playerOneAbsoluteWallID += 10;
 		}
-		if (!Wall.hasWithId(0)) {
+		if (!Wall.hasWithId(1)) {
 			for (int i = 0; i < 10; i++) {
 				new Wall(i, game.getWhitePlayer());
 				new Wall(i + 10, game.getBlackPlayer());
 			}
-			//for (int i = 0; i < 2; i++) {
-			//	for (int j = 0; j < 10; j++) {
-			//		new Wall(i * 10 + j, players[i]);
-			//	}
-			//}
 		}
 		PlayerPosition playerOnePosition = null;
 		PlayerPosition playerTwoPosition = null;
+		
+		{
+			String playerOnePositionString = s1.nextToken(",");
+			if (playerOnePositionString.charAt(0) == ' ')
+				playerOnePositionString = playerOnePositionString.substring(1);
+			
+			String playerTwoPositionString = s2.nextToken(",");
+			if (playerTwoPositionString.charAt(0) == ' ')
+				playerTwoPositionString = playerTwoPositionString.substring(1);
+			int col = playerOnePositionString.charAt(0) - 'a' + 1;
+			int row = playerOnePositionString.charAt(1) - '0';
+			Tile tile = board.getTile(getIndex(row, col));
+			playerOnePosition = new PlayerPosition(playerOne, tile);
+			
+			col = playerTwoPositionString.charAt(0) - 'a' + 1;
+			row = playerTwoPositionString.charAt(1) - '0';
+			tile = board.getTile(getIndex(row, col));
+			playerTwoPosition = new PlayerPosition(playerTwo, tile);
+		}
+		
+		GamePosition gp = makeInitialGamePosition(game, playerOnePosition, playerTwoPosition, 
+				playerOne, isPlayerOneWhite);
+		game.setCurrentPosition(gp);
 		
 		while (s1.hasMoreTokens() || s2.hasMoreTokens()) {
 			
@@ -940,26 +965,17 @@ public class GameController {
 				int col = move.charAt(0) - 'a' + 1;
 				int row = move.charAt(1) - '0';
 				Tile tile = board.getTile(getIndex(row, col));
-				Direction dir = null;
-				boolean isWallMove = false;
-				if (move.length() == 3) {
-					isWallMove = true;
-					dir = (move.charAt(2) == 'h') ? Direction.Horizontal : Direction.Vertical;
-				}
+				Direction dir = (move.charAt(2) == 'h') ? Direction.Horizontal : Direction.Vertical;
 				
-				if (!isWallMove) {
-					playerOnePosition = new PlayerPosition(playerOne, tile);
-				} else {
-					Wall wall = Wall.getWithId(playerOneAbsoluteWallID);
-					wall.setMove(new WallMove(game.numberOfMoves(), 1, playerOne, tile, game, dir, 
-							wall));
-					if (!addOrMoveWallsOnBoard(gp, wall, isPlayerOneWhite))
-						throw new Exception("Unable to move wall from stock to board for player " 
-								+ "one");
+				Wall wall = Wall.getWithId(playerOneAbsoluteWallID);
+				wall.setMove(new WallMove(game.numberOfMoves(), 1, playerOne, tile, game, dir, 
+						wall));
+				if (!addOrMoveWallsOnBoard(gp, wall, isPlayerOneWhite))
+					throw new Exception("Unable to move wall from stock to board for player " 
+							+ "one");
 					
-					playerOneWallID++;
-					playerOneAbsoluteWallID++;
-				}
+				playerOneWallID++;
+				playerOneAbsoluteWallID++;
 			}
 			
 			if (s2.hasMoreTokens()) {
@@ -970,44 +986,49 @@ public class GameController {
 				int col = move.charAt(0) - 'a' + 1;
 				int row = move.charAt(1) - '0';
 				Tile tile = board.getTile(getIndex(row, col));
-				Direction dir = null;
-				boolean isWallMove = false;
-				if (move.length() == 3) {
-					isWallMove = true;
-					dir = (move.charAt(2) == 'h') ? Direction.Horizontal : Direction.Vertical;
-				}
-				
-				if (!isWallMove) {
-					playerTwoPosition = new PlayerPosition(playerTwo, tile);
-				} else {
-					//LOOK HERE
-					Wall wall = Wall.getWithId(playerTwoAbsoluteWallID);
-					wall.setMove(new WallMove(game.numberOfMoves(), 1, playerTwo, tile, game, dir, 
-							wall));
-					if (!addOrMoveWallsOnBoard(gp, wall, !isPlayerOneWhite))
-						throw new Exception("Unable to move wall from stock to board for player " 
-								+ "two");
+				Direction dir = (move.charAt(2) == 'h') ? Direction.Horizontal : Direction.Vertical;
+
+
+				Wall wall = Wall.getWithId(playerTwoAbsoluteWallID);
+				wall.setMove(new WallMove(game.numberOfMoves(), 1, playerTwo, tile, game, dir, 
+						wall));
+				if (!addOrMoveWallsOnBoard(gp, wall, !isPlayerOneWhite))
+					throw new Exception("Unable to move wall from stock to board for player " 
+							+ "two");
 					
-					playerTwoWallID++;
-					playerTwoAbsoluteWallID++;
-				}
+				playerTwoWallID++;
+				playerTwoAbsoluteWallID++;
 			}
 			
-			
+		
 		}
 		
 		
 		
 		//TODO: THink about separating this process into its subroutine
-		game.setCurrentPosition(gp);
+		
 		gp.setPlayerToMove(playerOne);
 		return game;
 		//throw new UnsupportedOperationException();
 	}
 	
-	//private static Player getPlayer(boolean isWhite, Game game) {
-	//	return (isWhite == true) ? game.getWhitePlayer() : game.getBlackPlayer();
-	//}
+	/*
+	 * Helper method for load position
+	 * Constructs an initial game position from playerPosition data and player color data for a
+	 * given game.
+	 */
+	private static GamePosition makeInitialGamePosition(Game game, PlayerPosition playerOnePosition, 
+			PlayerPosition playerTwoPosition, Player playerOne, boolean isPlayerOneWhite) {
+		GamePosition aNewGamePosition;
+		if (isPlayerOneWhite) {
+			aNewGamePosition = new GamePosition(0, playerOnePosition, playerTwoPosition, playerOne, 
+					game);
+		} else {
+			aNewGamePosition = new GamePosition(0, playerTwoPosition, playerOnePosition, playerOne,
+					game);
+		}
+		return aNewGamePosition;
+	}
 	
 	/*
 	 * getIndex from Stepdefinitions, cleaned up a bit
@@ -1088,9 +1109,14 @@ public class GameController {
 	 * @return
 	 * @throws UnsupportedOperationException
 	 */
-	public boolean setCurrentTurn(Player player, Quoridor quoridor) 
-			throws UnsupportedOperationException {
-		throw new UnsupportedOperationException();
+	public boolean setCurrentTurn(boolean isWhite, Quoridor quoridor)  {
+		Player player;
+		if (isWhite) {
+			player = quoridor.getCurrentGame().getWhitePlayer();
+		} else {
+			player = quoridor.getCurrentGame().getWhitePlayer();
+		}
+		return quoridor.getCurrentGame().getCurrentPosition().setPlayerToMove(player);
 	}
 	
 	/**
