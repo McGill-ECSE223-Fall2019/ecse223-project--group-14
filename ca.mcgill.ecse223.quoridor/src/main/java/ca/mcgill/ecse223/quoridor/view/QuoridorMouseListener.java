@@ -170,10 +170,34 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 					heldComponent.setLocation(tempPosition.getLocation());
 				}
 			}
-			else if(heldComponent instanceof WallComponent/* && cursor instanceof PawnPositionComponent*/) {
+			else if(heldComponent instanceof PawnComponent/* && cursor instanceof PawnPositionComponent*/) {
 				// TODO For anyone, once someone makes PositionComponent or equivalent
 			}
 
+		}
 	}
-}
+	
+	/*
+	 * Method gets currently held component by player
+	 * @author louismollick
+	 */
+	public HoldableComponent getHeldComponent() {
+		return heldComponent;
+	}
+	
+	/*
+	 * Method sets currently heldComponent
+	 * @author louismollick
+	 */
+	public void setHeldComponent(HoldableComponent hold) {
+		this.heldComponent = hold;
+	}
+	
+	/*
+	 * Method returns whether the player has a wall in his hand
+	 * @author louismollick
+	 */
+	public boolean hasHeldWall() {
+		return (heldComponent != null && heldComponent instanceof WallComponent);
+	}
 }

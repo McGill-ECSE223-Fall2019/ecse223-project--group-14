@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Time;
@@ -30,6 +31,7 @@ import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Wall;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
+import ca.mcgill.ecse223.quoridor.view.QuoridorPage;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.But;
@@ -131,14 +133,36 @@ public class CucumberStepDefinitions {
 		System.out.println();
 	}
 	
+	/*
+	 * @author louismollick
+	 */
 	@Given("I do not have a wall in my hand")
-	public void iDoNotHaveAWallInMyHand() {
-		// GUI-related feature -- TODO for later
+	public void iDoNotHaveAWallInMyHand() throws Exception{
+		QuoridorPage view = QuoridorApplication.getQuoridorView();
+		if (view == null) throw new Exception("View doesn't exist");
+		
+		view.setHeldComponent(null);
 	}
 	
+	/*
+	 * @author louismollick
+	 */
 	@And("^I have a wall in my hand over the board$")
-	public void givenIHaveAWallInMyHandOverTheBoard() throws Throwable {
-		// GUI-related feature -- TODO for later
+	public void givenIHaveAWallInMyHandOverTheBoard() throws Exception {
+		QuoridorPage view = QuoridorApplication.getQuoridorView();
+		if (view == null) throw new Exception("View doesn't exist");
+		
+		Player p = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		if (p.hasGameAsBlack()) {
+			view.setHeldComponentToRandomWall("black");
+		}
+		else if (p.hasGameAsWhite()) {
+			view.setHeldComponentToRandomWall("white");
+		}
+		else {
+			throw new Exception("Current player has no color!");
+		}
+		
 	}
 	
 	@Given("^A new game is initializing$")
@@ -240,7 +264,20 @@ public class CucumberStepDefinitions {
 	public void iTryToGrabAWallFromMyStock() throws Throwable{
 		GameController gc = new GameController();
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
-		gc.grabWall();
+		
+		if(gc.grabWall()) {
+			// Emulate player picking up wall in view if grab wall successful
+			QuoridorPage view = QuoridorApplication.getQuoridorView();
+			if (view == null) throw new Exception("View doesn't exist");
+			
+			Player p = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+			if (p.hasGameAsBlack()) {
+				view.setHeldComponentToRandomWall("black");
+			}
+			else if (p.hasGameAsWhite()) {
+				view.setHeldComponentToRandomWall("white");
+			}
+		}
 	}
 	
 	/**
@@ -248,7 +285,9 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("I shall have a wall in my hand over the board")
 	public void thenIHaveAWallInMyHandOverTheBoard() throws Throwable{
-		// GUI-related feature -- TODO for later
+		QuoridorPage view = QuoridorApplication.getQuoridorView();
+		if (view == null) throw new Exception("View doesn't exist");
+		assertEquals(view.hasHeldWall(), true);
 	}
 	
 	/**
@@ -281,11 +320,10 @@ public class CucumberStepDefinitions {
 	 */
 	@Given("I have no more walls on stock")
 	public void iHaveNoMoreWallsOnStock() throws Throwable{
+		Player p = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
 		GamePosition pos = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
-		if(!pos.hasWhiteWallsInStock()) {
-			for (Wall w : pos.getWhiteWallsInStock()) {
-				pos.removeWhiteWallsInStock(w);
-			}
+		if(pos.hasWhiteWallsInStock()) {
+			
 		}
 	}
 	
@@ -294,15 +332,19 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("I shall be notified that I have no more walls")
 	public void iShouldBeNotifiedThatIHaveNoMoreWalls() {
-		// GUI-related feature -- TODO for later
+		// If all walls are gone from his stock in the view, the player already sees
+		// he has no more walls.
 	}
 	
 	/**
 	 * @author louismollick
 	 */
 	@And ("I shall have no walls in my hand")
-	public void iShallHaveNoWallsInMyHand() {
-		// GUI-related feature -- TODO for later
+	public void iShallHaveNoWallsInMyHand() throws Exception{
+		QuoridorPage view = QuoridorApplication.getQuoridorView();
+		if (view == null) throw new Exception("View doesn't exist");
+		
+		assertEquals(false, view.hasHeldWall());
 	}
 	
 	/**

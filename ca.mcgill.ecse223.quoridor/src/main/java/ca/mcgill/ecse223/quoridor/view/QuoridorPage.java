@@ -111,6 +111,8 @@ public class QuoridorPage extends JFrame{
 	private Quoridor q;
 	private GameController gc;
 	
+	private QuoridorMouseListener listener;
+	
 	private TileComponent [][] tiles;
 	public WallComponent [] bwalls;
 	public WallComponent [] wwalls;
@@ -129,10 +131,9 @@ public class QuoridorPage extends JFrame{
 		gc=new GameController();
 		gc.initQuorridor();
 		
-		QuoridorMouseListener listener = new QuoridorMouseListener(this,gc);
+		listener = new QuoridorMouseListener(this,gc);
         this.getContentPane().addMouseListener(listener);
         this.getContentPane().addMouseMotionListener(listener);
-        
 		initComponents();
 		refreshData();
 	}
@@ -1329,5 +1330,44 @@ public class QuoridorPage extends JFrame{
 	public boolean getStageMove() {
 		return stageMove;
 	}
-
+	
+	/*
+	 * Method gets currently held component by player
+	 * @author louismollick
+	 */
+	public HoldableComponent getHeldComponent() {
+		return this.listener.getHeldComponent();
+	}
+	
+	/*
+	 * Method sets currently heldComponent
+	 * @author louismollick
+	 */
+	public void setHeldComponent(HoldableComponent hold) {
+		this.listener.setHeldComponent(hold);
+	}
+	
+	/*
+	 * Method sets currently heldComponent to random wall, for Step definition
+	 * @author louismollick
+	 */
+	public void setHeldComponentToRandomWall(String color) throws Exception{
+		WallComponent w;
+		if (color.contentEquals("white")) {
+			if(wwalls != null) w = wwalls[5]; // take any Wall
+			else throw new Exception("There are no white walls");
+		} else {
+			if(bwalls != null) w = bwalls[5];
+			else throw new Exception("There are no white walls");
+		}
+		this.listener.setHeldComponent(w);
+	}
+	
+	/*
+	 * Method returns whether the player has a wall in his hand
+	 * @author louismollick
+	 */
+	public boolean hasHeldWall() {
+		return this.listener.hasHeldWall();
+	}
 }
