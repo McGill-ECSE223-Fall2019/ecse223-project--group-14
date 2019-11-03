@@ -914,12 +914,18 @@ public class GameController {
 		}
 		if(id<10) {
 			Wall w = q.getCurrentGame().getWhitePlayer().getWall(id);
+			if (w.getMove()!=null) {
+				w.getMove().delete();
+			}
 			new WallMove(q.getCurrentGame().getMoves().size(),0,q.getCurrentGame().getWhitePlayer(),q.getBoard().getTile(col+row*9),q.getCurrentGame(),dirc,w);
 			q.getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(q.getCurrentGame().getWhitePlayer().getWall(id));
 			q.getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(q.getCurrentGame().getWhitePlayer().getWall(id));
 		}
 		else {
 			Wall w=q.getCurrentGame().getBlackPlayer().getWall(id-10);
+			if (w.getMove()!=null) {
+				w.getMove().delete();
+			}
 			new WallMove(q.getCurrentGame().getMoves().size(), 1, q.getCurrentGame().getBlackPlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
 			q.getCurrentGame().getCurrentPosition().removeBlackWallsInStock(q.getCurrentGame().getBlackPlayer().getWall(id-10));
 			q.getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(q.getCurrentGame().getBlackPlayer().getWall(id-10));
@@ -1014,7 +1020,7 @@ public class GameController {
 		}
 		
 		if (!Wall.hasWithId(0)) {
-			for (int i = 0; i < 10; i++) {
+			for (int i = 1; i < 11; i++) {
 				new Wall(i, game.getWhitePlayer());
 				new Wall(i + 10, game.getBlackPlayer());
 			}
@@ -1050,7 +1056,7 @@ public class GameController {
 					playerOnePosition = new PlayerPosition(playerOne, tile);
 				} else {
 					Wall wall = Wall.getWithId(playerOneAbsoluteWallID);
-					wall.setMove(new WallMove(game.numberOfMoves(), 1, playerOne, tile, game, dir, 
+					wall.setMove(new WallMove(game.numberOfMoves(), 0, playerOne, tile, game, dir, 
 							wall));
 					if (!addOrMoveWallsOnBoard(gp, wall, isPlayerOneWhite))
 						throw new Exception("Unable to move wall from stock to board for player " 
