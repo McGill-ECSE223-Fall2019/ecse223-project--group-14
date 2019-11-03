@@ -1074,19 +1074,26 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */
 	@And ("(.*) shall have a (.*) wall at (.*):(.*)")
-	public void shallHaveAWallAt(String playerColor, Direction orientation, int row, int col) 
+	public void shallHaveAWallAt(String playerColor, String orientation, int row, int col) 
 			throws Throwable {
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
 		Wall[] walls;
-		Player player = getPlayer(playerColor);
-		if (player.hasGameAsWhite()) {
+		//Player player = getPlayer(playerColor);
+		Direction dir = null;
+		if (orientation.toLowerCase().contains("v")) {
+			dir = Direction.Vertical;
+		} else if (orientation.toLowerCase().contains("h")) {
+			dir = Direction.Horizontal;
+		}
+		assertNotNull(dir);
+		if (playerColor.toLowerCase().contains("w")) {
 			walls = new Wall[game.getCurrentPosition().getWhiteWallsOnBoard().size()];
-			walls = game.getCurrentPosition().getWhiteWallsInStock().toArray(walls);
-			assertTrue(wallPresent(row, col, walls, orientation));
+			walls = game.getCurrentPosition().getWhiteWallsOnBoard().toArray(walls);
+			assertTrue(wallPresent(row, col, walls, dir));
 		} else {
 			walls = new Wall[game.getCurrentPosition().getBlackWallsOnBoard().size()];
-			walls = game.getCurrentPosition().getBlackWallsInStock().toArray(walls);
-			assertTrue(wallPresent(row, col, walls, orientation));
+			walls = game.getCurrentPosition().getBlackWallsOnBoard().toArray(walls);
+			assertTrue(wallPresent(row, col, walls, dir));
 		}
 	}
 	

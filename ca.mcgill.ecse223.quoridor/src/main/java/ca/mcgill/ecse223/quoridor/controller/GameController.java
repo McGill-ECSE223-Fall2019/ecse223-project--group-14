@@ -924,11 +924,13 @@ public class GameController {
 			playerOneAbsoluteWallID += 10;
 		}
 		if (!Wall.hasWithId(1)) {
-			for (int i = 0; i < 10; i++) {
+			for (int i = 1; i <= 10; i++) {
 				new Wall(i, game.getWhitePlayer());
 				new Wall(i + 10, game.getBlackPlayer());
 			}
 		}
+		
+		
 		PlayerPosition playerOnePosition = null;
 		PlayerPosition playerTwoPosition = null;
 		
@@ -954,7 +956,12 @@ public class GameController {
 		GamePosition gp = makeInitialGamePosition(game, playerOnePosition, playerTwoPosition, 
 				playerOne, isPlayerOneWhite);
 		game.setCurrentPosition(gp);
-		
+		for (int i = 1; i <= 10; i++) {
+			Wall whiteWall = Wall.getWithId(i);
+			gp.addWhiteWallsInStock(whiteWall);
+			Wall blackWall = Wall.getWithId(i + 10);
+			gp.addBlackWallsInStock(blackWall);
+		}
 		while (s1.hasMoreTokens() || s2.hasMoreTokens()) {
 			
 			if (s1.hasMoreTokens()) {
@@ -999,15 +1006,12 @@ public class GameController {
 				playerTwoWallID++;
 				playerTwoAbsoluteWallID++;
 			}
-			
-		
 		}
-		
-		
 		
 		//TODO: THink about separating this process into its subroutine
 		
 		gp.setPlayerToMove(playerOne);
+		//Wall[] walls 
 		return game;
 		//throw new UnsupportedOperationException();
 	}
@@ -1049,20 +1053,21 @@ public class GameController {
 	 * Color-agnostic combined addOrMoveWallsOnBoard and removeWallsInStock for loadPosiiton feature
 	 */
 	private static boolean addOrMoveWallsOnBoard(GamePosition gp, Wall wall, boolean isWhite) {
-		//boolean didRemove = false;
+		boolean didRemove = false;
 		boolean didAdd = false;
 		if (isWhite) {
-			//didRemove = gp.removeWhiteWallsInStock(wall);
-			//if (!didRemove) {
-			//	return false;
-			//}
+			didRemove = gp.removeWhiteWallsInStock(wall);
+			if (!didRemove) {
+				return false;
+			}
+			
 			didAdd = gp.addOrMoveWhiteWallsOnBoardAt(wall, gp.getWhiteWallsOnBoard().size());
 			return didAdd;
 		} else {
-			//didRemove = gp.removeBlackWallsInStock(wall);
-			//if (!didRemove) {
-			//	return false;
-			//}
+			didRemove = gp.removeBlackWallsInStock(wall);
+			if (!didRemove) {
+				return false;
+			}
 			didAdd = gp.addOrMoveBlackWallsOnBoardAt(wall, gp.getBlackWallsOnBoard().size());
 			return didAdd;
 		}
