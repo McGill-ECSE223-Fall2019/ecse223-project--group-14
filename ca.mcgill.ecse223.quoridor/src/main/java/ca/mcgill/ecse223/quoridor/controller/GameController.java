@@ -48,17 +48,19 @@ public class GameController {
 	public void initQuorridor(){
 		Quoridor q=QuoridorApplication.getQuoridor();
 		
-		Board board = new Board(q);
-		// Creating tiles by rows, i.e., the column index changes with every tile
-		// creation
-		for (int i = 1; i <= 9; i++) { // rows
-			for (int j = 1; j <= 9; j++) { // columns
-				board.addTile(i, j);
+		if (q.getBoard()==null) {
+			Board board = new Board(q);
+			// Creating tiles by rows, i.e., the column index changes with every tile
+			// creation
+			for (int i = 1; i <= 9; i++) { // rows
+				for (int j = 1; j <= 9; j++) { // columns
+					board.addTile(i, j);
+				}
 			}
 		}
 		
-		new User("user1",q);
-		new User("user2",q);
+		new User("usera",q);
+		new User("userb",q);
 		
 		/*for (int i = 0; i < 2; i++) {
 			for (int j = 0; j < 10; j++) {
@@ -375,31 +377,7 @@ public class GameController {
 		return true;
 	}
 	
-	public void dropWall(int col, int row, String dir,int id) {
-		Quoridor q=QuoridorApplication.getQuoridor();
-		Direction dirc;
-		
-		if (dir.compareTo("vertical")==0) {
-			dirc=Direction.Vertical;
-		}
-		else {
-			dirc=Direction.Horizontal;
-		}
-		
-		if (id<10) { 	//white
-			Wall w=q.getCurrentGame().getWhitePlayer().getWall(id);
-			new WallMove(q.getCurrentGame().getMoves().size(), 0, q.getCurrentGame().getWhitePlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
-			q.getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(q.getCurrentGame().getWhitePlayer().getWall(id));
-			q.getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(q.getCurrentGame().getWhitePlayer().getWall(id));
-		}
-		
-		else {
-			Wall w=q.getCurrentGame().getBlackPlayer().getWall(id-10);
-			new WallMove(q.getCurrentGame().getMoves().size(), 1, q.getCurrentGame().getBlackPlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
-			q.getCurrentGame().getCurrentPosition().removeBlackWallsInStock(q.getCurrentGame().getBlackPlayer().getWall(id-10));
-			q.getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(q.getCurrentGame().getBlackPlayer().getWall(id-10));
-		}
-	}
+	
 	
 	/**
 	 * For Validate Position Feature
@@ -422,7 +400,7 @@ public class GameController {
 	}
 	
 	/**
-	 * For setTotalThinkingTime feature 
+	 * For setTotalThinkingTime feature, sets the thinking time and gives ready to start signal
 	 * 
 	 * @author AmineMallek
 	 * 
@@ -443,7 +421,7 @@ public class GameController {
 
 
 	/**
-	 * For savePosition feature 
+	 * For savePosition feature, saves the position, accounting for who starts in the way given in overview
 	 * 
 	 * @author AmineMallek
 	 * 
@@ -460,7 +438,7 @@ public class GameController {
 
 	public void SaveGame(Quoridor q, String FileName) throws IOException {
 	
-		File file=new File(FileName);
+		File file=new File(FileName);		//Our file created
 		
 		file.setWritable(true);
 		file.createNewFile();
@@ -468,12 +446,12 @@ public class GameController {
 		try {
 			writer = new PrintWriter(file, "UTF-8");
 			//if white playing, white should be on the first line
-			if(q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite())
+			if(q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite())	//if it's the white player's turn
 			{
-				int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
-				int columnW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+				int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow(); //gets row number
+				int columnW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();	// gets column number
 				
-				String ColumnW = "";
+				String ColumnW = "";  //needs conversion to letter, using switch cases
 				switch(columnW) {
 				
 				case 1:  ColumnW = "a";
@@ -503,15 +481,15 @@ public class GameController {
 				case 9: ColumnW = "i";
 					
 				}
-				writer.print("W: " + ColumnW+rowW);
+				writer.print("W: " + ColumnW+rowW);//print white player position
 				//writer.print("W: " + ColumnW + ", " + rowW);
 				
-				List<Wall> wWall	= q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard();
+				List<Wall> wWall	= q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard(); //wall objects
 				
 				for(Wall pos: wWall)
 				{ 
 				
-					int WallColumnWhite = pos.getMove().getTargetTile().getColumn();
+					int WallColumnWhite = pos.getMove().getTargetTile().getColumn();//store column number to be converted to int
 					String WallColumnLetterWhite = "";
 					
 					switch(WallColumnWhite) {
@@ -548,9 +526,9 @@ public class GameController {
 				//	writer.print();
 				}
 				writer.println("");
-				int rowB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();				
-				int columnB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
-				String ColumnB = "";
+				int rowB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();		//black player row		
+				int columnB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn(); //white player column
+				String ColumnB = "";			//string column to make it a letter
 				switch(columnB) {
 				
 				case 1:  ColumnB = "a";
@@ -581,16 +559,16 @@ public class GameController {
 					
 				}
 
-				writer.print("B: " + ColumnB+rowB);
+				writer.print("B: " + ColumnB+rowB); //prints black player's position
 			//	writer.print("B: "+ rowB + ", " + ColumnB);
 
-				List<Wall> bWall	= q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();				
+				List<Wall> bWall	= q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();	//wall objects list	
 				for(Wall pos1: bWall)
 				{ 
-					int WallColumnBlack = pos1.getMove().getTargetTile().getColumn();
+					int WallColumnBlack = pos1.getMove().getTargetTile().getColumn(); //gets column number to convert it to letter
 					String WallColumnLetterBlack = "";
 					
-					switch(WallColumnBlack) {
+					switch(WallColumnBlack) {		//letter switch
 					
 					case 1:  WallColumnLetterBlack = "a";
 						break;
@@ -627,13 +605,13 @@ public class GameController {
 			}
 			
 			//if black playing, black should be on the first line
-			else if (q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsBlack())	
+			else if (q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsBlack())	//if it's black player's turn
 			{
 				
-				int rowB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
-				int columnB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
-				String ColumnB = "";
-				switch(columnB) {
+				int rowB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow(); //int  row
+				int columnB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn(); //int column to letter
+				String ColumnB = ""; //String that'll contain the column letter
+				switch(columnB) {	//switch case
 				
 				case 1:  ColumnB = "a";
 					break;
@@ -663,17 +641,17 @@ public class GameController {
 					
 				}
 
-				writer.print("B: " + ColumnB+ rowB);
+				writer.print("B: " + ColumnB+ rowB);//print player's position
 			//	writer.print("B: "+ rowB + ", " + ColumnB);
 
-				List<Wall> bWall	= q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();
-				for(Wall pos1: bWall)
+				List<Wall> bWall	= q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard(); //wall object list
+				for(Wall pos1: bWall) //enhanced for loop
 				{ 
 				
-					int WallColumnBlack = pos1.getMove().getTargetTile().getColumn();
-					String WallColumnLetterBlack = "";
+					int WallColumnBlack = pos1.getMove().getTargetTile().getColumn(); //column int
+					String WallColumnLetterBlack = ""; //column letter string
 					
-					switch(WallColumnBlack) {
+					switch(WallColumnBlack) { //switch
 					
 					case 1:  WallColumnLetterBlack = "a";
 						break;
@@ -702,13 +680,13 @@ public class GameController {
 					case 9: WallColumnLetterBlack = "i";
 						
 					}
-
+					//print walls, column, row, direction
 					writer.print("," + WallColumnLetterBlack + pos1.getMove().getTargetTile().getRow() + pos1.getMove().getWallDirection().toString().charAt(0));
 				}
-				writer.println("");
-				int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
-				int columnW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
-				String ColumnW = "";
+				writer.println("");//new line
+				int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();//int row
+				int columnW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();//int 
+				String ColumnW = ""; //string column
 				switch(columnW) {
 				
 				case 1:  ColumnW = "a";
@@ -739,17 +717,17 @@ public class GameController {
 					
 				}
 
-				writer.print("W: " + ColumnW  + rowW);
+				writer.print("W: " + ColumnW  + rowW); //string print player position
 				//writer.print("W: " + ColumnW + ", " + rowW);
 				
-				List<Wall> wWall	= q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard();
+				List<Wall> wWall	= q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard(); //object wall
 		
 				for(Wall pos: wWall)
 				{ 
-					int WallColumnWhite = pos.getMove().getTargetTile().getColumn();
-					String WallColumnLetterWhite = "";
+					int WallColumnWhite = pos.getMove().getTargetTile().getColumn(); //column int
+					String WallColumnLetterWhite = "";	//column string to be filled with a letter
 					
-					switch(WallColumnWhite) {
+					switch(WallColumnWhite) {	//switch case
 						case 1:  WallColumnLetterWhite = "a";
 							break;
 						
@@ -776,17 +754,19 @@ public class GameController {
 							
 						case 9: WallColumnLetterWhite = "i";	
 					}
-				writer.print("," + WallColumnLetterWhite + pos.getMove().getTargetTile().getRow() + pos.getMove().getWallDirection().toString().charAt(0));
+				
+					//print wall column, row, direction
+					writer.print("," + WallColumnLetterWhite + pos.getMove().getTargetTile().getRow() + pos.getMove().getWallDirection().toString().charAt(0));
 				//	writer.print();
 				}
-				 writer.close();	
+				 writer.close();	//close writer
 			}
 			    
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -865,21 +845,87 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	public void moveWall(Game game, String side) throws UnsupportedOperationException{
-		throw new UnsupportedOperationException();
+		WallMove wmc = game.getWallMoveCandidate();
+		Tile originalTile = wmc.getTargetTile();
+		if(!validatePosition(game)){
+			throw new UnsupportedOperationException("The position is invalid");
+		}
+		if(side.equals("left") && originalTile.getColumn() == 1) { // Check if the wall is at the left edge
+			throw new UnsupportedOperationException("The wall is at the left edge of the board");
+		}
+		
+		if(side.equals("right") && originalTile.getColumn() == 8) { // Check if the wall is at the right edge
+			throw new UnsupportedOperationException("The wall is at the right edge of thr board");
+		}
+		
+		if(side.equals("up") && originalTile.getRow() == 1) { // Check if the wall is at the top edge
+			throw new UnsupportedOperationException("The wall is at the top edge of the board");	
+		}
+		
+		if(side.equals("down") && originalTile.getRow() == 8 ) { // Check if the wall is at the bottom edge
+			throw new UnsupportedOperationException("The wall is at the bottom edge of the board");
+			
+		}
+		
+		/*
+		 * Below, are the operations that are executed for each side.
+		 */
+		if(side.equals("left")){
+			Tile target = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(originalTile.getRow(),originalTile.getColumn()-1));
+			wmc.setTargetTile(target);
+		}
+		
+		if(side.equals("right")){
+			Tile target = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(originalTile.getRow(),originalTile.getColumn()+1));
+			wmc.setTargetTile(target);
+		}
+		
+		if(side.equals("up")){
+			Tile target = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(originalTile.getRow()-1,originalTile.getColumn()));
+			wmc.setTargetTile(target);
+		}
+		
+		if(side.equals("down")){
+			Tile target = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(originalTile.getRow()+1,originalTile.getColumn()));
+			wmc.setTargetTile(target);
+		}
+
+
 	}
 	
 	/**
-	 * For Move Wall feature
+	 * For Drop Wall feature
 	 * Attempts to drop the wall (place the wall) between possible rows and columns of the board 
 	 * 
-	 * @author Saifullah
+	 * @author Saifullah, credit for DariusPi for changing the entire method and making it work for the application.
 	 * 
 	 * @param game
 	 * @throws UnsupportedOperationException
 	 */
-	public void dropWall(Game game) throws UnsupportedOperationException{		
-		throw new UnsupportedOperationException();
+	public void dropWall(int col, int row, String dir, int id) throws UnsupportedOperationException{		
+		Quoridor q = QuoridorApplication.getQuoridor();
+		Direction dirc;
+		
+		if(dir.compareTo("vertical") == 0) {
+			dirc = Direction.Vertical;
+		}
+		else {
+			dirc = Direction.Horizontal;
+		}
+		if(id<10) {
+			Wall w = q.getCurrentGame().getWhitePlayer().getWall(id);
+			new WallMove(q.getCurrentGame().getMoves().size(),0,q.getCurrentGame().getWhitePlayer(),q.getBoard().getTile(col+row*9),q.getCurrentGame(),dirc,w);
+			q.getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(q.getCurrentGame().getWhitePlayer().getWall(id));
+			q.getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(q.getCurrentGame().getWhitePlayer().getWall(id));
+		}
+		else {
+			Wall w=q.getCurrentGame().getBlackPlayer().getWall(id-10);
+			new WallMove(q.getCurrentGame().getMoves().size(), 1, q.getCurrentGame().getBlackPlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
+			q.getCurrentGame().getCurrentPosition().removeBlackWallsInStock(q.getCurrentGame().getBlackPlayer().getWall(id-10));
+			q.getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(q.getCurrentGame().getBlackPlayer().getWall(id-10));
+		}
 	}
+	
 	
 	/**
 	 * Testing method validatePosition
@@ -1198,7 +1244,8 @@ public class GameController {
 	
 	public boolean isClockCountingDown(Player player) throws UnsupportedOperationException {
 		//This interacts with the clock Time object and checks GUI to see if a countdown is shown
-		throw new UnsupportedOperationException();
+		return true;
+		//throw new UnsupportedOperationException();
 	}
 	/**
 	 * For ValidatePosition Feature 
@@ -1227,14 +1274,21 @@ public class GameController {
 	 * @return new Board
 	 * @throws UnsupportedOperationException
 	 */
-	public Board initBoard(Quoridor q) {
-		Board board = new Board(q);
+	public void initBoard(Quoridor q) {
+		//TODO
+		addWalls();
+		for (int i=0;i<10;i++) {
+			q.getCurrentGame().getCurrentPosition().addOrMoveWhiteWallsInStockAt(q.getCurrentGame().getWhitePlayer().getWall(i), i);
+			q.getCurrentGame().getCurrentPosition().addOrMoveBlackWallsInStockAt(q.getCurrentGame().getBlackPlayer().getWall(i), i);
+		}
+		
+		/*Board board = new Board(q);
 		for (int col = 1; col <= 9; col++) {
 			for(int row = 1; row <= 9; row ++) {
 				Tile tile = new Tile(row, col, board);
 			}
 		}
-		return board;
+		return board;*/
 	}
 	
 	public void switchPlayer(Quoridor q) {
@@ -1262,4 +1316,7 @@ public class GameController {
 		}
 		return null;
 	}
+	
 }
+
+
