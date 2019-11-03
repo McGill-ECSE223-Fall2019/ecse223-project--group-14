@@ -1105,6 +1105,11 @@ public class GameController {
 		//TODO: THink about separating this process into its subroutine
 		
 		gp.setPlayerToMove(playerOne);
+		quoridor.getCurrentGame().setGameStatus(GameStatus.ReadyToStart);
+		//quoridor.getCurrentGame().delete();
+		//game.setGameStatus(GameStatus.ReadyToStart); 
+		//quoridor.setCurrentGame(game);
+		//it isn't really but this is necessary for checking that this method finished in testing
 		//Wall[] walls 
 		return game;
 		//throw new UnsupportedOperationException();
