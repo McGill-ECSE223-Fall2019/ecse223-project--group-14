@@ -61,6 +61,12 @@ public class GameController {
 		//initBoard(q);
 	}
 	
+	/**
+	 * Helper method called by the view during new game creation to create walls for users 
+	 * 
+	 * @author DariusPi
+	 * 
+	 */
 	public void addWalls() {
 		Quoridor q=QuoridorApplication.getQuoridor();
 		GamePosition pos=q.getCurrentGame().getCurrentPosition();
@@ -71,13 +77,12 @@ public class GameController {
 		}
 	}
 	
-	
 	/**
 	 * For Start New Game feature 
 	 * initializes a game with null parameters
 	 * 
 	 * @author DariusPi
-	 * @param q
+	 * @param Quoridor q
 	 * @return
 	 */
 	public void initGame(Quoridor q){
@@ -104,8 +109,6 @@ public class GameController {
 		GamePosition gamePos=new GamePosition(1, player1Position, player2Position, q.getCurrentGame().getWhitePlayer(), q.getCurrentGame());
 		q.getCurrentGame().setCurrentPosition(gamePos);
 		
-		//q.getCurrentGame().getCurrentPosition().setPlayerToMove(p1);
-		
 	}
 
 	
@@ -115,7 +118,7 @@ public class GameController {
 	 * 
 	 * @author DariusPi
 	 * 
-	 * @param q,t
+	 * @param Quoridor q, Timer t
 	 */
 	public void startTheClock(Quoridor q, Timer t){
 		t.start();
@@ -129,7 +132,7 @@ public class GameController {
 	 * Helper method to count down clock, returns true if time out, else false
 	 * 
 	 * @author Darius Piecaitis
-	 * @param q
+	 * @param Quoridor q
 	 * @return boolean
 	 */
 	public boolean countdown(Quoridor q) {
@@ -148,9 +151,9 @@ public class GameController {
 	 * 
 	 * @author DariusPi
 	 * 
-	 * @param q
-	 * @param name
-	 * @param colour
+	 * @param Quoridor q
+	 * @param String name
+	 * @param String colour
 	 * @return
 	 */
 	public String selectUsername(Quoridor q, String name, String colour) {
@@ -199,10 +202,10 @@ public class GameController {
 	 * 
 	 * @author DariusPi
 	 * 
-	 * @param q
-	 * @param name
-	 * @param colour
-	 * @return
+	 * @param Quoridor q
+	 * @param String name
+	 * @param String colour
+	 * @return String name or error message
 	 */
 	public String createUsername(Quoridor q, String name, String colour) {
 		//throw new UnsupportedOperationException();
@@ -251,10 +254,9 @@ public class GameController {
 	 * 
 	 * @author DariusPi
 	 * 
-	 * @param q
-	 * @param name
-	 * @return
-	 * @throws UnsupportedOperationException
+	 * @param Quoridor q
+	 * @param String name
+	 * @return int index
 	 */
 	public int doesUserExist(Quoridor q, String name){
 		for (int i=0; i<q.numberOfUsers();i++) {
@@ -267,15 +269,15 @@ public class GameController {
 	}
 	
 	/**
-	 * View method that checks if wall move was valid and returns the result
+	 * View method that checks if wall move was valid and returns the result, takes in the wall's highest anchor point, its direction and its id
 	 * 
 	 * @author DariusPi
 	 * 
-	 * @param x1
-	 * @param y1
-	 * @param x2
-	 * @param y2
-	 * @return
+	 * @param int x1
+	 * @param int y1
+	 * @param String dir 
+	 * @param int id
+	 * @return boolean
 	 */
 	public boolean valWallPosition(int x1,int y1, String dir, int id) {
 		Quoridor q =QuoridorApplication.getQuoridor();
@@ -361,10 +363,6 @@ public class GameController {
 			q.getCurrentGame().getCurrentPosition().removeBlackWallsInStock(q.getCurrentGame().getBlackPlayer().getWall(id-10));
 			q.getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(q.getCurrentGame().getBlackPlayer().getWall(id-10));
 		}
-		
-		//TODO
-		//add wall into current position's walls in board, maybe use wall id in array to map 
-		
 		return true;
 	}
 	

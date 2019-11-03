@@ -111,6 +111,8 @@ public class QuoridorPage extends JFrame{
 	public WallComponent [] wwalls;
 	private TileComponent[][] sq;
 	private TileComponent[][] sq2;
+	private Point [][] points;
+	private Point [][] points2;
 	
 	private PawnComponent wPawn;
 	private PawnComponent bPawn;
@@ -135,7 +137,7 @@ public class QuoridorPage extends JFrame{
 		
 		stageMove=false;
 		
-		Point [][] points=new Point[8][9];
+		points=new Point[8][9];
 		sq = new TileComponent [8][9];
 		for (int i=0;i<8;i++) {
 			for (int j=0;j<9;j++) {
@@ -146,7 +148,7 @@ public class QuoridorPage extends JFrame{
 			}
 		}
 		
-		Point [][] points2=new Point[9][8];
+		points2=new Point[9][8];
 		sq2 = new TileComponent [9][8];
 		for (int i=0;i<9;i++) {
 			for (int j=0;j<8;j++) {
@@ -407,7 +409,7 @@ public class QuoridorPage extends JFrame{
 	private void finishGame() {
 		//set screen to results
 		
-		//TODO
+		//TODO for phase 2
 		timer.stop();
 		timeRem1.setVisible(false);
 		timeRem2.setVisible(false);
@@ -451,6 +453,7 @@ public class QuoridorPage extends JFrame{
 			//add(bwalls[i]);
 		}
 		
+		gc.addWalls();
 		stageMove=false;
 		
 		banner="New Game";
@@ -582,9 +585,6 @@ public class QuoridorPage extends JFrame{
 			
 			gc.startTheClock(q,timer);
 			
-			gc=new GameController();
-			gc.addWalls();
-			
 			refreshData();
 			
 		}
@@ -686,46 +686,64 @@ public class QuoridorPage extends JFrame{
 		timeRem1.setText(convT2S(t));
 		timeRem2.setText(convT2S(t));
 		
-		int xb=q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
-		int yb=q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
-		int xw=q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
-		int yw=q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+		int xb=q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+		int yb=q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+		int xw=q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+		int yw=q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
 		
 		wPawn.setBounds(107+xw*50, 167+yw*50, 25, 25);
 		bPawn.setBounds(107+xb*50, 167+yb*50, 25, 25);
 		
-		int width,height,x,y;
+		int width,height,x,y; boolean vert;
 		for (int i=0;i<10;i++) {
 			if (q.getCurrentGame().getWhitePlayer().getWall(i).getMove()!=null) {
 				if (q.getCurrentGame().getWhitePlayer().getWall(i).getMove().getWallDirection()==Direction.Horizontal) {
+					vert=false;
 					width=WallComponent.wallH;
 					height=WallComponent.wallW;
+					
 				}
 				else {
+					vert=true;
 					width=WallComponent.wallW;
 					height=WallComponent.wallH;
 				}
-				x=q.getCurrentGame().getWhitePlayer().getWall(i).getMove().getTargetTile().getRow();
-				y=q.getCurrentGame().getWhitePlayer().getWall(i).getMove().getTargetTile().getColumn();
+				x=q.getCurrentGame().getWhitePlayer().getWall(i).getMove().getTargetTile().getColumn();
+				y=q.getCurrentGame().getWhitePlayer().getWall(i).getMove().getTargetTile().getRow();
 				
-				//TODO correctly set adjusted x and y coords
-				//wwalls[i].setBounds(x, y, width, height);
+				if(vert) {
+					wwalls[i].setBounds((int)points[x-1][y-1].getX(),(int)points[x-1][y-1].getY(),width,height);
+				}
+				else {
+					wwalls[i].setBounds((int)points2[x-1][y-1].getX(),(int)points2[x-1][y-1].getY(),width,height);
+				}
+			}
+			else {
+				wwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 125, WallComponent.wallW, WallComponent.wallH);
 			}
 			if (q.getCurrentGame().getBlackPlayer().getWall(i).getMove()!=null) {
 				if (q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getWallDirection()==Direction.Horizontal) {
+					vert=false;
 					width=WallComponent.wallH;
 					height=WallComponent.wallW;
 				}
 				else {
+					vert=true;
 					width=WallComponent.wallW;
 					height=WallComponent.wallH;
 				}
-				x=q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getTargetTile().getRow();
-				y=q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getTargetTile().getColumn();
+				x=q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getTargetTile().getColumn();
+				y=q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getTargetTile().getRow();
 				
-				//TODO correctly set adjusted x and y coords
-				//wwalls[i].setBounds(x, y, width, height);
-				
+				if(vert) {
+					bwalls[i].setBounds((int)points[x-1][y-1].getX(),(int)points[x-1][y-1].getY(),width,height);
+				}
+				else {
+					bwalls[i].setBounds((int)points2[x-1][y-1].getX(),(int)points2[x-1][y-1].getY(),width,height);
+				}
+			}
+			else {
+				bwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 675, WallComponent.wallW, WallComponent.wallH);
 			}
 		}
 		
