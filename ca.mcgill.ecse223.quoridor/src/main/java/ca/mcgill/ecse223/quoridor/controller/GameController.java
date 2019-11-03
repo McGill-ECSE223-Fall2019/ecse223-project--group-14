@@ -998,16 +998,14 @@ public class GameController {
 				}
 			}
 			
-			if (playerOnePosition == null)
-				playerOnePosition = new PlayerPosition(playerOne, board.getTile(isPlayerOneWhite ? 36 : 44));
-			if (playerTwoPosition == null)
-				playerTwoPosition = new PlayerPosition(playerTwo, board.getTile(isPlayerOneWhite ? 44 : 36));
+			
 		}
 		
 		
 		
 		//TODO: THink about separating this process into its subroutine
 		game.setCurrentPosition(gp);
+		gp.setPlayerToMove(playerOne);
 		return game;
 		//throw new UnsupportedOperationException();
 	}
@@ -1029,21 +1027,6 @@ public class GameController {
 		return ((((row-1)*9)+col)-1);
 		}
 		
-	}
-	
-	/*
-	 * Color-agnostic setPosition method for loadPosition feature
-	 */
-	private static boolean setPosition(PlayerPosition aPlayerPosition, GamePosition aGamePosition, 
-			boolean isWhite) {
-		if (isWhite) {
-			if (!aGamePosition.setWhitePosition(aPlayerPosition))
-				return false;
-		} else {
-			if (!aGamePosition.setBlackPosition(aPlayerPosition))
-				return false;
-		}
-		return true;
 	}
 	
 	/*
