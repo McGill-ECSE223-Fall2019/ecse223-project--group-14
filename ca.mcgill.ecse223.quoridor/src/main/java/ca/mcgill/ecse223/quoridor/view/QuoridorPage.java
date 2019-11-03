@@ -684,7 +684,7 @@ public class QuoridorPage extends JFrame{
 		
 		//TODO
 		//call load controller function to update model
-		gc.initSavedGameLoad(QuoridorApplication.getQuoridor(), loadField.getText());
+		//gc.initSavedGameLoad(QuoridorApplication.getQuoridor(), loadField.getText());
 		//reset view with new loaded file
 
 		//Quoridor quoridor = QuoridorApplication.getQuoridor();
