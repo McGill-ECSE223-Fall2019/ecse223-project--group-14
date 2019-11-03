@@ -701,14 +701,11 @@ public class QuoridorPage extends JFrame{
 		//call load controller function to update model
 		//reset view with new loaded file
 		String filename = loadField.getText();
-		//try {
-			gc.initSavedGameLoad(QuoridorApplication.getQuoridor(), filename);
-			//gc.loadGame(QuoridorApplication.getQuoridor(), filename); //doesn't work
-		//} catch (Exception e) {
-			// TODO Auto-generated catch block
-			//error = e.getMessage();
-			//return;
-		//}
+		gc.initSavedGameLoad(QuoridorApplication.getQuoridor(), filename);
+		
+		//gc.loadGame(QuoridorApplication.getQuoridor(), filename);
+		//will always throw exception due to unimplemented section
+
 		
 		currPlayer=q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite();
 		
