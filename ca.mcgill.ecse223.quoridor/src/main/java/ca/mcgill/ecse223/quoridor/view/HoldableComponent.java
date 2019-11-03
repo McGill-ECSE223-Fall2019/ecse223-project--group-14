@@ -74,18 +74,18 @@ public abstract class HoldableComponent extends RectComponent{
 					//if (this.contains((int)this.points[i][j].x,(int)this.points[i][j].y)){
 					if (this.getBounds().contains(points[i][j])) {
 						if (first) {
-							x1=this.getX();
-							y1=this.getY();
+							x1=i;
+							y1=j;
 							first=false;
 							//return true;
 						}
 						else {
-							x2=this.getX();
-							y2=this.getY();
+							x2=i;
+							y2=j;
 						
 							//TODO
 							GameController gc= new GameController();
-							return gc.viewValWallPosition(x1,y1,x2,y2);
+							return gc.valWallPosition(x1,y1, "vertical", ((WallComponent)this).wallId);
 							//call validate postion to ensure no overlapping walls
 							//return true;
 						}
@@ -98,18 +98,23 @@ public abstract class HoldableComponent extends RectComponent{
 				for (int j=0;j<8;j++) {
 					if (this.getBounds().contains(points2[i][j])) {
 						if (first) {
-							x1=this.getX();
-							y1=this.getY();
+							x1=i;
+							y1=j;
+							/*x1=this.getX();
+							y1=this.getY();*/
 							first=false;
 							//return true;
 						}
 						else {
-							x2=this.getX();
-							y2=this.getY();
+							x2=i;
+							y2=j;
+							
+							/*x2=this.getX();
+							y2=this.getY();*/
 						
 							//TODO
 							GameController gc= new GameController();
-							return gc.viewValWallPosition(x1,y1,x2,y2);
+							return gc.valWallPosition(x1,y1, "horizontal",((WallComponent)this).wallId);
 							//call validate postion to ensure no overlapping walls
 							//return true;
 						}
