@@ -6,29 +6,30 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.geom.Ellipse2D;
+import java.io.IOException;
 import java.sql.Time;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
-import javax.swing.border.Border;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameController;
+
+import ca.mcgill.ecse223.quoridor.model.Game;
+
+import ca.mcgill.ecse223.quoridor.model.Direction;
+
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
+import ca.mcgill.ecse223.quoridor.model.Wall;
 
 public class QuoridorPage extends JFrame{
 
@@ -71,6 +72,8 @@ public class QuoridorPage extends JFrame{
 	
 	
 	private JButton saveGameButton;
+	private JButton overwriteButton;
+	private JButton cancelButton;
 	private JButton loadGameButton;
 	private JButton saveFileButton;
 	private JButton loadFileButton;
@@ -99,6 +102,8 @@ public class QuoridorPage extends JFrame{
 	private final int buttonH=30;
 	private final int buttonW=125;
 	
+	private boolean stageMove;
+	
 	private boolean currPlayer;	//true for white, false for black
 	
 	private Timer timer;
@@ -107,11 +112,17 @@ public class QuoridorPage extends JFrame{
 	private GameController gc;
 	
 	private TileComponent [][] tiles;
-	private WallComponent [] bwalls;
-	private WallComponent [] wwalls;
+	public WallComponent [] bwalls;
+	public WallComponent [] wwalls;
+	private TileComponent[][] sq;
+	private TileComponent[][] sq2;
+	private Point [][] points;
+	private Point [][] points2;
 	
 	private PawnComponent wPawn;
 	private PawnComponent bPawn;
+	
+	private boolean isLoad;
 	
 	public QuoridorPage(){
 		q=QuoridorApplication.getQuoridor();
@@ -119,8 +130,8 @@ public class QuoridorPage extends JFrame{
 		gc.initQuorridor();
 		
 		QuoridorMouseListener listener = new QuoridorMouseListener(this,gc);
-        this.addMouseListener(listener);
-        this.addMouseMotionListener(listener);
+        this.getContentPane().addMouseListener(listener);
+        this.getContentPane().addMouseMotionListener(listener);
         
 		initComponents();
 		refreshData();
@@ -131,6 +142,29 @@ public class QuoridorPage extends JFrame{
 		setSize(650, 800);
 		getContentPane().setBackground(Color.LIGHT_GRAY);
 		
+		stageMove=false;
+		
+		points=new Point[8][9];
+		sq = new TileComponent [8][9];
+		for (int i=0;i<8;i++) {
+			for (int j=0;j<9;j++) {
+				points[i][j]= new Point(192+i*50,232+j*50);
+				sq[i][j]=new TileComponent();
+				sq[i][j].setBounds((int)points[i][j].getX(), (int)points[i][j].getY(), 5, 5);
+				add(sq[i][j]);
+			}
+		}
+		
+		points2=new Point[9][8];
+		sq2 = new TileComponent [9][8];
+		for (int i=0;i<9;i++) {
+			for (int j=0;j<8;j++) {
+				points2[i][j]= new Point(172+i*50,252+j*50);
+				sq2[i][j]=new TileComponent();
+				sq2[i][j].setBounds((int)points2[i][j].getX(), (int)points2[i][j].getY(), 5, 5);
+				add(sq2[i][j]);
+			}
+		}
 		
 		currPlayer=true;
 		
@@ -219,12 +253,12 @@ public class QuoridorPage extends JFrame{
 		}
 		bwalls= new WallComponent[10];
 		for (int i=0;i<10;i++) {
-			bwalls[i]=new WallComponent(Color.BLACK);
+			bwalls[i]=new WallComponent(Color.BLACK,i+10);
 		}
 		
 		wwalls= new WallComponent[10];
 		for (int i=0;i<10;i++) {
-			wwalls[i]=new WallComponent(Color.WHITE);
+			wwalls[i]=new WallComponent(Color.WHITE,i);
 		}
 		
 		wPawn=new PawnComponent(Color.WHITE);
@@ -249,9 +283,9 @@ public class QuoridorPage extends JFrame{
 		add(bannerMessage);
 		errorMessage.setBounds(10, 110, 600, 15);
 		add(errorMessage);
-		p1Name.setBounds(10, 125, 600, 15);
+		p1Name.setBounds(10, 125, 300, 15);
 		add(p1Name);
-		timeRem1.setBounds(10, 140, 600, 15);
+		timeRem1.setBounds(10, 140, 300, 15);
 		add(timeRem1);
 		turnMessage1.setBounds(10, 165, 100, 15);
 		add(turnMessage1);
@@ -335,6 +369,12 @@ public class QuoridorPage extends JFrame{
 		saveFileButton.setBounds(270, 160, buttonW, buttonH);
 		add(saveFileButton);
 		
+		overwriteButton.setBounds(10, y, buttonW, buttonH);
+		add(overwriteButton);
+		
+		cancelButton.setBounds(10, y+30, buttonW, buttonH);
+		add(cancelButton);
+		
 		loadField.setBounds(10, 160, 200, buttonH);
 		add(loadField);
 		
@@ -342,17 +382,17 @@ public class QuoridorPage extends JFrame{
 		add(loadFileButton);
 		
 		
-		p2Name.setBounds(10, 675, 600, 15);
+		p2Name.setBounds(10, 675, 300, 15);
 		add(p2Name);
-		timeRem2.setBounds(10, 690, 600, 15);
+		timeRem2.setBounds(10, 690, 300, 15);
 		add(timeRem2);
 		turnMessage2.setBounds(10, 715, 100, 15);
 		add(turnMessage2);
 		
 		for (int i=0;i<10;i++) {
-			wwalls[i].setBounds(150+(WallComponent.wallW+10)*i, 125, WallComponent.wallW, WallComponent.wallH);
+			wwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 125, WallComponent.wallW, WallComponent.wallH);
 			add(wwalls[i]);
-			bwalls[i].setBounds(150+(WallComponent.wallW+10)*i, 675, WallComponent.wallW, WallComponent.wallH);
+			bwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 675, WallComponent.wallW, WallComponent.wallH);
 			add(bwalls[i]);
 		}
 		
@@ -379,7 +419,7 @@ public class QuoridorPage extends JFrame{
 	private void finishGame() {
 		//set screen to results
 		
-		//TODO
+		//TODO for phase 2
 		timer.stop();
 		timeRem1.setVisible(false);
 		timeRem2.setVisible(false);
@@ -396,6 +436,8 @@ public class QuoridorPage extends JFrame{
 		replayGameButton.setVisible(true);
 		quitButton.setVisible(true);
 		
+		endTurnButton.setVisible(false);
+		
 		toggleBoard(false);
 		
 		refreshData();
@@ -403,6 +445,7 @@ public class QuoridorPage extends JFrame{
 	
 	private void newGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		error = "";
+		isLoad = false;
 		
 		newGameButton.setVisible(false);
 		loadGameButton.setVisible(false);
@@ -414,14 +457,17 @@ public class QuoridorPage extends JFrame{
 		createP1Button.setVisible(true);
 		selectP1Button.setVisible(true);
 		
+		for (int i=0;i<10;i++) {
+			wwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 125, WallComponent.wallW, WallComponent.wallH);
+			//add(wwalls[i]);
+			bwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 675, WallComponent.wallW, WallComponent.wallH);
+			//add(bwalls[i]);
+		}
+		
+		gc.addWalls();
+		stageMove=false;
 		
 		banner="New Game";
-		/*try {
-			gc.initGame();
-		} catch (InvalidInputException e) {
-			error = e.getMessage();
-		}*/
-		// update visuals
 		
 		refreshData();
 	}
@@ -516,7 +562,6 @@ public class QuoridorPage extends JFrame{
 	
 	private void timeSetButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		error="";
-		//uncomment once implemented
 		try {
 			gc.setTime(q,Integer.parseInt(minField.getText()),Integer.parseInt(secField.getText()));
 		} catch (Exception e) {
@@ -557,6 +602,7 @@ public class QuoridorPage extends JFrame{
 	
 	private void saveGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message
+		error="";
 		toggleBoard(false);
 		toggleMainButtons(false);
 		
@@ -566,21 +612,56 @@ public class QuoridorPage extends JFrame{
 		refreshData();
 	}
 	
-	private void saveFileButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	private void saveFileButtonActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
 		// clear error message
-		//toggleBoard(false); to be implemented
+		error = "";	
 		
-		GameController gc= new GameController();
+		Boolean fileExist=gc.filename_exists(saveField.getText());
+		
+		saveFileButton.setVisible(false);
+		saveField.setVisible(false);
+		
+		if (fileExist) {
+			overwriteButton.setVisible(true);
+			cancelButton.setVisible(true);
+			error = "File already exists, overwrite?";
+			refreshData();
+		}
+		else {
+			//call the save game controller method
+			
+			gc.SaveGame(q, saveField.getText());
+			
+			// update visuals
+			banner = "GamePlay"; 
+			toggleMainButtons(true);
+			toggleBoard(true);
+			refreshData();
+		}
+	}
+	
+	private void overwriteButtonActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
 		error = "";
-		//TODO
+		gc.SaveGame(q, saveField.getText());
 		
 		// update visuals
 		banner = "GamePlay"; 
-		saveFileButton.setVisible(false);
-		saveField.setVisible(false);
+		overwriteButton.setVisible(false);
+		cancelButton.setVisible(false);
 		toggleMainButtons(true);
 		toggleBoard(true);
-		refreshData();
+		refreshData();		
+	}
+	
+	private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		// update visuals
+		error = "";
+		cancelButton.setVisible(false);
+		banner = "GamePlay"; 
+		overwriteButton.setVisible(false);
+		toggleMainButtons(true);
+		toggleBoard(true);
+		refreshData();		
 	}
 	
 	private void loadGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -596,93 +677,142 @@ public class QuoridorPage extends JFrame{
 		refreshData();
 	}
 	
-	private void loadFileButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		//toggleBoard(false); to be implemented
-		
-		GameController gc= new GameController();
+	private void loadFileButtonActionPerformed(java.awt.event.ActionEvent evt) throws Exception {
+		gc= new GameController();
 		error = "";
-		
+		//boolean newg;
+		/*if (p1Name.getText().compareTo("")==0) {
+			q.getCurrentGame().delete();
+		}*/
 		//TODO
+		//call load controller function to update model
 		//reset view with new loaded file
-		//p1Name
-		//p2Name
-		//remTime?
+		String filename = loadField.getText();
+		//try {
+			gc.initSavedGameLoad(QuoridorApplication.getQuoridor(), filename);
+			//gc.loadGame(QuoridorApplication.getQuoridor(), filename); //doesn't work
+		//} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//error = e.getMessage();
+			//return;
+		//}
 		
+		currPlayer=q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite();
 		
-		// update visuals
-		banner = "GamePlay"; 
+		int xb=q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+		int yb=q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+		int xw=q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+		int yw=q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+		
+		wPawn.setBounds(107+xw*50, 167+yw*50, 25, 25);
+		bPawn.setBounds(107+xb*50, 167+yb*50, 25, 25);
+		
+		int width,height,x,y; boolean vert;
+		for (int i=0;i<10;i++) {
+			if (q.getCurrentGame().getWhitePlayer().getWall(i).getMove()!=null) {
+				if (q.getCurrentGame().getWhitePlayer().getWall(i).getMove().getWallDirection()==Direction.Horizontal) {
+					vert=false;
+					width=WallComponent.wallH;
+					height=WallComponent.wallW;
+					
+				}
+				else {
+					vert=true;
+					width=WallComponent.wallW;
+					height=WallComponent.wallH;
+				}
+				x=q.getCurrentGame().getWhitePlayer().getWall(i).getMove().getTargetTile().getColumn();
+				y=q.getCurrentGame().getWhitePlayer().getWall(i).getMove().getTargetTile().getRow();
+				
+				if(vert) {
+					wwalls[i].setBounds((int)points[x-1][y-1].getX(),(int)points[x-1][y-1].getY(),width,height);
+				}
+				else {
+					wwalls[i].setBounds((int)points2[x-1][y-1].getX(),(int)points2[x-1][y-1].getY(),width,height);
+				}
+			}
+			else {
+				wwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 125, WallComponent.wallW, WallComponent.wallH);
+			}
+			if (q.getCurrentGame().getBlackPlayer().getWall(i).getMove()!=null) {
+				if (q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getWallDirection()==Direction.Horizontal) {
+					vert=false;
+					width=WallComponent.wallH;
+					height=WallComponent.wallW;
+				}
+				else {
+					vert=true;
+					width=WallComponent.wallW;
+					height=WallComponent.wallH;
+				}
+				x=q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getTargetTile().getColumn();
+				y=q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getTargetTile().getRow();
+				
+				if(vert) {
+					bwalls[i].setBounds((int)points[x-1][y-1].getX(),(int)points[x-1][y-1].getY(),width,height);
+				}
+				else {
+					bwalls[i].setBounds((int)points2[x-1][y-1].getX(),(int)points2[x-1][y-1].getY(),width,height);
+				}
+			}
+			else {
+				bwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 675, WallComponent.wallW, WallComponent.wallH);
+			}
+		}
+		
 		loadFileButton.setVisible(false);
 		loadField.setVisible(false);
-		toggleMainButtons(true);
-		toggleBoard(true);
-		
-		
-		
+		p1NameField.setVisible(true);
+		createP1Button.setVisible(true);
+		selectP1Button.setVisible(true);
+		banner="New Game";
 		refreshData();
 	}
 	
 	private void resignGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		
+		//TODO in phase 2
 		finishGame();
 	}
 	
 	private void drawGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		toggleBoard(false);
-		GameController gc= new GameController();		
+		// update visuals
+		toggleBoard(false);		
 		error = "";
 		
 		toggleMainButtons(false);
-		
 		acceptDrawButton.setVisible(true);
 		declineDrawButton.setVisible(true);
-		
-		// update visuals
-		banner = "Draw Proposal"; //for testing
+		banner = "Draw Proposal";
 		refreshData();
 	}
 	
 	private void acceptDrawButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message
-		//GameController gc= new GameController();		
-		//toggleBoard(false);
 		error = "";
 		
-		//TODO
+		//TODO in phase 2
 		
 		// update visuals
-		error = "accept draw"; //for testing
+		error = "accept draw"; 
 		finishGame();
 	}
 	
 	private void declineDrawButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		//GameController gc= new GameController();		
+		// update visuals	
 		toggleBoard(true);
-		
 		error = "";
-		
-		//todo
-		
 		toggleMainButtons(true);
-		
 		acceptDrawButton.setVisible(false);
 		declineDrawButton.setVisible(false);
-		// update visuals
 		banner = "GamePlay"; //for testing
-		
 	}
 	
 	
 	private void replayGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message		
 		toggleBoard(true);
-		
 		error = "";
-		
 		replayGameButton.setVisible(false);
-		
 		stepForwardButton.setVisible(true);
 		stepBackwardButton.setVisible(true);
 		jumpStartButton.setVisible(true);
@@ -694,40 +824,36 @@ public class QuoridorPage extends JFrame{
 	}
 	
 	private void stepForwardButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		GameController gc= new GameController();		
+		// clear error message		
 		error = "";
-
+		//TODO in phase 2
 		// update visuals
 		error = "step for"; //for testing
 		refreshData();
 	}
 	
 	private void stepBackwardButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		GameController gc= new GameController();		
+		// clear error message		
 		error = "";
-		
+		//TODO in phase 2
 		// update visuals
 		error = "step back"; //for testing
 		refreshData();
 	}
 	
 	private void jumpStartButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		GameController gc= new GameController();		
+		// clear error message		
 		error = "";
-
+		//TODO in phase 2
 		// update visuals
 		error = "jump start"; //for testing
 		refreshData();
 	}
 	
 	private void jumpEndButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		GameController gc= new GameController();		
+		// clear error message	
 		error = "";
-
+		//TODO in phase 2
 		// update visuals
 		error = "jump end"; //for testing
 		refreshData();
@@ -756,12 +882,17 @@ public class QuoridorPage extends JFrame{
 		timeRem1.setVisible(false);
 		timeRem2.setVisible(false);
 		
+		turnMessage1.setVisible(false);
+		turnMessage2.setVisible(false);
+		
 		replayGameButton.setVisible(false);
 		stepForwardButton.setVisible(false);
 		stepBackwardButton.setVisible(false);
 		jumpStartButton.setVisible(false);
 		jumpEndButton.setVisible(false);
 		quitButton.setVisible(false);
+		
+		endTurnButton.setVisible(false);
 		
 		// update visuals
 		banner = "Main Menu"; //for testing
@@ -786,8 +917,6 @@ public class QuoridorPage extends JFrame{
 	}*/
 	
 	private void endTurnButtonActionPerformed(java.awt.event.ActionEvent evt) {	//this is the same as switch player
-		//TODO
-		//set movable pawn and walls
 		
 		currPlayer=!currPlayer;
 		gc.switchPlayer(q);
@@ -803,6 +932,7 @@ public class QuoridorPage extends JFrame{
 			turnMessage1.setVisible(false);
 			turnMessage2.setVisible(true);
 		}
+		stageMove=false;
 	}
 	
 	private void initButtons() {
@@ -837,6 +967,14 @@ public class QuoridorPage extends JFrame{
 		saveFileButton=new JButton();
 		saveFileButton.setText("Save");
 		saveFileButton.setVisible(false);
+		
+		overwriteButton=new JButton();
+		overwriteButton.setText("Overwrite");
+		overwriteButton.setVisible(false);
+		
+		cancelButton=new JButton();
+		cancelButton.setText("Cancel");
+		cancelButton.setVisible(false);
 		
 		loadGameButton = new JButton();
 		loadGameButton.setText("Load Game");
@@ -954,7 +1092,27 @@ public class QuoridorPage extends JFrame{
 		
 		saveFileButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				saveFileButtonActionPerformed(evt);
+				try {
+					saveFileButtonActionPerformed(evt);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		overwriteButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				try {
+					overwriteButtonActionPerformed(evt);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		cancelButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				cancelButtonActionPerformed(evt);
 			}
 		});
 		
@@ -966,7 +1124,22 @@ public class QuoridorPage extends JFrame{
 		
 		loadFileButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				loadFileButtonActionPerformed(evt);
+				try {
+					loadFileButtonActionPerformed(evt);
+				} catch (Exception e) {
+					//This allows for user to know exactly *which* error occurred in a concise 
+					//manner
+					error = e.getMessage();
+					timer.stop();
+					QuoridorApplication.getQuoridor().getCurrentGame().delete();
+					try {
+						loadFileButtonActionPerformed(evt);
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					refreshData();
+				}
 			}
 		});
 		
@@ -1078,7 +1251,18 @@ public class QuoridorPage extends JFrame{
 		wPawn.setVisible(vis);
 		bPawn.setVisible(vis);
 		
-
+		for (int i=0;i<8;i++) {
+			for (int j=0;j<9;j++) {
+				sq[i][j].setVisible(vis);
+			}
+		}
+		
+		for (int i=0;i<9;i++) {
+			for (int j=0;j<8;j++) {
+				sq2[i][j].setVisible(vis);
+			}
+		}
+		
 		/*upButton.setVisible(vis);
 		rightButton.setVisible(vis);
 		downButton.setVisible(vis);
@@ -1101,25 +1285,34 @@ public class QuoridorPage extends JFrame{
 		}
 	}
 	
+	/**
+	 * Method converts Time to string
+	 * 
+	 * @author DariusPi
+	 */
 	private String convT2S(Time t) {
 		long tt=t.getTime();
 		int min=(int)(tt/1000)/60;
 		int sec=(int)(tt/1000)%60;
 		return("Time Remainning: "+min+":"+sec);
 	}
-
-	private void switchPlayer() {			//should be called by either drop wall or end turn button
-		//TODO
-		
-		currPlayer=!currPlayer;
-		if (currPlayer) {
-			timeRem1.setVisible(true);
-			timeRem2.setVisible(false);
-		}
-		else {
-			timeRem1.setVisible(false);
-			timeRem2.setVisible(true);
-		}
+	
+	/**
+	 * Method sets whether a wall move or player move was performed to block further ones
+	 * 
+	 * @author DariusPi
+	 */
+	public void setStageMove(boolean moved) {
+		stageMove=moved;
+	}
+	
+	/**
+	 * Method returns whether a wall move or player move was performed 
+	 * 
+	 * @author DariusPi
+	 */
+	public boolean getStageMove() {
+		return stageMove;
 	}
 
 }

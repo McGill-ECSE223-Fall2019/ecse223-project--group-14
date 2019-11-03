@@ -1,10 +1,26 @@
 package ca.mcgill.ecse223.quoridor.controller;
 
+import java.io.BufferedReader;
 import java.awt.Color;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Time;
+import java.util.Scanner;
+import java.util.StringTokenizer;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.sql.Time;
+import java.util.List;
+
 
 import javax.swing.Timer;
+import javax.swing.text.html.HTMLDocument.Iterator;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.Board;
@@ -31,20 +47,55 @@ public class GameController {
 	 */
 	public void initQuorridor(){
 		Quoridor q=QuoridorApplication.getQuoridor();
-		initBoard(q);
-		new User("user1",q);
-		new User("user2",q);
+		
+		if (q.getBoard()==null) {
+			Board board = new Board(q);
+			// Creating tiles by rows, i.e., the column index changes with every tile
+			// creation
+			for (int i = 1; i <= 9; i++) { // rows
+				for (int j = 1; j <= 9; j++) { // columns
+					board.addTile(i, j);
+				}
+			}
+		}
+		
+		new User("usera",q);
+		new User("userb",q);
+		
+		/*for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 10; j++) {
+				new Wall(i * 10 + j, players[i]);
+			}
+		}*/
+		
+		//initBoard(q);
 	}
+	
+	/**
+	 * Helper method called by the view during new game creation to create walls for users 
+	 * 
+	 * @author DariusPi
+	 * 
+	 */
+	public void addWalls() {
+		Quoridor q=QuoridorApplication.getQuoridor();
+		GamePosition pos=q.getCurrentGame().getCurrentPosition();
+		for (int j = 0; j < 10; j++) {
+			pos.addWhiteWallsInStock(new Wall(j, q.getCurrentGame().getWhitePlayer()));
+			//new Wall(j+10, q.getCurrentGame().getBlackPlayer());
+			pos.addBlackWallsInStock(new Wall(j+10, q.getCurrentGame().getBlackPlayer()));
+		}
+	}
+	
 	/**
 	 * For Start New Game feature 
 	 * initializes a game with null parameters
 	 * 
 	 * @author DariusPi
-	 * @param q
+	 * @param Quoridor q
 	 * @return
-	 * @throws UnsupportedOperationException
 	 */
-	public void initGame(Quoridor q)throws UnsupportedOperationException{
+	public void initGame(Quoridor q){
 		
 		Player p1=new Player(new Time(10), q.getUser(0), 9, Direction.Horizontal);
 		Player p2 = new Player(new Time(10), q.getUser(1), 1, Direction.Horizontal);
@@ -59,10 +110,14 @@ public class GameController {
 		PlayerPosition player1Position = new PlayerPosition(q.getCurrentGame().getWhitePlayer(), player1StartPos);
 		PlayerPosition player2Position = new PlayerPosition(q.getCurrentGame().getBlackPlayer(), player2StartPos);
 		
+		//for (int i = 0; i < 2; i++) {
+			/*for (int j = 0; j < 10; j++) {
+				new Wall(j, p1);
+				new Wall(j+10, p2);
+			}*/
+		//}
 		GamePosition gamePos=new GamePosition(1, player1Position, player2Position, q.getCurrentGame().getWhitePlayer(), q.getCurrentGame());
 		q.getCurrentGame().setCurrentPosition(gamePos);
-		
-		//q.getCurrentGame().getCurrentPosition().setPlayerToMove(p1);
 		
 	}
 
@@ -73,10 +128,9 @@ public class GameController {
 	 * 
 	 * @author DariusPi
 	 * 
-	 * @param g
-	 * @throws UnsupportedOperationException
+	 * @param Quoridor q, Timer t
 	 */
-	public void startTheClock(Quoridor q, Timer t)throws UnsupportedOperationException{
+	public void startTheClock(Quoridor q, Timer t){
 		t.start();
 		q.getCurrentGame().setGameStatus(GameStatus.Running);
 		//Time time=g.getBlackPlayer().getRemainingTime();
@@ -85,10 +139,11 @@ public class GameController {
 	}
 	
 	/**
-	 * Helper method to count down clock
+	 * Helper method to count down clock, returns true if time out, else false
 	 * 
 	 * @author Darius Piecaitis
-	 * 
+	 * @param Quoridor q
+	 * @return boolean
 	 */
 	public boolean countdown(Quoridor q) {
 		long tb=q.getCurrentGame().getCurrentPosition().getPlayerToMove().getRemainingTime().getTime();
@@ -102,16 +157,16 @@ public class GameController {
 	
 	/**
 	 * For Provide Or Select User Name feature
-	 * Selects user name and assigns to colour, returns name
+	 * Selects user name and assigns to colour, returns name if correct, else error message
 	 * 
 	 * @author DariusPi
 	 * 
-	 * @param q
-	 * @param name
+	 * @param Quoridor q
+	 * @param String name
+	 * @param String colour
 	 * @return
-	 * @throws UnsupportedOperationException
 	 */
-	public String selectUsername(Quoridor q, String name, String colour)throws UnsupportedOperationException {
+	public String selectUsername(Quoridor q, String name, String colour) {
 		//throw new UnsupportedOperationException();
 		int i=doesUserExist(q,name);
 		if (i==-1) {
@@ -153,16 +208,16 @@ public class GameController {
 	
 	/**
 	 *  * For Provide Or Select User Name feature
-	 * Creates new user, adds it to quoridor, assigns to colour and returns its name
+	 * Creates new user, adds it to quoridor, assigns to colour and returns its name if valid, error message if invalid
 	 * 
 	 * @author DariusPi
 	 * 
-	 * @param q
-	 * @param name
-	 * @return
-	 * @throws UnsupportedOperationException
+	 * @param Quoridor q
+	 * @param String name
+	 * @param String colour
+	 * @return String name or error message
 	 */
-	public String createUsername(Quoridor q, String name, String colour)throws UnsupportedOperationException {
+	public String createUsername(Quoridor q, String name, String colour) {
 		//throw new UnsupportedOperationException();
 		int i=doesUserExist(q,name);
 		if (name==null || name.length()==0) {
@@ -209,13 +264,11 @@ public class GameController {
 	 * 
 	 * @author DariusPi
 	 * 
-	 * @param q
-	 * @param name
-	 * @return
-	 * @throws UnsupportedOperationException
+	 * @param Quoridor q
+	 * @param String name
+	 * @return int index
 	 */
-	public int doesUserExist(Quoridor q, String name) throws UnsupportedOperationException{
-		//throw new UnsupportedOperationException();
+	public int doesUserExist(Quoridor q, String name){
 		for (int i=0; i<q.numberOfUsers();i++) {
 			if (q.getUser(i).getName().contentEquals(name)) {
 				return i;
@@ -225,9 +278,153 @@ public class GameController {
 		
 	}
 	
+	/**
+	 * For Validate Position Feature
+	 * Checks if wall move was valid and returns the result, takes in the wall's highest anchor point, its direction and its id
+	 * 
+	 * @author DariusPi
+	 * 
+	 * @param int x1
+	 * @param int y1
+	 * @param String dir 
+	 * @param int id
+	 * @return boolean
+	 */
+	public boolean valWallPosition(int x1,int y1, String dir) {
+		Quoridor q =QuoridorApplication.getQuoridor();
+		GamePosition curr= q.getCurrentGame().getCurrentPosition();
+		
+		List<Wall> wWall = curr.getWhiteWallsOnBoard();
+		List<Wall> bWall = curr.getBlackWallsOnBoard();
+		Direction dirc;
+		int col =x1;
+		int row=y1;
+		if (dir.compareTo("vertical")==0) {
+			dirc=Direction.Vertical;
+			for(Wall pos: wWall){
+				if (pos.getMove().getWallDirection().toString().compareTo("Vertical")==0) {
+					if (((pos.getMove().getTargetTile().getRow()+1==row+1)||(pos.getMove().getTargetTile().getRow()-1==row+1)||(pos.getMove().getTargetTile().getRow()==row+1)) 
+							&&(pos.getMove().getTargetTile().getColumn()==col+1)) {
+						return false;
+					}
+				}
+				else {
+					if ((pos.getMove().getTargetTile().getColumn()==col+1)&&(pos.getMove().getTargetTile().getRow()==row+1)) {
+						return false;
+					}
+				}
+			}
+			
+			for(Wall pos: bWall){
+				if (pos.getMove().getWallDirection().toString().compareTo("Vertical")==0) {
+					if (((pos.getMove().getTargetTile().getRow()+1==row+1)||(pos.getMove().getTargetTile().getRow()-1==row+1)||(pos.getMove().getTargetTile().getRow()==row+1)) 
+							&&(pos.getMove().getTargetTile().getColumn()==col+1)) {
+						return false;
+					}
+				}
+				else {
+					if ((pos.getMove().getTargetTile().getColumn()==col+1)&&(pos.getMove().getTargetTile().getRow()==row+1)) {
+						return false;
+					}
+				}
+			}	
+		}
+		else {
+			dirc=Direction.Horizontal;
+			for(Wall pos: wWall){
+				if (pos.getMove().getWallDirection().toString().compareTo("Vertical")==0) {
+					if ((pos.getMove().getTargetTile().getColumn()==col+1)&&(pos.getMove().getTargetTile().getRow()==row+1)) {
+						return false;
+					}
+				}
+				else {
+					if (((pos.getMove().getTargetTile().getColumn()+1==col+1)||(pos.getMove().getTargetTile().getColumn()-1==col+1)||(pos.getMove().getTargetTile().getColumn()==col+1)) 
+							&&(pos.getMove().getTargetTile().getRow()==row+1)) {
+						return false;
+					}
+				}
+			}
+			
+			for(Wall pos: bWall){
+				if (pos.getMove().getWallDirection().toString().compareTo("Vertical")==0) {
+					if ((pos.getMove().getTargetTile().getColumn()==col+1)&&(pos.getMove().getTargetTile().getRow()==row+1)) {
+						return false;
+					}
+				}
+				else {
+					if (((pos.getMove().getTargetTile().getColumn()+1==col+1)||(pos.getMove().getTargetTile().getColumn()-1==col+1)||(pos.getMove().getTargetTile().getColumn()==col+1)) 
+							&&(pos.getMove().getTargetTile().getRow()==row+1)) {
+						return false;
+					}
+				}
+			}	
+			
+		}
+		
+		/*if (id<10) { 	//white
+			Wall w=q.getCurrentGame().getWhitePlayer().getWall(id);
+			new WallMove(q.getCurrentGame().getMoves().size(), 0, q.getCurrentGame().getWhitePlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
+			q.getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(q.getCurrentGame().getWhitePlayer().getWall(id));
+			q.getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(q.getCurrentGame().getWhitePlayer().getWall(id));
+		}
+		
+		else {
+			Wall w=q.getCurrentGame().getBlackPlayer().getWall(id-10);
+			new WallMove(q.getCurrentGame().getMoves().size(), 1, q.getCurrentGame().getBlackPlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
+			q.getCurrentGame().getCurrentPosition().removeBlackWallsInStock(q.getCurrentGame().getBlackPlayer().getWall(id-10));
+			q.getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(q.getCurrentGame().getBlackPlayer().getWall(id-10));
+		}*/
+		return true;
+	}
+	
+	public void dropWall(int col, int row, String dir,int id) {
+		Quoridor q=QuoridorApplication.getQuoridor();
+		Direction dirc;
+		
+		if (dir.compareTo("vertical")==0) {
+			dirc=Direction.Vertical;
+		}
+		else {
+			dirc=Direction.Horizontal;
+		}
+		
+		if (id<10) { 	//white
+			Wall w=q.getCurrentGame().getWhitePlayer().getWall(id);
+			new WallMove(q.getCurrentGame().getMoves().size(), 0, q.getCurrentGame().getWhitePlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
+			q.getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(q.getCurrentGame().getWhitePlayer().getWall(id));
+			q.getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(q.getCurrentGame().getWhitePlayer().getWall(id));
+		}
+		
+		else {
+			Wall w=q.getCurrentGame().getBlackPlayer().getWall(id-10);
+			new WallMove(q.getCurrentGame().getMoves().size(), 1, q.getCurrentGame().getBlackPlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
+			q.getCurrentGame().getCurrentPosition().removeBlackWallsInStock(q.getCurrentGame().getBlackPlayer().getWall(id-10));
+			q.getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(q.getCurrentGame().getBlackPlayer().getWall(id-10));
+		}
+	}
 	
 	/**
-	 * For setTotalThinkingTime feature 
+	 * For Validate Position Feature
+	 * Checks if pawn position is within bounds of board
+	 * 
+	 * @author DariusPi
+	 * 
+	 * @param Quoridor q
+	 * @param int x1
+	 * @param int y1
+	 * @return
+	 */
+	public boolean valPawnPosition(Quoridor q,int x1,int y1) {
+		
+		if (x1>0 && x1<11 && y1>0 && y1<11) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * For setTotalThinkingTime feature, sets the thinking time and gives ready to start signal
 	 * 
 	 * @author AmineMallek
 	 * 
@@ -248,7 +445,7 @@ public class GameController {
 
 
 	/**
-	 * For savePosition feature 
+	 * For savePosition feature, saves the position, accounting for who starts in the way given in overview
 	 * 
 	 * @author AmineMallek
 	 * 
@@ -263,9 +460,340 @@ public class GameController {
 		else return false;
 	}
 
-	public void SaveGame(String FileName) {
-		throw new UnsupportedOperationException();	
-		//This saves the game
+	public void SaveGame(Quoridor q, String FileName) throws IOException {
+	
+		File file=new File(FileName);		//Our file created
+		
+		file.setWritable(true);
+		file.createNewFile();
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter(file, "UTF-8");
+			//if white playing, white should be on the first line
+			if(q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite())	//if it's the white player's turn
+			{
+				int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow(); //gets row number
+				int columnW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();	// gets column number
+				
+				String ColumnW = "";  //needs conversion to letter, using switch cases
+				switch(columnW) {
+				
+				case 1:  ColumnW = "a";
+					break;
+				
+				case 2:  ColumnW = "b";
+					break;
+					
+				case 3:   ColumnW = "c";
+					break;
+					
+				case 4:   ColumnW = "d";
+					break;
+					
+				case 5:  ColumnW = "e";
+					break;
+					
+				case 6:  ColumnW = "f";
+					break;
+					
+				case 7:  ColumnW = "g";
+					break;
+					
+				case 8:  ColumnW = "h";
+					break;
+					
+				case 9: ColumnW = "i";
+					
+				}
+				writer.print("W: " + ColumnW+rowW);//print white player position
+				//writer.print("W: " + ColumnW + ", " + rowW);
+				
+				List<Wall> wWall	= q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard(); //wall objects
+				
+				for(Wall pos: wWall)
+				{ 
+				
+					int WallColumnWhite = pos.getMove().getTargetTile().getColumn();//store column number to be converted to int
+					String WallColumnLetterWhite = "";
+					
+					switch(WallColumnWhite) {
+					
+					case 1:  WallColumnLetterWhite = "a";
+						break;
+					
+					case 2:  WallColumnLetterWhite = "b";
+						break;
+						
+					case 3:   WallColumnLetterWhite = "c";
+						break;
+						
+					case 4:   WallColumnLetterWhite = "d";
+						break;
+						
+					case 5:  WallColumnLetterWhite = "e";
+						break;
+						
+					case 6:  WallColumnLetterWhite = "f";
+						break;
+						
+					case 7:  WallColumnLetterWhite = "g";
+						break;
+						
+					case 8:  WallColumnLetterWhite = "h";
+						break;
+						
+					case 9: WallColumnLetterWhite = "i";
+						
+					}					
+					writer.print("," + WallColumnLetterWhite + pos.getMove().getTargetTile().getRow() + pos.getMove().getWallDirection().toString().charAt(0));
+
+				//	writer.print();
+				}
+				writer.println("");
+				int rowB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();		//black player row		
+				int columnB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn(); //white player column
+				String ColumnB = "";			//string column to make it a letter
+				switch(columnB) {
+				
+				case 1:  ColumnB = "a";
+					break;
+				
+				case 2:  ColumnB = "b";
+					break;
+					
+				case 3:   ColumnB = "c";
+					break;
+					
+				case 4:   ColumnB = "d";
+					break;
+					
+				case 5:  ColumnB = "e";
+					break;
+					
+				case 6:  ColumnB = "f";
+					break;
+					
+				case 7:  ColumnB = "g";
+					break;
+					
+				case 8:  ColumnB = "h";
+					break;
+					
+				case 9: ColumnB = "i";
+					
+				}
+
+				writer.print("B: " + ColumnB+rowB); //prints black player's position
+			//	writer.print("B: "+ rowB + ", " + ColumnB);
+
+				List<Wall> bWall	= q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();	//wall objects list	
+				for(Wall pos1: bWall)
+				{ 
+					int WallColumnBlack = pos1.getMove().getTargetTile().getColumn(); //gets column number to convert it to letter
+					String WallColumnLetterBlack = "";
+					
+					switch(WallColumnBlack) {		//letter switch
+					
+					case 1:  WallColumnLetterBlack = "a";
+						break;
+					
+					case 2:  WallColumnLetterBlack = "b";
+						break;
+						
+					case 3:   WallColumnLetterBlack = "c";
+						break;
+						
+					case 4:   WallColumnLetterBlack = "d";
+						break;
+						
+					case 5:  WallColumnLetterBlack = "e";
+						break;
+						
+					case 6:  WallColumnLetterBlack = "f";
+						break;
+						
+					case 7:  WallColumnLetterBlack = "g";
+						break;
+						
+					case 8:  WallColumnLetterBlack = "h";
+						break;
+						
+					case 9: WallColumnLetterBlack = "i";
+						
+					}
+				
+					writer.print("," + WallColumnLetterBlack + pos1.getMove().getTargetTile().getRow() + pos1.getMove().getWallDirection().toString().charAt(0));
+				}
+				//writer.println()
+			    writer.close();	
+			}
+			
+			//if black playing, black should be on the first line
+			else if (q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsBlack())	//if it's black player's turn
+			{
+				
+				int rowB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow(); //int  row
+				int columnB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn(); //int column to letter
+				String ColumnB = ""; //String that'll contain the column letter
+				switch(columnB) {	//switch case
+				
+				case 1:  ColumnB = "a";
+					break;
+				
+				case 2:  ColumnB = "b";
+					break;
+					
+				case 3:   ColumnB = "c";
+					break;
+					
+				case 4:   ColumnB = "d";
+					break;
+					
+				case 5:  ColumnB = "e";
+					break;
+					
+				case 6:  ColumnB = "f";
+					break;
+					
+				case 7:  ColumnB = "g";
+					break;
+					
+				case 8:  ColumnB = "h";
+					break;
+					
+				case 9: ColumnB = "i";
+					
+				}
+
+				writer.print("B: " + ColumnB+ rowB);//print player's position
+			//	writer.print("B: "+ rowB + ", " + ColumnB);
+
+				List<Wall> bWall	= q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard(); //wall object list
+				for(Wall pos1: bWall) //enhanced for loop
+				{ 
+				
+					int WallColumnBlack = pos1.getMove().getTargetTile().getColumn(); //column int
+					String WallColumnLetterBlack = ""; //column letter string
+					
+					switch(WallColumnBlack) { //switch
+					
+					case 1:  WallColumnLetterBlack = "a";
+						break;
+					
+					case 2:  WallColumnLetterBlack = "b";
+						break;
+						
+					case 3:   WallColumnLetterBlack = "c";
+						break;
+						
+					case 4:   WallColumnLetterBlack = "d";
+						break;
+						
+					case 5:  WallColumnLetterBlack = "e";
+						break;
+						
+					case 6:  WallColumnLetterBlack = "f";
+						break;
+						
+					case 7:  WallColumnLetterBlack = "g";
+						break;
+						
+					case 8:  WallColumnLetterBlack = "h";
+						break;
+						
+					case 9: WallColumnLetterBlack = "i";
+						
+					}
+					//print walls, column, row, direction
+					writer.print("," + WallColumnLetterBlack + pos1.getMove().getTargetTile().getRow() + pos1.getMove().getWallDirection().toString().charAt(0));
+				}
+				writer.println("");//new line
+				int rowW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();//int row
+				int columnW = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();//int 
+				String ColumnW = ""; //string column
+				switch(columnW) {
+				
+				case 1:  ColumnW = "a";
+					break;
+				
+				case 2:  ColumnW = "b";
+					break;
+					
+				case 3:   ColumnW = "c";
+					break;
+					
+				case 4:   ColumnW = "d";
+					break;
+					
+				case 5:  ColumnW = "e";
+					break;
+					
+				case 6:  ColumnW = "f";
+					break;
+					
+				case 7:  ColumnW = "g";
+					break;
+					
+				case 8:  ColumnW = "h";
+					break;
+					
+				case 9: ColumnW = "i";
+					
+				}
+
+				writer.print("W: " + ColumnW  + rowW); //string print player position
+				//writer.print("W: " + ColumnW + ", " + rowW);
+				
+				List<Wall> wWall	= q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard(); //object wall
+		
+				for(Wall pos: wWall)
+				{ 
+					int WallColumnWhite = pos.getMove().getTargetTile().getColumn(); //column int
+					String WallColumnLetterWhite = "";	//column string to be filled with a letter
+					
+					switch(WallColumnWhite) {	//switch case
+						case 1:  WallColumnLetterWhite = "a";
+							break;
+						
+						case 2:  WallColumnLetterWhite = "b";
+							break;
+							
+						case 3:   WallColumnLetterWhite = "c";
+							break;
+							
+						case 4:   WallColumnLetterWhite = "d";
+							break;
+							
+						case 5:  WallColumnLetterWhite = "e";
+							break;
+							
+						case 6:  WallColumnLetterWhite = "f";
+							break;
+							
+						case 7:  WallColumnLetterWhite = "g";
+							break;
+							
+						case 8:  WallColumnLetterWhite = "h";
+							break;
+							
+						case 9: WallColumnLetterWhite = "i";	
+					}
+				
+					//print wall column, row, direction
+					writer.print("," + WallColumnLetterWhite + pos.getMove().getTargetTile().getRow() + pos.getMove().getWallDirection().toString().charAt(0));
+				//	writer.print();
+				}
+				 writer.close();	//close writer
+			}
+			    
+		} catch (FileNotFoundException e) {
+			// Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	/**
@@ -275,15 +803,17 @@ public class GameController {
 	 * @author louismollick
 	 * 
 	 * @param game
-	 * @throws UnsupportedOperationException
+	 * @throws Exception
 	 */
-	public void rotateWall() throws UnsupportedOperationException{
+	public void rotateWall() throws Exception{
 		WallMove wmc = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
 		if (wmc != null) {
 			Direction dir = wmc.getWallDirection();
 			if (dir.equals(Direction.Horizontal)) dir = Direction.Vertical;
-			else dir = Direction.Vertical;
+			else dir = Direction.Horizontal;
 			wmc.setWallDirection(dir);
+		}else {
+			throw new Exception("No WallMove Candidate!");
 		}
 	}
 	
@@ -293,19 +823,39 @@ public class GameController {
 	 * 
 	 * @author louismollick
 	 * 
-	 * @throws UnsupportedOperationException
+	 * @throws Exception
 	 */
-	public void grabWall() throws UnsupportedOperationException{
-		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+	public void grabWall() throws Exception{
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game game = quoridor.getCurrentGame();
 		Player playerToMove = game.getCurrentPosition().getPlayerToMove();
+		Tile initialPos = quoridor.getBoard().getTile(40);
 		
-		if(playerToMove == null) throw new UnsupportedOperationException();
-		if(playerToMove.hasGameAsBlack()) {
+		if(playerToMove == null) throw new Exception("No player to move!");
+		if(!game.hasWallMoveCandidate()) {
+			int moveNum = game.numberOfMoves();
+			int roundNum = 1;
+			if(moveNum != 0) roundNum = game.getMove(moveNum-1).getRoundNumber();
 			
-		}
-		else if (playerToMove.hasGameAsWhite()) {
-			
-		}
+			if(playerToMove.hasGameAsBlack()) {
+				if(game.getCurrentPosition().hasBlackWallsInStock()) {
+					int size = game.getCurrentPosition().getBlackWallsInStock().size();
+					Wall w = game.getCurrentPosition().getBlackWallsInStock(size-1);
+					w.setMove(new WallMove(moveNum, roundNum, playerToMove, initialPos, game, Direction.Vertical, w));
+					game.setWallMoveCandidate(w.getMove());
+				}else throw new Exception("No more walls");
+			}
+			else if (playerToMove.hasGameAsWhite()) {
+				if(game.getCurrentPosition().hasWhiteWallsInStock()) {
+					int size = game.getCurrentPosition().getWhiteWallsInStock().size();
+					Wall w = game.getCurrentPosition().getWhiteWallsInStock(size-1);
+					w.setMove(new WallMove(moveNum, roundNum, playerToMove, initialPos, game, Direction.Vertical, w));
+					game.setWallMoveCandidate(w.getMove());
+				}else throw new Exception("No more walls");
+			}
+		} else {
+			throw new Exception("WallMove Candidate already exists");
+		};
 	}
 	
 	/**
@@ -393,6 +943,18 @@ public class GameController {
 	}
 	
 	/**
+	 * For Load Position feature
+	 * Loads a saved game. Currently does not at all work.
+	 * @throws Exception 
+	 * 
+	 */
+	public void loadGame(Quoridor quoridor, String filename) throws Exception {
+		initSavedGameLoad(quoridor, filename);
+		checkIfloadGameValid(quoridor);
+		
+	}
+	
+	/**
 	 * * For Load Position feature
 	 * Initiates loading a saved game
 	 * 
@@ -400,36 +962,217 @@ public class GameController {
 	 * @param quoridor
 	 * @param filename
 	 * @return
+	 * @throws Exception 
 	 * @throws UnsupportedOperationException
 	 */
-	public Game initSaveGameLoad(Quoridor quoridor, String filename) throws UnsupportedOperationException {
-		throw new UnsupportedOperationException();
+	public Game initSavedGameLoad(Quoridor quoridor, String filename) throws Exception /*throws UnsupportedOperationException*/ {
+		
+		
+		initGame(quoridor);
+		Game game = quoridor.getCurrentGame();
+		Board board = quoridor.getBoard();
+		GamePosition gp = game.getCurrentPosition();
+		
+		
+		
+		//initialize scanning on file with position data
+		//assume that file is well formed even if invalid
+		File file = new File(filename);
+		Scanner fileSC = null;
+		try {
+			fileSC = new Scanner(file);
+		} catch (FileNotFoundException e) {
+			throw new Exception("File does not exist!");
+		}
+		
+		//Call Tokenizers
+		StringTokenizer s1 = new StringTokenizer(fileSC.nextLine());
+		StringTokenizer s2 = new StringTokenizer(fileSC.nextLine());
+		fileSC.close();
+		
+		//Set Players
+		String playerOneString = s1.nextToken();
+		s2.nextToken(); //iterate past playerstring; we can infer this info from the first line
+		
+		//if (board == null) //uncomment if nullpointerexception @line with board manip
+		//	board = initBoard(quoridor);
+		
+		boolean isPlayerOneWhite = (playerOneString.contentEquals("W:")) ? true : false;
+		Player playerOne, playerTwo;
+		int playerOneWallID = 0;
+		int playerOneAbsoluteWallID = 1;
+		int playerTwoWallID = 0;
+		int playerTwoAbsoluteWallID = 1;
+		
+		if (isPlayerOneWhite) {
+			playerOne = game.getWhitePlayer();
+			playerTwo = game.getBlackPlayer();
+			playerTwoAbsoluteWallID += 10;
+		} else {
+			playerOne = game.getBlackPlayer();
+			playerTwo = game.getWhitePlayer();
+			playerOneAbsoluteWallID += 10;
+		}
+		if (!Wall.hasWithId(0)) {
+			for (int i = 0; i < 10; i++) {
+				new Wall(i, game.getWhitePlayer());
+				new Wall(i + 10, game.getBlackPlayer());
+			}
+			//for (int i = 0; i < 2; i++) {
+			//	for (int j = 0; j < 10; j++) {
+			//		new Wall(i * 10 + j, players[i]);
+			//	}
+			//}
+		}
+		PlayerPosition playerOnePosition = null;
+		PlayerPosition playerTwoPosition = null;
+		
+		while (s1.hasMoreTokens() || s2.hasMoreTokens()) {
+			
+			if (s1.hasMoreTokens()) {
+				String move = s1.nextToken(",");
+				if (move.charAt(0) == ' ' || move.charAt(0) == ',')
+					move = move.substring(1);
+				
+				int col = move.charAt(0) - 'a' + 1;
+				int row = move.charAt(1) - '0';
+				Tile tile = board.getTile(getIndex(row, col));
+				Direction dir = null;
+				boolean isWallMove = false;
+				if (move.length() == 3) {
+					isWallMove = true;
+					dir = (move.charAt(2) == 'h') ? Direction.Horizontal : Direction.Vertical;
+				}
+				
+				if (!isWallMove) {
+					playerOnePosition = new PlayerPosition(playerOne, tile);
+				} else {
+					Wall wall = Wall.getWithId(playerOneAbsoluteWallID);
+					wall.setMove(new WallMove(game.numberOfMoves(), 1, playerOne, tile, game, dir, 
+							wall));
+					if (!addOrMoveWallsOnBoard(gp, wall, isPlayerOneWhite))
+						throw new Exception("Unable to move wall from stock to board for player " 
+								+ "one");
+					
+					playerOneWallID++;
+					playerOneAbsoluteWallID++;
+				}
+			}
+			
+			if (s2.hasMoreTokens()) {
+				String move = s2.nextToken(",");
+				if (move.charAt(0) == ' ' || move.charAt(0) == ',')
+					move = move.substring(1);
+				
+				int col = move.charAt(0) - 'a' + 1;
+				int row = move.charAt(1) - '0';
+				Tile tile = board.getTile(getIndex(row, col));
+				Direction dir = null;
+				boolean isWallMove = false;
+				if (move.length() == 3) {
+					isWallMove = true;
+					dir = (move.charAt(2) == 'h') ? Direction.Horizontal : Direction.Vertical;
+				}
+				
+				if (!isWallMove) {
+					playerTwoPosition = new PlayerPosition(playerTwo, tile);
+				} else {
+					//LOOK HERE
+					Wall wall = Wall.getWithId(playerTwoAbsoluteWallID);
+					wall.setMove(new WallMove(game.numberOfMoves(), 1, playerTwo, tile, game, dir, 
+							wall));
+					if (!addOrMoveWallsOnBoard(gp, wall, !isPlayerOneWhite))
+						throw new Exception("Unable to move wall from stock to board for player " 
+								+ "two");
+					
+					playerTwoWallID++;
+					playerTwoAbsoluteWallID++;
+				}
+			}
+			
+			
+		}
+		
+		
+		
+		//TODO: THink about separating this process into its subroutine
+		game.setCurrentPosition(gp);
+		gp.setPlayerToMove(playerOne);
+		return game;
+		//throw new UnsupportedOperationException();
 	}
+	
+	//private static Player getPlayer(boolean isWhite, Game game) {
+	//	return (isWhite == true) ? game.getWhitePlayer() : game.getBlackPlayer();
+	//}
+	
+	/*
+	 * getIndex from Stepdefinitions, cleaned up a bit
+	 * Credit to Saifullah for getting it working properly in Iteration 2
+	 */
+	private static int getIndex(int row, int col) {
+		
+		if(row <= 0 || col <= 0 || row > 9 || col > 9) {
+			return -10; //sentinel for indexNotFound
+		}
+		else {
+		return ((((row-1)*9)+col)-1);
+		}
+		
+	}
+	
+	/*
+	 * Color-agnostic combined addOrMoveWallsOnBoard and removeWallsInStock for loadPosiiton feature
+	 */
+	private static boolean addOrMoveWallsOnBoard(GamePosition gp, Wall wall, boolean isWhite) {
+		//boolean didRemove = false;
+		boolean didAdd = false;
+		if (isWhite) {
+			//didRemove = gp.removeWhiteWallsInStock(wall);
+			//if (!didRemove) {
+			//	return false;
+			//}
+			didAdd = gp.addOrMoveWhiteWallsOnBoardAt(wall, gp.getWhiteWallsOnBoard().size());
+			return didAdd;
+		} else {
+			//didRemove = gp.removeBlackWallsInStock(wall);
+			//if (!didRemove) {
+			//	return false;
+			//}
+			didAdd = gp.addOrMoveBlackWallsOnBoardAt(wall, gp.getBlackWallsOnBoard().size());
+			return didAdd;
+		}
+	}
+	
+	
 	
 	/**
 	 *  * For Load Position feature
-	 * Attempts to set load position. Returns an error if position is invalid
+	 *  
+	 *  Checks position information stored in current game. returns an error if position is invalid.
 	 * 
 	 * @author FSharp4
 	 * @param quoridor
-	 * @throws UnsupportedOperationException
+	 * @throws IOException 
 	 */
-	public void loadGame(Quoridor quoridor) 
-			throws UnsupportedOperationException {
+	public void checkIfloadGameValid(Quoridor quoridor) 
+			throws UnsupportedOperationException, IOException {
 		  //throws UnsupportedOperationException, IOException {
 		
 		Game game = quoridor.getCurrentGame();
 		
-		if (validatePosition(game)) {
+		//if (validatePosition(game)) {
+		try {
+			if (validatePos(game.getCurrentPosition())) {
 			//update GUI here
 			quoridor.getCurrentGame().setGameStatus(GameStatus.ReadyToStart);
 			//return true
-		} else {
-			//throw new IOException("Load error: Position invalid");
+			} else {
+				throw new IOException("Load error: Position invalid");
+			}
+		} catch (UnsupportedOperationException e) {
+			throw new UnsupportedOperationException("Validate position isn't fully working?");
 		}
-		
-		
-		throw new UnsupportedOperationException();
 	}
 	
 	/**
@@ -473,7 +1216,8 @@ public class GameController {
 	
 	public boolean isClockCountingDown(Player player) throws UnsupportedOperationException {
 		//This interacts with the clock Time object and checks GUI to see if a countdown is shown
-		throw new UnsupportedOperationException();
+		return true;
+		//throw new UnsupportedOperationException();
 	}
 	/**
 	 * For ValidatePosition Feature 
@@ -484,7 +1228,7 @@ public class GameController {
 	 * 
 	 * @throws UnsupportedOperationException
 	 */
-	public String validatePos(GamePosition posToValidate) {
+	public Boolean validatePos(GamePosition posToValidate) {
 		// TODO Auto-generated method stub
 		//Checks if pawn position overlaps with another pawn or a wall position overlaps with a wall or out of track pawn or wall
 		//if yes returns error
@@ -502,14 +1246,21 @@ public class GameController {
 	 * @return new Board
 	 * @throws UnsupportedOperationException
 	 */
-	public Board initBoard(Quoridor q) {
-		Board board = new Board(q);
+	public void initBoard(Quoridor q) {
+		//TODO
+		addWalls();
+		for (int i=0;i<10;i++) {
+			q.getCurrentGame().getCurrentPosition().addOrMoveWhiteWallsInStockAt(q.getCurrentGame().getWhitePlayer().getWall(i), i);
+			q.getCurrentGame().getCurrentPosition().addOrMoveBlackWallsInStockAt(q.getCurrentGame().getBlackPlayer().getWall(i), i);
+		}
+		
+		/*Board board = new Board(q);
 		for (int col = 1; col <= 9; col++) {
 			for(int row = 1; row <= 9; row ++) {
 				Tile tile = new Tile(row, col, board);
 			}
 		}
-		return board;
+		return board;*/
 	}
 	
 	public void switchPlayer(Quoridor q) {
@@ -536,24 +1287,6 @@ public class GameController {
 			return Color.WHITE;
 		}
 		return null;
-	}
-	
-	/*
-	 * I moved copied the getIndex method here for easier computation
-	 */
-	private int getIndex(int row, int col) {
-		//return (col - 1) * 9 + (row - 1);Saif's
-		/*if(row<0||row>9||col<0||col>9) {to avoid getting index in range for invalid coordinates due to -ve +ve cancelling
-			return -1;
-		}*/
-		if(row<=0||col<=0||row>9||col>9){
-			return -1;
-		}
-		else {
-		return ((((row-1)*9)+col)-1);//returning wrong values for incorrect row or col 
-		//may return out of bound value which can be handled by 
-		}
-		
 	}
 	
 }
