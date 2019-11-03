@@ -684,18 +684,16 @@ public class QuoridorPage extends JFrame{
 		
 		//TODO
 		//call load controller function to update model
-		//gc.initSavedGameLoad(QuoridorApplication.getQuoridor(), loadField.getText());
 		//reset view with new loaded file
-
-		//Quoridor quoridor = QuoridorApplication.getQuoridor();
-		//String filename = loadField.getText();
-		//Game game = gc.initSaveGameLoad(quoridor, filename);
-		//p1Name
+		String filename = loadField.getText();
+		try {
+			gc.initSavedGameLoad(QuoridorApplication.getQuoridor(), filename);
+			//gc.loadGame(QuoridorApplication.getQuoridor(), filename); //doesn't work
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			error = "Error during load saved game. Save file invalid";
+		}
 		
-		//p2Name
-		
-		//remTime?
-
 		
 		p1Name.setText(q.getCurrentGame().getWhitePlayer().getUser().getName());
 		p2Name.setText(q.getCurrentGame().getBlackPlayer().getUser().getName());

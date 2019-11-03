@@ -825,6 +825,21 @@ public class GameController {
 	}
 	
 	/**
+	 * For Load Position feature
+	 * Loads a saved game. Currently does not at all work.
+	 * 
+	 */
+	public void loadGame(Quoridor quoridor, String filename) throws Exception {
+		initSavedGameLoad(quoridor, filename);
+		try {
+			checkIfloadGameValid(quoridor);
+		} catch (Exception e) {
+			//load didn't happen
+			
+		}
+	}
+	
+	/**
 	 * * For Load Position feature
 	 * Initiates loading a saved game
 	 * 
@@ -842,9 +857,8 @@ public class GameController {
 		Game game = quoridor.getCurrentGame();
 		Board board = quoridor.getBoard();
 		GamePosition gp = game.getCurrentPosition();
-		//for (int i = 0; i < 10; i++) {
-			
-		//}
+		
+		
 		
 		//initialize scanning on file with position data
 		//assume that file is well formed even if invalid
@@ -886,7 +900,17 @@ public class GameController {
 			playerTwo = game.getWhitePlayer();
 			playerOneAbsoluteWallID += 10;
 		}
-		
+		if (!Wall.hasWithId(0)) {
+			for (int i = 0; i < 10; i++) {
+				new Wall(i, game.getWhitePlayer());
+				new Wall(i + 10, game.getBlackPlayer());
+			}
+			//for (int i = 0; i < 2; i++) {
+			//	for (int j = 0; j < 10; j++) {
+			//		new Wall(i * 10 + j, players[i]);
+			//	}
+			//}
+		}
 		PlayerPosition playerOnePosition = null;
 		PlayerPosition playerTwoPosition = null;
 		
@@ -1028,13 +1052,14 @@ public class GameController {
 	
 	/**
 	 *  * For Load Position feature
-	 * Attempts to set load position. Returns an error if position is invalid
+	 *  
+	 *  Checks position information stored in current game. returns an error if position is invalid.
 	 * 
 	 * @author FSharp4
 	 * @param quoridor
 	 * @throws UnsupportedOperationException
 	 */
-	public void loadGame(Quoridor quoridor) 
+	public void checkIfloadGameValid(Quoridor quoridor) 
 			throws UnsupportedOperationException {
 		  //throws UnsupportedOperationException, IOException {
 		
