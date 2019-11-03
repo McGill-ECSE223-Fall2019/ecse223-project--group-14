@@ -1132,12 +1132,12 @@ public class QuoridorPage extends JFrame{
 					error = e.getMessage();
 					timer.stop();
 					QuoridorApplication.getQuoridor().getCurrentGame().delete();
-					try {
-						loadFileButtonActionPerformed(evt);
-					} catch (Exception e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+					//try {
+					//	loadFileButtonActionPerformed(evt);
+					//} catch (Exception e1) {
+					//	// TODO Auto-generated catch block
+					//	e1.printStackTrace();
+					//}
 					refreshData();
 				}
 			}
