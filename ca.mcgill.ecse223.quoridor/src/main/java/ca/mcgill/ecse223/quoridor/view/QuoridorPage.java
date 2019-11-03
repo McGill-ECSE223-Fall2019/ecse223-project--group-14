@@ -678,7 +678,6 @@ public class QuoridorPage extends JFrame{
 	}
 	
 	private void loadFileButtonActionPerformed(java.awt.event.ActionEvent evt) throws Exception {
-		System.out.println("q");
 		GameController gc= new GameController();
 		error = "";
 		
@@ -1133,8 +1132,9 @@ public class QuoridorPage extends JFrame{
 				try {
 					loadFileButtonActionPerformed(evt);
 				} catch (Exception e) {
+					//This allows for user to know exactly *which* error occurred in a concise 
+					//manner
 					error = e.getMessage();
-					//error="File does not exists";
 					QuoridorApplication.getQuoridor().getCurrentGame().delete();
 					refreshData();
 				}
