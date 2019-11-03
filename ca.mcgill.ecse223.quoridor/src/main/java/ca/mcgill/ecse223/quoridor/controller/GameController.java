@@ -1034,7 +1034,7 @@ public class GameController {
 //			for (int i = 1; i <= 10; i++) {
 //E
 		
-		if (!Wall.hasWithId(0)) {
+		if (!Wall.hasWithId(1)) {
 			for (int i = 1; i < 11; i++) {
 				new Wall(i, game.getWhitePlayer());
 				new Wall(i + 10, game.getBlackPlayer());
