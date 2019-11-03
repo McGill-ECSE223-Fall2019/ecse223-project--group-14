@@ -130,6 +130,9 @@ public class CucumberStepDefinitions {
 	// Scenario and scenario outline step definitions
 	// ***********************************************
 
+	/*private variables used for testing GUI functions*/
+	private String create;
+	
 	/**
 	 * @author louismollick
 	 * @throws Throwable
@@ -689,6 +692,8 @@ public class CucumberStepDefinitions {
 	public void nextPlayerToSetUserNameIs(String color) throws Throwable{
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
 		
+		create="";
+		
 		//the following creation of new game position was necessary as the currentPosition set by the background method is null, proven by the assertion error caused by uncommenting next line
 		//assertNotNull(quoridor.getCurrentGame().getCurrentPosition());
 		int thinkingTime=180;
@@ -783,10 +788,10 @@ public class CucumberStepDefinitions {
 		GameController G= new GameController();
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
 		if (quoridor.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite()) {
-			G.createUsername(quoridor, name,"white");
+			create=G.createUsername(quoridor, name,"white");
 		}
 		else {
-			G.createUsername(quoridor, name,"black");
+			create=G.createUsername(quoridor, name,"black");
 		}
 	}
 	
@@ -798,10 +803,7 @@ public class CucumberStepDefinitions {
 	public void thePlayerShallBeWarnedThatAlreadyExists(String name) throws Throwable{
 		//GUI related feature
 		
-		/*GameController G= new GameController();
-		Quoridor quoridor=QuoridorApplication.getQuoridor();
-		String msg= name+ " already exists";
-		assertEquals(G.createUsername(quoridor, name),msg);*/
+		assertEquals(create,name +" already exists");
 	}
 	
 	/**
