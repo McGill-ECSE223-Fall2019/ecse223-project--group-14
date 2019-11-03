@@ -288,7 +288,7 @@ public class GameController {
 	 * @param int id
 	 * @return boolean
 	 */
-	public boolean valWallPosition(int x1,int y1, String dir, int id) {
+	public boolean valWallPosition(int x1,int y1, String dir) {
 		Quoridor q =QuoridorApplication.getQuoridor();
 		GamePosition curr= q.getCurrentGame().getCurrentPosition();
 		
@@ -359,6 +359,33 @@ public class GameController {
 			
 		}
 		
+		/*if (id<10) { 	//white
+			Wall w=q.getCurrentGame().getWhitePlayer().getWall(id);
+			new WallMove(q.getCurrentGame().getMoves().size(), 0, q.getCurrentGame().getWhitePlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
+			q.getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(q.getCurrentGame().getWhitePlayer().getWall(id));
+			q.getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(q.getCurrentGame().getWhitePlayer().getWall(id));
+		}
+		
+		else {
+			Wall w=q.getCurrentGame().getBlackPlayer().getWall(id-10);
+			new WallMove(q.getCurrentGame().getMoves().size(), 1, q.getCurrentGame().getBlackPlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
+			q.getCurrentGame().getCurrentPosition().removeBlackWallsInStock(q.getCurrentGame().getBlackPlayer().getWall(id-10));
+			q.getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(q.getCurrentGame().getBlackPlayer().getWall(id-10));
+		}*/
+		return true;
+	}
+	
+	public void dropWall(int col, int row, String dir,int id) {
+		Quoridor q=QuoridorApplication.getQuoridor();
+		Direction dirc;
+		
+		if (dir.compareTo("vertical")==0) {
+			dirc=Direction.Vertical;
+		}
+		else {
+			dirc=Direction.Horizontal;
+		}
+		
 		if (id<10) { 	//white
 			Wall w=q.getCurrentGame().getWhitePlayer().getWall(id);
 			new WallMove(q.getCurrentGame().getMoves().size(), 0, q.getCurrentGame().getWhitePlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
@@ -372,7 +399,6 @@ public class GameController {
 			q.getCurrentGame().getCurrentPosition().removeBlackWallsInStock(q.getCurrentGame().getBlackPlayer().getWall(id-10));
 			q.getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(q.getCurrentGame().getBlackPlayer().getWall(id-10));
 		}
-		return true;
 	}
 	
 	/**
@@ -868,6 +894,18 @@ public class GameController {
 	}
 	
 	/**
+	 * For Load Position feature
+	 * Loads a saved game. Currently does not at all work.
+	 * @throws Exception 
+	 * 
+	 */
+	public void loadGame(Quoridor quoridor, String filename) throws Exception {
+		initSavedGameLoad(quoridor, filename);
+		checkIfloadGameValid(quoridor);
+		
+	}
+	
+	/**
 	 * * For Load Position feature
 	 * Initiates loading a saved game
 	 * 
@@ -885,9 +923,8 @@ public class GameController {
 		Game game = quoridor.getCurrentGame();
 		Board board = quoridor.getBoard();
 		GamePosition gp = game.getCurrentPosition();
-		//for (int i = 0; i < 10; i++) {
-			
-		//}
+		
+		
 		
 		//initialize scanning on file with position data
 		//assume that file is well formed even if invalid
@@ -896,9 +933,7 @@ public class GameController {
 		try {
 			fileSC = new Scanner(file);
 		} catch (FileNotFoundException e) {
-			System.err.println("File at filename does not exist!");
-			e.printStackTrace();
-			return null;
+			throw new Exception("File does not exist!");
 		}
 		
 		//Call Tokenizers
@@ -929,7 +964,17 @@ public class GameController {
 			playerTwo = game.getWhitePlayer();
 			playerOneAbsoluteWallID += 10;
 		}
-		
+		if (!Wall.hasWithId(0)) {
+			for (int i = 0; i < 10; i++) {
+				new Wall(i, game.getWhitePlayer());
+				new Wall(i + 10, game.getBlackPlayer());
+			}
+			//for (int i = 0; i < 2; i++) {
+			//	for (int j = 0; j < 10; j++) {
+			//		new Wall(i * 10 + j, players[i]);
+			//	}
+			//}
+		}
 		PlayerPosition playerOnePosition = null;
 		PlayerPosition playerTwoPosition = null;
 		
@@ -996,16 +1041,14 @@ public class GameController {
 				}
 			}
 			
-			if (playerOnePosition == null)
-				playerOnePosition = new PlayerPosition(playerOne, board.getTile(isPlayerOneWhite ? 36 : 44));
-			if (playerTwoPosition == null)
-				playerTwoPosition = new PlayerPosition(playerTwo, board.getTile(isPlayerOneWhite ? 44 : 36));
+			
 		}
 		
 		
 		
 		//TODO: THink about separating this process into its subroutine
 		game.setCurrentPosition(gp);
+		gp.setPlayerToMove(playerOne);
 		return game;
 		//throw new UnsupportedOperationException();
 	}
@@ -1027,21 +1070,6 @@ public class GameController {
 		return ((((row-1)*9)+col)-1);
 		}
 		
-	}
-	
-	/*
-	 * Color-agnostic setPosition method for loadPosition feature
-	 */
-	private static boolean setPosition(PlayerPosition aPlayerPosition, GamePosition aGamePosition, 
-			boolean isWhite) {
-		if (isWhite) {
-			if (!aGamePosition.setWhitePosition(aPlayerPosition))
-				return false;
-		} else {
-			if (!aGamePosition.setBlackPosition(aPlayerPosition))
-				return false;
-		}
-		return true;
 	}
 	
 	/*
@@ -1071,28 +1099,31 @@ public class GameController {
 	
 	/**
 	 *  * For Load Position feature
-	 * Attempts to set load position. Returns an error if position is invalid
+	 *  
+	 *  Checks position information stored in current game. returns an error if position is invalid.
 	 * 
 	 * @author FSharp4
 	 * @param quoridor
-	 * @throws UnsupportedOperationException
+	 * @throws IOException 
 	 */
-	public void loadGame(Quoridor quoridor) 
-			throws UnsupportedOperationException {
+	public void checkIfloadGameValid(Quoridor quoridor) 
+			throws UnsupportedOperationException, IOException {
 		  //throws UnsupportedOperationException, IOException {
 		
 		Game game = quoridor.getCurrentGame();
 		
-		if (validatePosition(game)) {
+		//if (validatePosition(game)) {
+		try {
+			if (validatePos(game.getCurrentPosition())) {
 			//update GUI here
 			quoridor.getCurrentGame().setGameStatus(GameStatus.ReadyToStart);
 			//return true
-		} else {
-			//throw new IOException("Load error: Position invalid");
+			} else {
+				throw new IOException("Load error: Position invalid");
+			}
+		} catch (UnsupportedOperationException e) {
+			throw new UnsupportedOperationException("Validate position isn't fully working?");
 		}
-		
-		
-		throw new UnsupportedOperationException();
 	}
 	
 	/**
