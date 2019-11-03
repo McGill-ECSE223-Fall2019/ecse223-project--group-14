@@ -266,7 +266,8 @@ public class CucumberStepDefinitions {
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
 		
 		if(gc.grabWall()) {
-			// Emulate player picking up wall in view if grab wall successful
+			// If grabWall successful, emulate player picking up wall in 
+			// view also, such that tests can be conducted on the view
 			QuoridorPage view = QuoridorApplication.getQuoridorView();
 			if (view == null) throw new Exception("View doesn't exist");
 			
@@ -322,8 +323,8 @@ public class CucumberStepDefinitions {
 	public void iHaveNoMoreWallsOnStock() throws Throwable{
 		Player p = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
 		GamePosition pos = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
-		if(pos.hasWhiteWallsInStock()) {
-			
+		while(pos.hasWhiteWallsInStock()){
+			pos.removeWhiteWallsInStock(pos.getWhiteWallsInStock(0));
 		}
 	}
 	
