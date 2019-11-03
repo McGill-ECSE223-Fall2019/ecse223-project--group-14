@@ -377,31 +377,7 @@ public class GameController {
 		return true;
 	}
 	
-	public void dropWall(int col, int row, String dir,int id) {
-		Quoridor q=QuoridorApplication.getQuoridor();
-		Direction dirc;
-		
-		if (dir.compareTo("vertical")==0) {
-			dirc=Direction.Vertical;
-		}
-		else {
-			dirc=Direction.Horizontal;
-		}
-		
-		if (id<10) { 	//white
-			Wall w=q.getCurrentGame().getWhitePlayer().getWall(id);
-			new WallMove(q.getCurrentGame().getMoves().size(), 0, q.getCurrentGame().getWhitePlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
-			q.getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(q.getCurrentGame().getWhitePlayer().getWall(id));
-			q.getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(q.getCurrentGame().getWhitePlayer().getWall(id));
-		}
-		
-		else {
-			Wall w=q.getCurrentGame().getBlackPlayer().getWall(id-10);
-			new WallMove(q.getCurrentGame().getMoves().size(), 1, q.getCurrentGame().getBlackPlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
-			q.getCurrentGame().getCurrentPosition().removeBlackWallsInStock(q.getCurrentGame().getBlackPlayer().getWall(id-10));
-			q.getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(q.getCurrentGame().getBlackPlayer().getWall(id-10));
-		}
-	}
+	
 	
 	/**
 	 * For Validate Position Feature
@@ -918,17 +894,38 @@ public class GameController {
 	}
 	
 	/**
-	 * For Move Wall feature
+	 * For Drop Wall feature
 	 * Attempts to drop the wall (place the wall) between possible rows and columns of the board 
 	 * 
-	 * @author Saifullah
+	 * @author Saifullah, credit for DariusPi for changing the entire method and making it work for the application.
 	 * 
 	 * @param game
 	 * @throws UnsupportedOperationException
 	 */
-	public void dropWall(Game game) throws UnsupportedOperationException{		
+	public void dropWall(int col, int row, String dir, int id) throws UnsupportedOperationException{		
+		Quoridor q = QuoridorApplication.getQuoridor();
+		Direction dirc;
 		
+		if(dir.compareTo("vertical") == 0) {
+			dirc = Direction.Vertical;
+		}
+		else {
+			dirc = Direction.Horizontal;
+		}
+		if(id<0) {
+			Wall w = q.getCurrentGame().getWhitePlayer().getWall(id);
+			new WallMove(q.getCurrentGame().getMoves().size(),0,q.getCurrentGame().getWhitePlayer(),q.getBoard().getTile(col+row*9),q.getCurrentGame(),dirc,w);
+			q.getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(q.getCurrentGame().getWhitePlayer().getWall(id));
+			q.getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(q.getCurrentGame().getWhitePlayer().getWall(id));
+		}
+		else {
+			Wall w=q.getCurrentGame().getBlackPlayer().getWall(id-10);
+			new WallMove(q.getCurrentGame().getMoves().size(), 1, q.getCurrentGame().getBlackPlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
+			q.getCurrentGame().getCurrentPosition().removeBlackWallsInStock(q.getCurrentGame().getBlackPlayer().getWall(id-10));
+			q.getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(q.getCurrentGame().getBlackPlayer().getWall(id-10));
+		}
 	}
+	
 	
 	/**
 	 * Testing method validatePosition

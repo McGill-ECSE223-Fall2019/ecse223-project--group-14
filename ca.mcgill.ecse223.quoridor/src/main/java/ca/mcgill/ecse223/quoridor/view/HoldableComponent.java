@@ -48,14 +48,6 @@ public abstract class HoldableComponent extends RectComponent{
 		return this.holdable;
 	}
 	
-	public void generateMoves() {
-		// TODO
-		// To do, just call the game Controller to return the possible moves for
-		// the currently held HoldableComponent and make PositionComponents 
-		// for each possible move location. We will check the collision between the held component
-		// and these move Panels to set the location of the held component.
-	}
-	
 	/**
 	 * Method returns if a wall is dropped onto an acceptable point based on its position and direction and if so sets the posX and posY positions
 	 * 
