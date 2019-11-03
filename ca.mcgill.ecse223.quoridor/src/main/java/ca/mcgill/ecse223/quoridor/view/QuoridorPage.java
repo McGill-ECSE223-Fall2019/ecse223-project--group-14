@@ -1164,7 +1164,11 @@ public class QuoridorPage extends JFrame{
 					//}
 					error = e.getMessage();
 					timer.stop();
-					QuoridorApplication.getQuoridor().getCurrentGame().delete();
+					try {
+						QuoridorApplication.getQuoridor().getCurrentGame().delete();
+					} catch (NullPointerException e1) {
+						//do nothing
+					}
 					//try {
 					//	loadFileButtonActionPerformed(evt);
 					//} catch (Exception e1) {
