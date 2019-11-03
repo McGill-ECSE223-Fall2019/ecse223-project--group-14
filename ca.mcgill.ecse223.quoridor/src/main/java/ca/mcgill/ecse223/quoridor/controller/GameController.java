@@ -290,30 +290,62 @@ public class GameController {
 			dirc=Direction.Vertical;
 			for(Wall pos: wWall){
 				if (pos.getMove().getWallDirection().toString().compareTo("Vertical")==0) {
-					if ((pos.getMove().getTargetTile().getColumn()+1==col)||(pos.getMove().getTargetTile().getColumn()-1==col)) {
+					if (((pos.getMove().getTargetTile().getRow()+1==row+1)||(pos.getMove().getTargetTile().getRow()-1==row+1)||(pos.getMove().getTargetTile().getRow()==row+1)) 
+							&&(pos.getMove().getTargetTile().getColumn()==col+1)) {
 						return false;
 					}
 				}
-				
-				//check for horizontal
+				else {
+					if ((pos.getMove().getTargetTile().getColumn()==col+1)&&(pos.getMove().getTargetTile().getRow()==row+1)) {
+						return false;
+					}
+				}
 			}
 			
 			for(Wall pos: bWall){
 				if (pos.getMove().getWallDirection().toString().compareTo("Vertical")==0) {
-					if ((pos.getMove().getTargetTile().getColumn()+1==col)||(pos.getMove().getTargetTile().getColumn()-1==col)) {
+					if (((pos.getMove().getTargetTile().getRow()+1==row+1)||(pos.getMove().getTargetTile().getRow()-1==row+1)||(pos.getMove().getTargetTile().getRow()==row+1)) 
+							&&(pos.getMove().getTargetTile().getColumn()==col+1)) {
 						return false;
 					}
 				}
-				
-				//check for horizontal
-			}
-			
-			
-			//check for overl in hors
-			
+				else {
+					if ((pos.getMove().getTargetTile().getColumn()==col+1)&&(pos.getMove().getTargetTile().getRow()==row+1)) {
+						return false;
+					}
+				}
+			}	
 		}
 		else {
 			dirc=Direction.Horizontal;
+			for(Wall pos: wWall){
+				if (pos.getMove().getWallDirection().toString().compareTo("Vertical")==0) {
+					if ((pos.getMove().getTargetTile().getColumn()==col+1)&&(pos.getMove().getTargetTile().getRow()==row+1)) {
+						return false;
+					}
+				}
+				else {
+					if (((pos.getMove().getTargetTile().getColumn()+1==col+1)||(pos.getMove().getTargetTile().getColumn()-1==col+1)||(pos.getMove().getTargetTile().getColumn()==col+1)) 
+							&&(pos.getMove().getTargetTile().getRow()==row+1)) {
+						return false;
+					}
+				}
+			}
+			
+			for(Wall pos: bWall){
+				if (pos.getMove().getWallDirection().toString().compareTo("Vertical")==0) {
+					if ((pos.getMove().getTargetTile().getColumn()==col+1)&&(pos.getMove().getTargetTile().getRow()==row+1)) {
+						return false;
+					}
+				}
+				else {
+					if (((pos.getMove().getTargetTile().getColumn()+1==col+1)||(pos.getMove().getTargetTile().getColumn()-1==col+1)||(pos.getMove().getTargetTile().getColumn()==col+1)) 
+							&&(pos.getMove().getTargetTile().getRow()==row+1)) {
+						return false;
+					}
+				}
+			}	
+			
 		}
 		
 		if (id<10) { 	//white
