@@ -10,6 +10,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.sql.Time;
 
 import javax.swing.BorderFactory;
@@ -602,17 +603,15 @@ public class QuoridorPage extends JFrame{
 		refreshData();
 	}
 	
-	private void saveFileButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	private void saveFileButtonActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
 		// clear error message
 		//toggleBoard(false); to be implemented
 		
 		GameController gc= new GameController();
-		error = "";
-		//TODO
-		
+		error = "";	
 		
 		//call a does file exists method that returns true or false
-		Boolean fileExist=false;
+		Boolean fileExist=gc.filename_exists(saveField.getText());
 		
 		saveFileButton.setVisible(false);
 		saveField.setVisible(false);
@@ -625,7 +624,7 @@ public class QuoridorPage extends JFrame{
 		else {
 			//call the save game controller method
 			
-			//TODO
+			gc.SaveGame(q, saveField.getText());
 			
 			// update visuals
 			banner = "GamePlay"; 
@@ -635,11 +634,12 @@ public class QuoridorPage extends JFrame{
 		}
 	}
 	
-	private void overwriteButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	private void overwriteButtonActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
 		error = "";
 		
 		//call save game controller method
-		//TODO
+		
+		gc.SaveGame(q, saveField.getText());
 		
 		// update visuals
 		banner = "GamePlay"; 
@@ -1102,13 +1102,23 @@ public class QuoridorPage extends JFrame{
 		
 		saveFileButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				saveFileButtonActionPerformed(evt);
+				try {
+					saveFileButtonActionPerformed(evt);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 		
 		overwriteButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				overwriteButtonActionPerformed(evt);
+				try {
+					overwriteButtonActionPerformed(evt);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 		
