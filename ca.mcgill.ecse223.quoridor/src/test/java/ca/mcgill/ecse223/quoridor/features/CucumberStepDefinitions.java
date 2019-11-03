@@ -1030,7 +1030,7 @@ public class CucumberStepDefinitions {
 	public void thePositionToLoadIsValid() throws Throwable {
 		GameController G = new GameController();
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		//assertTrue(G.validatePosition(quoridor.getCurrentGame())); TODO debug
+		assertTrue(G.validatePosition(quoridor.getCurrentGame()));
 	}
 	
 	/**
@@ -1051,9 +1051,13 @@ public class CucumberStepDefinitions {
 	@Then ("It shall be? (.*)'s turn")
 	public void itShallBeSTurn(String playerColor) throws Throwable {
 		boolean isWhite = false;
-		if (playerColor.contains("white"))
+		boolean hasSetColor = false;
+		if (playerColor.toLowerCase().contains("white")) {
 			isWhite = true;
-
+			hasSetColor = true;
+		} else if (playerColor.toLowerCase().contains("black"))
+			hasSetColor = true;
+		assertTrue(hasSetColor);
 		GameController G = new GameController();
 		assertTrue(G.setCurrentTurn(isWhite, QuoridorApplication.getQuoridor()));
 	}
@@ -1062,29 +1066,6 @@ public class CucumberStepDefinitions {
 	 * @author FSharp4
 	 * @throws Throwable
 	 */
-	//@And ("{String} shall be at (.*):(.*)")
-	/*public void shallBeAt(String player, int row, int col) throws Throwable {
-		boolean isWhite = false;
-		boolean hasSetColor = false;;
-		if (player.contains("white")) {
-			isWhite = true;
-			hasSetColor = true;
-		} else if (player.contains("black")) {
-			isWhite = false;
-			hasSetColor = true;
-		}
-		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Game game = quoridor.getCurrentGame();
-		//Player player = getPlayer(playerColor);
-		assertTrue(hasSetColor);
-		if (isWhite) {
-			assertEquals(quoridor.getBoard().getTile(getIndex(row, col)), 
-					game.getCurrentPosition().getWhitePosition().getTile());
-		} else {
-			assertEquals(quoridor.getBoard().getTile(getIndex(row, col)),
-					game.getCurrentPosition().getBlackPosition().getTile());
-		}
-	}*/
 	@Then("{string} shall be at {int}:{int}")
 	public void shall_be_at(String player, Integer row, Integer col) {
 	    // Write code here that turns the phrase above into concrete actions
