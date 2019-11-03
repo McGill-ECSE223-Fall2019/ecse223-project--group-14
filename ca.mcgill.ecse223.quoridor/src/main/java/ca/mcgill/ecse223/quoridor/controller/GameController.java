@@ -912,7 +912,7 @@ public class GameController {
 		else {
 			dirc = Direction.Horizontal;
 		}
-		if(id<0) {
+		if(id<10) {
 			Wall w = q.getCurrentGame().getWhitePlayer().getWall(id);
 			new WallMove(q.getCurrentGame().getMoves().size(),0,q.getCurrentGame().getWhitePlayer(),q.getBoard().getTile(col+row*9),q.getCurrentGame(),dirc,w);
 			q.getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(q.getCurrentGame().getWhitePlayer().getWall(id));

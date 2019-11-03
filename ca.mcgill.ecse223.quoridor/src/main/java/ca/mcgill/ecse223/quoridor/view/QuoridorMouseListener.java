@@ -128,10 +128,10 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		Component cursor = frame.getContentPane().findComponentAt(e.getX(),e.getY());		
+		Component cursor = frame.getContentPane().findComponentAt(e.getX(),e.getY());	
 		if(heldComponent != null) {
 			// TODO For MoveWall person: 
-			// When moving you held component, snap to possible positions
+			// When moving your held component, snap to possible positions
 			if(heldComponent instanceof WallComponent && cursor instanceof WallPositionComponent) {
 				WallComponent tempWall = (WallComponent) heldComponent;
 				WallPositionComponent tempPosition = (WallPositionComponent) cursor;

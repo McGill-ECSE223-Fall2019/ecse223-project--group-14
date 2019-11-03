@@ -47,6 +47,7 @@ public class CucumberStepDefinitions {
 	private String dir;
 	private boolean wvalid;
 	private boolean resvalid;
+	private static Direction Direction;
 	
 	// ***********************************************
 	// Background step definitions
@@ -528,7 +529,18 @@ public class CucumberStepDefinitions {
 	public void iReleaseTheWall() throws Throwable{
 		GameController gc = new GameController();
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
-		gc.dropWall(game);
+		WallMove wmc = game.getWallMoveCandidate();
+		Tile target = wmc.getTargetTile();
+		int id = wmc.getPlayer().getWall(getIndex(target.getColumn(),target.getRow())).getId();
+		Direction direction = wmc.getWallDirection();
+		String dir;
+		if(direction.compareTo(Direction.Horizontal) == 0) {
+			dir =  "horizontal";
+		}else {
+			dir = "vertical";
+		}
+	
+		gc.dropWall(target.getColumn(),target.getRow(),dir, id);
 		
 	}
 	
