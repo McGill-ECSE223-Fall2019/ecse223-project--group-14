@@ -47,6 +47,7 @@ public class CucumberStepDefinitions {
 	private String dir;
 	private boolean wvalid;
 	private boolean resvalid;
+	private static Direction Direction;
 	
 	// ***********************************************
 	// Background step definitions
@@ -528,7 +529,18 @@ public class CucumberStepDefinitions {
 	public void iReleaseTheWall() throws Throwable{
 		GameController gc = new GameController();
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
-		gc.dropWall(game);
+		WallMove wmc = game.getWallMoveCandidate();
+		Tile target = wmc.getTargetTile();
+		int id = wmc.getPlayer().getWall(getIndex(target.getColumn(),target.getRow())).getId();
+		Direction direction = wmc.getWallDirection();
+		String dir;
+		if(direction.compareTo(Direction.Horizontal) == 0) {
+			dir =  "horizontal";
+		}else {
+			dir = "vertical";
+		}
+	
+		gc.dropWall(target.getColumn(),target.getRow(),dir, id);
 		
 	}
 	
@@ -1255,9 +1267,9 @@ public class CucumberStepDefinitions {
 	 */ 
 
 	@When ("{int}:{int} is set as the thinking time")
-	public void IsSetAsTheThinkingTime(int min, int sec) throws Throwable{
+	public void IsSetAsTheThinkingTime(int min, int sec) throws Throwable{ 
 		GameController G= new GameController();
-		G.setTime(QuoridorApplication.getQuoridor(), min, sec);
+		G.setTime(QuoridorApplication.getQuoridor(), min, sec); //calls setTime method in the GameController Class
 	}
 
 	/**
@@ -1272,8 +1284,8 @@ public class CucumberStepDefinitions {
 		int time = min*60+sec;
 		GameController G= new GameController();
 
-		Time left = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getRemainingTime();
-		assertEquals(left.getTime()/1000, time);
+		Time left = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getRemainingTime(); //get time left
+		assertEquals(left.getTime()/1000, time); 
 	}
 
 
@@ -1557,7 +1569,7 @@ public class CucumberStepDefinitions {
 			return -1;
 		}*/
 		if(row<=0||col<=0||row>9||col>9){
-			return -10;
+			return -1;
 		}
 		else {
 		return ((((row-1)*9)+col)-1);//returning wrong values for incorrect row or col 

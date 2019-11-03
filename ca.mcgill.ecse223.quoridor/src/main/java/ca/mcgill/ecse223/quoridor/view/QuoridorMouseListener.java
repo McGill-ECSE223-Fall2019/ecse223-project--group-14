@@ -82,10 +82,13 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 				frame.setStageMove(true); // lock in move, and prevent player from picking up anything else
 				// until he presses the End Turn button. Otherwise, the player can pick the pawn/wall back up,
 				// and chose another move.
+//			}
+			
 				this.pickedUpX = 0;
 				this.pickedUpY = 0;
 				heldComponent=null;
 			} 
+
 			else { // If no position is clicked (and not rotating), just put the component back
 				heldComponent.setLocation(this.pickedUpX, this.pickedUpY); // put back to position when pickedUp
 				this.pickedUpX = 0;
@@ -125,9 +128,21 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
+		Component cursor = frame.getContentPane().findComponentAt(e.getX(),e.getY());	
 		if(heldComponent != null) {
-			heldComponent.setLocation(e.getX()-this.offsetX, e.getY()-this.offsetY);
-			frame.repaint();
-		}
+			// TODO For MoveWall person: 
+			// When moving your held component, snap to possible positions
+			if(heldComponent instanceof WallComponent && cursor instanceof WallPositionComponent) {
+				WallComponent tempWall = (WallComponent) heldComponent;
+				WallPositionComponent tempPosition = (WallPositionComponent) cursor;
+				if(tempWall.getDirection().equals(tempPosition.getDirection())) {
+					heldComponent.setLocation(tempPosition.getLocation());
+				}
+			}
+			else if(heldComponent instanceof WallComponent/* && cursor instanceof PawnPositionComponent*/) {
+				// TODO For anyone, once someone makes PositionComponent or equivalent
+			}
+
 	}
+}
 }
