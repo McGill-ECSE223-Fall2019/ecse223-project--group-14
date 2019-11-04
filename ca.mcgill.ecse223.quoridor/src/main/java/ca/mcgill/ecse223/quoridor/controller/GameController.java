@@ -1320,7 +1320,7 @@ public class GameController {
 	 * 
 	 * @throws UnsupportedOperationException
 	 */
-	/*public Boolean validatePos(GamePosition posToValidate) {//commented out for merge
+	public Boolean validatePos(GamePosition posToValidate) {//commented out for merge 
 		// TODO Auto-generated method stub
 		//Checks if pawn position overlaps with another pawn or a wall position overlaps with a wall or out of track pawn or wall
 		//if yes returns error
@@ -1356,7 +1356,7 @@ public class GameController {
 		//
 		return true; //3rd nov
 		//throw new UnsupportedOperationException();//testing 3rd nov
-	}*///commented out for merge
+	}//commented out for merge
 	
 
 	/**
