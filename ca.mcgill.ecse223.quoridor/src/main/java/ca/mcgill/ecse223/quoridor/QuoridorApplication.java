@@ -6,6 +6,7 @@ import ca.mcgill.ecse223.quoridor.view.QuoridorPage;
 public class QuoridorApplication {
 
 	private static Quoridor quoridor;
+	private static QuoridorPage view;
 
 	public static Quoridor getQuoridor() {
 		if (quoridor == null) {
@@ -14,11 +15,20 @@ public class QuoridorApplication {
  		return quoridor;
 	}
 	
+	public static QuoridorPage getQuoridorView() {
+		if (view == null) {
+			view = new QuoridorPage();
+            view.setVisible(true);
+		}
+		return view;
+	}
+	
 	public static void main(String[] args) {
 		// start UI
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new QuoridorPage().setVisible(true);
+                view = new QuoridorPage();
+                view.setVisible(true);
             }
         });
 	}
