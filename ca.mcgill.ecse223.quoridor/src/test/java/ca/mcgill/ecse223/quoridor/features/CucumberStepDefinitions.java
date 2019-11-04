@@ -1065,7 +1065,7 @@ public class CucumberStepDefinitions {
 	  @Given
 	  ("The player to move is {string}")
 	  public void thePlayerToMoveIs(String player) throws Throwable {
-		  int thinkingTime=180;
+		  //int thinkingTime=180;//not being used
 		  Quoridor quoridor=QuoridorApplication.getQuoridor();
 		/*
 		 * Player player1 = new Player(new Time(thinkingTime), quoridor.getUser(0), 9,
@@ -1074,7 +1074,7 @@ public class CucumberStepDefinitions {
 		 * quoridor.getUser(1), 1, Direction.Horizontal);
 		 */
 		  
-		 //LOUIs TEST
+		 //fri advice TEST
 		  GamePosition GP=quoridor.getCurrentGame().getCurrentPosition();
 		  //now let's get player to move and compare
 		  Player playertoMove=GP.getPlayerToMove();
@@ -1101,7 +1101,7 @@ public class CucumberStepDefinitions {
 			  }
 			  
 		  }
-		  //LOUIS part
+		  //fri advice
 		  
 		  
 		  /*Tile player1StartPos = quoridor.getBoard().getTile(36);
@@ -1169,9 +1169,33 @@ public class CucumberStepDefinitions {
 		  //so
 		  //QuoridorPage Q=new QuoridorPage();
 		  //Q.switchPlayer();
+		  String otherP;
+		  boolean turn;
+		  Quoridor q=QuoridorApplication.getQuoridor();
+		  Player curr=q.getCurrentGame().getCurrentPosition().getPlayerToMove();
+		  if(curr.hasGameAsWhite()) {
+			  otherP="black";
+		  }
+		  else {
+			  otherP="white";
+		  }
 		  
-		  //louis
-		  //getter in quoridor application
+		//friAdvice
+		  QuoridorPage view = QuoridorApplication.getQuoridorView();
+			if (view == null) throw new Exception("View doesn't exist");
+			if(other=="black") {
+				turn=view.getVisibilityTurnMessage2();
+				assertEquals(true,turn );
+				
+			}
+			else {
+				turn=view.getVisibilityTurnMessage1();
+				
+				assertEquals(true,turn );
+			}
+			//friAdvice
+		  //getter in quoridor application done
+		  
 		  //i will create getter in quoridor page to get JLabel for other player 
 		  //and assert
 		  
@@ -1187,7 +1211,10 @@ public class CucumberStepDefinitions {
 		  //check if timer is not running
 		  //check if player to move is argument player
 		  //assert
-		  
+		  QuoridorPage view = QuoridorApplication.getQuoridorView();
+			if (view == null) throw new Exception("View doesn't exist");
+		  //what is understand check if clock is running and player to move is 
+		  boolean running=view.gettimeRem2();
 		  
 		  //louis
 		  
@@ -1252,14 +1279,26 @@ public class CucumberStepDefinitions {
 	  @And
 	  ("The next player to move shall be {string}")
 	  public void theNextPlayerToMoveShallbeOther(String other) throws Throwable {
-		  //louis
+		  //friAdvice
 		  //get current player's next player
 		  //check if same as argument player
 		  
-		  
-		  //louis
-		  
-		  int thinkingTime=180;
+		  Quoridor quoridor=QuoridorApplication.getQuoridor();
+		  Player currP=quoridor.getCurrentGame().getCurrentPosition().getPlayerToMove();
+		  Player nextP=currP.getNextPlayer();
+		  String nextColor;
+		  if(nextP.hasGameAsBlack()) {
+			  nextColor="black";
+		  }
+		  else if(nextP.hasGameAsWhite()) {
+			  nextColor="white";
+		  }
+		  else {
+			  nextColor="doesntExist";
+		  }
+		  assertEquals(other, nextColor);
+		//friAdvice
+		 /* int thinkingTime=180;
 		  Quoridor quoridor=QuoridorApplication.getQuoridor();
 		  Player player1 = new Player(new Time(thinkingTime),
 				  quoridor.getUser(0), 9, Direction.Horizontal);
@@ -1283,7 +1322,7 @@ public class CucumberStepDefinitions {
 				assertEquals(other,"black");
 			}
 		  //Now that we have gae position with it.
-			
+			*/
 			
 	  }
 	  	
