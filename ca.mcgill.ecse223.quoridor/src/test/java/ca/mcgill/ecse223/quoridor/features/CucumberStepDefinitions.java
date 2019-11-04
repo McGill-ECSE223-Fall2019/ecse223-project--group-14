@@ -1174,7 +1174,7 @@ public class CucumberStepDefinitions {
 		  Quoridor q=QuoridorApplication.getQuoridor();
 		  Player curr=q.getCurrentGame().getCurrentPosition().getPlayerToMove();
 		  if(curr.hasGameAsWhite()) {
-			  otherP="black";
+			  otherP="black"; 
 		  }
 		  else {
 			  otherP="white";
