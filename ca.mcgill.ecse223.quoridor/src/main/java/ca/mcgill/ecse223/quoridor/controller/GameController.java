@@ -424,7 +424,7 @@ public class GameController {
 		}
 		
 		for (Wall wall : wallsOnBoard) {
-			wallsOnBoard.remove(wall);
+			//wallsOnBoard.remove(wall);
 			int row = wall.getMove().getTargetTile().getRow();
 			int col = wall.getMove().getTargetTile().getColumn();
 			//Bounds check!
@@ -452,28 +452,32 @@ public class GameController {
 			 */
 			if (direction.equals(Direction.Vertical)) {
 				for (Wall checkedWall : wallsOnBoard) {
-					int c_row = checkedWall.getMove().getTargetTile().getRow();
-					int c_col = checkedWall.getMove().getTargetTile().getColumn();
-					Direction c_direction = checkedWall.getMove().getWallDirection();
-					if (row == c_row && col == c_col)
-						return false;
-					
-					if (c_direction.equals(Direction.Vertical)) {
-						if (col == c_col && (row == c_row + 1 || col == c_row - 1))
+					if (!(checkedWall.getId() == wall.getId())) {
+						int c_row = checkedWall.getMove().getTargetTile().getRow();
+						int c_col = checkedWall.getMove().getTargetTile().getColumn();
+						Direction c_direction = checkedWall.getMove().getWallDirection();
+						if (row == c_row && col == c_col)
 							return false;
+					
+						if (c_direction.equals(Direction.Vertical)) {
+							if (col == c_col && (row == c_row + 1 || col == c_row - 1))
+								return false;
+						}
 					}
 				}
 			} else {
 				for (Wall checkedWall : wallsOnBoard) {
-					int c_row = checkedWall.getMove().getTargetTile().getRow();
-					int c_col = checkedWall.getMove().getTargetTile().getColumn();
-					Direction c_direction = checkedWall.getMove().getWallDirection();
-					if (row == c_row && col == c_col)
-						return false;
-					
-					if (c_direction.equals(Direction.Horizontal)) {
-						if (row == c_row && (col  == c_col + 1 || col == c_col - 1))
+					if (!(checkedWall.getId() == wall.getId())) {
+						int c_row = checkedWall.getMove().getTargetTile().getRow();
+						int c_col = checkedWall.getMove().getTargetTile().getColumn();
+						Direction c_direction = checkedWall.getMove().getWallDirection();
+						if (row == c_row && col == c_col)
 							return false;
+						
+						if (c_direction.equals(Direction.Horizontal)) {
+							if (row == c_row && (col  == c_col + 1 || col == c_col - 1))
+								return false;
+						}
 					}
 				}
 			}
