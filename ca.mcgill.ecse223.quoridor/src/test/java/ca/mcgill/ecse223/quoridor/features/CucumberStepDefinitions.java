@@ -1183,7 +1183,7 @@ public class CucumberStepDefinitions {
 		//friAdvice
 		  QuoridorPage view = QuoridorApplication.getQuoridorView();
 			if (view == null) throw new Exception("View doesn't exist");
-			if(other=="black") {
+			if(other.contentEquals("black")) {
 				turn=view.getVisibilityTurnMessage2();
 				assertEquals(true,turn );
 				
