@@ -1411,4 +1411,15 @@ public class QuoridorPage extends JFrame{
 	public boolean hasHeldWall() {
 		return this.listener.hasHeldWall();
 	}
+	//helper
+	public boolean gettimeRem2() {
+		return(timer.isRunning());
+	}
+	public boolean getVisibilityTurnMessage1() {
+		return(turnMessage1.isVisible());	
+	}
+	public boolean getVisibilityTurnMessage2() {
+		return(turnMessage2.isVisible());	
+	}
+	//helper
 }

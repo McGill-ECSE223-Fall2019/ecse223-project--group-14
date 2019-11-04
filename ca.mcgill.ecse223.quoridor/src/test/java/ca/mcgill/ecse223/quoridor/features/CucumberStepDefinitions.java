@@ -939,14 +939,15 @@ public class CucumberStepDefinitions {
 		GamePosition position = game.getCurrentPosition();
 		//Tile player1StartPos = quoridor.getBoard().getTile(36);
 		Tile player2StartPos = quoridor.getBoard().getTile(44);
-		if(getIndex(row,col)==-10) {
+		if(getIndex(row,col)==-10) {//getIndex gives-10 for invalid position
 			Tile testTile = QuoridorApplication.getQuoridor().getBoard().getTile(36);
 			PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), testTile);
 			PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
 			GamePosition testPosition=new GamePosition(-1,player1Position,player2Position,(quoridor.getCurrentGame().getWhitePlayer()),game);
 			//negative id in GamePosition to tell controller invalid tile coordinates. Controller doesnt have 
 			//access to row, col so it can only comment on whether if a pawn is there at that index of tiles
-			
+			//3rdNov keeping in mind darius's controller the above needs to chnage but 
+			//getTile 
 		}
 		else {
 		Tile testTile = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(row,col));
@@ -962,6 +963,7 @@ public class CucumberStepDefinitions {
 	 * @author ohuss1
 	 * @throws Throwable
 	 */
+	
 	@When ("Validation of the position is initiated")
 	public void validationOfPositionisInitiated()throws Throwable {//game position created in given pass it to game controller
 		//try getting position from tile created in Atgiven
@@ -981,7 +983,7 @@ public class CucumberStepDefinitions {
 	 * @author ohuss1
 	 * @throws Throwable
 	 */
-	@Then ("The position shall be {string}")//cumcumber syntax for String
+	@Then ("The position shall be {string}")
 	public void thePositionShallBeResult(String result) throws Throwable{
 		//GameController G= new GameController();
 		//if string ok then set boolean to true 
@@ -1004,7 +1006,7 @@ public class CucumberStepDefinitions {
 	 * @author ohuss1
 	 * @throws Throwable
 	 */
-	  @Given///To DO
+	  @Given
 	  ("A game position is supplied with wall coordinate {int}:{int}-{string}")
 	  public void aGamePositionisSuppliedWithWallCoordinate(int row, int col,String
 	  dir) throws Throwable{
@@ -1077,7 +1079,7 @@ public class CucumberStepDefinitions {
 		 * @author ohuss1
 		 * @throws Throwable
 		 */
-	  @Then ("The position shall be invalid")
+	  @Then ("The position shall be invalid") 
 	  public void thePositionShallBeInvalid() throws Throwable{
 		//GameController G= new GameController();
 			//if string ok then set boolean to true 
@@ -1089,9 +1091,274 @@ public class CucumberStepDefinitions {
 			assertEquals("error",G.validatePos(Prev));*/
 		  assertFalse(resvalid);
 	  }
+	  /**
+		 * @author ohuss1
+		 * @throws Throwable
+		 */
+	  @Given
+	  ("The player to move is {string}")
+	  public void thePlayerToMoveIs(String player) throws Throwable {
+		  //int thinkingTime=180;//not being used
+		  Quoridor quoridor=QuoridorApplication.getQuoridor();
+		/*
+		 * Player player1 = new Player(new Time(thinkingTime), quoridor.getUser(0), 9,
+		 * Direction.Horizontal);//not sure if should create with or without //target
+		 * number Player player2 = new Player(new Time(thinkingTime),
+		 * quoridor.getUser(1), 1, Direction.Horizontal);
+		 */
+		  
+		 //fri advice TEST
+		  GamePosition GP=quoridor.getCurrentGame().getCurrentPosition();
+		  //now let's get player to move and compare
+		  Player playertoMove=GP.getPlayerToMove();
+		  Player DesiredPlayerToMove;
+		  //now let's get player's color
+		  if(playertoMove.hasGameAsWhite()&& (player=="white")) {
+			  //means already white is tomove
+			  
+		  }
+		  else if((playertoMove.hasGameAsBlack()) && (player=="black")){
+			 // means already black is to move
+		  }
+		  else {
+			  //case if tomove not same as player
+			  //set player to move as color given in argument
+			  //GP.getPlayerToMove()=
+			  if(player=="black") {
+				  DesiredPlayerToMove=quoridor.getCurrentGame().getBlackPlayer();
+				  GP.setPlayerToMove(DesiredPlayerToMove);
+			  }
+			  else {
+				  DesiredPlayerToMove=quoridor.getCurrentGame().getWhitePlayer();
+				  GP.setPlayerToMove(DesiredPlayerToMove);
+			  }
+			  
+		  }
+		  //fri advice
+		  
+		  
+		  /*Tile player1StartPos = quoridor.getBoard().getTile(36);
+			Tile player2StartPos = quoridor.getBoard().getTile(44);
+			PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), player1StartPos);
+			PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
+			//PlayerPosition playerW=quoridor.getCurrentGame().//louis line
+		//Player	playertomove=
+			if (player.compareTo("white")==0) {//player variable is color coming from argument
+				GamePosition gamePos=new 
+			GamePosition(1, player1Position, player2Position,
+					quoridor.getCurrentGame().getWhitePlayer(), quoridor.getCurrentGame());//player to move is white	
+			}
+			else {
+				GamePosition gamePos=new 
+			GamePosition(1, player1Position, player2Position,
+					quoridor.getCurrentGame().getBlackPlayer(), quoridor.getCurrentGame());
+			}*/ 
+	  }
+	  /**
+		 * @author ohuss1
+		 * @throws Throwable
+		 */
+	  @And//
+	  ("The clock of {string} is running")
+	  public void theClockOfPlayerIsRunning(String player) throws Throwable {
+		  //Countdown method ensures these 2 (how to make sure test passes)
+		  
+		  
+		  
+		  
+	  }
+	  /**
+		 * @author ohuss1
+		 * @throws Throwable
+		 */
+	  @And
+	  ("The clock of {string} is stopped")
+	  public void theClockOfOtherIsStopped(String other) throws Throwable {
+		  //Countdown method ensures these 2 (how to make sure test passes)
+		  
+		  
+		  
+		  
+	  }
+	  /**
+		 * @author ohuss1
+		 * @throws Throwable
+		 */
+	  @When
+	  ("Player {string} completes his move")
+	  public void playerPlayerCompletesHisMove(String player) throws Throwable {
+		  Quoridor q=QuoridorApplication.getQuoridor();
+		  GameController G = new GameController();
+		  G.switchPlayer(q);  
+	  }
+	  /**
+		 * @author ohuss1
+		 * @throws Throwable
+		 */
+	  @Then
+	  ("The user interface shall be showing it is {string}  turn")//GUI ALERT DO LATER//get from VIEW HOWW?
+	  public void theUserInterfaceShallbeShowingItIsOthersTurn(String other) throws Throwable {
+		  //get data from view
+		  //so
+		  //QuoridorPage Q=new QuoridorPage();
+		  //Q.switchPlayer();
+		  String otherP;
+		  boolean turn;
+		  Quoridor q=QuoridorApplication.getQuoridor();
+		  Player curr=q.getCurrentGame().getCurrentPosition().getPlayerToMove();
+		  if(curr.hasGameAsWhite()) {
+			  otherP="black"; 
+		  }
+		  else {
+			  otherP="white";
+		  }
+		  
+		//friAdvice
+		  QuoridorPage view = QuoridorApplication.getQuoridorView();
+			if (view == null) throw new Exception("View doesn't exist");
+			if(other.contentEquals("black")) {
+				turn=view.getVisibilityTurnMessage2();
+				assertEquals(true,turn );
+				
+			}
+			else {
+				turn=view.getVisibilityTurnMessage1();
+				
+				assertEquals(true,turn );
+			}
+			//friAdvice
+		  //getter in quoridor application done
+		  
+		  //i will create getter in quoridor page to get JLabel for other player 
+		  //and assert
+		  
+	  }
+	  /**
+		 * @author ohuss1
+		 * @throws Throwable
+		 */
+	  @And
+	  ("The clock of {string} shall be stopped")
+	  public void theClockofPlayerShallBeStopped(String player) throws Throwable {
+		  //louis
+		  //check if timer is not running
+		  //check if player to move is argument player
+		  //assert
+		  QuoridorPage view = QuoridorApplication.getQuoridorView();
+			if (view == null) throw new Exception("View doesn't exist");
+		  //what is understand check if clock is running and player to move is 
+		  boolean running=view.gettimeRem2();
+		  
+		  //louis
+		  
+		  
+		//Stop clock then test if stopped
+		  Quoridor q=QuoridorApplication.getQuoridor();
+		  //need to check if player white or black or set player to move to that color
+		  assertNotNull(q.getCurrentGame());
+		  assertNotNull(q.getCurrentGame().getBlackPlayer());
+			assertNotNull(q.getCurrentGame().getWhitePlayer());
+		  if(player=="white") {
+			  q.getCurrentGame().getWhitePlayer().setRemainingTime(new Time(0));//now
+				//check if player's remaining time=0;
+			  assertEquals(0, q.getCurrentGame().getWhitePlayer().getRemainingTime());
+		  }
+		  else {
+			  q.getCurrentGame().getBlackPlayer().setRemainingTime(new Time(0));
+			  assertEquals(0, q.getCurrentGame().getBlackPlayer().getRemainingTime());
+		  }	  
 			
+	  }
+
+
+
+	    /**
+		 * @author ohuss1
+		 * @throws Throwable
+		 */
+	  @And
+	  ("The clock of {string} shall be running")
+	  public void theClockofOtherShallBeRunning(String other) throws Throwable {//MIGHT BE WRONG
+		//louis
+		  //check if timer is running
+		  //check if player to move is argument player
+		  //assert
+		  
+		  
+		  //louis
+		  
+		//Stop clock then test if stopped
+		  Quoridor q=QuoridorApplication.getQuoridor();
+		  //need to check if player white or black or set player to move to that color
+		  assertNotNull(q.getCurrentGame());
+		  assertNotNull(q.getCurrentGame().getBlackPlayer());
+			assertNotNull(q.getCurrentGame().getWhitePlayer());
+		  if(other=="white") {
+			  //q.getCurrentGame().getWhitePlayer().setRemainingTime(new Time(0));//now
+			  assertNotEquals(0, q.getCurrentGame().getWhitePlayer().getRemainingTime());
+		  }
+		  else {
+			  //q.getCurrentGame().getBlackPlayer().setRemainingTime(new Time(0));
+			  assertNotEquals(0, q.getCurrentGame().getBlackPlayer().getRemainingTime());
+		  }	
+		  //
+	  }
+	    
+	  
+	    /**
+		 * @author ohuss1
+		 * @throws Throwable
+		 */
+	  @And
+	  ("The next player to move shall be {string}")
+	  public void theNextPlayerToMoveShallbeOther(String other) throws Throwable {
+		  //friAdvice
+		  //get current player's next player
+		  //check if same as argument player
+		  
+		  Quoridor quoridor=QuoridorApplication.getQuoridor();
+		  Player currP=quoridor.getCurrentGame().getCurrentPosition().getPlayerToMove();
+		  Player nextP=currP.getNextPlayer();
+		  String nextColor;
+		  if(nextP.hasGameAsBlack()) {
+			  nextColor="black";
+		  }
+		  else if(nextP.hasGameAsWhite()) {
+			  nextColor="white";
+		  }
+		  else {
+			  nextColor="doesntExist";
+		  }
+		  assertEquals(other, nextColor);
+		//friAdvice
+		 /* int thinkingTime=180;
+		  Quoridor quoridor=QuoridorApplication.getQuoridor();
+		  Player player1 = new Player(new Time(thinkingTime),
+				  quoridor.getUser(0), 9, Direction.Horizontal);
+		  //target number
+		  Player player2 = new Player(new Time(thinkingTime), quoridor.getUser(1), 1, Direction.Horizontal);
+		  Tile player1StartPos = quoridor.getBoard().getTile(36);
+			Tile player2StartPos = quoridor.getBoard().getTile(44);
+			PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), player1StartPos);
+			PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
 			
-	
+			if (other.compareTo("white")==0) {
+				GamePosition gamePos=new 
+			GamePosition(1, player1Position, player2Position,
+					quoridor.getCurrentGame().getWhitePlayer(), quoridor.getCurrentGame());//player to move is white	
+				assertEquals(other,"white");
+			}
+			else {
+				GamePosition gamePos=new 
+			GamePosition(1, player1Position, player2Position,
+					quoridor.getCurrentGame().getBlackPlayer(), quoridor.getCurrentGame());
+				assertEquals(other,"black");
+			}
+		  //Now that we have gae position with it.
+			*/
+			
+	  }
+	  	
 	/**
 	 * @author FSharp4
 	 * @throws Throwable
