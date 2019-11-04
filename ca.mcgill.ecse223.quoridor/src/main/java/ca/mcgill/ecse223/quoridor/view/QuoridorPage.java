@@ -726,7 +726,7 @@ public class QuoridorPage extends JFrame{
 		//reset view with new loaded file
 		//gc.deleteGame(QuoridorApplication.getQuoridor());
 		String filename = loadField.getText();
-		gc.initSavedGameLoad(QuoridorApplication.getQuoridor(), filename);
+		gc.loadGame(QuoridorApplication.getQuoridor(), filename);
 		
 		//gc.loadGame(QuoridorApplication.getQuoridor(), filename);
 		//will always throw exception due to unimplemented section

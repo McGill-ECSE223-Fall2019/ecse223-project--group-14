@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -401,24 +402,84 @@ public class GameController {
 	
 	/**
 	 * For Load Position Feature
-	 * Uses the pawn position bounds-checking method valPawnPosition in tandem with making sure
-	 * that the pawns occupy separate spaces to validate pawn positioning.
-	 * 
+	 * Checks the position validity of the set of every wall on the board.
+	 * Specifically, checks that the walls are in-track and checks for overlap.
+	 *  
 	 * @author FSharp4
-	 * @param q Needed for valPawnPosition
-	 * @param x1 Needed for valPawnPosition
-	 * @param y1 Needed for valPawnPosition
-	 * @return
+	 * @param q Quoridor
+	 * @return if Position is valid
 	 */
-	public boolean valPawnOverlap(Quoridor q, int x1, int y1) {
+	public boolean validateAllWalls(Quoridor q) {
+		GamePosition testedPosition = q.getCurrentGame().getCurrentPosition();
+		List<Wall> whiteWallsOnBoard = testedPosition.getWhiteWallsOnBoard();
+		List<Wall> blackWallsOnBoard = testedPosition.getBlackWallsOnBoard();
+		ArrayList<Wall> wallsOnBoard = new ArrayList<Wall>();
 		
-		Tile whitePos = q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile();
-		Tile blackPos = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile();
+		//constructs a list with all walls on board
+		for (Wall wall : whiteWallsOnBoard) {
+			wallsOnBoard.add(wall);
+		}
+		for (Wall wall : blackWallsOnBoard) {
+			wallsOnBoard.add(wall); 
+		}
 		
-		if (whitePos.getRow() == blackPos.getRow() && whitePos.getColumn() == blackPos.getColumn())
-			return false;
+		for (Wall wall : wallsOnBoard) {
+			wallsOnBoard.remove(wall);
+			int row = wall.getMove().getTargetTile().getRow();
+			int col = wall.getMove().getTargetTile().getColumn();
+			//Bounds check!
+			if (row <= 0 || row >= 9 || col <= 0 || col >= 9)
+				return false;
+			
+			Direction direction = wall.getMove().getWallDirection();
+			
+			/*
+			 * There are two cases to check for when a wall is vertical and when a wall is 
+			 * horizontal.
+			 * 
+			 * The first case is the same whether the wall is vertical or horizontal:
+			 * 	-	If there exists a wall with the same location as this wall, then the two walls
+			 * 		overlap and the set of walls is invalid.
+			 * 
+			 * The other case depends on the orientation of the wall
+			 * 	-	If the wall is horizontal, and there exists another wall with the same row as this
+			 * 		wall and a column value differing by one from this wall, then the walls
+			 * 		overlap, and the set of walls is invalid.
+			 * 	-	If the wall is vertical, and there exists another wall with the same column as
+			 * 		this wall and a row value differing by one from this wall, then the walls
+			 * 		overlap, and the set of walls is invalid.
+			 * 
+			 */
+			if (direction.equals(Direction.Vertical)) {
+				for (Wall checkedWall : wallsOnBoard) {
+					int c_row = checkedWall.getMove().getTargetTile().getRow();
+					int c_col = checkedWall.getMove().getTargetTile().getColumn();
+					Direction c_direction = checkedWall.getMove().getWallDirection();
+					if (row == c_row && col == c_col)
+						return false;
+					
+					if (c_direction.equals(Direction.Vertical)) {
+						if (col == c_col && (row == c_row + 1 || col == c_row - 1))
+							return false;
+					}
+				}
+			} else {
+				for (Wall checkedWall : wallsOnBoard) {
+					int c_row = checkedWall.getMove().getTargetTile().getRow();
+					int c_col = checkedWall.getMove().getTargetTile().getColumn();
+					Direction c_direction = checkedWall.getMove().getWallDirection();
+					if (row == c_row && col == c_col)
+						return false;
+					
+					if (c_direction.equals(Direction.Horizontal)) {
+						if (row == c_row && (col  == c_col + 1 || col == c_col - 1))
+							return false;
+					}
+				}
+			}
+		}
 		
-		return valPawnPosition(q, x1, y1);
+		return true;
 	}
 	
 	
@@ -977,8 +1038,21 @@ public class GameController {
 	 */
 	public void loadGame(Quoridor quoridor, String filename) throws Exception {
 		initSavedGameLoad(quoridor, filename);
-		checkIfloadGameValid(quoridor);
+		validityChecking(quoridor);
 		
+	}
+	
+	/**
+	 * For Load Position feature.
+	 * Throws an exception when the load game is invalid but the initial loading was successful
+	 * 
+	 * @author FSharp4
+	 * @param quoridor
+	 * @throws Exception
+	 */
+	public void validityChecking(Quoridor quoridor) throws Exception {
+		if (!checkIfLoadGameValid(quoridor))
+			throw new Exception("Load failed: Position is invalid!");
 	}
 	
 	/**
@@ -992,28 +1066,12 @@ public class GameController {
 	 * @throws Exception 
 	 * @throws UnsupportedOperationException
 	 */
-	public Game initSavedGameLoad(Quoridor quoridor, String filename) throws Exception /*throws UnsupportedOperationException*/ {
-		
-		
-//H
-//		//Borrowed code from initGame()
-//		Player p1=new Player(new Time(10), quoridor.getUser(0), 9, Direction.Horizontal);
-//		Player p2 = new Player(new Time(10), quoridor.getUser(1), 1, Direction.Horizontal);
-//		new Game(GameStatus.Initializing, MoveMode.PlayerMove, quoridor);
-//		
-//		quoridor.getCurrentGame().setWhitePlayer(p1);
-//		quoridor.getCurrentGame().setBlackPlayer(p2);
-		
-//E
-		if (quoridor.getCurrentGame()==null) {
+	public Game initSavedGameLoad(Quoridor quoridor, String filename) throws Exception {
+		if (quoridor.getCurrentGame()==null)
 			initGame(quoridor);
-		}
-//M
+		
 		Game game = quoridor.getCurrentGame();
 		Board board = quoridor.getBoard();
-		//GamePosition gp = game.getCurrentPosition();
-		
-		
 		
 		//initialize scanning on file with position data
 		//assume that file is well formed even if invalid
@@ -1034,16 +1092,12 @@ public class GameController {
 		String playerOneString = s1.nextToken();
 		s2.nextToken(); //iterate past playerstring; we can infer this info from the first line
 		
-		//if (board == null) //uncomment if nullpointerexception @line with board manip
-		//	board = initBoard(quoridor);
-		
 		boolean isPlayerOneWhite = (playerOneString.contentEquals("W:")) ? true : false;
 		Player playerOne, playerTwo;
-		int playerOneWallID = 0;
-		int playerOneAbsoluteWallID = 1;
-		int playerTwoWallID = 0;
-		int playerTwoAbsoluteWallID = 1;
-		
+		int playerOneWallID = 0; 		//wall ID within player stock
+		int playerOneAbsoluteWallID = 1;//wall ID within list of wallsByID in Wall.class
+		int playerTwoWallID = 0;		//these are both necessary because we don't know which
+		int playerTwoAbsoluteWallID = 1;//player is white when method is called
 		if (isPlayerOneWhite) {
 			playerOne = game.getWhitePlayer();
 			playerTwo = game.getBlackPlayer();
@@ -1053,10 +1107,6 @@ public class GameController {
 			playerTwo = game.getWhitePlayer();
 			playerOneAbsoluteWallID += 10;
 		}
-//H
-//		if (!Wall.hasWithId(1)) {
-//			for (int i = 1; i <= 10; i++) {
-//E
 		
 		if (!Wall.hasWithId(1)) {
 			for (int i = 1; i < 11; i++) {
@@ -1065,40 +1115,62 @@ public class GameController {
 			}
 		}
 		
-		
 		PlayerPosition playerOnePosition = null;
 		PlayerPosition playerTwoPosition = null;
 		
+		/*
+		 * Get playerPositions for setting the currentPosition
+		 * This needs to be done before loading the wall positions, as that process needs a valid
+		 * game position to work.
+		 */
 		{
-			String playerOnePositionString = s1.nextToken(",");
+			//current player
+			String playerOnePositionString = s1.nextToken(","); //grabs position in string form
 			if (playerOnePositionString.charAt(0) == ' ')
-				playerOnePositionString = playerOnePositionString.substring(1);
+				playerOnePositionString = playerOnePositionString.substring(1); //remove whitespace
 			
-			String playerTwoPositionString = s2.nextToken(",");
+			String playerTwoPositionString = s2.nextToken(","); //repeat for up-next player
 			if (playerTwoPositionString.charAt(0) == ' ')
-				playerTwoPositionString = playerTwoPositionString.substring(1);
+				playerTwoPositionString = playerTwoPositionString.substring(1); 
+			
+			//current player
 			int col = playerOnePositionString.charAt(0) - 'a' + 1;
 			int row = playerOnePositionString.charAt(1) - '0';
 			Tile tile = board.getTile(getIndex(row, col));
-			playerOnePosition = new PlayerPosition(playerOne, tile);
+			try {
+				playerOnePosition = new PlayerPosition(playerOne, tile);
+			} catch (Exception e) {
+				throw new Exception("Load failed: Current player's pawn has invalid position");
+			}
 			
+			//up-next player
 			col = playerTwoPositionString.charAt(0) - 'a' + 1;
 			row = playerTwoPositionString.charAt(1) - '0';
 			tile = board.getTile(getIndex(row, col));
-			playerTwoPosition = new PlayerPosition(playerTwo, tile);
+			try {
+				playerTwoPosition = new PlayerPosition(playerTwo, tile);
+			} catch (Exception e) {
+				throw new Exception("Load failed: Up-next player's pawn has invalid position");
+			}
+			
 		}
 		
 		GamePosition gp = makeInitialGamePosition(game, playerOnePosition, playerTwoPosition, 
 				playerOne, isPlayerOneWhite);
 		game.setCurrentPosition(gp);
+		
+		/*	
+		 * 	Puts freshly-initialized walls in the stocks of both players.
+		 * 	White has walls 1-10, black has walls 11-20
+		 */
 		for (int i = 1; i <= 10; i++) {
 			Wall whiteWall = Wall.getWithId(i);
 			gp.addWhiteWallsInStock(whiteWall);
 			Wall blackWall = Wall.getWithId(i + 10);
 			gp.addBlackWallsInStock(blackWall);
 		}
+		
 		while (s1.hasMoreTokens() || s2.hasMoreTokens()) {
-			
 			if (s1.hasMoreTokens()) {
 				String move = s1.nextToken(",");
 				if (move.charAt(0) == ' ' || move.charAt(0) == ',')
@@ -1106,30 +1178,20 @@ public class GameController {
 				
 				int col = move.charAt(0) - 'a' + 1;
 				int row = move.charAt(1) - '0';
-				Tile tile = board.getTile(getIndex(row, col));
-//H
-				Direction dir = ((move.charAt(2) == 'h')||(move.charAt(2) == 'H')) ? Direction.Horizontal : Direction.Vertical;
-//E
-				//Direction dir = null;
-				//boolean isWallMove = false;
-				//if (move.length() == 3) {
-				//	isWallMove = true;
-				//	dir = ((move.charAt(2) == 'h')||(move.charAt(2) == 'H')) ? Direction.Horizontal : Direction.Vertical;
-					
-					//dir = (move.charAt(2) == 'H') ? Direction.Horizontal : Direction.Vertical;
-				//}
-//M
+				if (col == 9 || row == 9) 
+					throw new Exception("Load failed: Wall is out-of-track! "
+							+ "(Edge case: value 9 given for row or column)");
+					//walls can't exist on the last row/column because they would be out of track
 				
-				/*if (!isWallMove) {
-					playerOnePosition = new PlayerPosition(playerOne, tile);
-				} else {
-					Wall wall = Wall.getWithId(playerOneAbsoluteWallID);
-					wall.setMove(new WallMove(game.numberOfMoves(), 0, playerOne, tile, game, dir, 
-							wall));
-					if (!addOrMoveWallsOnBoard(gp, wall, isPlayerOneWhite))
-						throw new Exception("Unable to move wall from stock to board for player " 
-								+ "one");
-				*/
+				Tile tile = null;
+				try {
+					tile = board.getTile(getIndex(row, col));
+				} catch (Exception e) {
+					throw new Exception("Load failed: Wall is out-of-track! (General case)");
+				}
+				
+				Direction dir = ((move.charAt(2) == 'h')||(move.charAt(2) == 'H')) 
+						? Direction.Horizontal : Direction.Vertical;
 				Wall wall = Wall.getWithId(playerOneAbsoluteWallID);
 				wall.setMove(new WallMove(game.numberOfMoves(), 1, playerOne, tile, game, dir, 
 						wall));
@@ -1137,7 +1199,6 @@ public class GameController {
 					throw new Exception("Unable to move wall from stock to board for player " 
 							+ "one");
 
-					
 				playerOneWallID++;
 				playerOneAbsoluteWallID++;
 			}
@@ -1149,54 +1210,36 @@ public class GameController {
 				
 				int col = move.charAt(0) - 'a' + 1;
 				int row = move.charAt(1) - '0';
-				Tile tile = board.getTile(getIndex(row, col));
-//H
-				Direction dir = ((move.charAt(2) == 'h')||(move.charAt(2) == 'H')) ? Direction.Horizontal : Direction.Vertical;
-
-
+				if (col == 9 || row == 9) 
+					throw new Exception("Load failed: Wall is out-of-track! "
+							+ "(Edge case: value 9 given for row or column)");
+				
+				Tile tile = null;
+				try {
+					tile = board.getTile(getIndex(row, col));
+				} catch (Exception e) {
+					throw new Exception("Load failed: Wall is out-of-track! (General case)");
+				}
+				
+				Direction dir = ((move.charAt(2) == 'h')||(move.charAt(2) == 'H')) 
+						? Direction.Horizontal : Direction.Vertical;
 				Wall wall = Wall.getWithId(playerTwoAbsoluteWallID);
 				wall.setMove(new WallMove(game.numberOfMoves(), 1, playerTwo, tile, game, dir, 
 						wall));
 				if (!addOrMoveWallsOnBoard(gp, wall, !isPlayerOneWhite))
 					throw new Exception("Unable to move wall from stock to board for player " 
 							+ "two");
-//E
-				//Direction dir = null;
-				//boolean isWallMove = false;
-				//if (move.length() == 3) {
-				//	isWallMove = true;
-				//	dir = ((move.charAt(2) == 'h')||(move.charAt(2) == 'H')) ? Direction.Horizontal : Direction.Vertical;
-				//	//dir = (move.charAt(2) == 'H') ? Direction.Horizontal : Direction.Vertical;
-				//}
-				//
-				//if (!isWallMove) {
-				//	playerTwoPosition = new PlayerPosition(playerTwo, tile);
-				//} else {
-				//	//LOOK HERE
-				//	Wall wall = Wall.getWithId(playerTwoAbsoluteWallID);
-				//	wall.setMove(new WallMove(game.numberOfMoves(), 1, playerTwo, tile, game, dir, 
-				//			wall));
-				//	if (!addOrMoveWallsOnBoard(gp, wall, !isPlayerOneWhite))
-				//		throw new Exception("Unable to move wall from stock to board for player " 
-				//				+ "two");
-//M
-					
+
 				playerTwoWallID++;
 				playerTwoAbsoluteWallID++;
 			}
 		}
 		
-		//TODO: THink about separating this process into its subroutine
-		
 		gp.setPlayerToMove(playerOne);
 		quoridor.getCurrentGame().setGameStatus(GameStatus.ReadyToStart);
-		//quoridor.getCurrentGame().delete();
-		//game.setGameStatus(GameStatus.ReadyToStart); 
-		//quoridor.setCurrentGame(game);
-		//it isn't really but this is necessary for checking that this method finished in testing
-		//Wall[] walls 
+		//game is not ready to start, but this signals to load position testing that this
+		//was successful
 		return game;
-		//throw new UnsupportedOperationException();
 	}
 	
 	/*
@@ -1262,29 +1305,27 @@ public class GameController {
 	 *  * For Load Position feature
 	 *  
 	 *  Checks position information stored in current game. returns an error if position is invalid.
+	 *  Specifically, checks for pawn overlap and wall position validity for the set of walls on the
+	 *  board (via validateAllWalls). Invalid pawn and wall posiitons (such as out-of-track) are
+	 *  handled by initSavedGameLoad (it is pretty easy to immediately know that these occur)
 	 * 
 	 * @author FSharp4
 	 * @param quoridor
-	 * @throws IOException 
 	 */
-	public void checkIfloadGameValid(Quoridor quoridor) 
-			throws UnsupportedOperationException, IOException {
+	public boolean checkIfLoadGameValid(Quoridor quoridor) {
 		  //throws UnsupportedOperationException, IOException {
 		
-		Game game = quoridor.getCurrentGame();
+		/*
+		 * Check for pawn overlap (invalid pawn positions otherwise should have triggered an
+		 * exception in initSavedGameLoad())
+		 */
+		GamePosition currentPosition = quoridor.getCurrentGame().getCurrentPosition();
+		Tile whitePos = currentPosition.getWhitePosition().getTile();
+		Tile blackPos = currentPosition.getBlackPosition().getTile();
+		if (whitePos.getRow() == blackPos.getRow() && whitePos.getColumn() == blackPos.getColumn())
+			return false;
 		
-		//if (validatePosition(game)) {
-		try {
-			if (validatePos(game.getCurrentPosition())) {
-			//update GUI here
-			quoridor.getCurrentGame().setGameStatus(GameStatus.ReadyToStart);
-			//return true
-			} else {
-				throw new IOException("Load error: Position invalid");
-			}
-		} catch (UnsupportedOperationException e) {
-			throw new UnsupportedOperationException("Validate position isn't fully working?");
-		}
+		return validateAllWalls(quoridor);
 	}
 	
 	/**
@@ -1356,7 +1397,7 @@ public class GameController {
 
 	/**
 	 * For Initialize Board feature
-	 * Prepares a board populated with tiles in a 9x9 grid, returning it.
+	 * Prepares the board populated with tiles for the given quoridor
 	 * 
 	 * @author FSharp4
 	 * @param q
@@ -1364,20 +1405,13 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	public void initBoard(Quoridor q) {
-		//TODO
 		addWalls();
 		for (int i=0;i<10;i++) {
-			q.getCurrentGame().getCurrentPosition().addOrMoveWhiteWallsInStockAt(q.getCurrentGame().getWhitePlayer().getWall(i), i);
-			q.getCurrentGame().getCurrentPosition().addOrMoveBlackWallsInStockAt(q.getCurrentGame().getBlackPlayer().getWall(i), i);
+			q.getCurrentGame().getCurrentPosition().addOrMoveWhiteWallsInStockAt(q.getCurrentGame()
+					.getWhitePlayer().getWall(i), i);
+			q.getCurrentGame().getCurrentPosition().addOrMoveBlackWallsInStockAt(q.getCurrentGame()
+					.getBlackPlayer().getWall(i), i);
 		}
-		
-		/*Board board = new Board(q);
-		for (int col = 1; col <= 9; col++) {
-			for(int row = 1; row <= 9; row ++) {
-				Tile tile = new Tile(row, col, board);
-			}
-		}
-		return board;*/
 	}
 	
 	public void deleteGame(Quoridor q) {
@@ -1394,7 +1428,7 @@ public class GameController {
 	}
 	
 	/**
-	 *  * For View, used in QuoridorMouseListener
+	 * For View, used in QuoridorMouseListener
 	 * Helper function which returns the Color of the current player
 	 * 
 	 * @author louismollick
