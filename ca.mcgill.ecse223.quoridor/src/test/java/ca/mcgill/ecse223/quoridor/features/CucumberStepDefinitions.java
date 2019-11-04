@@ -4,12 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.Color;
 import java.io.File;
-import java.io.IOException;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
@@ -1312,15 +1310,11 @@ public class CucumberStepDefinitions {
 			}
 		}
 		try {
-		Game game = G.initSavedGameLoad(quoridor, file);
-		assertEquals(quoridor.getCurrentGame(), game);
-		//quoridor.setCurrentGame(game);
+			Game game = G.initSavedGameLoad(quoridor, file);
+			assertEquals(quoridor.getCurrentGame(), game);
 		} catch (Exception e) {
-			//do nothing
+			//do nothing. Expected behavior for invalid savegames.
 		}
-		/*assertNotNull(game);
-		assertEquals(game, quoridor.getCurrentGame());*/
-		//assertTrue(quoridor.setCurrentGame(game));
 	}
 	
 	/**
@@ -1334,9 +1328,7 @@ public class CucumberStepDefinitions {
 		assertEquals(quoridor.getCurrentGame().getGameStatus(), GameStatus.ReadyToStart);
 		//if gameStatus signals that it isn't readyToStart, this means that initial loading failed
 		//and position isn't valid.
-		G.valWallPosition(1, 1, "");
-		G.valPawnPosition(quoridor, 1, 1);
-		//assertTrue(G.validatePosition(quoridor.getCurrentGame()));
+		assertTrue(G.checkIfLoadGameValid(quoridor));
 	}
 	
 	/**
@@ -1352,6 +1344,7 @@ public class CucumberStepDefinitions {
 			hasSetColor = true;
 		} else if (playerColor.toLowerCase().contains("black"))
 			hasSetColor = true;
+		
 		assertTrue(hasSetColor);
 		GameController G = new GameController();
 		assertTrue(G.setCurrentTurn(isWhite, QuoridorApplication.getQuoridor()));
@@ -1361,9 +1354,11 @@ public class CucumberStepDefinitions {
 	public void thePositionToLoadIsInvalid() throws Throwable {
 		GameController G = new GameController();
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		if (quoridor.getCurrentGame().getGameStatus() == GameStatus.Initializing)
-			return; //signals that game 
-		else assertFalse(G.validatePosition(quoridor.getCurrentGame()));
+		if (quoridor.getCurrentGame().getGameStatus().equals(GameStatus.Initializing))
+			return; //signals that initial loading failed, implying invalid status.
+		else  {
+			assertFalse(G.checkIfLoadGameValid(quoridor));
+		}
 	}
 	
 	/**
@@ -1404,14 +1399,16 @@ public class CucumberStepDefinitions {
 			throws Throwable {
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
 		Wall[] walls;
-		//Player player = getPlayer(playerColor);
+		
 		Direction dir = null;
 		if (orientation.toLowerCase().contains("v")) {
 			dir = Direction.Vertical;
 		} else if (orientation.toLowerCase().contains("h")) {
 			dir = Direction.Horizontal;
 		}
+		
 		assertNotNull(dir);
+		
 		if (playerColor.toLowerCase().contains("w")) {
 			walls = new Wall[game.getCurrentPosition().getWhiteWallsOnBoard().size()];
 			walls = game.getCurrentPosition().getWhiteWallsOnBoard().toArray(walls);
@@ -1442,10 +1439,14 @@ public class CucumberStepDefinitions {
 	public void theLoadShallReturnAnError() throws Throwable {
 		GameController G = new GameController();
 		boolean loadFail = false;
+		
+		if (QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus().equals(GameStatus.Initializing))
+			loadFail = true;
+		
 		try {
-			G.checkIfloadGameValid(QuoridorApplication.getQuoridor());
+			G.validityChecking(QuoridorApplication.getQuoridor());
 		} catch (Exception e) {
-			loadFail = (e instanceof IOException);
+			loadFail = true;
 		}
 		
 		assertTrue(loadFail);
@@ -1457,17 +1458,9 @@ public class CucumberStepDefinitions {
 	 */
 	@When ("The initialization of the board is initiated")
 	public void theInitializationOfTheBoardIsInitiated() throws Throwable {
-		
-		/*GameController G = new GameController();
-		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		ArrayList<Player> defaultPlayers = createUsersAndPlayers("White", "Black");
-		quoridor.setCurrentGame(new Game(GameStatus.Initializing, MoveMode.PlayerMove, quoridor));
-		/*quoridor.setCurrentGame(new Game(GameStatus.Initializing, MoveMode.PlayerMove, 
-				defaultPlayers.get(0), defaultPlayers.get(1), quoridor));*/
 		GameController G = new GameController();
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		G.initBoard(quoridor);
-		//assertNotNull(quoridor.getBoard());
 	}
 	
 	/**
@@ -1868,19 +1861,6 @@ public class CucumberStepDefinitions {
 		}
 		
 		return false;
-	}
-	
-	private Player getPlayer(String color) {
-		Player player;
-		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		if (color.contentEquals("white")) {
-			player = quoridor.getCurrentGame().getWhitePlayer();
-		} else if (color.contentEquals("black")) {
-			player = quoridor.getCurrentGame().getBlackPlayer();
-		} else {
-			player = null; //not supposed to happen
-		}
-		return player;
 	}
 
 }
