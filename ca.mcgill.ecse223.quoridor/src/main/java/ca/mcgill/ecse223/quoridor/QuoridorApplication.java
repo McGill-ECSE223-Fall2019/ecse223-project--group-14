@@ -8,6 +8,7 @@ public class QuoridorApplication {
 	private static Quoridor quoridor;
 	private static QuoridorPage view;
 
+
 	public static Quoridor getQuoridor() {
 		if (quoridor == null) {
 			quoridor = new Quoridor();

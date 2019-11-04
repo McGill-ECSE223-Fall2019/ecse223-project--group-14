@@ -8,12 +8,15 @@ import static org.junit.Assert.assertTrue;
 
 import java.awt.Color;
 import java.io.File;
+
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
 import javax.swing.Timer;
+
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.Board;
@@ -30,6 +33,7 @@ import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Wall;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
+
 import ca.mcgill.ecse223.quoridor.view.QuoridorPage;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
@@ -51,6 +55,7 @@ public class CucumberStepDefinitions {
 	private Player starter;
 	private static Direction Direction;
 	
+
 	// ***********************************************
 	// Background step definitions
 	// ***********************************************
@@ -77,7 +82,9 @@ public class CucumberStepDefinitions {
 
 	@Given("The following walls exist:")
 	public void theFollowingWallsExist(io.cucumber.datatable.DataTable dataTable) {
+
 		wvalid=true; int i=0;
+
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		List<Map<String, String>> valueMaps = dataTable.asMaps();
 		// keys: wrow, wcol, wdir
@@ -1885,11 +1892,19 @@ public class CucumberStepDefinitions {
 
 	private void createAndStartGame(ArrayList<Player> players) {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
+
 		// There are total 36 tiles in the first four rows and
 		// indexing starts from 0 -> tiles with indices 36 and 36+8=44 are the starting
 		// positions
 		Tile player1StartPos = quoridor.getBoard().getTile(36);
 		Tile player2StartPos = quoridor.getBoard().getTile(44);
+
+		//this is for vertical games
+		// Tile indices start from 0 -> tiles with indices 4 and 8*9+4=76 are the starting
+		// positions
+		/*Tile player1StartPos = quoridor.getBoard().getTile(4);
+		Tile player2StartPos = quoridor.getBoard().getTile(76);*/
+
 		
 		Game game = new Game(GameStatus.Running, MoveMode.PlayerMove, quoridor);
 		game.setWhitePlayer(players.get(0));
