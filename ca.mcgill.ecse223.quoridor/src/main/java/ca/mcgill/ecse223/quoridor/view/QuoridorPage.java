@@ -1411,6 +1411,15 @@ public class QuoridorPage extends JFrame{
 	public boolean hasHeldWall() {
 		return this.listener.hasHeldWall();
 	}
+	/**
+	 * Method returns 2d array of tiles forming the board
+	 * 
+	 * @author louismollick
+	 */
+	public TileComponent[][] getTiles(){
+		return this.tiles;
+	}
+	
 	//helper
 	public boolean gettimeRem2() {
 		return(timer.isRunning());

@@ -21,12 +21,10 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 	
 	private int offsetX;
 	private int offsetY;
-	int flag;
 	
 	public QuoridorMouseListener(QuoridorPage frame, GameController gc) {
 		this.frame = frame;
 		this.gc = gc;
-		flag=0;
 	}
 	
 	@Override
@@ -38,6 +36,7 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 	@Override
 	public void mousePressed(MouseEvent e) {
 		Component cursor = frame.getContentPane().findComponentAt(e.getX(), e.getY());
+		System.out.println(cursor.getClass().toString());
 		if (heldComponent == null) {
 			if (cursor instanceof HoldableComponent) {
 				HoldableComponent temp = (HoldableComponent) cursor;
@@ -46,12 +45,16 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 						if ((cursor.getY()>150)&&(cursor.getY()<660)) {	//wall already placed
 							return;
 						}
+						try {
+							gc.grabWall();
+						} catch (Exception ex) {
+							System.out.println(ex.getMessage());
+						}
 					}
-					try {
-						gc.grabWall();
-					} catch (Exception ex) {
-						System.out.println(ex.getMessage());
+					else if (temp instanceof PawnComponent) {
+						// Do something
 					}
+					
 					heldComponent = temp;
 					
 					this.pickedUpX = heldComponent.getX(); // Remember where it was last placed
@@ -65,11 +68,8 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 			}
 		} else {
 			if(heldComponent instanceof WallComponent && SwingUtilities.isRightMouseButton(e)) {
-				//System.out.println("right");
-				flag=1;
 				String d = ((WallComponent) heldComponent).rotate();
-				// Ugly way of keeping the offset after rotation
-				if (d.contentEquals("horizontal")) {
+				if (d.contentEquals("horizontal")) { // Set mouse to wall location after rotation
 					this.offsetX = WallComponent.wallH/2;
 					this.offsetY = WallComponent.wallW/2;
 				}else {
@@ -79,18 +79,26 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 				heldComponent.setLocation(e.getX()-this.offsetX, e.getY()-this.offsetY);
 			}
 			
-			// If heldComponent has a position it's above, then drop it there
-			else if(heldComponent instanceof WallComponent && heldComponent.hasPossiblePosition(((WallComponent) heldComponent).getDirection())) {
-				//heldComponent.setLocation(heldComponent.getPossibleXPostition(), heldComponent.getPossibleYPostition());
-				frame.setStageMove(true); // lock in move, and prevent player from picking up anything else
-				// until he presses the End Turn button. Otherwise, the player can pick the pawn/wall back up,
-				// and chose another move.
-//			}
+			// If heldComponent is a Wall
+			else if(heldComponent instanceof WallComponent && ((WallComponent) heldComponent).dropWall()){
+				// If dropWall was successful, then lock in move, and prevent player from picking up anything else
+				// until he presses the End Turn button.
+				frame.setStageMove(true);
 			
 				this.pickedUpX = 0;
 				this.pickedUpY = 0;
 				heldComponent=null;
-			}  
+			}
+			// If heldComponent is a Pawn
+			else if(heldComponent instanceof PawnComponent && ((PawnComponent) heldComponent).movePawn(frame.getTiles())){
+				// If dropPawn was successful, then lock in move, and prevent player from picking up anything else
+				// until he presses the End Turn button.
+				frame.setStageMove(true);
+			
+				this.pickedUpX = 0;
+				this.pickedUpY = 0;
+				heldComponent=null;
+			}
 
 			else { // If no position is clicked (and not rotating), just put the component back
 				heldComponent.setLocation(this.pickedUpX, this.pickedUpY); // put back to position when pickedUp
@@ -104,41 +112,11 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		if (heldComponent==null) {
-			return;
-		}
-		else if (SwingUtilities.isLeftMouseButton(e)) {
-			if (flag==1) {
-				flag=0;
-				return;
-			}
-			else if(heldComponent instanceof WallComponent && heldComponent.hasPossiblePosition(((WallComponent) heldComponent).getDirection())) {
-				//heldComponent.setLocation(heldComponent.getPossibleXPostition(), heldComponent.getPossibleYPostition());
-				frame.setStageMove(true); // lock in move, and prevent player from picking up anything else
-				// until he presses the End Turn button. Otherwise, the player can pick the pawn/wall back up,
-				// and chose another move.
-//			}
-			
-				this.pickedUpX = 0;
-				this.pickedUpY = 0;
-				heldComponent=null;
-			}  
-
-			else { // If no position is clicked (and not rotating), just put the component back
-				heldComponent.setLocation(this.pickedUpX, this.pickedUpY); // put back to position when pickedUp
-				this.pickedUpX = 0;
-				this.pickedUpY = 0;
-				if (heldComponent instanceof WallComponent) ((WallComponent) heldComponent).setDirection("vertical");
-				heldComponent = null;
-			}
-			// Auto-generated method stub
-		}
 		
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// Auto-generated method stub
 		
 	}
 
@@ -159,21 +137,9 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		Component cursor = frame.getContentPane().findComponentAt(e.getX(),e.getY());	
 		if(heldComponent != null) {
-			// TODO For MoveWall person: 
-			// When moving your held component, snap to possible positions
-			if(heldComponent instanceof WallComponent && cursor instanceof WallPositionComponent) {
-				WallComponent tempWall = (WallComponent) heldComponent;
-				WallPositionComponent tempPosition = (WallPositionComponent) cursor;
-				if(tempWall.getDirection().equals(tempPosition.getDirection())) {
-					heldComponent.setLocation(tempPosition.getLocation());
-				}
-			}
-			else if(heldComponent instanceof PawnComponent/* && cursor instanceof PawnPositionComponent*/) {
-				// TODO For anyone, once someone makes PositionComponent or equivalent
-			}
-
+			heldComponent.setLocation(e.getX()-this.offsetX, e.getY()-this.offsetY);
+			frame.repaint();
 		}
 	}
 	

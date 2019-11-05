@@ -7,18 +7,38 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 
+import ca.mcgill.ecse223.quoridor.controller.GameController;
+
 public class WallComponent extends HoldableComponent{
 	public static final int wallH=70;
 	public static final int wallW=12;
 	private String dir;
-	private AffineTransform transform;
 	public int wallId; 	//0-9 are white, 10-19 are black
-
+	private Point [][] points; // Possible vertical wall locations
+	private Point [][] points2; // Possible horizontal wall locations
+	private int x1;
+	private int y1;
+	
 	public WallComponent(Color c, int id) {
 		super(wallW, wallH, c);
 		this.dir = "vertical";
 		this.wallId=id;
 		
+		x1=-1;
+		y1=-1;
+		
+		this.points=new Point[8][9];	//for vertical placement
+		for (int i=0;i<8;i++) {
+			for (int j=0;j<9;j++) {
+				this.points[i][j]= new Point(192+i*50,232+j*50);
+			}
+		}
+		this.points2=new Point[9][9];
+		for (int i=0;i<9;i++) {
+			for (int j=0;j<9;j++) {
+				this.points2[i][j]= new Point(172+i*50,252+j*50);
+			}
+		}
 	}
 	public String rotate() {
 		if (this.dir.contentEquals("vertical")) {
@@ -36,6 +56,59 @@ public class WallComponent extends HoldableComponent{
 	public void setDirection(String dir) {
 		this.setBounds(this.getX(), this.getY(), wallW, wallH);
 		this.dir = dir;
+	}
+	
+	/**
+	 * Method returns if a wall is dropped onto an acceptable point based on its position and direction and if so sets the posX and posY positions
+	 * 
+	 * @param String dir
+	 * @author DariusPi
+	 */
+	public boolean dropWall() {
+		boolean first=true;
+		if (this.dir.compareTo("vertical")==0) {
+			for (int i=0;i<8;i++) {
+				for (int j=0;j<9;j++) {
+					if (this.getBounds().contains(points[i][j])) {
+						if (first) {
+							x1=i;
+							y1=j;
+							first=false;
+						}
+						else {
+							GameController gc= new GameController();
+							Boolean valid=gc.valWallPosition(x1,y1, "vertical");
+							if (valid) {
+								gc.dropWall(x1,y1, "vertical",this.wallId);
+							}
+							return valid;
+						}
+					}
+				}
+			}
+		}
+		else {
+			for (int i=0;i<9;i++) {
+				for (int j=0;j<8;j++) {
+					if (this.getBounds().contains(points2[i][j])) {
+						if (first) {
+							x1=i;
+							y1=j;
+							first=false;
+						}
+						else {
+							GameController gc= new GameController();
+							Boolean valid=gc.valWallPosition(x1,y1, "horizontal");
+							if (valid) {
+								gc.dropWall(x1,y1, "horizontal", this.wallId);
+							}
+							return valid;
+						}
+					}
+				}
+			}
+		}
+		return false;
 	}
 	
 	@Override

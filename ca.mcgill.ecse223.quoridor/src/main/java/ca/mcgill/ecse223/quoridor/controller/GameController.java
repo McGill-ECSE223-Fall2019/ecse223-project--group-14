@@ -34,7 +34,6 @@ import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Wall;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
-import ca.mcgill.ecse223.quoridor.view.QuoridorPage;
 import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
 import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 import ca.mcgill.ecse223.quoridor.model.GamePosition;
@@ -888,7 +887,6 @@ public class GameController {
 	 * 
 	 * @author louismollick
 	 * 
-	 * @throws Exception
 	 */
 	public boolean grabWall(){
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
