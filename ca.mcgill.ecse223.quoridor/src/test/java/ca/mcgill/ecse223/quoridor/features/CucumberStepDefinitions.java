@@ -819,11 +819,11 @@ public class CucumberStepDefinitions {
 		PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
 		
 		if (color.compareTo("white")==0) {
-			GamePosition gamePos=new GamePosition(1, player1Position, player2Position, quoridor.getCurrentGame().getWhitePlayer(), quoridor.getCurrentGame());
+			GamePosition gamePos=new GamePosition(0, player1Position, player2Position, quoridor.getCurrentGame().getWhitePlayer(), quoridor.getCurrentGame());
 			quoridor.getCurrentGame().setCurrentPosition(gamePos);
 		}
 		else {
-			GamePosition gamePos=new GamePosition(1, player1Position, player2Position, quoridor.getCurrentGame().getBlackPlayer(), quoridor.getCurrentGame());
+			GamePosition gamePos=new GamePosition(0, player1Position, player2Position, quoridor.getCurrentGame().getBlackPlayer(), quoridor.getCurrentGame());
 			quoridor.getCurrentGame().setCurrentPosition(gamePos);
 		}
 	}
@@ -1622,7 +1622,6 @@ public class CucumberStepDefinitions {
 	 * @author AmineMallek
 	 * @throws Throwable
 	 */ 
-
 	@When ("{int}:{int} is set as the thinking time")
 	public void IsSetAsTheThinkingTime(int min, int sec) throws Throwable{ 
 		GameController G= new GameController();
@@ -1633,8 +1632,6 @@ public class CucumberStepDefinitions {
 	 * @author AmineMallek
 	 * @throws Throwable
 	 */ 
-
-
 	@Then ("Both players shall have {int}:{int} remaining time left")
 	public void BothPlayersShallHaveMinSecRemainingTimeLeft(int min, int sec) throws Throwable{
 
@@ -1650,10 +1647,7 @@ public class CucumberStepDefinitions {
 	 * @author AmineMallek
 	 * @throws Throwable
 	 */ 
-
-
 	@Given ("File (.*) exists in the filesystem")
-
 	public void FileFilenameExistsInTheFileSystem (String FileName) throws Throwable{
 		String file="";
 		StringBuilder sb = new StringBuilder();
@@ -1671,8 +1665,6 @@ public class CucumberStepDefinitions {
 	 * @author AmineMallek
 	 * @throws Throwable
 	 */ 
-
-
 	@Given ("No file (.*) exists in the filesystem")
 	public void NoFileExistsInTheFilesystem(String FileName) throws Throwable{
 		//Quoridor quoridor = QuoridorApplication.getQuoridor();
@@ -1693,8 +1685,6 @@ public class CucumberStepDefinitions {
 	 * @author AmineMallek
 	 * @throws Throwable
 	 */ 
-
-
 	@When ("The user initiates to save the game with name (.*)")
 	public void TheUserInitiatesToSaveTheGameWithNameFilename (String FileName) throws Throwable{
 		GameController G= new GameController();
@@ -1714,10 +1704,7 @@ public class CucumberStepDefinitions {
 	 * @author AmineMallek
 	 * @throws Throwable
 	 */ 
-
-
 	@Then ("A file with (.*) shall be created in the filesystem")
-
 	public void AFileWithFilenameIsCreatedInTheFilesystem (String FileName) throws Throwable{
 		String file="";
 		StringBuilder sb = new StringBuilder();
@@ -1734,11 +1721,7 @@ public class CucumberStepDefinitions {
 	 * @author AmineMallek
 	 * @throws Throwable
 	 */ 
-
-
 	@Then ("File with (.*) shall be updated in the filesystem")
-
-
 	public void FileWithFilenameIsUpdatedInTheFilesystem (String FileName) throws Throwable{
 		String file="";
 		StringBuilder sb = new StringBuilder();
@@ -1755,10 +1738,7 @@ public class CucumberStepDefinitions {
 	 * @author AmineMallek
 	 * @throws Throwable
 	 */ 
-
-
 	@Then ("File (.*) shall not be changed in the filesystem")
-
 	public void FileFilenameIsNotChangedInTheFilesystem (String FileName) throws Throwable{
 		String file="";
 		StringBuilder sb = new StringBuilder();
@@ -1776,10 +1756,7 @@ public class CucumberStepDefinitions {
 	 * @author AmineMallek
 	 * @throws Throwable
 	 */ 
-
-
 	@And ("The user cancels to overwrite existing file")
-
 	public void TheUserCancelsToOverwriteExistingFile() throws Throwable{
 		//This GUI method is functional but difficult to testing this manner
 		GameController G = new GameController();
@@ -1792,24 +1769,85 @@ public class CucumberStepDefinitions {
 	 * @author AmineMallek
 	 * @throws Throwable
 	 */ 
-
-
 	@And ("The user confirms to overwrite existing file") 
-
 	public void TheUserConfirmsToOverwriteExistingFile() throws Throwable{
 		//This GUI method is functional but difficult to testing this manner
 		GameController G = new GameController();
 		boolean File_Overwrite = true;
 		//assertEquals(File_Overwrite, G.filename_exists(FileName));
 	}
+	
  
 	/*
-	 * TODO Insert your missing step definitions here
-	 * 
-	 * Call the methods of the controller that will manipulate the model once they
-	 * are implemented
-	 * 
+	 * TODO Iteration 4 
+	 *
 	 */
+	
+	@And ("The player is located at {int}:{int}")
+	public void thePlayerIsLocatedAt(int row, int col) {
+		Quoridor q=QuoridorApplication.getQuoridor();
+		Game g=q.getCurrentGame();
+		GamePosition prev=g.getCurrentPosition();
+		Player curr=g.getCurrentPosition().getPlayerToMove();
+		PlayerPosition p1= new PlayerPosition(curr, q.getBoard().getTile((row-1)*9+col-1));
+		if (curr.hasGameAsWhite()) {
+			prev.setWhitePosition(p1);
+		}
+		else {
+			prev.setBlackPosition(p1);
+		}
+	}
+	
+	 @And ("There are no {string} walls {string} from the player")
+	 public void thereAreNoWallsFromThePlayer(String dir, String side) {
+		 //TODO Iteration 4 
+	 }
+	 
+	 @And ("The opponent is not {string} from the player")
+	 public void theOpponentIsNotFromThePlayer(String side) {
+		//TODO Iteration 4 
+	 }
+	 
+	 @When ("Player {string} initiates to move {string}")
+	 public void playerInitiatesToMove(String colour, String side) {
+		//TODO Iteration 4 
+	 }
+	 
+	 @Then ("The move {string} shall be {string}")
+	 public void theMoveShallBe(String side, String status) {
+		//TODO Iteration 4 
+	 }
+	 
+	 @And ("Player's new position shall be {int}:{int}")
+	 public void playerNewPositionShallBe(int row, int col) {
+		//TODO Iteration 4 
+	 }
+	 
+	 @And ("The next player to move shall become {string}")
+	 public void theNextPlayerToMoveShallBecome(String colour) {
+		//TODO Iteration 4 
+	 }
+	
+	 @And ("There is a {string} wall at {int}:{int}")
+	 public void thereIsAWallAt(String dir, int row, int col) {
+		//TODO Iteration 4 
+	 }
+	 
+	 @And ("My opponent is not {string} from the player")
+	 public void myOpponentIsNotFromThePlayer(String side) {
+		//TODO Iteration 4 
+	 }
+	 
+	 @And ("The opponent is located at {int}:{int}")
+	 public void theOpponentIsLocatedAt(int row, int col) {
+		//TODO Iteration 4 
+	 }
+	 
+	 @And ("There are no {string} walls {string} from the player nearby")
+	 public void thereAreNoWallsFromThePlayerNearby(String dir, String side) {
+		//TODO Iteration 4 
+	 }
+	 
 
 	// ***********************************************
 	// Clean up

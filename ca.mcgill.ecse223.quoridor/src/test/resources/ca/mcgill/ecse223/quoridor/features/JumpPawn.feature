@@ -9,7 +9,7 @@ Feature: Jump Pawn
   Scenario Outline: Jump over opponent
     Given The player to move is "<player>"
     And The player is located at <prow>:<pcol>
-    And The opponent is located at <prow>:<ocol>
+    And The opponent is located at <orow>:<ocol>
     And There are no "<dir>" walls "<side>" from the player nearby
     When Player "<player>" initiates to move "<side>"
     Then The move "<side>" shall be "<status>"
@@ -30,7 +30,7 @@ Feature: Jump Pawn
   Scenario Outline: Move of player blocked by wall
     Given The player to move is "<player>"
     And The player is located at <row>:<col>
-    And The opponent is located at <prow>:<ocol>
+    And The opponent is located at <orow>:<ocol>
     And There is a "<dir>" wall at <wrow>:<wcol>
     When Player "<player>" initiates to move "<side>"
     Then The move "<side>" shall be "<status>"

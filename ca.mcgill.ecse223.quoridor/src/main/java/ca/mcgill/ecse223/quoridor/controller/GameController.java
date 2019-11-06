@@ -116,7 +116,7 @@ public class GameController {
 				new Wall(j+10, p2);
 			}*/
 		//}
-		GamePosition gamePos=new GamePosition(1, player1Position, player2Position, q.getCurrentGame().getWhitePlayer(), q.getCurrentGame());
+		GamePosition gamePos=new GamePosition(2, player1Position, player2Position, q.getCurrentGame().getWhitePlayer(), q.getCurrentGame());
 		q.getCurrentGame().setCurrentPosition(gamePos);
 		
 	}
