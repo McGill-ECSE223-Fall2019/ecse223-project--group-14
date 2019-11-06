@@ -1788,9 +1788,10 @@ public class CucumberStepDefinitions {
 		Quoridor q=QuoridorApplication.getQuoridor();
 		Game g=q.getCurrentGame();
 		GamePosition prev=g.getCurrentPosition();
-		Player curr=g.getCurrentPosition().getPlayerToMove();
-		PlayerPosition p1= new PlayerPosition(curr, q.getBoard().getTile((row-1)*9+col-1));
-		if (curr.hasGameAsWhite()) {
+		//Player curr=g.getCurrentPosition().getPlayerToMove();
+		starter=g.getCurrentPosition().getPlayerToMove();
+		PlayerPosition p1= new PlayerPosition(starter, q.getBoard().getTile((row-1)*9+col-1));
+		if (starter.hasGameAsWhite()) {
 			prev.setWhitePosition(p1);
 		}
 		else {
@@ -1820,17 +1821,54 @@ public class CucumberStepDefinitions {
 	 
 	 @And ("Player's new position shall be {int}:{int}")
 	 public void playerNewPositionShallBe(int row, int col) {
-		//TODO Iteration 4 
+		Quoridor q=QuoridorApplication.getQuoridor();
+		Game g=q.getCurrentGame();
+		GamePosition prev=g.getCurrentPosition();
+		 if (starter.hasGameAsWhite()) {
+			assertEquals(row,prev.getWhitePosition().getTile().getRow());
+			assertEquals(col,prev.getWhitePosition().getTile().getColumn());
+		}
+		 else {
+			assertEquals(row,prev.getBlackPosition().getTile().getRow());
+			assertEquals(col,prev.getBlackPosition().getTile().getColumn());
+		 }
 	 }
 	 
 	 @And ("The next player to move shall become {string}")
 	 public void theNextPlayerToMoveShallBecome(String colour) {
-		//TODO Iteration 4 
+		Quoridor q=QuoridorApplication.getQuoridor();
+		Game g=q.getCurrentGame();
+		GamePosition prev=g.getCurrentPosition();
+		if (colour.compareTo("white")==0) {
+			assertTrue(prev.getPlayerToMove().hasGameAsWhite());
+		}
+		else {
+			assertTrue(prev.getPlayerToMove().hasGameAsBlack());
+		}
 	 }
 	
 	 @And ("There is a {string} wall at {int}:{int}")
 	 public void thereIsAWallAt(String dir, int row, int col) {
-		//TODO Iteration 4 
+		Quoridor q=QuoridorApplication.getQuoridor();
+		Game g=q.getCurrentGame();
+		GamePosition prev=g.getCurrentPosition();
+		Wall w=null;
+		for (int i=0;i<10;i++) {
+			w=g.getWhitePlayer().getWall(i);
+			if (w.getMove()==null) {
+				break;
+			}
+		}
+		Direction sdir;
+		if (dir.compareTo("vertical")==0) {
+			sdir=Direction.Vertical;
+		}
+		else {
+			sdir=Direction.Horizontal;
+		}
+		new WallMove(0, 0, g.getWhitePlayer(), q.getBoard().getTile((row-1)*9+col-1), g, sdir, w);
+		prev.removeWhiteWallsInStock(w);
+		prev.addWhiteWallsOnBoardAt(w, (row-1)*9+col-1);
 	 }
 	 
 	 @And ("My opponent is not {string} from the player")
@@ -1840,7 +1878,20 @@ public class CucumberStepDefinitions {
 	 
 	 @And ("The opponent is located at {int}:{int}")
 	 public void theOpponentIsLocatedAt(int row, int col) {
-		//TODO Iteration 4 
+		Quoridor q=QuoridorApplication.getQuoridor();
+		Game g=q.getCurrentGame();
+		GamePosition prev=g.getCurrentPosition();
+		 Player opp;
+		 if (starter.hasGameAsWhite()) {
+			 opp=g.getBlackPlayer();
+			 PlayerPosition p2= new PlayerPosition(opp, q.getBoard().getTile((row-1)*9+col-1));
+			 prev.setBlackPosition(p2);
+		 }
+		 else {
+			 opp=g.getWhitePlayer();
+			 PlayerPosition p2= new PlayerPosition(opp, q.getBoard().getTile((row-1)*9+col-1));
+			 prev.setWhitePosition(p2);
+		 } 
 	 }
 	 
 	 @And ("There are no {string} walls {string} from the player nearby")
