@@ -1788,7 +1788,6 @@ public class CucumberStepDefinitions {
 		Quoridor q=QuoridorApplication.getQuoridor();
 		Game g=q.getCurrentGame();
 		GamePosition prev=g.getCurrentPosition();
-		//Player curr=g.getCurrentPosition().getPlayerToMove();
 		starter=g.getCurrentPosition().getPlayerToMove();
 		PlayerPosition p1= new PlayerPosition(starter, q.getBoard().getTile((row-1)*9+col-1));
 		if (starter.hasGameAsWhite()) {
@@ -1801,12 +1800,67 @@ public class CucumberStepDefinitions {
 	
 	 @And ("There are no {string} walls {string} from the player")
 	 public void thereAreNoWallsFromThePlayer(String dir, String side) {
-		 //TODO Iteration 4 
+		 Quoridor q=QuoridorApplication.getQuoridor();
+			Game g=q.getCurrentGame();
+			GamePosition prev=g.getCurrentPosition();
+			PlayerPosition p1;
+			if (prev.getPlayerToMove().hasGameAsWhite()) {
+				p1=prev.getWhitePosition();
+			}
+			else {
+				p1=prev.getBlackPosition();
+			}
+			for (Wall w: prev.getWhiteWallsOnBoard()) {
+				if (((WallMove)w.getMove()).getWallDirection().toString().compareTo(dir)==0) {
+					if ((p1.getTile().getColumn()==w.getMove().getTargetTile().getColumn())||(p1.getTile().getColumn()==w.getMove().getTargetTile().getColumn()-1)||(p1.getTile().getColumn()==w.getMove().getTargetTile().getColumn()+1)){
+						if (p1.getTile().getColumn()+3>9) {
+							w.getMove().setTargetTile(q.getBoard().getTile((w.getMove().getTargetTile().getRow()-1)*9+w.getMove().getTargetTile().getColumn()-1+3));
+						}
+						else {
+							w.getMove().setTargetTile(q.getBoard().getTile((w.getMove().getTargetTile().getRow()-1)*9+w.getMove().getTargetTile().getColumn()-1-3));
+						}
+					}
+				}
+			}
+			
+			for (Wall w: prev.getBlackWallsOnBoard()) {
+				if (((WallMove)w.getMove()).getWallDirection().toString().compareTo(dir)==0) {
+					if ((p1.getTile().getColumn()==w.getMove().getTargetTile().getColumn())||(p1.getTile().getColumn()==w.getMove().getTargetTile().getColumn()-1)||(p1.getTile().getColumn()==w.getMove().getTargetTile().getColumn()+1)){
+						if (p1.getTile().getColumn()+3>9) {
+							w.getMove().setTargetTile(q.getBoard().getTile((w.getMove().getTargetTile().getRow()-1)*9+w.getMove().getTargetTile().getColumn()-1+3));
+						}
+						else {
+							w.getMove().setTargetTile(q.getBoard().getTile((w.getMove().getTargetTile().getRow()-1)*9+w.getMove().getTargetTile().getColumn()-1-3));
+						}
+					}
+				}
+			}
 	 }
 	 
 	 @And ("The opponent is not {string} from the player")
 	 public void theOpponentIsNotFromThePlayer(String side) {
-		//TODO Iteration 4 
+		Quoridor q=QuoridorApplication.getQuoridor();
+		Game g=q.getCurrentGame();
+		GamePosition prev=g.getCurrentPosition();
+		PlayerPosition p1;
+		PlayerPosition p2;
+		if (prev.getPlayerToMove().hasGameAsWhite()) {
+			p1=prev.getWhitePosition();
+			p2=prev.getBlackPosition();
+		}
+		else {
+			p1=prev.getBlackPosition();
+			p2=prev.getWhitePosition();
+		}
+		 
+		 if ((p1.getTile().getColumn()==p2.getTile().getColumn())||(p1.getTile().getColumn()==p2.getTile().getColumn()-1)||(p1.getTile().getColumn()==p2.getTile().getColumn()+1)){
+			if (p1.getTile().getColumn()+3>9) {
+				p2.setTile(q.getBoard().getTile((p2.getTile().getRow()-1)*9+p2.getTile().getColumn()-1+3));
+			}
+			else {
+				p2.setTile(q.getBoard().getTile((p2.getTile().getRow()-1)*9+p2.getTile().getColumn()-1-3));
+			}
+		}
 	 }
 	 
 	 @When ("Player {string} initiates to move {string}")
@@ -1861,10 +1915,10 @@ public class CucumberStepDefinitions {
 		}
 		Direction sdir;
 		if (dir.compareTo("vertical")==0) {
-			sdir=Direction.Vertical;
+			sdir=ca.mcgill.ecse223.quoridor.model.Direction.Vertical;
 		}
 		else {
-			sdir=Direction.Horizontal;
+			sdir=ca.mcgill.ecse223.quoridor.model.Direction.Horizontal;
 		}
 		new WallMove(0, 0, g.getWhitePlayer(), q.getBoard().getTile((row-1)*9+col-1), g, sdir, w);
 		prev.removeWhiteWallsInStock(w);
@@ -1873,7 +1927,28 @@ public class CucumberStepDefinitions {
 	 
 	 @And ("My opponent is not {string} from the player")
 	 public void myOpponentIsNotFromThePlayer(String side) {
-		//TODO Iteration 4 
+		 Quoridor q=QuoridorApplication.getQuoridor();
+		Game g=q.getCurrentGame();
+		GamePosition prev=g.getCurrentPosition();
+		PlayerPosition p1;
+		PlayerPosition p2;
+		if (prev.getPlayerToMove().hasGameAsWhite()) {
+			p1=prev.getWhitePosition();
+			p2=prev.getBlackPosition();
+		}
+		else {
+			p1=prev.getBlackPosition();
+			p2=prev.getWhitePosition();
+		}
+		 
+		 if ((p1.getTile().getColumn()==p2.getTile().getColumn())||(p1.getTile().getColumn()==p2.getTile().getColumn()-1)||(p1.getTile().getColumn()==p2.getTile().getColumn()+1)){
+			if (p1.getTile().getColumn()+3>9) {
+				p2.setTile(q.getBoard().getTile((p2.getTile().getRow()-1)*9+p2.getTile().getColumn()-1+3));
+			}
+			else {
+				p2.setTile(q.getBoard().getTile((p2.getTile().getRow()-1)*9+p2.getTile().getColumn()-1-3));
+			}
+		}
 	 }
 	 
 	 @And ("The opponent is located at {int}:{int}")
@@ -1896,7 +1971,41 @@ public class CucumberStepDefinitions {
 	 
 	 @And ("There are no {string} walls {string} from the player nearby")
 	 public void thereAreNoWallsFromThePlayerNearby(String dir, String side) {
-		//TODO Iteration 4 
+		Quoridor q=QuoridorApplication.getQuoridor();
+		Game g=q.getCurrentGame();
+		GamePosition prev=g.getCurrentPosition();
+		PlayerPosition p1;
+		if (prev.getPlayerToMove().hasGameAsWhite()) {
+			p1=prev.getWhitePosition();
+		}
+		else {
+			p1=prev.getBlackPosition();
+		}
+		for (Wall w: prev.getWhiteWallsOnBoard()) {
+			if (((WallMove)w.getMove()).getWallDirection().toString().compareTo(dir)==0) {
+				if ((p1.getTile().getColumn()==w.getMove().getTargetTile().getColumn())||(p1.getTile().getColumn()==w.getMove().getTargetTile().getColumn()-1)||(p1.getTile().getColumn()==w.getMove().getTargetTile().getColumn()+1)){
+					if (p1.getTile().getColumn()+3>9) {
+						w.getMove().setTargetTile(q.getBoard().getTile((w.getMove().getTargetTile().getRow()-1)*9+w.getMove().getTargetTile().getColumn()-1+3));
+					}
+					else {
+						w.getMove().setTargetTile(q.getBoard().getTile((w.getMove().getTargetTile().getRow()-1)*9+w.getMove().getTargetTile().getColumn()-1-3));
+					}
+				}
+			}
+		}
+		
+		for (Wall w: prev.getBlackWallsOnBoard()) {
+			if (((WallMove)w.getMove()).getWallDirection().toString().compareTo(dir)==0) {
+				if ((p1.getTile().getColumn()==w.getMove().getTargetTile().getColumn())||(p1.getTile().getColumn()==w.getMove().getTargetTile().getColumn()-1)||(p1.getTile().getColumn()==w.getMove().getTargetTile().getColumn()+1)){
+					if (p1.getTile().getColumn()+3>9) {
+						w.getMove().setTargetTile(q.getBoard().getTile((w.getMove().getTargetTile().getRow()-1)*9+w.getMove().getTargetTile().getColumn()-1+3));
+					}
+					else {
+						w.getMove().setTargetTile(q.getBoard().getTile((w.getMove().getTargetTile().getRow()-1)*9+w.getMove().getTargetTile().getColumn()-1-3));
+					}
+				}
+			}
+		}
 	 }
 	 
 
