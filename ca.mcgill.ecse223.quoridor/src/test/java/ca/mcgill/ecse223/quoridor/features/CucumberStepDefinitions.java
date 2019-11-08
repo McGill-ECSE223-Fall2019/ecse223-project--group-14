@@ -2022,7 +2022,7 @@ public class CucumberStepDefinitions {
 			quoridor.delete();
 			quoridor = null;
 		}
-		for (int i = 0; i < 20; i++) {
+		for (int i = 1; i <= 20; i++) {
 			Wall wall = Wall.getWithId(i);
 			if(wall != null) {
 				wall.delete();
@@ -2076,7 +2076,7 @@ public class CucumberStepDefinitions {
 		// Create all walls. Walls with lower ID belong to player1,
 		// while the second half belongs to player 2
 		for (int i = 0; i < 2; i++) {
-			for (int j = 0; j < 10; j++) {
+			for (int j = 1; j <= 10; j++) {
 				new Wall(i * 10 + j, players[i]);
 			}
 		}
@@ -2114,11 +2114,11 @@ public class CucumberStepDefinitions {
 		GamePosition gamePosition = new GamePosition(0, player1Position, player2Position, players.get(0), game);
 
 		// Add the walls as in stock for the players
-		for (int j = 0; j < 10; j++) {
+		for (int j = 1; j <= 10; j++) {
 			Wall wall = Wall.getWithId(j);
 			gamePosition.addWhiteWallsInStock(wall);
 		}
-		for (int j = 0; j < 10; j++) {
+		for (int j = 1; j <= 10; j++) {
 			Wall wall = Wall.getWithId(j + 10);
 			gamePosition.addBlackWallsInStock(wall);
 		}
