@@ -1,12 +1,6 @@
 package ca.mcgill.ecse223.quoridor.view;
 
 import java.awt.Color;
-import java.awt.Point;
-import java.awt.geom.AffineTransform;
-
-import ca.mcgill.ecse223.quoridor.controller.GameController;
-import ca.mcgill.ecse223.quoridor.model.GamePosition;
-
 
 /*
  * A HoldableComponent is JPanel representing a Pawn or a Wall, which can be held and
