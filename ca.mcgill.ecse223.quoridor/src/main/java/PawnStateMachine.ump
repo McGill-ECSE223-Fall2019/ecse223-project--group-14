@@ -7,9 +7,6 @@ class PawnBehavior {
     0..1 -> 0..1 Game currentGame;
     0..1 -> 0..1 Player player;
 	
-	StepMove stagedStep;
-	JumpMove stagedJump;
-	
 	boolean isValid;
 	int row;
 	int col;
@@ -58,6 +55,8 @@ class PawnBehavior {
     		}Placed;
 		}
 	}
+	
+	//TODO account for diagonal jumps via wall
 	
 	void updateModel(int row, int col){
 		status="success";
