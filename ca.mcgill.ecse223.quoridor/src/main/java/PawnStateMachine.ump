@@ -3,7 +3,7 @@ namespace ca.mcgill.ecse223.quoridor.controller;
 use QuoridorGame.ump;
 
 class PawnBehavior {
-
+	depend java.util.List;
     0..1 -> 0..1 Game currentGame;
     0..1 -> 0..1 Player player;
 	
@@ -121,7 +121,7 @@ class PawnBehavior {
 		
 		String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
     	
-    	Boolean walla= wallBlocking(opSide,true);  //if adjacent wall
+    	Boolean walla= isWallBlocking(opSide,true);  //if adjacent wall
     	if (walla){
     		return false;
     	}
@@ -138,8 +138,8 @@ class PawnBehavior {
 		int curCol = getCurrentPawnColumn();
 		
 		String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
-    	Boolean wallb= wallBlocking(opSide,false); 
-    	Boolean walla= wallBlocking(opSide,true);  //if adjacent wall
+    	Boolean wallb= isWallBlocking(opSide,false); 
+    	Boolean walla= isWallBlocking(opSide,true);  //if adjacent wall
 		
 		if ((wallb)||(walla)){
     		return false;
@@ -161,8 +161,8 @@ class PawnBehavior {
     	int curCol = getCurrentPawnColumn();
     	
     	String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
-    	Boolean wallb= wallBlocking(opSide,false); 
-    	Boolean walla= wallBlocking(opSide,true);  //if adjacent wall
+    	Boolean wallb= isWallBlocking(opSide,false); 
+    	Boolean walla= isWallBlocking(opSide,true);  //if adjacent wall
     	if ((!wallb)||(walla)){
     		return false;
     	}
@@ -197,7 +197,7 @@ class PawnBehavior {
 		this.side = side;
 	}
 	
-	boolean wallBlocking(String side,boolean isStep){
+	boolean isWallBlocking(String side,boolean isStep){
 		int curRow = getCurrentPawnRow();
     	int curCol = getCurrentPawnColumn();
     	int distance;
@@ -207,24 +207,90 @@ class PawnBehavior {
     	else {
     		distance = 2;
     	}
-    	
+    	GamePosition curr= currentGame.getCurrentPosition();
+		
+		List<Wall> wWall = curr.getWhiteWallsOnBoard();
+		List<Wall> bWall = curr.getBlackWallsOnBoard();
+		
     	if(this.side.equals("up")){
-			//TODO checks all walls on board for white then black
-			
-			GamePosition curr= currentGame.getCurrentPosition();
-		
-			//List<Wall> wWall = curr.getWhiteWallsOnBoard();
-			//List<Wall> bWall = curr.getBlackWallsOnBoard();
-		} 
-		
+			for(Wall w: wWall){
+				if (w.getMove().getWallDirection().toString().compareTo("Horizontal")==0){
+					if (w.getMove().getTargetTile().getRow()==curRow+distance){
+						if ((w.getMove().getTargetTile().getColumn()==curCol)||(w.getMove().getTargetTile().getColumn()==curCol-1)){
+							return true;
+						}
+					}
+				}
+			}
+			for(Wall w: bWall){
+				if (w.getMove().getWallDirection().toString().compareTo("Horizontal")==0){
+					if (w.getMove().getTargetTile().getRow()==curRow+distance){
+						if ((w.getMove().getTargetTile().getColumn()==curCol)||(w.getMove().getTargetTile().getColumn()==curCol-1)){
+							return true;
+						}
+					}
+				}
+			}
+		}
 		else if(this.side.equals("right")){
-			
+			for(Wall w: wWall){
+				if (w.getMove().getWallDirection().toString().compareTo("Vertical")==0){
+					if (w.getMove().getTargetTile().getColumn()==curCol-1+distance){
+						if ((w.getMove().getTargetTile().getRow()==curRow)||(w.getMove().getTargetTile().getRow()==curRow-1)){
+							return true;
+						}
+					}
+				}
+			}
+			for(Wall w: bWall){
+				if (w.getMove().getWallDirection().toString().compareTo("Vertical")==0){
+					if (w.getMove().getTargetTile().getColumn()==curCol-1+distance){
+						if ((w.getMove().getTargetTile().getRow()==curRow)||(w.getMove().getTargetTile().getRow()==curRow-1)){
+							return true;
+						}
+					}
+				}
+			}
 		} 
 		else if(this.side.equals("left")){
-			
+			for(Wall w: wWall){
+				if (w.getMove().getWallDirection().toString().compareTo("Vertical")==0){
+					if (w.getMove().getTargetTile().getColumn()==curCol-distance){
+						if ((w.getMove().getTargetTile().getRow()==curRow)||(w.getMove().getTargetTile().getRow()==curRow-1)){
+							return true;
+						}
+					}
+				}
+			}
+			for(Wall w: bWall){
+				if (w.getMove().getWallDirection().toString().compareTo("Vertical")==0){
+					if (w.getMove().getTargetTile().getColumn()==curCol-distance){
+						if ((w.getMove().getTargetTile().getRow()==curRow)||(w.getMove().getTargetTile().getRow()==curRow-1)){
+							return true;
+						}
+					}
+				}
+			}
 		} 
 		else if(this.side.equals("down")){
-			
+			for(Wall w: wWall){
+				if (w.getMove().getWallDirection().toString().compareTo("Horizontal")==0){
+					if (w.getMove().getTargetTile().getRow()==curRow+1-distance){
+						if ((w.getMove().getTargetTile().getColumn()==curCol)||(w.getMove().getTargetTile().getColumn()==curCol-1)){
+							return true;
+						}
+					}
+				}
+			}
+			for(Wall w: bWall){
+				if (w.getMove().getWallDirection().toString().compareTo("Horizontal")==0){
+					if (w.getMove().getTargetTile().getRow()==curRow+1-distance){
+						if ((w.getMove().getTargetTile().getColumn()==curCol)||(w.getMove().getTargetTile().getColumn()==curCol-1)){
+							return true;
+						}
+					}
+				}
+			}
 		}
 		
 		return false;

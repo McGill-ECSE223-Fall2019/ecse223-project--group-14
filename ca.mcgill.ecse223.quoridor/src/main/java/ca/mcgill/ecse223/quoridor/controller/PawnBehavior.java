@@ -2,6 +2,7 @@
 /*This code was generated using the UMPLE 1.29.0.4181.a593105a9 modeling language!*/
 
 package ca.mcgill.ecse223.quoridor.controller;
+import java.util.List;
 import ca.mcgill.ecse223.quoridor.model.*;
 
 // line 5 "../../../../../PawnStateMachine.ump"
@@ -425,7 +426,7 @@ public class PawnBehavior
 		
 		String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
     	
-    	Boolean walla= wallBlocking(opSide,true);  //if adjacent wall
+    	Boolean walla= isWallBlocking(opSide,true);  //if adjacent wall
     	if (walla){
     		return false;
     	}
@@ -446,8 +447,8 @@ public class PawnBehavior
 		int curCol = getCurrentPawnColumn();
 		
 		String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
-    	Boolean wallb= wallBlocking(opSide,false); 
-    	Boolean walla= wallBlocking(opSide,true);  //if adjacent wall
+    	Boolean wallb= isWallBlocking(opSide,false); 
+    	Boolean walla= isWallBlocking(opSide,true);  //if adjacent wall
 		
 		if ((wallb)||(walla)){
     		return false;
@@ -470,8 +471,8 @@ public class PawnBehavior
     	int curCol = getCurrentPawnColumn();
     	
     	String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
-    	Boolean wallb= wallBlocking(opSide,false); 
-    	Boolean walla= wallBlocking(opSide,true);  //if adjacent wall
+    	Boolean wallb= isWallBlocking(opSide,false); 
+    	Boolean walla= isWallBlocking(opSide,true);  //if adjacent wall
     	if ((!wallb)||(walla)){
     		return false;
     	}
@@ -508,7 +509,7 @@ public class PawnBehavior
   }
 
   // line 201 "../../../../../PawnStateMachine.ump"
-  public boolean wallBlocking(String side, boolean isStep){
+  public boolean isWallBlocking(String side, boolean isStep){
     int curRow = getCurrentPawnRow();
     	int curCol = getCurrentPawnColumn();
     	int distance;
@@ -518,30 +519,96 @@ public class PawnBehavior
     	else {
     		distance = 2;
     	}
-    	
+    	GamePosition curr= currentGame.getCurrentPosition();
+		
+		List<Wall> wWall = curr.getWhiteWallsOnBoard();
+		List<Wall> bWall = curr.getBlackWallsOnBoard();
+		
     	if(this.side.equals("up")){
-			//TODO checks all walls on board for white then black
-			
-			GamePosition curr= currentGame.getCurrentPosition();
-		
-			//List<Wall> wWall = curr.getWhiteWallsOnBoard();
-			//List<Wall> bWall = curr.getBlackWallsOnBoard();
-		} 
-		
+			for(Wall w: wWall){
+				if (w.getMove().getWallDirection().toString().compareTo("Horizontal")==0){
+					if (w.getMove().getTargetTile().getRow()==curRow+distance){
+						if ((w.getMove().getTargetTile().getColumn()==curCol)||(w.getMove().getTargetTile().getColumn()==curCol-1)){
+							return true;
+						}
+					}
+				}
+			}
+			for(Wall w: bWall){
+				if (w.getMove().getWallDirection().toString().compareTo("Horizontal")==0){
+					if (w.getMove().getTargetTile().getRow()==curRow+distance){
+						if ((w.getMove().getTargetTile().getColumn()==curCol)||(w.getMove().getTargetTile().getColumn()==curCol-1)){
+							return true;
+						}
+					}
+				}
+			}
+		}
 		else if(this.side.equals("right")){
-			
+			for(Wall w: wWall){
+				if (w.getMove().getWallDirection().toString().compareTo("Vertical")==0){
+					if (w.getMove().getTargetTile().getColumn()==curCol-1+distance){
+						if ((w.getMove().getTargetTile().getRow()==curRow)||(w.getMove().getTargetTile().getRow()==curRow-1)){
+							return true;
+						}
+					}
+				}
+			}
+			for(Wall w: bWall){
+				if (w.getMove().getWallDirection().toString().compareTo("Vertical")==0){
+					if (w.getMove().getTargetTile().getColumn()==curCol-1+distance){
+						if ((w.getMove().getTargetTile().getRow()==curRow)||(w.getMove().getTargetTile().getRow()==curRow-1)){
+							return true;
+						}
+					}
+				}
+			}
 		} 
 		else if(this.side.equals("left")){
-			
+			for(Wall w: wWall){
+				if (w.getMove().getWallDirection().toString().compareTo("Vertical")==0){
+					if (w.getMove().getTargetTile().getColumn()==curCol-distance){
+						if ((w.getMove().getTargetTile().getRow()==curRow)||(w.getMove().getTargetTile().getRow()==curRow-1)){
+							return true;
+						}
+					}
+				}
+			}
+			for(Wall w: bWall){
+				if (w.getMove().getWallDirection().toString().compareTo("Vertical")==0){
+					if (w.getMove().getTargetTile().getColumn()==curCol-distance){
+						if ((w.getMove().getTargetTile().getRow()==curRow)||(w.getMove().getTargetTile().getRow()==curRow-1)){
+							return true;
+						}
+					}
+				}
+			}
 		} 
 		else if(this.side.equals("down")){
-			
+			for(Wall w: wWall){
+				if (w.getMove().getWallDirection().toString().compareTo("Horizontal")==0){
+					if (w.getMove().getTargetTile().getRow()==curRow+1-distance){
+						if ((w.getMove().getTargetTile().getColumn()==curCol)||(w.getMove().getTargetTile().getColumn()==curCol-1)){
+							return true;
+						}
+					}
+				}
+			}
+			for(Wall w: bWall){
+				if (w.getMove().getWallDirection().toString().compareTo("Horizontal")==0){
+					if (w.getMove().getTargetTile().getRow()==curRow+1-distance){
+						if ((w.getMove().getTargetTile().getColumn()==curCol)||(w.getMove().getTargetTile().getColumn()==curCol-1)){
+							return true;
+						}
+					}
+				}
+			}
 		}
 		
 		return false;
   }
 
-  // line 234 "../../../../../PawnStateMachine.ump"
+  // line 300 "../../../../../PawnStateMachine.ump"
   public String isOpponentAdjacent(int curR, int curC, int oR, int oC){
     if ((curR==oR)&&(curC==oC+1)){
     		return "left";
@@ -565,7 +632,7 @@ public class PawnBehavior
   /**
    * Action to be called when an illegal move is attempted
    */
-  // line 254 "../../../../../PawnStateMachine.ump"
+  // line 320 "../../../../../PawnStateMachine.ump"
   public void illegalMove(){
     status="illegal";
   }
@@ -588,7 +655,7 @@ public class PawnBehavior
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 260 "../../../../../PawnStateMachine.ump"
+  // line 326 "../../../../../PawnStateMachine.ump"
   enum MoveDirection 
   {
     East, South, West, North;
