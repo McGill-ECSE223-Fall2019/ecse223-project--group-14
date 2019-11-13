@@ -17,6 +17,7 @@ class PawnBehavior {
 		
     pawnSM {
     	Placed{
+    		entry / {isValid = false;}
     		initiateDiagonalJump(int row, int col, String side) -> /{
     			initPawn(row,col,side);
     		}  JumpingDiagonal;
@@ -28,23 +29,38 @@ class PawnBehavior {
     		}  JumpingStraight;
     	}
 		Stepping{
-			entry / {isValid = isLegalStep();};
+			entry / {isValid = isLegalStep();}
+			dropPawn(int row, int col) -> /{
+    			updateModel(row,col);				//TODO all of these should have isValid as a barrier
+    		}  Placed;
+    		cancel() ->Placed;
 			
 		}
 	    JumpingStraight{
-	    	entry / {isValid = isLegalJump();};
+	    	entry / {isValid = isLegalJump();}
+	    	dropPawn(int row, int col) -> /{
+    			updateModel(row,col);
+    		}  Placed;
+    		cancel() ->Placed;
 		}
 		JumpingDiagonal{
-			entry / {isValid = isLegalJumpDiag();};
+			entry / {isValid = isLegalJumpDiag();}
+			dropPawn(int row, int col) -> /{
+    			updateModel(row,col);
+    		}  Placed;
+    		cancel() ->Placed;
 		}
-		
+	}
+	
+	void updateModel(int row, int col){
+		//TODO either create new game position and set current or update current one
 	}
     // Returns the current row number of the pawn
     int getCurrentPawnRow() { 
-    	GamePosition pos = QuoridorApplication.getQuoridor().getCurrentPosition();
-    	Player currentPlayer = pos.getPlayerToMove();
-    	if (currentPlayer.hasGameAsWhite())(
+    	GamePosition pos = currentGame.getCurrentPosition();
+    	if (player.hasGameAsWhite()){
 	    	return pos.getWhitePosition().getTile().getRow();
+	    }
 	    else{
 	    	return pos.getBlackPosition().getTile().getRow();
 	    }
@@ -54,65 +70,114 @@ class PawnBehavior {
     
     // Returns the current column number of the pawn
     int getCurrentPawnColumn() {
-    	GamePosition pos = QuoridorApplication.getQuoridor().getCurrentPosition();
-    	Player currentPlayer = pos.getPlayerToMove();
-    	if (currentPlayer.hasGameAsWhite())(
-	    	return pos.getWhitePosition().getTile().getCol();
+    	GamePosition pos=currentGame.getCurrentPosition();
+    	if (player.hasGameAsWhite()){
+	    	return pos.getWhitePosition().getTile().getColumn();
+	    }
 	    else{
-	    	return pos.getBlackPosition().getTile().getCol();
+	    	return pos.getBlackPosition().getTile().getColumn();
 	    }
     }
+    
+    // Returns the current row number of the pawn
+    int getOpponentPawnRow() { 
+    	GamePosition pos=currentGame.getCurrentPosition();
+    	if (player.hasGameAsWhite()){
+	    	return pos.getBlackPosition().getTile().getRow();
+	    }
+	    else{
+	    	return pos.getWhitePosition().getTile().getRow();
+	    }
+    }
+    
+    
+    
+    // Returns the current column number of the pawn
+    int getOpponentPawnColumn() {
+    	GamePosition pos=currentGame.getCurrentPosition();
+    	if (player.hasGameAsWhite()){
+	    	return pos.getBlackPosition().getTile().getColumn();
+	    }
+	    else{
+	    	return pos.getWhitePosition().getTile().getColumn();
+	    }
+    }
+    
     // Returns if it is legal to step in the given direction
-    boolean isLegalStep(MoveDirection dir) { return false; }
+    boolean isLegalStep() { 
+    	int opRow = getOpponentPawnRow();
+    	int opCol = getOpponentPawnColumn();
+    	
+    	int curRow = getCurrentPawnRow();
+		int curCol = getCurrentPawnColumn();
+		
+		String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
+    	
+    	Boolean walla= wallBlocking(opSide,true);  //if adjacent wall
+    	if (walla){
+    		return false;
+    	}
+    	
+    	return true; 
+    }
+    
     // Returns if it is legal to jump in the given direction
-    boolean isLegalJump(MoveDirection dir) { 
-    	int row = getCurrentPawnRow();
-		int col = getCurrentPawnCol();
+    boolean isLegalJump() { 
+    	int opRow = getOpponentPawnRow();
+    	int opCol = getOpponentPawnColumn();
+    	
+    	int curRow = getCurrentPawnRow();
+		int curCol = getCurrentPawnColumn();
 		
-		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Board board = quoridor.getBoard();
+		String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
+    	Boolean wallb= wallBlocking(opSide,false); 
+    	Boolean walla= wallBlocking(opSide,true);  //if adjacent wall
 		
-		if(dir == MoveDirection.North){
-			boolean destExists = (board.getTile(getIndex(row-2, col)) != -1);
-			boolean opponentJumpable = (getOpponentPawnTile().equals(getTile(getIndex(row-1, col))));
+		if ((wallb)||(walla)){
+    		return false;
+    	}
+		else if(this.side.compareTo(opSide)==0){
+			return true;
+		} 
 		
-			// Check if jump destination even exists
-			if(destExists && opponentJumpable &&){
-			}
-		} else if(dir == MoveDirection.South){
-			stagedStep = new StepMove(row+1, col, ...);
-		} else if(dir == MoveDirection.West){
-			stagedStep = new StepMove(row, col-1, ...);
-		} else if(dir == MoveDirection.East){
-			stagedStep = new StepMove(row, col+1, ...);
+		else {
+			return false;
 		}
-		
-    	return false;
     }
     
     boolean isLegalJumpDiag() { 
-    	int opRow = getOpponentRow();
-    	int opCol = getOpponentCol();
+    	int opRow = getOpponentPawnRow();
+    	int opCol = getOpponentPawnColumn();
     	
     	int curRow = getCurrentPawnRow();
     	int curCol = getCurrentPawnColumn();
     	
-    	String opSide = isOpponentAdjecent(curRow,curCol,opRow,opCol);
-    	
-		if(this.side.equals("upleft")){
-			if(opSide.equals("up")){
-				if(wallBlocking(opSide,false)){
-				}
+    	String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
+    	Boolean wallb= wallBlocking(opSide,false); 
+    	Boolean walla= wallBlocking(opSide,true);  //if adjacent wall
+    	if ((!wallb)||(walla)){
+    		return false;
+    	}
+		else if(this.side.equals("upleft")){
+			if((opSide.equals("up")) || opSide.equals("left")){
+				return true;
 			}
-			else if (opSide.equals("left")){
-				
+		} 
+		
+		else if(this.side.equals("upright")){
+			if((opSide.equals("up")) || opSide.equals("right")){
+				return true;
 			}
-		} else if(this.side.equals("upright")){
-			
-		} else if(this.side.equals("downleft")){
-			move = new JumpMove(row, col-1, ...);
-		} else if(this.side.equals("downright")){
-			move = new JumpMove(row, col+1, ...);
+		} 
+		else if(this.side.equals("downleft")){
+			if((opSide.equals("down")) || opSide.equals("left")){
+				return true;
+			}
+		} 
+		else if(this.side.equals("downright")){
+			if((opSide.equals("down")) || opSide.equals("right")){
+				return true;
+			}
 		}
 		
     	return false;
@@ -124,31 +189,60 @@ class PawnBehavior {
 		this.side = side;
 	}
 	
-	boolean wallBlocking(String opSide,boolean isStep){
+	boolean wallBlocking(String side,boolean isStep){
 		int curRow = getCurrentPawnRow();
     	int curCol = getCurrentPawnColumn();
-    	
-    	if(isStep && wallExistsAt(){
-    		//TODO
+    	int distance;
+    	if(isStep){
+    		distance=1;
     	}
+    	else {
+    		distance = 2;
+    	}
+    	
+    	if(this.side.equals("up")){
+			//TODO checks all walls on board for white then black
+			
+			GamePosition curr= currentGame.getCurrentPosition();
+		
+			//List<Wall> wWall = curr.getWhiteWallsOnBoard();
+			//List<Wall> bWall = curr.getBlackWallsOnBoard();
+		} 
+		
+		else if(this.side.equals("right")){
+			
+		} 
+		else if(this.side.equals("left")){
+			
+		} 
+		else if(this.side.equals("down")){
+			
+		}
+		
+		return false;
     }
     
-    boolean wallExistsAt(int row, int col){
-    	GamePosition pos = QuoridorApplication.getQuoridor().getCurrentPosition().
-    	//TODO
-    	for white
-    		if (pos...)
-    			return true;
-    	for black
-	    	if (...)
-	    			return true;
-	    			
-	    return false;
+    String isOpponentAdjacent(int curR, int curC, int oR, int oC){
+    	if ((curR==oR)&&(curC==oC+1)){
+    		return "left";
+    	}
+    	else if ((curR==oR)&&(curC==oC-1)){
+    		return "right";
+    	}
+    	
+    	else if ((curC==oC)&&(curR==oR+1)){
+    		return "down";
+    	}
+    	else if ( (curC==oC)&&(curC==oR-1)){
+    		return "up";
+    	}
+    	else {
+    		return "no";
+    	}
     }
 	
     // Action to be called when an illegal move is attempted
     void illegalMove() { }
-    
     
     
     // Enumeration for the possible moving directions
