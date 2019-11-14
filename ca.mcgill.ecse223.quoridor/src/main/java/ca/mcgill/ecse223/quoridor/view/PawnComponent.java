@@ -132,7 +132,7 @@ public class PawnComponent extends HoldableComponent{
 			pb.initiateStep(side);
 		}
 		if (pb.getIsValid()) {
-			pb.dropPawn(i+1, j+1);
+			pb.dropPawn();
 		}
 		else {	 
 			pb.cancel();
@@ -141,13 +141,6 @@ public class PawnComponent extends HoldableComponent{
 
 		this.setLocation(tiles[j][i].getX()+(TileComponent.tileW-pawnW)/2, tiles[j][i].getY()+(TileComponent.tileW-pawnW)/2);
 		
-		//this should be handled by state machine
-		if (super.getColor().equals(Color.WHITE)) {
-			curr.setWhitePosition(new PlayerPosition(curr.getPlayerToMove(), qp.getQ().getBoard().getTile(i*9+j)));
-		}
-		else {
-			curr.setBlackPosition(new PlayerPosition(curr.getPlayerToMove(), qp.getQ().getBoard().getTile(i*9+j)));
-		}
 		return true;
 		
 	}

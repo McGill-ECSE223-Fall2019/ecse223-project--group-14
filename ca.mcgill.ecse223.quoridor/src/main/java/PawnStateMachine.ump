@@ -15,20 +15,17 @@ class PawnBehavior {
     pawnSM {
     	Placed{
     		initiateDiagonalJump(String side) -> /{
-    			//initPawn(row,col,side);
     		}  JumpingDiagonal;
     		initiateStep(String side) -> /{
-    			//initPawn(row,col,side);
     		}  Stepping;
     		initiateStraightJump(String side) -> /{
-    			//initPawn(row,col,side);
     		}  JumpingStraight;
     	}
 		Stepping{
 			entry / {isValid = isLegalStep();}
-			dropPawn(int row, int col) -> /{
+			dropPawn() -> /{
     			updateModel();				//TODO all of these should have isValid as a barrier
-    			legalMove();
+    			legalMove(false);
     		}  Placed;
     		cancel() -> /{
     			illegalMove();
@@ -39,7 +36,7 @@ class PawnBehavior {
 	    	entry / {isValid = isLegalJump();}
 	    	dropPawn() -> /{
     			updateModel();
-    			legalMove();
+    			legalMove(true);
     		}  Placed;
     		cancel() -> /{
     			illegalMove();
@@ -49,7 +46,7 @@ class PawnBehavior {
 			entry / {isValid = isLegalJumpDiag();}
 			dropPawn() -> /{
     			updateModel();
-    			legalMove();
+    			legalMove(true);
     		}  Placed;
     		cancel() -> /{
     			illegalMove();
@@ -342,9 +339,55 @@ class PawnBehavior {
 		status="illegal";
     }
     
-    void legalMove() { 
+    void legalMove(boolean isJump) { 
 		status="success";
-		isValid=true;
+    	GamePosition curr= currentGame.getCurrentPosition();
+    	int curRow = getCurrentPawnRow()-1;
+    	int curCol = getCurrentPawnColumn()-1;
+		int r=curRow,j=curCol;
+		int distance=2;
+		if (!isJump){
+			distance=1;
+		}
+		
+		if(this.side.compareTo("up")==0){
+			r=curRow-distance;
+		} 
+		
+		else if(this.side.compareTo("right")==0){
+			j=curCol+distance;
+		} 
+		else if(this.side.compareTo("left")==0){
+			j=curCol-distance;
+		} 
+		else if(this.side.compareTo("down")==0){
+			r=curRow+distance;
+		}
+		
+		else if(this.side.compareTo("upleft")==0){
+			r=curRow-1;
+			j=curCol-1;
+		} 
+		
+		else if(this.side.compareTo("upright")==0){
+			r=curRow-1;
+			j=curCol+1;
+		} 
+		else if(this.side.compareTo("downleft")==0){
+			r=curRow+1;
+			j=curCol-1;
+		} 
+		else if(this.side.compareTo("downright")==0){
+			r=curRow+1;
+			j=curCol+1;
+		}
+		
+		if (player.hasGameAsWhite()) {
+			curr.setWhitePosition(new PlayerPosition(player, currentGame.getQuoridor().getBoard().getTile(r*9+j)));
+		}
+		else {
+			curr.setBlackPosition(new PlayerPosition(player, currentGame.getQuoridor().getBoard().getTile(r*9+j)));
+		}
     }
     
     
