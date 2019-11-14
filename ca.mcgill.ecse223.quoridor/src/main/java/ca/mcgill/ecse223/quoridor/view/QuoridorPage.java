@@ -1431,4 +1431,8 @@ public class QuoridorPage extends JFrame{
 		return(turnMessage2.isVisible());	
 	}
 	//helper
+	
+	public Quoridor getQ() {
+		return q;
+	}
 }
