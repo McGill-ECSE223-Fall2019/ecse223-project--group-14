@@ -97,7 +97,7 @@ public class PawnComponent extends HoldableComponent{
 						isSJump=true;
 					}
 					else {
-						return false;
+						return false; 
 					}
 					GameController gc = new GameController();
 					PawnBehavior pb=new PawnBehavior(false,crow,ccol,side,"invalid");
@@ -106,23 +106,27 @@ public class PawnComponent extends HoldableComponent{
 					//TODO
 					if (isSJump) {
 						if (side.length()>5) {
-							//Diagonal Jump
+							System.out.print("diagonal");
 							pb.initiateDiagonalJump(crow, ccol, side);
 						}
 						else {
 							//straight jump
+							System.out.print("straight");
 							pb.initiateStraightJump(crow, ccol, side);
 						}
 					}
 					else {
 						//step
+						System.out.print("step");
 						pb.initiateStep(crow, ccol, side);
 					}
-					pb.dropPawn(i+1, j+1);
-					/*if (!pb.getIsValid()) {	//TODO bugged
+					if (pb.getIsValid()) {
+						pb.dropPawn(i+1, j+1);
+					}
+					else {	 
 						pb.cancel();
 						return false;
-					}*/
+					}
 //					boolean valid = gc.valPawnPosition();
 //					if (valid) {
 //						gc.movePawn();

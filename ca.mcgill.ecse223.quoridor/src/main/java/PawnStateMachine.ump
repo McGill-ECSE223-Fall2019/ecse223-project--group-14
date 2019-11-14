@@ -15,7 +15,6 @@ class PawnBehavior {
 		
     pawnSM {
     	Placed{
-    		entry / {isValid = false;}
     		initiateDiagonalJump(int row, int col, String side) -> /{
     			initPawn(row,col,side);
     		}  JumpingDiagonal;
@@ -30,6 +29,7 @@ class PawnBehavior {
 			entry / {isValid = isLegalStep();}
 			dropPawn(int row, int col) -> /{
     			updateModel(row,col);				//TODO all of these should have isValid as a barrier
+    			legalMove();
     		}  Placed;
     		cancel() -> /{
     			illegalMove();
@@ -40,6 +40,7 @@ class PawnBehavior {
 	    	entry / {isValid = isLegalJump();}
 	    	dropPawn(int row, int col) -> /{
     			updateModel(row,col);
+    			legalMove();
     		}  Placed;
     		cancel() -> /{
     			illegalMove();
@@ -49,6 +50,7 @@ class PawnBehavior {
 			entry / {isValid = isLegalJumpDiag();}
 			dropPawn(int row, int col) -> /{
     			updateModel(row,col);
+    			legalMove();
     		}  Placed;
     		cancel() -> /{
     			illegalMove();
@@ -120,7 +122,7 @@ class PawnBehavior {
 		
 		String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
     	
-    	Boolean walla= isWallBlocking(opSide,true);  //if adjacent wall
+    	Boolean walla= isWallBlocking(curRow,curCol,opSide,true);  //if adjacent wall
     	if (walla){
     		return false;
     	}
@@ -137,10 +139,10 @@ class PawnBehavior {
 		int curCol = getCurrentPawnColumn();
 		
 		String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
-    	Boolean wallb= isWallBlocking(opSide,false); 
-    	Boolean walla= isWallBlocking(opSide,true);  //if adjacent wall
+    	Boolean wallb= isWallBlocking(opRow,opCol,opSide,false); 	//wall adjacent to opponent
+    	Boolean walla= isWallBlocking(curRow,curCol,opSide,true);  //if adjacent wall
 		
-		if ((wallb)||(walla)){
+		if ((!wallb)||(walla)){
     		return false;
     	}
 		else if(this.side.compareTo(opSide)==0){
@@ -160,9 +162,10 @@ class PawnBehavior {
     	int curCol = getCurrentPawnColumn();
     	
     	String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
-    	Boolean wallb= isWallBlocking(opSide,false); 
-    	Boolean walla= isWallBlocking(opSide,true);  //if adjacent wall
-    	if ((!wallb)||(walla)){
+    	Boolean wallb= isWallBlocking(curRow,curRow,opSide,false); 
+    	Boolean walla= isWallBlocking(curRow,curCol,opSide,true);  //if adjacent wall
+    	Boolean border= isBorderBlocking(opRow,opCol,opSide);
+    	if (((!border)&&(!wallb))||(walla)){
     		return false;
     	}
 		else if(this.side.equals("upleft")){
@@ -196,9 +199,7 @@ class PawnBehavior {
 		this.side = side;
 	}
 	
-	boolean isWallBlocking(String side,boolean isStep){
-		int curRow = getCurrentPawnRow();
-    	int curCol = getCurrentPawnColumn();
+	boolean isWallBlocking(int curRow, int curCol,String side,boolean isStep){
     	int distance;
     	if(isStep){
     		distance=1;
@@ -214,7 +215,7 @@ class PawnBehavior {
     	if(this.side.equals("up")){
 			for(Wall w: wWall){
 				if (w.getMove().getWallDirection().toString().compareTo("Horizontal")==0){
-					if (w.getMove().getTargetTile().getRow()==curRow+distance){
+					if (w.getMove().getTargetTile().getRow()==curRow-distance){
 						if ((w.getMove().getTargetTile().getColumn()==curCol)||(w.getMove().getTargetTile().getColumn()==curCol-1)){
 							return true;
 						}
@@ -223,7 +224,7 @@ class PawnBehavior {
 			}
 			for(Wall w: bWall){
 				if (w.getMove().getWallDirection().toString().compareTo("Horizontal")==0){
-					if (w.getMove().getTargetTile().getRow()==curRow+distance){
+					if (w.getMove().getTargetTile().getRow()==curRow-distance){
 						if ((w.getMove().getTargetTile().getColumn()==curCol)||(w.getMove().getTargetTile().getColumn()==curCol-1)){
 							return true;
 						}
@@ -304,19 +305,45 @@ class PawnBehavior {
     	}
     	
     	else if ((curC==oC)&&(curR==oR+1)){
-    		return "down";
-    	}
-    	else if ( (curC==oC)&&(curC==oR-1)){
     		return "up";
+    	}
+    	else if ( (curC==oC)&&(curR==oR-1)){
+    		return "down";
     	}
     	else {
     		return "no";
+    	}
+    }
+    
+    Boolean isBorderBlocking(int opRow, int opCol, String opSide){
+    	if ((opSide.compareTo("up")==0)&&(opRow==1)){
+    		return true;
+    	}
+    	
+    	else if ((opSide.compareTo("down")==0)&&(opRow==9)){
+    		return true;
+    	}
+    	
+    	else if ((opSide.compareTo("left")==0)&&(opCol==0)){
+    		return true;
+    	}
+    	
+    	else if ((opSide.compareTo("right")==0)&&(opCol==9)){
+    		return true;
+    	}
+    	else {
+    		return false;
     	}
     }
 	
     // Action to be called when an illegal move is attempted
     void illegalMove() { 
 		status="illegal";
+    }
+    
+    void legalMove() { 
+		status="success";
+		isValid=true;
     }
     
     
