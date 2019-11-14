@@ -8,27 +8,26 @@ class PawnBehavior {
     0..1 -> 0..1 Player player;
 	
 	boolean isValid;
-	int row;
-	int col;
+	
 	String side;
 	String status;
 		
     pawnSM {
     	Placed{
-    		initiateDiagonalJump(int row, int col, String side) -> /{
-    			initPawn(row,col,side);
+    		initiateDiagonalJump(String side) -> /{
+    			//initPawn(row,col,side);
     		}  JumpingDiagonal;
-    		initiateStep(int row, int col, String side) -> /{
-    			initPawn(row,col,side);
+    		initiateStep(String side) -> /{
+    			//initPawn(row,col,side);
     		}  Stepping;
-    		initiateStraightJump(int row, int col, String side) -> /{
-    			initPawn(row,col,side);
+    		initiateStraightJump(String side) -> /{
+    			//initPawn(row,col,side);
     		}  JumpingStraight;
     	}
 		Stepping{
 			entry / {isValid = isLegalStep();}
 			dropPawn(int row, int col) -> /{
-    			updateModel(row,col);				//TODO all of these should have isValid as a barrier
+    			updateModel();				//TODO all of these should have isValid as a barrier
     			legalMove();
     		}  Placed;
     		cancel() -> /{
@@ -38,8 +37,8 @@ class PawnBehavior {
 		}
 	    JumpingStraight{
 	    	entry / {isValid = isLegalJump();}
-	    	dropPawn(int row, int col) -> /{
-    			updateModel(row,col);
+	    	dropPawn() -> /{
+    			updateModel();
     			legalMove();
     		}  Placed;
     		cancel() -> /{
@@ -48,8 +47,8 @@ class PawnBehavior {
 		}
 		JumpingDiagonal{
 			entry / {isValid = isLegalJumpDiag();}
-			dropPawn(int row, int col) -> /{
-    			updateModel(row,col);
+			dropPawn() -> /{
+    			updateModel();
     			legalMove();
     		}  Placed;
     		cancel() -> /{
@@ -59,7 +58,7 @@ class PawnBehavior {
 	}
 	
 	
-	void updateModel(int row, int col){
+	void updateModel(){
 		status="success";
 		//TODO either create new game position and set current or update current one
 	}
@@ -200,12 +199,6 @@ class PawnBehavior {
 		
     	return false;
     }
-    
-	void initPawn(int row,int col,String side){
-		this.row = row;
-		this.col = col;
-		this.side = side;
-	}
 	
 	boolean isWallBlocking(int curRow, int curCol,String cside,boolean isStep){
     	int distance;
@@ -283,7 +276,7 @@ class PawnBehavior {
 		else if(cside.equals("down")){
 			for(Wall w: wWall){
 				if (w.getMove().getWallDirection().toString().compareTo("Horizontal")==0){
-					if (w.getMove().getTargetTile().getRow()==curRow+1-distance){
+					if (w.getMove().getTargetTile().getRow()==curRow-1+distance){
 						if ((w.getMove().getTargetTile().getColumn()==curCol)||(w.getMove().getTargetTile().getColumn()==curCol-1)){
 							return true;
 						}
@@ -292,7 +285,7 @@ class PawnBehavior {
 			}
 			for(Wall w: bWall){
 				if (w.getMove().getWallDirection().toString().compareTo("Horizontal")==0){
-					if (w.getMove().getTargetTile().getRow()==curRow+1-distance){
+					if (w.getMove().getTargetTile().getRow()==curRow-1+distance){
 						if ((w.getMove().getTargetTile().getColumn()==curCol)||(w.getMove().getTargetTile().getColumn()==curCol-1)){
 							return true;
 						}

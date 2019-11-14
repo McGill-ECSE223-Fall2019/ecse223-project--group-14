@@ -31,120 +31,124 @@ public class PawnComponent extends HoldableComponent{
 		}
 		System.out.print(crow+""+ccol);
 		System.out.print(orow+""+ocol);
-		for(int i=0;i<9;i++) {
-			for(int j=0;j<9;j++) {
+		int i=0,j=0;
+		boolean texists=false;
+		outer: for(i=0;i<9;i++) {
+			for(j=0;j<9;j++) {
 				if (tiles[j][i].getBounds().contains(this.getBounds())) {
 					if (orow==i&&ocol==j) {
 						return false;
 					}
-					boolean isSJump=false;
-					String side;
-					if (i==crow+1) {	//down
-						if (j==ccol+1) {	//right
-							side="downright";
-							isSJump=true;
-						}
-						else if (j==ccol-1) {
-							side="downleft";
-							isSJump=true;
-						}
-						else if (j==ccol){
-							side ="down";
-						}
-						else {
-							return false;
-						}
-					}
-					else if((i==crow+2)&&j==ccol) {
-						side="down";
-						isSJump=true;
-					}
-					
-					else if (i==crow-1) {	//up
-						if (j==ccol+1) {	//right
-							side="upright";
-							isSJump=true;
-						}
-						else if (j==ccol-1) {
-							side="upleft";
-							isSJump=true;
-						}
-						else if (j==ccol){
-							side ="up";
-						}
-						else {
-							return false;
-						}
-					}
-					else if ((i==crow-2)&&j==ccol) {
-						side="up";
-						isSJump=true;
-					}
-					
-					else if ((j==ccol+1)&&i==crow) {	//right
-						side="right";
-						System.out.print("here");
-					}
-					else if ((j==ccol-1)&&i==crow) {
-						side="left";
-					}
-					else if ((j==ccol+2)&&i==crow) {	//right
-						side="right";
-						isSJump=true;
-					}
-					else if ((j==ccol-2)&&i==crow) {
-						side="left";
-						isSJump=true;
-					}
-					else {
-						return false; 
-					}
-					GameController gc = new GameController();
-					PawnBehavior pb=new PawnBehavior(false,crow,ccol,side,"invalid");
-					pb.setCurrentGame(qp.getQ().getCurrentGame());
-					pb.setPlayer(curr.getPlayerToMove());
-					//TODO
-					if (isSJump) {
-						if (side.length()>5) {
-							System.out.print("diagonal");
-							System.out.print(side); 
-							pb.initiateDiagonalJump(crow, ccol, side);
-						}
-						else {
-							//straight jump
-							System.out.print("straight");
-							pb.initiateStraightJump(crow, ccol, side);
-						}
-					}
-					else {
-						//step
-						System.out.print("step");
-						pb.initiateStep(crow, ccol, side);
-					}
-					if (pb.getIsValid()) {
-						pb.dropPawn(i+1, j+1);
-					}
-					else {	 
-						pb.cancel();
-						return false;
-					}
-//					boolean valid = gc.valPawnPosition();
-//					if (valid) {
-//						gc.movePawn();
-//					}
-					this.setLocation(tiles[j][i].getX()+(TileComponent.tileW-pawnW)/2, tiles[j][i].getY()+(TileComponent.tileW-pawnW)/2);
-					
-					//this should be handled by state machine
-					if (super.getColor().equals(Color.WHITE)) {
-						curr.setWhitePosition(new PlayerPosition(curr.getPlayerToMove(), qp.getQ().getBoard().getTile(i*9+j)));
-					}
-					else {
-						curr.setBlackPosition(new PlayerPosition(curr.getPlayerToMove(), qp.getQ().getBoard().getTile(i*9+j)));
-					}
-					return true;
+					texists=true;
+					break outer;
 				}
 			}
 		}
-		return false;
+		if (!texists) {
+			return false;
+		}
+		boolean isSJump=false;
+		String side;
+		if (i==crow+1) {	//down
+			if (j==ccol+1) {	//right
+				side="downright";
+				isSJump=true;
+			}
+			else if (j==ccol-1) {
+				side="downleft";
+				isSJump=true;
+			}
+			else if (j==ccol){
+				side ="down";
+			}
+			else {
+				return false;
+			}
+		}
+		else if((i==crow+2)&&j==ccol) {
+			side="down";
+			isSJump=true;
+		}
+		
+		else if (i==crow-1) {	//up
+			if (j==ccol+1) {	//right
+				side="upright";
+				isSJump=true;
+			}
+			else if (j==ccol-1) {
+				side="upleft";
+				isSJump=true;
+			}
+			else if (j==ccol){
+				side ="up";
+			}
+			else {
+				return false;
+			}
+		}
+		else if ((i==crow-2)&&j==ccol) {
+			side="up";
+			isSJump=true;
+		}
+		
+		else if ((j==ccol+1)&&i==crow) {	//right
+			side="right";
+		}
+		else if ((j==ccol-1)&&i==crow) {
+			side="left";
+		}
+		else if ((j==ccol+2)&&i==crow) {	//right
+			side="right";
+			isSJump=true;
+		}
+		else if ((j==ccol-2)&&i==crow) {
+			side="left";
+			isSJump=true;
+		}
+		else {
+			return false; 
+		}
+		GameController gc = new GameController();
+		
+		PawnBehavior pb=new PawnBehavior(false,side,"invalid");
+		pb.setCurrentGame(qp.getQ().getCurrentGame());
+		pb.setPlayer(curr.getPlayerToMove());
+		//TODO
+		if (isSJump) {
+			if (side.length()>5) {
+				System.out.print("diagonal");
+				System.out.print(side); 
+				pb.initiateDiagonalJump(side);
+			}
+			else {
+				//straight jump
+				System.out.print("straight");
+				pb.initiateStraightJump(side);
+			}
+		}
+		else {
+			//step
+			System.out.print("step");
+			pb.initiateStep(side);
+		}
+		if (pb.getIsValid()) {
+			pb.dropPawn(i+1, j+1);
+		}
+		else {	 
+			pb.cancel();
+			return false;
+		}
+
+		this.setLocation(tiles[j][i].getX()+(TileComponent.tileW-pawnW)/2, tiles[j][i].getY()+(TileComponent.tileW-pawnW)/2);
+		
+		//this should be handled by state machine
+		if (super.getColor().equals(Color.WHITE)) {
+			curr.setWhitePosition(new PlayerPosition(curr.getPlayerToMove(), qp.getQ().getBoard().getTile(i*9+j)));
+		}
+		else {
+			curr.setBlackPosition(new PlayerPosition(curr.getPlayerToMove(), qp.getQ().getBoard().getTile(i*9+j)));
+		}
+		return true;
+		
 	}
 }
