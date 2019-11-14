@@ -1868,66 +1868,62 @@ public class CucumberStepDefinitions {
 	 public void playerInitiatesToMove(String colour, String side) {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		GamePosition curr=quoridor.getCurrentGame().getCurrentPosition();
-		
-		//in the application this is handled by the view
+		Player opponent; 
+		Tile ct,ot;
+		if (curr.getPlayerToMove().hasGameAsWhite()) {
+			opponent=quoridor.getCurrentGame().getBlackPlayer();
+			ct=curr.getWhitePosition().getTile();
+			ot=curr.getBlackPosition().getTile();
+		}
+		else {
+			opponent=quoridor.getCurrentGame().getWhitePlayer();
+			ct=curr.getBlackPosition().getTile();
+			ot=curr.getWhitePosition().getTile();
+		}
+		//in the application this is handled by the view 
 		if (side.compareTo("left")==0){
-			if (curr.getPlayerToMove().hasGameAsWhite()) {
-				if (curr.getWhitePosition().getTile().getColumn()==1) {
-					create="illegal";
-					return;
-				}
+			if (ct.getColumn()==1) {
+				create="illegal";
+				return;
 			}
-			else {
-				if (curr.getBlackPosition().getTile().getColumn()==1) {
-					create="illegal";
-					return;
-				}
+			else if ((ct.getColumn()==2)&&(ot.getColumn()==1)) {
+				create="illegal";
+				return;
 			}
 		}
 		
 		else if (side.compareTo("right")==0){
-			if (curr.getPlayerToMove().hasGameAsWhite()) {
-				if (curr.getWhitePosition().getTile().getColumn()==9) {
-					create="illegal";
-					return;
-				}
+			if (ct.getColumn()==9) {
+				create="illegal";
+				return;
 			}
-			else {
-				if (curr.getBlackPosition().getTile().getColumn()==9) {
-					create="illegal";
-					return;
-				}
+			else if ((ct.getColumn()==8)&&(ot.getColumn()==9)) {
+				create="illegal";
+				return;
 			}
 		}
 		
 		else if (side.compareTo("up")==0){
-			if (curr.getPlayerToMove().hasGameAsWhite()) {
-				if (curr.getWhitePosition().getTile().getRow()==1) {
-					create="illegal";
-					return;
-				}
+			if (ct.getRow()==1) {
+				create="illegal";
+				return;
 			}
-			else {
-				if (curr.getBlackPosition().getTile().getRow()==1) {
-					create="illegal";
-					return;
-				}
+			else if ((ct.getRow()==2)&&(ot.getRow()==1)) {
+				create="illegal";
+				return;
 			}
 		}
 		
 		else if (side.compareTo("down")==0){
-			if (curr.getPlayerToMove().hasGameAsWhite()) {
-				if (curr.getWhitePosition().getTile().getRow()==9) {
-					create="illegal";
-					return;
-				}
+			if (ct.getRow()==9) {
+				create="illegal";
+				return;
 			}
-			else {
-				if (curr.getBlackPosition().getTile().getRow()==9) {
-					create="illegal";
-					return;
-				}
+			if ((ct.getRow()==8)&&(ot.getRow()==9)) {
+				create="illegal";
+				return;
 			}
+			
 		}
 		
 		PawnBehavior pb=new PawnBehavior(false, side,"invalid");

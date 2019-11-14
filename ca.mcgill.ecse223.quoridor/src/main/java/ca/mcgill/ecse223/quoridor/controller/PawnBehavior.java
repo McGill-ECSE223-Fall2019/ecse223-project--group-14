@@ -565,7 +565,7 @@ public class PawnBehavior
     		return true;
     	}
     	
-    	else if ((opSide.compareTo("left")==0)&&(opCol==0)){
+    	else if ((opSide.compareTo("left")==0)&&(opCol==1)){
     		return true;
     	}
     	
