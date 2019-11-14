@@ -112,7 +112,7 @@ public class PawnBehavior
     return wasEventProcessed;
   }
 
-  public boolean initiateStep(String side)
+  public boolean initiateSorJ(String side)
   {
     boolean wasEventProcessed = false;
     
@@ -120,30 +120,22 @@ public class PawnBehavior
     switch (aPawnSM)
     {
       case Placed:
+        if (!(isAJump()))
+        {
         // line 19 "../../../../../PawnStateMachine.ump"
-        
-        setPawnSM(PawnSM.Stepping);
-        wasEventProcessed = true;
-        break;
-      default:
-        // Other states do respond to this event
-    }
-
-    return wasEventProcessed;
-  }
-
-  public boolean initiateStraightJump(String side)
-  {
-    boolean wasEventProcessed = false;
-    
-    PawnSM aPawnSM = pawnSM;
-    switch (aPawnSM)
-    {
-      case Placed:
+          
+          setPawnSM(PawnSM.Stepping);
+          wasEventProcessed = true;
+          break;
+        }
+        if (isAJump())
+        {
         // line 21 "../../../../../PawnStateMachine.ump"
-        
-        setPawnSM(PawnSM.JumpingStraight);
-        wasEventProcessed = true;
+          
+          setPawnSM(PawnSM.JumpingStraight);
+          wasEventProcessed = true;
+          break;
+        }
         break;
       default:
         // Other states do respond to this event
@@ -160,57 +152,58 @@ public class PawnBehavior
     switch (aPawnSM)
     {
       case Stepping:
+        if (getIsValid())
+        {
         // line 26 "../../../../../PawnStateMachine.ump"
-        updateModel();				//TODO all of these should have isValid as a barrier
-    			legalMove(false);
-        setPawnSM(PawnSM.Placed);
-        wasEventProcessed = true;
+          legalMove(false);
+          setPawnSM(PawnSM.Placed);
+          wasEventProcessed = true;
+          break;
+        }
+        if (!getIsValid())
+        {
+        // line 29 "../../../../../PawnStateMachine.ump"
+          illegalMove();
+          setPawnSM(PawnSM.Placed);
+          wasEventProcessed = true;
+          break;
+        }
         break;
       case JumpingStraight:
-        // line 37 "../../../../../PawnStateMachine.ump"
-        updateModel();
-    			legalMove(true);
-        setPawnSM(PawnSM.Placed);
-        wasEventProcessed = true;
+        if (getIsValid())
+        {
+        // line 36 "../../../../../PawnStateMachine.ump"
+          legalMove(true);
+          setPawnSM(PawnSM.Placed);
+          wasEventProcessed = true;
+          break;
+        }
+        if (!getIsValid())
+        {
+        // line 39 "../../../../../PawnStateMachine.ump"
+          illegalMove();
+          setPawnSM(PawnSM.Placed);
+          wasEventProcessed = true;
+          break;
+        }
         break;
       case JumpingDiagonal:
-        // line 47 "../../../../../PawnStateMachine.ump"
-        updateModel();
-    			legalMove(true);
-        setPawnSM(PawnSM.Placed);
-        wasEventProcessed = true;
-        break;
-      default:
-        // Other states do respond to this event
-    }
-
-    return wasEventProcessed;
-  }
-
-  public boolean cancel()
-  {
-    boolean wasEventProcessed = false;
-    
-    PawnSM aPawnSM = pawnSM;
-    switch (aPawnSM)
-    {
-      case Stepping:
-        // line 30 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSM(PawnSM.Placed);
-        wasEventProcessed = true;
-        break;
-      case JumpingStraight:
-        // line 41 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSM(PawnSM.Placed);
-        wasEventProcessed = true;
-        break;
-      case JumpingDiagonal:
-        // line 51 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSM(PawnSM.Placed);
-        wasEventProcessed = true;
+        if (getIsValid())
+        {
+        // line 45 "../../../../../PawnStateMachine.ump"
+          legalMove(true);
+          setPawnSM(PawnSM.Placed);
+          wasEventProcessed = true;
+          break;
+        }
+        if (!getIsValid())
+        {
+        // line 49 "../../../../../PawnStateMachine.ump"
+          illegalMove();
+          setPawnSM(PawnSM.Placed);
+          wasEventProcessed = true;
+          break;
+        }
         break;
       default:
         // Other states do respond to this event
@@ -231,11 +224,11 @@ public class PawnBehavior
         isValid = isLegalStep();
         break;
       case JumpingStraight:
-        // line 36 "../../../../../PawnStateMachine.ump"
+        // line 35 "../../../../../PawnStateMachine.ump"
         isValid = isLegalJump();
         break;
       case JumpingDiagonal:
-        // line 46 "../../../../../PawnStateMachine.ump"
+        // line 44 "../../../../../PawnStateMachine.ump"
         isValid = isLegalJumpDiag();
         break;
     }
@@ -285,17 +278,11 @@ public class PawnBehavior
     player = null;
   }
 
-  // line 59 "../../../../../PawnStateMachine.ump"
-  public void updateModel(){
-    status="success";
-		//TODO either create new game position and set current or update current one
-  }
-
 
   /**
    * Returns the current row number of the pawn
    */
-  // line 64 "../../../../../PawnStateMachine.ump"
+  // line 57 "../../../../../PawnStateMachine.ump"
   public int getCurrentPawnRow(){
     GamePosition pos = currentGame.getCurrentPosition();
     	if (player.hasGameAsWhite()){
@@ -310,7 +297,7 @@ public class PawnBehavior
   /**
    * Returns the current column number of the pawn
    */
-  // line 77 "../../../../../PawnStateMachine.ump"
+  // line 70 "../../../../../PawnStateMachine.ump"
   public int getCurrentPawnColumn(){
     GamePosition pos=currentGame.getCurrentPosition();
     	if (player.hasGameAsWhite()){
@@ -325,7 +312,7 @@ public class PawnBehavior
   /**
    * Returns the current row number of the pawn
    */
-  // line 88 "../../../../../PawnStateMachine.ump"
+  // line 81 "../../../../../PawnStateMachine.ump"
   public int getOpponentPawnRow(){
     GamePosition pos=currentGame.getCurrentPosition();
     	if (player.hasGameAsWhite()){
@@ -340,7 +327,7 @@ public class PawnBehavior
   /**
    * Returns the current column number of the pawn
    */
-  // line 101 "../../../../../PawnStateMachine.ump"
+  // line 94 "../../../../../PawnStateMachine.ump"
   public int getOpponentPawnColumn(){
     GamePosition pos=currentGame.getCurrentPosition();
     	if (player.hasGameAsWhite()){
@@ -355,7 +342,7 @@ public class PawnBehavior
   /**
    * Returns if it is legal to step in the given direction
    */
-  // line 112 "../../../../../PawnStateMachine.ump"
+  // line 105 "../../../../../PawnStateMachine.ump"
   public boolean isLegalStep(){
     int opRow = getOpponentPawnRow();
     	int opCol = getOpponentPawnColumn();
@@ -377,7 +364,7 @@ public class PawnBehavior
   /**
    * Returns if it is legal to jump in the given direction
    */
-  // line 130 "../../../../../PawnStateMachine.ump"
+  // line 123 "../../../../../PawnStateMachine.ump"
   public boolean isLegalJump(){
     int opRow = getOpponentPawnRow();
     	int opCol = getOpponentPawnColumn();
@@ -403,7 +390,7 @@ public class PawnBehavior
 		}
   }
 
-  // line 155 "../../../../../PawnStateMachine.ump"
+  // line 148 "../../../../../PawnStateMachine.ump"
   public boolean isLegalJumpDiag(){
     int opRow = getOpponentPawnRow();
     	int opCol = getOpponentPawnColumn();
@@ -450,7 +437,7 @@ public class PawnBehavior
     	return false;
   }
 
-  // line 201 "../../../../../PawnStateMachine.ump"
+  // line 194 "../../../../../PawnStateMachine.ump"
   public boolean isWallBlocking(int curRow, int curCol, String cside, boolean isStep){
     int distance;
     	if(isStep){
@@ -548,7 +535,7 @@ public class PawnBehavior
 		return false;
   }
 
-  // line 298 "../../../../../PawnStateMachine.ump"
+  // line 291 "../../../../../PawnStateMachine.ump"
   public String isOpponentAdjacent(int curR, int curC, int oR, int oC){
     if ((curR==oR)&&(curC==oC+1)){
     		return "left";
@@ -568,7 +555,7 @@ public class PawnBehavior
     	}
   }
 
-  // line 317 "../../../../../PawnStateMachine.ump"
+  // line 310 "../../../../../PawnStateMachine.ump"
   public Boolean isBorderBlocking(int opRow, int opCol, String opSide){
     if ((opSide.compareTo("up")==0)&&(opRow==1)){
     		return true;
@@ -594,12 +581,12 @@ public class PawnBehavior
   /**
    * Action to be called when an illegal move is attempted
    */
-  // line 339 "../../../../../PawnStateMachine.ump"
+  // line 332 "../../../../../PawnStateMachine.ump"
   public void illegalMove(){
     status="illegal";
   }
 
-  // line 343 "../../../../../PawnStateMachine.ump"
+  // line 336 "../../../../../PawnStateMachine.ump"
   public void legalMove(boolean isJump){
     status="success";
     	GamePosition curr= currentGame.getCurrentPosition();
@@ -651,6 +638,20 @@ public class PawnBehavior
 		}
   }
 
+  // line 387 "../../../../../PawnStateMachine.ump"
+  public Boolean isAJump(){
+    int opRow = getOpponentPawnRow();
+    	int opCol = getOpponentPawnColumn();
+    	
+    	int curRow = getCurrentPawnRow();
+    	int curCol = getCurrentPawnColumn();
+    	String opSide=isOpponentAdjacent(curRow, curCol, opRow, opCol);
+		if (this.side.compareTo(opSide)==0){
+			return true;
+		}
+		return false;
+  }
+
 
   public String toString()
   {
@@ -665,7 +666,7 @@ public class PawnBehavior
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 396 "../../../../../PawnStateMachine.ump"
+  // line 402 "../../../../../PawnStateMachine.ump"
   enum MoveDirection 
   {
     East, South, West, North;

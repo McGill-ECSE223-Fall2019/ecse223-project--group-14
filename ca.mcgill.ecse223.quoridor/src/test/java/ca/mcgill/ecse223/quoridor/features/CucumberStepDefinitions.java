@@ -42,6 +42,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
 import ca.mcgill.ecse223.quoridor.controller.GameController;
+import ca.mcgill.ecse223.quoridor.controller.PawnBehavior;
 
 public class CucumberStepDefinitions {
 	
@@ -1865,12 +1866,97 @@ public class CucumberStepDefinitions {
 	 
 	 @When ("Player {string} initiates to move {string}")
 	 public void playerInitiatesToMove(String colour, String side) {
-		//TODO Iteration 4 
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		GamePosition curr=quoridor.getCurrentGame().getCurrentPosition();
+		
+		//in the application this is handled by the view
+		if (side.compareTo("left")==0){
+			if (curr.getPlayerToMove().hasGameAsWhite()) {
+				if (curr.getWhitePosition().getTile().getColumn()==1) {
+					create="illegal";
+					return;
+				}
+			}
+			else {
+				if (curr.getBlackPosition().getTile().getColumn()==1) {
+					create="illegal";
+					return;
+				}
+			}
+		}
+		
+		else if (side.compareTo("right")==0){
+			if (curr.getPlayerToMove().hasGameAsWhite()) {
+				if (curr.getWhitePosition().getTile().getColumn()==9) {
+					create="illegal";
+					return;
+				}
+			}
+			else {
+				if (curr.getBlackPosition().getTile().getColumn()==9) {
+					create="illegal";
+					return;
+				}
+			}
+		}
+		
+		else if (side.compareTo("up")==0){
+			if (curr.getPlayerToMove().hasGameAsWhite()) {
+				if (curr.getWhitePosition().getTile().getRow()==1) {
+					create="illegal";
+					return;
+				}
+			}
+			else {
+				if (curr.getBlackPosition().getTile().getRow()==1) {
+					create="illegal";
+					return;
+				}
+			}
+		}
+		
+		else if (side.compareTo("down")==0){
+			if (curr.getPlayerToMove().hasGameAsWhite()) {
+				if (curr.getWhitePosition().getTile().getRow()==9) {
+					create="illegal";
+					return;
+				}
+			}
+			else {
+				if (curr.getBlackPosition().getTile().getRow()==9) {
+					create="illegal";
+					return;
+				}
+			}
+		}
+		
+		PawnBehavior pb=new PawnBehavior(false, side,"invalid");
+		pb.setCurrentGame(quoridor.getCurrentGame());
+		pb.setPlayer(curr.getPlayerToMove());
+		if (side.length()>5) {
+			pb.initiateDiagonalJump(side);
+		}
+		else {
+			pb.initiateSorJ(side);
+		}
+		pb.dropPawn();
+		create=pb.getStatus();
+		if (create.compareTo("success")==0) {
+			if (curr.getPlayerToMove().hasGameAsWhite()) {
+				curr.setPlayerToMove(quoridor.getCurrentGame().getBlackPlayer());
+			}
+			else {
+				curr.setPlayerToMove(quoridor.getCurrentGame().getWhitePlayer());
+			}
+		}
+		
+		 //TODO Iteration 4 
 	 }
 	 
 	 @Then ("The move {string} shall be {string}")
 	 public void theMoveShallBe(String side, String status) {
-		//TODO Iteration 4 
+		assertEquals(status,create);
+		 //TODO Iteration 4 
 	 }
 	 
 	 @And ("Player's new position shall be {int}:{int}")

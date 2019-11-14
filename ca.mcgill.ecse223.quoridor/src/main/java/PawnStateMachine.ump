@@ -16,49 +16,42 @@ class PawnBehavior {
     	Placed{
     		initiateDiagonalJump(String side) -> /{
     		}  JumpingDiagonal;
-    		initiateStep(String side) -> /{
+    		initiateSorJ(String side) [!isAJump()] -> /{
     		}  Stepping;
-    		initiateStraightJump(String side) -> /{
+    		initiateSorJ(String side) [isAJump()] -> /{
     		}  JumpingStraight;
     	}
 		Stepping{
 			entry / {isValid = isLegalStep();}
-			dropPawn() -> /{
-    			updateModel();				//TODO all of these should have isValid as a barrier
+			dropPawn() [isValid] -> /{
     			legalMove(false);
     		}  Placed;
-    		cancel() -> /{
+    		dropPawn() [!isValid] -> /{
     			illegalMove();
-    		}Placed;
+    		}  Placed;
 			
 		}
 	    JumpingStraight{
 	    	entry / {isValid = isLegalJump();}
-	    	dropPawn() -> /{
-    			updateModel();
+	    	dropPawn() [isValid]-> /{
     			legalMove(true);
     		}  Placed;
-    		cancel() -> /{
+    		dropPawn() [!isValid] -> /{
     			illegalMove();
-    		}Placed;
+    		}  Placed;
 		}
 		JumpingDiagonal{
 			entry / {isValid = isLegalJumpDiag();}
-			dropPawn() -> /{
-    			updateModel();
+			dropPawn() [isValid] -> /{
     			legalMove(true);
     		}  Placed;
-    		cancel() -> /{
+    		
+    		dropPawn() [!isValid] -> /{
     			illegalMove();
-    		}Placed;
+    		}  Placed;
 		}
 	}
 	
-	
-	void updateModel(){
-		status="success";
-		//TODO either create new game position and set current or update current one
-	}
     // Returns the current row number of the pawn
     int getCurrentPawnRow() { 
     	GamePosition pos = currentGame.getCurrentPosition();
@@ -388,6 +381,19 @@ class PawnBehavior {
 		else {
 			curr.setBlackPosition(new PlayerPosition(player, currentGame.getQuoridor().getBoard().getTile(r*9+j)));
 		}
+    }
+    
+    Boolean isAJump(){
+		int opRow = getOpponentPawnRow();
+    	int opCol = getOpponentPawnColumn();
+    	
+    	int curRow = getCurrentPawnRow();
+    	int curCol = getCurrentPawnColumn();
+    	String opSide=isOpponentAdjacent(curRow, curCol, opRow, opCol);
+		if (this.side.compareTo(opSide)==0){
+			return true;
+		}
+		return false;    
     }
     
     

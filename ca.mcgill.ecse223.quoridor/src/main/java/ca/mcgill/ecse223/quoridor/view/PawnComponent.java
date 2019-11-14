@@ -68,6 +68,9 @@ public class PawnComponent extends HoldableComponent{
 		else if((i==crow+2)&&j==ccol) {
 			side="down";
 			isSJump=true;
+			if (!((i==orow+1)&&(j==ocol))) {
+				return false;
+			}
 		}
 		
 		else if (i==crow-1) {	//up
@@ -88,6 +91,9 @@ public class PawnComponent extends HoldableComponent{
 		}
 		else if ((i==crow-2)&&j==ccol) {
 			side="up";
+			if (!((i==orow-1)&&(j==ocol))) {
+				return false;
+			}
 			isSJump=true;
 		}
 		
@@ -99,10 +105,16 @@ public class PawnComponent extends HoldableComponent{
 		}
 		else if ((j==ccol+2)&&i==crow) {	//right
 			side="right";
+			if (!((i==orow)&&(j==ocol+1))) {
+				return false;
+			}
 			isSJump=true;
 		}
 		else if ((j==ccol-2)&&i==crow) {
 			side="left";
+			if (!((i==orow)&&(j==ocol-1))) {
+				return false;
+			}
 			isSJump=true;
 		}
 		else {
@@ -114,34 +126,33 @@ public class PawnComponent extends HoldableComponent{
 		pb.setCurrentGame(qp.getQ().getCurrentGame());
 		pb.setPlayer(curr.getPlayerToMove());
 		//TODO
-		if (isSJump) {
-			if (side.length()>5) {
-				System.out.print("diagonal");
-				System.out.print(side); 
-				pb.initiateDiagonalJump(side);
-			}
-			else {
-				//straight jump
-				System.out.print("straight");
-				pb.initiateStraightJump(side);
-			}
+		
+		if (side.length()>5) {
+			System.out.print("diagonal");
+			System.out.print(side); 
+			pb.initiateDiagonalJump(side);
 		}
 		else {
-			//step
-			System.out.print("step");
-			pb.initiateStep(side);
+			//straight jump
+			System.out.print("straight or step");
+			pb.initiateSorJ(side);
 		}
-		if (pb.getIsValid()) {
+		pb.dropPawn();
+		if (pb.getStatus().compareTo("success")==0) {
+			this.setLocation(tiles[j][i].getX()+(TileComponent.tileW-pawnW)/2, tiles[j][i].getY()+(TileComponent.tileW-pawnW)/2);
+			
+			return true;
+		}
+		else {
+			return false;
+		}
+		/*if (pb.getIsValid()) {
 			pb.dropPawn();
 		}
 		else {	 
 			pb.cancel();
 			return false;
-		}
-
-		this.setLocation(tiles[j][i].getX()+(TileComponent.tileW-pawnW)/2, tiles[j][i].getY()+(TileComponent.tileW-pawnW)/2);
-		
-		return true;
+		}*/
 		
 	}
 }
