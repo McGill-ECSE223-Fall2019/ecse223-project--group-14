@@ -107,6 +107,7 @@ public class PawnComponent extends HoldableComponent{
 					if (isSJump) {
 						if (side.length()>5) {
 							System.out.print("diagonal");
+							System.out.print(side); 
 							pb.initiateDiagonalJump(crow, ccol, side);
 						}
 						else {

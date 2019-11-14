@@ -58,7 +58,6 @@ class PawnBehavior {
 		}
 	}
 	
-	//TODO account for diagonal jumps via wall
 	
 	void updateModel(int row, int col){
 		status="success";
@@ -120,9 +119,9 @@ class PawnBehavior {
     	int curRow = getCurrentPawnRow();
 		int curCol = getCurrentPawnColumn();
 		
-		String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
+		//String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
     	
-    	Boolean walla= isWallBlocking(curRow,curCol,opSide,true);  //if adjacent wall
+    	Boolean walla= isWallBlocking(curRow,curCol,this.side,true);  //if adjacent wall
     	if (walla){
     		return false;
     	}
@@ -139,10 +138,12 @@ class PawnBehavior {
 		int curCol = getCurrentPawnColumn();
 		
 		String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
-    	Boolean wallb= isWallBlocking(opRow,opCol,opSide,false); 	//wall adjacent to opponent
-    	Boolean walla= isWallBlocking(curRow,curCol,opSide,true);  //if adjacent wall
-		
-		if ((!wallb)||(walla)){
+    	Boolean wallb= isWallBlocking(curRow,curCol,opSide,false); 	//wall adjacent to opponent
+    	Boolean walla= isWallBlocking(curRow,curCol,this.side,true);  //if adjacent wall
+		System.out.print(" opside="+opSide);
+		System.out.print(" wallb="+wallb);
+    	System.out.print(" walla="+walla);
+		if ((wallb)||(walla)){
     		return false;
     	}
 		else if(this.side.compareTo(opSide)==0){
@@ -162,30 +163,37 @@ class PawnBehavior {
     	int curCol = getCurrentPawnColumn();
     	
     	String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
-    	Boolean wallb= isWallBlocking(curRow,curRow,opSide,false); 
+    	Boolean wallb= isWallBlocking(curRow,curCol,opSide,false); 
     	Boolean walla= isWallBlocking(curRow,curCol,opSide,true);  //if adjacent wall
     	Boolean border= isBorderBlocking(opRow,opCol,opSide);
-    	if (((!border)&&(!wallb))||(walla)){
+    	System.out.print(" opside="+opSide);
+    	System.out.print(" border="+border);
+    	System.out.print(" wallb="+wallb);
+    	System.out.print(" walla="+walla);
+    	if ((!border)&&(!wallb)){
     		return false;
     	}
-		else if(this.side.equals("upleft")){
-			if((opSide.equals("up")) || opSide.equals("left")){
+    	else if (walla){
+    		return false;
+    	}
+		else if(this.side.compareTo("upleft")==0){
+			if((opSide.compareTo("up")==0) || opSide.compareTo("left")==0){
 				return true;
 			}
 		} 
 		
-		else if(this.side.equals("upright")){
-			if((opSide.equals("up")) || opSide.equals("right")){
+		else if(this.side.compareTo("upright")==0){
+			if((opSide.compareTo("up")==0) || opSide.compareTo("right")==0){
 				return true;
 			}
 		} 
-		else if(this.side.equals("downleft")){
-			if((opSide.equals("down")) || opSide.equals("left")){
+		else if(this.side.compareTo("downleft")==0){
+			if((opSide.compareTo("down")==0) || opSide.compareTo("left")==0){
 				return true;
 			}
 		} 
-		else if(this.side.equals("downright")){
-			if((opSide.equals("down")) || opSide.equals("right")){
+		else if(this.side.compareTo("downright")==0){
+			if((opSide.compareTo("down")==0) || opSide.compareTo("right")==0){
 				return true;
 			}
 		}
@@ -199,7 +207,7 @@ class PawnBehavior {
 		this.side = side;
 	}
 	
-	boolean isWallBlocking(int curRow, int curCol,String side,boolean isStep){
+	boolean isWallBlocking(int curRow, int curCol,String cside,boolean isStep){
     	int distance;
     	if(isStep){
     		distance=1;
@@ -212,7 +220,7 @@ class PawnBehavior {
 		List<Wall> wWall = curr.getWhiteWallsOnBoard();
 		List<Wall> bWall = curr.getBlackWallsOnBoard();
 		
-    	if(this.side.equals("up")){
+    	if(cside.equals("up")){
 			for(Wall w: wWall){
 				if (w.getMove().getWallDirection().toString().compareTo("Horizontal")==0){
 					if (w.getMove().getTargetTile().getRow()==curRow-distance){
@@ -232,7 +240,7 @@ class PawnBehavior {
 				}
 			}
 		}
-		else if(this.side.equals("right")){
+		else if(cside.equals("right")){
 			for(Wall w: wWall){
 				if (w.getMove().getWallDirection().toString().compareTo("Vertical")==0){
 					if (w.getMove().getTargetTile().getColumn()==curCol-1+distance){
@@ -252,7 +260,7 @@ class PawnBehavior {
 				}
 			}
 		} 
-		else if(this.side.equals("left")){
+		else if(cside.equals("left")){
 			for(Wall w: wWall){
 				if (w.getMove().getWallDirection().toString().compareTo("Vertical")==0){
 					if (w.getMove().getTargetTile().getColumn()==curCol-distance){
@@ -272,7 +280,7 @@ class PawnBehavior {
 				}
 			}
 		} 
-		else if(this.side.equals("down")){
+		else if(cside.equals("down")){
 			for(Wall w: wWall){
 				if (w.getMove().getWallDirection().toString().compareTo("Horizontal")==0){
 					if (w.getMove().getTargetTile().getRow()==curRow+1-distance){

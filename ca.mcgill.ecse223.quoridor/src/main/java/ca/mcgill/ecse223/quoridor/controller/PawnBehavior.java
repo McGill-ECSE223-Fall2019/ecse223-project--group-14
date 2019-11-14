@@ -315,11 +315,7 @@ public class PawnBehavior
     player = null;
   }
 
-
-  /**
-   * TODO account for diagonal jumps via wall
-   */
-  // line 64 "../../../../../PawnStateMachine.ump"
+  // line 63 "../../../../../PawnStateMachine.ump"
   public void updateModel(int row, int col){
     status="success";
 		//TODO either create new game position and set current or update current one
@@ -329,7 +325,7 @@ public class PawnBehavior
   /**
    * Returns the current row number of the pawn
    */
-  // line 69 "../../../../../PawnStateMachine.ump"
+  // line 68 "../../../../../PawnStateMachine.ump"
   public int getCurrentPawnRow(){
     GamePosition pos = currentGame.getCurrentPosition();
     	if (player.hasGameAsWhite()){
@@ -344,7 +340,7 @@ public class PawnBehavior
   /**
    * Returns the current column number of the pawn
    */
-  // line 82 "../../../../../PawnStateMachine.ump"
+  // line 81 "../../../../../PawnStateMachine.ump"
   public int getCurrentPawnColumn(){
     GamePosition pos=currentGame.getCurrentPosition();
     	if (player.hasGameAsWhite()){
@@ -359,7 +355,7 @@ public class PawnBehavior
   /**
    * Returns the current row number of the pawn
    */
-  // line 93 "../../../../../PawnStateMachine.ump"
+  // line 92 "../../../../../PawnStateMachine.ump"
   public int getOpponentPawnRow(){
     GamePosition pos=currentGame.getCurrentPosition();
     	if (player.hasGameAsWhite()){
@@ -374,7 +370,7 @@ public class PawnBehavior
   /**
    * Returns the current column number of the pawn
    */
-  // line 106 "../../../../../PawnStateMachine.ump"
+  // line 105 "../../../../../PawnStateMachine.ump"
   public int getOpponentPawnColumn(){
     GamePosition pos=currentGame.getCurrentPosition();
     	if (player.hasGameAsWhite()){
@@ -389,7 +385,7 @@ public class PawnBehavior
   /**
    * Returns if it is legal to step in the given direction
    */
-  // line 117 "../../../../../PawnStateMachine.ump"
+  // line 116 "../../../../../PawnStateMachine.ump"
   public boolean isLegalStep(){
     int opRow = getOpponentPawnRow();
     	int opCol = getOpponentPawnColumn();
@@ -397,9 +393,9 @@ public class PawnBehavior
     	int curRow = getCurrentPawnRow();
 		int curCol = getCurrentPawnColumn();
 		
-		String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
+		//String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
     	
-    	Boolean walla= isWallBlocking(curRow,curCol,opSide,true);  //if adjacent wall
+    	Boolean walla= isWallBlocking(curRow,curCol,this.side,true);  //if adjacent wall
     	if (walla){
     		return false;
     	}
@@ -411,7 +407,7 @@ public class PawnBehavior
   /**
    * Returns if it is legal to jump in the given direction
    */
-  // line 135 "../../../../../PawnStateMachine.ump"
+  // line 134 "../../../../../PawnStateMachine.ump"
   public boolean isLegalJump(){
     int opRow = getOpponentPawnRow();
     	int opCol = getOpponentPawnColumn();
@@ -420,10 +416,12 @@ public class PawnBehavior
 		int curCol = getCurrentPawnColumn();
 		
 		String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
-    	Boolean wallb= isWallBlocking(opRow,opCol,opSide,false); 	//wall adjacent to opponent
-    	Boolean walla= isWallBlocking(curRow,curCol,opSide,true);  //if adjacent wall
-		
-		if ((!wallb)||(walla)){
+    	Boolean wallb= isWallBlocking(curRow,curCol,opSide,false); 	//wall adjacent to opponent
+    	Boolean walla= isWallBlocking(curRow,curCol,this.side,true);  //if adjacent wall
+		System.out.print(" opside="+opSide);
+		System.out.print(" wallb="+wallb);
+    	System.out.print(" walla="+walla);
+		if ((wallb)||(walla)){
     		return false;
     	}
 		else if(this.side.compareTo(opSide)==0){
@@ -435,7 +433,7 @@ public class PawnBehavior
 		}
   }
 
-  // line 158 "../../../../../PawnStateMachine.ump"
+  // line 159 "../../../../../PawnStateMachine.ump"
   public boolean isLegalJumpDiag(){
     int opRow = getOpponentPawnRow();
     	int opCol = getOpponentPawnColumn();
@@ -444,30 +442,37 @@ public class PawnBehavior
     	int curCol = getCurrentPawnColumn();
     	
     	String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
-    	Boolean wallb= isWallBlocking(curRow,curRow,opSide,false); 
+    	Boolean wallb= isWallBlocking(curRow,curCol,opSide,false); 
     	Boolean walla= isWallBlocking(curRow,curCol,opSide,true);  //if adjacent wall
     	Boolean border= isBorderBlocking(opRow,opCol,opSide);
-    	if (((!border)&&(!wallb))||(walla)){
+    	System.out.print(" opside="+opSide);
+    	System.out.print(" border="+border);
+    	System.out.print(" wallb="+wallb);
+    	System.out.print(" walla="+walla);
+    	if ((!border)&&(!wallb)){
     		return false;
     	}
-		else if(this.side.equals("upleft")){
-			if((opSide.equals("up")) || opSide.equals("left")){
+    	else if (walla){
+    		return false;
+    	}
+		else if(this.side.compareTo("upleft")==0){
+			if((opSide.compareTo("up")==0) || opSide.compareTo("left")==0){
 				return true;
 			}
 		} 
 		
-		else if(this.side.equals("upright")){
-			if((opSide.equals("up")) || opSide.equals("right")){
+		else if(this.side.compareTo("upright")==0){
+			if((opSide.compareTo("up")==0) || opSide.compareTo("right")==0){
 				return true;
 			}
 		} 
-		else if(this.side.equals("downleft")){
-			if((opSide.equals("down")) || opSide.equals("left")){
+		else if(this.side.compareTo("downleft")==0){
+			if((opSide.compareTo("down")==0) || opSide.compareTo("left")==0){
 				return true;
 			}
 		} 
-		else if(this.side.equals("downright")){
-			if((opSide.equals("down")) || opSide.equals("right")){
+		else if(this.side.compareTo("downright")==0){
+			if((opSide.compareTo("down")==0) || opSide.compareTo("right")==0){
 				return true;
 			}
 		}
@@ -475,15 +480,15 @@ public class PawnBehavior
     	return false;
   }
 
-  // line 197 "../../../../../PawnStateMachine.ump"
+  // line 205 "../../../../../PawnStateMachine.ump"
   public void initPawn(int row, int col, String side){
     this.row = row;
 		this.col = col;
 		this.side = side;
   }
 
-  // line 203 "../../../../../PawnStateMachine.ump"
-  public boolean isWallBlocking(int curRow, int curCol, String side, boolean isStep){
+  // line 211 "../../../../../PawnStateMachine.ump"
+  public boolean isWallBlocking(int curRow, int curCol, String cside, boolean isStep){
     int distance;
     	if(isStep){
     		distance=1;
@@ -496,7 +501,7 @@ public class PawnBehavior
 		List<Wall> wWall = curr.getWhiteWallsOnBoard();
 		List<Wall> bWall = curr.getBlackWallsOnBoard();
 		
-    	if(this.side.equals("up")){
+    	if(cside.equals("up")){
 			for(Wall w: wWall){
 				if (w.getMove().getWallDirection().toString().compareTo("Horizontal")==0){
 					if (w.getMove().getTargetTile().getRow()==curRow-distance){
@@ -516,7 +521,7 @@ public class PawnBehavior
 				}
 			}
 		}
-		else if(this.side.equals("right")){
+		else if(cside.equals("right")){
 			for(Wall w: wWall){
 				if (w.getMove().getWallDirection().toString().compareTo("Vertical")==0){
 					if (w.getMove().getTargetTile().getColumn()==curCol-1+distance){
@@ -536,7 +541,7 @@ public class PawnBehavior
 				}
 			}
 		} 
-		else if(this.side.equals("left")){
+		else if(cside.equals("left")){
 			for(Wall w: wWall){
 				if (w.getMove().getWallDirection().toString().compareTo("Vertical")==0){
 					if (w.getMove().getTargetTile().getColumn()==curCol-distance){
@@ -556,7 +561,7 @@ public class PawnBehavior
 				}
 			}
 		} 
-		else if(this.side.equals("down")){
+		else if(cside.equals("down")){
 			for(Wall w: wWall){
 				if (w.getMove().getWallDirection().toString().compareTo("Horizontal")==0){
 					if (w.getMove().getTargetTile().getRow()==curRow+1-distance){
@@ -580,7 +585,7 @@ public class PawnBehavior
 		return false;
   }
 
-  // line 300 "../../../../../PawnStateMachine.ump"
+  // line 308 "../../../../../PawnStateMachine.ump"
   public String isOpponentAdjacent(int curR, int curC, int oR, int oC){
     if ((curR==oR)&&(curC==oC+1)){
     		return "left";
@@ -600,7 +605,7 @@ public class PawnBehavior
     	}
   }
 
-  // line 319 "../../../../../PawnStateMachine.ump"
+  // line 327 "../../../../../PawnStateMachine.ump"
   public Boolean isBorderBlocking(int opRow, int opCol, String opSide){
     if ((opSide.compareTo("up")==0)&&(opRow==1)){
     		return true;
@@ -626,12 +631,12 @@ public class PawnBehavior
   /**
    * Action to be called when an illegal move is attempted
    */
-  // line 341 "../../../../../PawnStateMachine.ump"
+  // line 349 "../../../../../PawnStateMachine.ump"
   public void illegalMove(){
     status="illegal";
   }
 
-  // line 345 "../../../../../PawnStateMachine.ump"
+  // line 353 "../../../../../PawnStateMachine.ump"
   public void legalMove(){
     status="success";
 		isValid=true;
@@ -653,7 +658,7 @@ public class PawnBehavior
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 352 "../../../../../PawnStateMachine.ump"
+  // line 360 "../../../../../PawnStateMachine.ump"
   enum MoveDirection 
   {
     East, South, West, North;
