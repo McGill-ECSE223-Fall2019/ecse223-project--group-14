@@ -1784,6 +1784,12 @@ public class CucumberStepDefinitions {
 	 *
 	 */
 	
+	/**
+	 * @author DariusPi 
+	 * 
+	 * @param row
+	 * @param col
+	 */
 	@And ("The player is located at {int}:{int}")
 	public void thePlayerIsLocatedAt(int row, int col) {
 		Quoridor q=QuoridorApplication.getQuoridor();
@@ -1799,6 +1805,12 @@ public class CucumberStepDefinitions {
 		}
 	}
 	
+	/**
+	 * @author DariusPi
+	 * 
+	 * @param dir
+	 * @param side
+	 */
 	 @And ("There are no {string} walls {string} from the player")
 	 public void thereAreNoWallsFromThePlayer(String dir, String side) {
 		 Quoridor q=QuoridorApplication.getQuoridor();
@@ -1838,6 +1850,11 @@ public class CucumberStepDefinitions {
 			}
 	 }
 	 
+	 /**
+	  * @author DariusPi
+	  * 
+	  * @param side
+	  */
 	 @And ("The opponent is not {string} from the player")
 	 public void theOpponentIsNotFromThePlayer(String side) {
 		Quoridor q=QuoridorApplication.getQuoridor();
@@ -1864,6 +1881,12 @@ public class CucumberStepDefinitions {
 		}
 	 }
 	 
+	 /**
+	  * @author DariusPi
+	  * 
+	  * @param colour
+	  * @param side
+	  */
 	 @When ("Player {string} initiates to move {string}")
 	 public void playerInitiatesToMove(String colour, String side) {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
@@ -1929,12 +1952,9 @@ public class CucumberStepDefinitions {
 		PawnBehavior pb=new PawnBehavior(false, side,"invalid");
 		pb.setCurrentGame(quoridor.getCurrentGame());
 		pb.setPlayer(curr.getPlayerToMove());
-		if (side.length()>5) {
-			pb.initiateDiagonalJump(side);
-		}
-		else {
-			pb.initiateSorJ(side);
-		}
+		
+		pb.initiate(side);
+		
 		pb.dropPawn();
 		create=pb.getStatus();
 		if (create.compareTo("success")==0) {
@@ -1945,16 +1965,25 @@ public class CucumberStepDefinitions {
 				curr.setPlayerToMove(quoridor.getCurrentGame().getWhitePlayer());
 			}
 		}
-		
-		 //TODO Iteration 4 
 	 }
 	 
+	 /**
+	  * @author DariusPi
+	  * 
+	  * @param side
+	  * @param status
+	  */
 	 @Then ("The move {string} shall be {string}")
 	 public void theMoveShallBe(String side, String status) {
 		assertEquals(status,create);
-		 //TODO Iteration 4 
 	 }
 	 
+	 /**
+	  * @author DariusPi
+	  * 
+	  * @param row
+	  * @param col
+	  */
 	 @And ("Player's new position shall be {int}:{int}")
 	 public void playerNewPositionShallBe(int row, int col) {
 		Quoridor q=QuoridorApplication.getQuoridor();
@@ -1970,6 +1999,11 @@ public class CucumberStepDefinitions {
 		 }
 	 }
 	 
+	 /**
+	  * @author DariusPi
+	  * 
+	  * @param colour
+	  */
 	 @And ("The next player to move shall become {string}")
 	 public void theNextPlayerToMoveShallBecome(String colour) {
 		Quoridor q=QuoridorApplication.getQuoridor();
@@ -1983,6 +2017,13 @@ public class CucumberStepDefinitions {
 		}
 	 }
 	
+	 /**
+	  * @author DariusPi
+	  * 
+	  * @param dir
+	  * @param row
+	  * @param col
+	  */
 	 @And ("There is a {string} wall at {int}:{int}")
 	 public void thereIsAWallAt(String dir, int row, int col) {
 		Quoridor q=QuoridorApplication.getQuoridor();
@@ -2007,6 +2048,11 @@ public class CucumberStepDefinitions {
 		prev.addWhiteWallsOnBoardAt(w, (row-1)*9+col-1);
 	 }
 	 
+	 /**
+	  * @author DariusPi
+	  * 
+	  * @param side
+	  */
 	 @And ("My opponent is not {string} from the player")
 	 public void myOpponentIsNotFromThePlayer(String side) {
 		 Quoridor q=QuoridorApplication.getQuoridor();
@@ -2033,6 +2079,12 @@ public class CucumberStepDefinitions {
 		}
 	 }
 	 
+	 /**
+	  * @author DariusPi
+	  * 
+	  * @param row
+	  * @param col
+	  */
 	 @And ("The opponent is located at {int}:{int}")
 	 public void theOpponentIsLocatedAt(int row, int col) {
 		Quoridor q=QuoridorApplication.getQuoridor();
@@ -2051,6 +2103,12 @@ public class CucumberStepDefinitions {
 		 } 
 	 }
 	 
+	 /**
+	  * @author DariusPi
+	  * 
+	  * @param dir
+	  * @param side
+	  */
 	 @And ("There are no {string} walls {string} from the player nearby")
 	 public void thereAreNoWallsFromThePlayerNearby(String dir, String side) {
 		Quoridor q=QuoridorApplication.getQuoridor();

@@ -14,11 +14,14 @@ class PawnBehavior {
 		
     pawnSM {
     	Placed{
-    		initiateDiagonalJump(String side) -> /{
+    		initiate(String cside)[isDiag(cside)] -> /{
+    			this.side=cside;
     		}  JumpingDiagonal;
-    		initiateSorJ(String side) [!isAJump()] -> /{
+    		initiate(String cside) [!isAJump()&&!isDiag(cside)] -> /{
+    			this.side=cside;
     		}  Stepping;
-    		initiateSorJ(String side) [isAJump()] -> /{
+    		initiate(String cside) [isAJump()&&!isDiag(cside)] -> /{
+    			this.side=cside;
     		}  JumpingStraight;
     	}
 		Stepping{
@@ -143,6 +146,7 @@ class PawnBehavior {
 			return false;
 		}
     }
+    
     
     boolean isLegalJumpDiag() { 
     	int opRow = getOpponentPawnRow();
@@ -287,6 +291,11 @@ class PawnBehavior {
 		return false;
     }
     
+    /**
+    *@author DariusPi
+    *
+    *Guard returns side that opponent is on if any
+    */
     String isOpponentAdjacent(int curR, int curC, int oR, int oC){
     	if ((curR==oR)&&(curC==oC+1)){
     		return "left";
@@ -306,6 +315,11 @@ class PawnBehavior {
     	}
     }
     
+    /**
+    *@author DariusPi
+    *
+    *Guard returns if board border is blocking move
+    */
     Boolean isBorderBlocking(int opRow, int opCol, String opSide){
     	if ((opSide.compareTo("up")==0)&&(opRow==1)){
     		return true;
@@ -332,6 +346,11 @@ class PawnBehavior {
 		status="illegal";
     }
     
+    /**
+    *@author DariusPi
+    *
+    *Guard returns if desired step move is legal
+    */
     void legalMove(boolean isJump) { 
 		status="success";
     	GamePosition curr= currentGame.getCurrentPosition();
@@ -383,6 +402,11 @@ class PawnBehavior {
 		}
     }
     
+    /**
+    *@author DariusPi
+    *
+    *Guard returns if desired move is a straight jump
+    */
     Boolean isAJump(){
 		int opRow = getOpponentPawnRow();
     	int opCol = getOpponentPawnColumn();
@@ -391,6 +415,29 @@ class PawnBehavior {
     	int curCol = getCurrentPawnColumn();
     	String opSide=isOpponentAdjacent(curRow, curCol, opRow, opCol);
 		if (this.side.compareTo(opSide)==0){
+			return true;
+		}
+		return false;    
+    }
+    
+    /**
+    *@author DariusPi
+    *
+    *Guard returns if desired move is a diagonal jump
+    */
+    Boolean isDiag(String cside){
+		
+		if(this.side.compareTo("upleft")==0){
+			return true;
+		} 
+		
+		else if(this.side.compareTo("upright")==0){
+			return true;
+		} 
+		else if(this.side.compareTo("downleft")==0){
+			return true;
+		} 
+		else if(this.side.compareTo("downright")==0){
 			return true;
 		}
 		return false;    

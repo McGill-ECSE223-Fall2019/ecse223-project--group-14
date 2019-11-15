@@ -9,12 +9,26 @@ import ca.mcgill.ecse223.quoridor.model.PlayerPosition;
 
 public class PawnComponent extends HoldableComponent{
 	public static final int pawnW=25;
-	
-	public PawnComponent(Color color) {
+	private PawnBehavior pb;
+	private QuoridorPage qp;
+	public PawnComponent(Color color, QuoridorPage p) {
 		super(pawnW,pawnW,color);
+		pb=new PawnBehavior(false,"","invalid");
+		qp=p;
+		
 	}
 	
-	public boolean movePawn(TileComponent[][] tiles, QuoridorPage qp) {
+	public void init(boolean isWhite) {
+		pb.setCurrentGame(qp.getQ().getCurrentGame());
+		if (isWhite) {
+			pb.setPlayer(qp.getQ().getCurrentGame().getWhitePlayer());
+		}
+		else {
+			pb.setPlayer(qp.getQ().getCurrentGame().getBlackPlayer());
+		}
+	}
+	
+	public boolean movePawn(TileComponent[][] tiles) {
 		GamePosition curr=qp.getQ().getCurrentGame().getCurrentPosition();
 		int crow, ccol,orow,ocol;
 		if (super.getColor().equals(Color.WHITE)) {
@@ -120,23 +134,13 @@ public class PawnComponent extends HoldableComponent{
 		else {
 			return false; 
 		}
-		GameController gc = new GameController();
 		
-		PawnBehavior pb=new PawnBehavior(false,side,"invalid");
+		/*PawnBehavior pb=new PawnBehavior(false,"","invalid");
 		pb.setCurrentGame(qp.getQ().getCurrentGame());
-		pb.setPlayer(curr.getPlayerToMove());
+		pb.setPlayer(curr.getPlayerToMove());*/
 		//TODO
 		
-		if (side.length()>5) {
-			System.out.print("diagonal");
-			System.out.print(side); 
-			pb.initiateDiagonalJump(side);
-		}
-		else {
-			//straight jump
-			System.out.print("straight or step");
-			pb.initiateSorJ(side);
-		}
+		pb.initiate(side);
 		pb.dropPawn();
 		if (pb.getStatus().compareTo("success")==0) {
 			this.setLocation(tiles[j][i].getX()+(TileComponent.tileW-pawnW)/2, tiles[j][i].getY()+(TileComponent.tileW-pawnW)/2);

@@ -90,7 +90,7 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 				heldComponent=null;
 			}
 			// If heldComponent is a Pawn
-			else if(heldComponent instanceof PawnComponent && ((PawnComponent) heldComponent).movePawn(frame.getTiles(),frame)){
+			else if(heldComponent instanceof PawnComponent && ((PawnComponent) heldComponent).movePawn(frame.getTiles())){
 				// If dropPawn was successful, then lock in move, and prevent player from picking up anything else
 				// until he presses the End Turn button.
 				frame.setStageMove(true);
