@@ -937,13 +937,14 @@ public class PawnBehavior
   }
 
 
-  /**
-   * 
-   * @author DariusPi
-   * 
-   * Guard returns if desired move is a diagonal jump
-   */
+ 
   // line 570 "../../../../../PawnStateMachine.ump"
+  /**
+   * Guard returns if desired move is a diagonal jump.
+   * @author DariusPi
+   * @param cside
+   * @return boolean
+   */
   public Boolean isDiag(String cside){
     if(cside.compareTo("upleft")==0){
 			return true;
@@ -962,6 +963,12 @@ public class PawnBehavior
   }
 
   // line 587 "../../../../../PawnStateMachine.ump"
+  /**
+   * Method to get next tile
+   * @param isJump
+   * @param cside
+   * @return
+   */
   public int getNextTile(boolean isJump, String cside){
     int curRow = getCurrentPawnRow()-1;
     	int curCol = getCurrentPawnColumn()-1;
@@ -1007,11 +1014,23 @@ public class PawnBehavior
   }
 
   // line 631 "../../../../../PawnStateMachine.ump"
+  /**
+   * Method to get next row
+   * @param isJump
+   * @param cside
+   * @return integer
+   */
   public int getNextRow(boolean isJump, String cside){
     return getNextTile(isJump,cside)/9;
   }
 
   // line 634 "../../../../../PawnStateMachine.ump"
+  /**
+   * Method to get next column
+   * @param isJump
+   * @param cside
+   * @return integer
+   */
   public int getNextCol(boolean isJump, String cside){
     return getNextTile(isJump,cside)%9;
   }

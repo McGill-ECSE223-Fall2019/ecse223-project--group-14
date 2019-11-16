@@ -1290,7 +1290,7 @@ public class GameController {
 	private static int getIndex(int row, int col) {
 		
 		if(row <= 0 || col <= 0 || row > 9 || col > 9) {
-			return -10; //sentinel for indexNotFound
+			return -10; 
 		}
 		else {
 		return ((((row-1)*9)+col)-1);
