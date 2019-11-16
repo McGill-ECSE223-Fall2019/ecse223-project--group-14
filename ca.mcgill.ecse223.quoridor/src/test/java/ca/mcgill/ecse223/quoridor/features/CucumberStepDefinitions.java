@@ -1958,7 +1958,7 @@ public class CucumberStepDefinitions {
 		pb.dropPawn();*/
 		create=pb.getStatus();
 		if (create.compareTo("success")==0) {
-			pb.change();
+			//pb.change();
 			if (curr.getPlayerToMove().hasGameAsWhite()) {
 				curr.setPlayerToMove(quoridor.getCurrentGame().getBlackPlayer());
 			}
