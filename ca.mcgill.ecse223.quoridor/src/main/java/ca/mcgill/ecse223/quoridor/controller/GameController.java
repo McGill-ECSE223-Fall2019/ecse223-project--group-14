@@ -99,7 +99,7 @@ public class GameController {
 		
 		Player p1=new Player(new Time(10), q.getUser(0), 9, Direction.Horizontal);
 		Player p2 = new Player(new Time(10), q.getUser(1), 1, Direction.Horizontal);
-		new Game(GameStatus.Initializing, MoveMode.PlayerMove, q);
+		 new Game(GameStatus.Initializing, MoveMode.PlayerMove,null,null ,q);
 		
 		q.getCurrentGame().setWhitePlayer(p1);
 		q.getCurrentGame().setBlackPlayer(p2);
