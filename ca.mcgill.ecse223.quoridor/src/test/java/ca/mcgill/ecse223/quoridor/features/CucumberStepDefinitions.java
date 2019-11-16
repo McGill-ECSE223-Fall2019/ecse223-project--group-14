@@ -60,7 +60,7 @@ public class CucumberStepDefinitions {
 	// ***********************************************
 	// Background step definitions
 	// ***********************************************
-
+	
 	@Given("^The game is not running$")
 	public void theGameIsNotRunning() {
 		initQuoridorAndBoard();
@@ -141,8 +141,9 @@ public class CucumberStepDefinitions {
 		System.out.println();
 	}
 	
-	/*
+	/**
 	 * @author louismollick
+	 * @throws Exception
 	 */
 	@Given("I do not have a wall in my hand")
 	public void iDoNotHaveAWallInMyHand() throws Exception{
@@ -152,8 +153,9 @@ public class CucumberStepDefinitions {
 		view.setHeldComponent(null);
 	}
 	
-	/*
+	/**
 	 * @author louismollick
+	 * @throws Exception
 	 */
 	@And("^I have a wall in my hand over the board$")
 	public void givenIHaveAWallInMyHandOverTheBoard() throws Exception {
@@ -2106,7 +2108,9 @@ public class CucumberStepDefinitions {
 	// ***********************************************
 
 	// Place your extracted methods below
-
+	/**
+	 * A method to initialize the quoridor and the board.
+	 */
 	private void initQuoridorAndBoard() {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Board board = new Board(quoridor);
@@ -2119,6 +2123,12 @@ public class CucumberStepDefinitions {
 		}
 	}
 
+	/**
+	 * A method to create users and players and then adding them to a list.
+	 * @param userName1
+	 * @param userName2
+	 * @return ArrayList<Player>
+	 */
 	private ArrayList<Player> createUsersAndPlayers(String userName1, String userName2) {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		User user1 = quoridor.addUser(userName1);
