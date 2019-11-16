@@ -569,10 +569,12 @@ public class PawnBehavior
   }
 
 
+  // line 222 "../../../../../PawnStateMachine.ump"
   /**
    * Returns if it is legal to jump in the given direction
+   * @param cside
+   * @return boolean
    */
-  // line 222 "../../../../../PawnStateMachine.ump"
   public boolean isLegalJump(String cside){
     int curRow = getCurrentPawnRow();
 		int curCol = getCurrentPawnColumn();
@@ -596,6 +598,11 @@ public class PawnBehavior
   }
 
   // line 246 "../../../../../PawnStateMachine.ump"
+  /**
+   * Determines if the the diagonal jump is legal or not
+   * @param cside
+   * @return boolean
+   */
   public boolean isLegalJumpDiag(String cside){
     int curRow = getCurrentPawnRow();
     	int curCol = getCurrentPawnColumn();
@@ -645,14 +652,15 @@ public class PawnBehavior
   }
 
 
-  /**
-   * 
-   * @author DariusPi
-   * 
-   * Determines if there is a wall or directly next to the player in any direction
-   * 
-   */
   // line 300 "../../../../../PawnStateMachine.ump"
+  /**
+   * Determines if there is a wall or directly next to the player in any direction
+   * @author DariusPi
+   * @param isJump
+   * @param cside
+   * @param current
+   * @return boolean
+   */
   public Boolean isWOrBAdjacent(Boolean isJump, String cside, Boolean current){
     int curRow;
     	int curCol;
