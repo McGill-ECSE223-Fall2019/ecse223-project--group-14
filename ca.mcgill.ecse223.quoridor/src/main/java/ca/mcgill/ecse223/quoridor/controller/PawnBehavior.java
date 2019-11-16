@@ -101,7 +101,11 @@ public class PawnBehavior
   {
     return statusSM;
   }
-
+  /**
+   * 
+   * @param cside
+   * @return boolean
+   */
   public boolean move(String cside)
   {
     boolean wasEventProcessed = false;
@@ -347,7 +351,11 @@ public class PawnBehavior
 
     return wasEventProcessed;
   }
-
+  
+  /**
+   * Method to change the status of the state machine
+   * @return boolean
+   */
   public boolean change()
   {
     boolean wasEventProcessed = false;
@@ -492,10 +500,11 @@ public class PawnBehavior
   }
 
 
+  // line 159 "../../../../../PawnStateMachine.ump"
   /**
    * Returns the current row number of the pawn
+   * @return integer
    */
-  // line 159 "../../../../../PawnStateMachine.ump"
   public int getCurrentPawnRow(){
     GamePosition pos = currentGame.getCurrentPosition();
     	if (player.hasGameAsWhite()){
@@ -507,10 +516,11 @@ public class PawnBehavior
   }
 
 
+  // line 172 "../../../../../PawnStateMachine.ump"
   /**
    * Returns the current column number of the pawn
+   * @return integer
    */
-  // line 172 "../../../../../PawnStateMachine.ump"
   public int getCurrentPawnColumn(){
     GamePosition pos=currentGame.getCurrentPosition();
     	if (player.hasGameAsWhite()){
@@ -521,11 +531,11 @@ public class PawnBehavior
 	    }
   }
 
-
+  // line 183 "../../../../../PawnStateMachine.ump"
   /**
    * Returns the current row number of the pawn
+   * @return integer
    */
-  // line 183 "../../../../../PawnStateMachine.ump"
   public int getOpponentPawnRow(){
     GamePosition pos=currentGame.getCurrentPosition();
     	if (player.hasGameAsWhite()){
@@ -537,10 +547,11 @@ public class PawnBehavior
   }
 
 
+  // line 196 "../../../../../PawnStateMachine.ump"
   /**
    * Returns the current column number of the pawn
+   * @return integer
    */
-  // line 196 "../../../../../PawnStateMachine.ump"
   public int getOpponentPawnColumn(){
     GamePosition pos=currentGame.getCurrentPosition();
     	if (player.hasGameAsWhite()){
@@ -551,11 +562,12 @@ public class PawnBehavior
 	    }
   }
 
-
+  // line 208 "../../../../../PawnStateMachine.ump"
   /**
    * Returns if it is legal to step in the given direction
+   * @param cside
+   * @return boolean
    */
-  // line 208 "../../../../../PawnStateMachine.ump"
   public boolean isLegalStep(String cside){
     int curRow = getCurrentPawnRow();
 		int curCol = getCurrentPawnColumn();
