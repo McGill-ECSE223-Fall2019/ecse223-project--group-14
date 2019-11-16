@@ -2052,37 +2052,6 @@ public class CucumberStepDefinitions {
 	 /**
 	  * @author DariusPi
 	  * 
-	  * @param side
-	  */
-	 @And ("My opponent is not {string} from the player")
-	 public void myOpponentIsNotFromThePlayer(String side) {
-		 Quoridor q=QuoridorApplication.getQuoridor();
-		Game g=q.getCurrentGame();
-		GamePosition prev=g.getCurrentPosition();
-		PlayerPosition p1;
-		PlayerPosition p2;
-		if (prev.getPlayerToMove().hasGameAsWhite()) {
-			p1=prev.getWhitePosition();
-			p2=prev.getBlackPosition();
-		}
-		else {
-			p1=prev.getBlackPosition();
-			p2=prev.getWhitePosition();
-		}
-		 
-		 if ((p1.getTile().getColumn()==p2.getTile().getColumn())||(p1.getTile().getColumn()==p2.getTile().getColumn()-1)||(p1.getTile().getColumn()==p2.getTile().getColumn()+1)){
-			if (p1.getTile().getColumn()+3>9) {
-				p2.setTile(q.getBoard().getTile((p2.getTile().getRow()-1)*9+p2.getTile().getColumn()-1+3));
-			}
-			else {
-				p2.setTile(q.getBoard().getTile((p2.getTile().getRow()-1)*9+p2.getTile().getColumn()-1-3));
-			}
-		}
-	 }
-	 
-	 /**
-	  * @author DariusPi
-	  * 
 	  * @param row
 	  * @param col
 	  */
