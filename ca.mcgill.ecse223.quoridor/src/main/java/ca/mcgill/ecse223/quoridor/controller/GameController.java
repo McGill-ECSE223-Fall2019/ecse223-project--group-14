@@ -495,13 +495,22 @@ public class GameController {
 	 * @param min (number of)
 	 * 
 	 * @param sec (number of)
+	 * @throws Exception 
 	 * 
 	 * @throws UnsupportedOperationException
 	 */
 
-	public void setTime (Quoridor q, int min, int sec) {
+	public void setTime (Quoridor q, int min, int sec) throws Exception {
 		//throw new UnsupportedOperationException();
+		if (min==0&&sec==0) {
+			throw new Exception();
+		}
+		
+		else if ((min<0)||(sec<0)) {
+			throw new Exception();
+		}
 		long time=(min*60+sec)*1000;		//time takes in ms
+		
 		q.getCurrentGame().getBlackPlayer().setRemainingTime(new Time(time));
 		q.getCurrentGame().getWhitePlayer().setRemainingTime(new Time(time));
 		q.getCurrentGame().setGameStatus(GameStatus.ReadyToStart);

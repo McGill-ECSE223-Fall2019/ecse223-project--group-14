@@ -262,8 +262,8 @@ public class QuoridorPage extends JFrame{
 			wwalls[i]=new WallComponent(Color.WHITE,i);
 		}
 		
-		wPawn=new PawnComponent(Color.WHITE);
-		bPawn=new PawnComponent(Color.BLACK);
+		wPawn=new PawnComponent(Color.WHITE,this);
+		bPawn=new PawnComponent(Color.BLACK,this);
 		
 		wPawn.setBounds(157, 417, 25, 25);
 		bPawn.setBounds(557, 417, 25, 25);
@@ -609,6 +609,9 @@ public class QuoridorPage extends JFrame{
 			
 			p1Name.setVisible(true);
 			p2Name.setVisible(true);
+			
+			wPawn.init(true);
+			bPawn.init(false);
 			
 			gc.startTheClock(q,timer);
 			
