@@ -700,14 +700,16 @@ public class PawnBehavior
   }
 
 
-  /**
-   * 
-   * @author DariusPi
-   * 
-   * Determines if there is a wall either next to the player or 2 away from the player for jumps
-   * 
-   */
+
   // line 352 "../../../../../PawnStateMachine.ump"
+  /**
+   * Determines if there is a wall either next to the player or 2 away from the player for jumps
+   * @param curRow
+   * @param curCol
+   * @param cside
+   * @param isStep
+   * @return boolean
+   */
   public boolean isWallBlocking(int curRow, int curCol, String cside, boolean isStep){
     int distance;
     	if(isStep){
@@ -806,13 +808,15 @@ public class PawnBehavior
   }
 
 
-  /**
-   * 
-   * @author DariusPi
-   * 
-   * Guard returns side that opponent is on if any
-   */
   // line 454 "../../../../../PawnStateMachine.ump"
+  /**
+   * Guard returns side that opponent is on if any
+   * @author DariusPi
+   * @param isJump
+   * @param cside
+   * @param current
+   * @return String
+   */
   public String isOpponentAdjacent(Boolean isJump, String cside, boolean current){
     int oR = getOpponentPawnRow();
     	int oC = getOpponentPawnColumn();
@@ -847,13 +851,15 @@ public class PawnBehavior
   }
 
 
-  /**
-   * 
-   * @author DariusPi
-   * 
-   * Guard returns if board border is blocking move
-   */
   // line 492 "../../../../../PawnStateMachine.ump"
+  /**
+   * Guard returns if board border is blocking move
+   * @author DariuspI
+   * @param opRow
+   * @param opCol
+   * @param opSide
+   * @return boolean
+   */
   public Boolean isBorderBlocking(int opRow, int opCol, String opSide){
     if ((opSide.compareTo("up")==0)&&(opRow==1)){
     		return true;
@@ -885,13 +891,13 @@ public class PawnBehavior
   }
 
 
-  /**
-   * 
-   * @author DariusPi
-   * 
-   * Guard returns if desired step move is legal
-   */
   // line 523 "../../../../../PawnStateMachine.ump"
+  /**
+   * Guard returns id desired step move is legal
+   * @author DariusPi
+   * @param isJump
+   * @param cside
+   */
   public void legalMove(boolean isJump, String cside){
     status="success";
     	GamePosition curr= currentGame.getCurrentPosition();
@@ -921,13 +927,13 @@ public class PawnBehavior
   }
 
 
-  /**
-   * 
-   * @author DariusPi
-   * 
-   * Guard returns if desired move is a straight jump
-   */
   // line 556 "../../../../../PawnStateMachine.ump"
+  /**.
+   * Guard returns if desired move is a straight jump
+   * @author DariusPi
+   * @param cside
+   * @return boolean
+   */
   public Boolean isAJump(String cside){
     String opSide=isOpponentAdjacent(false,"",true);
 		if (cside.compareTo(opSide)==0){
@@ -967,7 +973,7 @@ public class PawnBehavior
    * Method to get next tile
    * @param isJump
    * @param cside
-   * @return
+   * @return integer
    */
   public int getNextTile(boolean isJump, String cside){
     int curRow = getCurrentPawnRow()-1;
