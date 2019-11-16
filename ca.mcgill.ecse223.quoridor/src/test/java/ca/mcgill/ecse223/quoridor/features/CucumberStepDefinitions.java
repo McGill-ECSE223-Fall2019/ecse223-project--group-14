@@ -2174,8 +2174,8 @@ public class CucumberStepDefinitions {
 		/*Tile player1StartPos = quoridor.getBoard().getTile(4);
 		Tile player2StartPos = quoridor.getBoard().getTile(76);*/
 
-		
 		Game game = new Game(GameStatus.Running, MoveMode.PlayerMove, quoridor);
+
 		game.setWhitePlayer(players.get(0));
 		game.setBlackPlayer(players.get(1));
 
