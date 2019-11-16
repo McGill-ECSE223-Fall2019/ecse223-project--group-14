@@ -2228,6 +2228,14 @@ public class CucumberStepDefinitions {
 		
 	}
 	
+	/**
+	 *  A method to check if there is a wall in the provided coordinates and specified direction.
+	 * @param row
+	 * @param col
+	 * @param wallsOnBoard
+	 * @param orientation
+	 * @return boolean
+	 */
 	private boolean wallPresent(int row, int col, Wall[] wallsOnBoard, Direction orientation) {
 		if (wallsOnBoard.length == 0)
 			return false;
