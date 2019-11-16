@@ -30,7 +30,7 @@ Feature: Move Pawn
     Given The player to move is "<player>"
     And The player is located at <prow>:<pcol>
     And There is a "<dir>" wall at <wrow>:<wcol>
-    And My opponent is not "<side>" from the player
+    And The opponent is not "<side>" from the player
     When Player "<player>" initiates to move "<side>"
     Then The move "<side>" shall be "<status>"
     And Player's new position shall be <nrow>:<ncol>
