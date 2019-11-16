@@ -1282,10 +1282,10 @@ public class GameController {
 	
 	
 	/**
-	 * A helper method to calculate the index of the tile using its row and column number
+	 * A helper method to calculate the index of the tile using its row and column numbers.
 	 * @param row
 	 * @param col
-	 * @return int
+	 * @return Integer
 	 */
 	private static int getIndex(int row, int col) {
 		

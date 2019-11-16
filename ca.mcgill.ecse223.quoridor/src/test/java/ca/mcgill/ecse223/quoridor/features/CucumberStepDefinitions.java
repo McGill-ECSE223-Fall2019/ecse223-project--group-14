@@ -2169,6 +2169,10 @@ public class CucumberStepDefinitions {
 		return playersList;
 	}
 
+	/**
+	 * A method to create and start a game.
+	 * @param players
+	 */
 	private void createAndStartGame(ArrayList<Player> players) {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 
@@ -2207,17 +2211,19 @@ public class CucumberStepDefinitions {
 		game.setCurrentPosition(gamePosition);
 	}
 	
+	/**
+	 * A helper method to calculate the index of the tile using its row and column numbers.
+	 * @param row
+	 * @param col
+	 * @return Integer
+	 */
 	private int getIndex(int row, int col) {
-		//return (col - 1) * 9 + (row - 1);Saif's
-		/*if(row<0||row>9||col<0||col>9) {to avoid getting index in range for invalid coordinates due to -ve +ve cancelling
-			return -1;
-		}*/
+		
 		if(row<=0||col<=0||row>9||col>9){
 			return -1;
 		}
 		else {
-		return ((((row-1)*9)+col)-1);//returning wrong values for incorrect row or col 
-		//may return out of bound value which can be handled by 
+		return ((((row-1)*9)+col)-1);
 		}
 		
 	}
