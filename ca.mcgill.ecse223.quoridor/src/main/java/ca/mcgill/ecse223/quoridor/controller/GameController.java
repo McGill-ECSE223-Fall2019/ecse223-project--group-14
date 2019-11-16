@@ -99,7 +99,7 @@ public class GameController {
 		
 		Player p1=new Player(new Time(10), q.getUser(0), 9, Direction.Horizontal);
 		Player p2 = new Player(new Time(10), q.getUser(1), 1, Direction.Horizontal);
-		 new Game(GameStatus.Initializing, MoveMode.PlayerMove,null,null ,q);
+		 new Game(GameStatus.Initializing, MoveMode.PlayerMove,q);
 		
 		q.getCurrentGame().setWhitePlayer(p1);
 		q.getCurrentGame().setBlackPlayer(p2);
@@ -1250,12 +1250,7 @@ public class GameController {
 		//was successful
 		return game;
 	}
-	
-	/*
-	 * Helper method for load position
-	 * Constructs an initial game position from playerPosition data and player color data for a
-	 * given game.
-	 */
+
 	/**
 	 *  A helper method for load position where it constructs an initial game position data and
 	 *   player color data for a given game.
@@ -1279,9 +1274,12 @@ public class GameController {
 		return aNewGamePosition;
 	}
 	
-	/*
-	 * getIndex from Stepdefinitions, cleaned up a bit
-	 * Credit to Saifullah for getting it working properly in Iteration 2
+	
+	/**
+	 * A helper method to calculate the index of the tile using its row and coloumn number
+	 * @param row
+	 * @param col
+	 * @return int
 	 */
 	private static int getIndex(int row, int col) {
 		
