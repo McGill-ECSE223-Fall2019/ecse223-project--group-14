@@ -1949,15 +1949,16 @@ public class CucumberStepDefinitions {
 			
 		}
 		
-		PawnBehavior pb=new PawnBehavior(false, side,"invalid");
+		PawnBehavior pb=new PawnBehavior("invalid");
 		pb.setCurrentGame(quoridor.getCurrentGame());
 		pb.setPlayer(curr.getPlayerToMove());
-		
-		pb.initiate(side);
-		
-		pb.dropPawn();
+		pb.change();
+		pb.move(side);
+		/*pb.initiate(side);
+		pb.dropPawn();*/
 		create=pb.getStatus();
 		if (create.compareTo("success")==0) {
+			pb.change();
 			if (curr.getPlayerToMove().hasGameAsWhite()) {
 				curr.setPlayerToMove(quoridor.getCurrentGame().getBlackPlayer());
 			}

@@ -13,9 +13,8 @@ public class PawnComponent extends HoldableComponent{
 	private QuoridorPage qp;
 	public PawnComponent(Color color, QuoridorPage p) {
 		super(pawnW,pawnW,color);
-		pb=new PawnBehavior(false,"","invalid");
+		pb=new PawnBehavior("invalid");
 		qp=p;
-		
 	}
 	
 	public void init(boolean isWhite) {
@@ -140,9 +139,13 @@ public class PawnComponent extends HoldableComponent{
 		pb.setPlayer(curr.getPlayerToMove());*/
 		//TODO
 		System.out.print(side);
-		pb.initiate(side);
-		pb.dropPawn();
+		pb.change();				//necessary in case of load game, can't move to init cuz of gherkin tests
+		pb.move(side);
+		/*pb.initiate(side);
+		pb.dropPawn();*/
+		
 		if (pb.getStatus().compareTo("success")==0) {
+			pb.change();
 			this.setLocation(tiles[j][i].getX()+(TileComponent.tileW-pawnW)/2, tiles[j][i].getY()+(TileComponent.tileW-pawnW)/2);
 			
 			return true;

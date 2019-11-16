@@ -7,75 +7,76 @@ class PawnBehavior {
     0..1 -> 0..1 Game currentGame;
     0..1 -> 0..1 Player player;
 	
-	boolean isValid;
-	
-	String side;
 	String status;
-	
-	//state machine for move validation
-    pawnSM {
-    	Placed{
-    		initiate(String cside)[isDiag(cside)] -> /{
-    			this.side=cside;
-    		}  JumpingDiagonal;
-    		initiate(String cside) [!isAJump(cside)&&!isDiag(cside)] -> /{
-    			this.side=cside;
-    		}  Stepping;
-    		initiate(String cside) [isAJump(cside)&&!isDiag(cside)] -> /{
-    			this.side=cside;
-    		}  JumpingStraight;
-    	}
-		Stepping{
-			entry / {isValid = isLegalStep();}
-			dropPawn() [isValid] -> /{
-    			legalMove(false);
-    		}  Placed;
-    		dropPawn() [!isValid] -> /{
-    			illegalMove();
-    		}  Placed;
-			
-		}
-	    JumpingStraight{
-	    	entry / {isValid = isLegalJump();}
-	    	dropPawn() [isValid]-> /{
-    			legalMove(true);
-    		}  Placed;
-    		dropPawn() [!isValid] -> /{
-    			illegalMove();
-    		}  Placed;
-		}
-		JumpingDiagonal{
-			entry / {isValid = isLegalJumpDiag();}
-			dropPawn() [isValid] -> /{
-    			legalMove(true);
-    		}  Placed;
-    		
-    		dropPawn() [!isValid] -> /{
-    			illegalMove();
-    		}  Placed;
-		}
-	}
 	
 	//state machine for persistent pawn location
 	statusSM{
 		NextToBorderOrWall{
+			move(String cside) [!isAJump(cside)&&!isDiag(cside)&&isLegalStep(cside)]/{
+    			legalMove(false,cside);
+    		} -> NextToBorderOrWall;
+    		move(String cside) [!isAJump(cside)&&!isDiag(cside)&&!isLegalStep(cside)]/{
+    			illegalMove();
+    		}-> NextToBorderOrWall; 
+    		move(String cside) [isAJump(cside)||isDiag(cside)]/{
+    			illegalMove();
+    		}-> NextToBorderOrWall;
 			change() [!isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")!=0)] -> NextToPlayer;
 			change() [isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")!=0)] -> NextToBorderOrWallAndPlayer;
 			change() [!isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")==0)]-> Default;
 		}
 		
 		NextToPlayer{
+			move(String cside) [!isAJump(cside)&&!isDiag(cside)]/{
+    			legalMove(false,cside);
+    		}-> NextToPlayer; 
+    		move(String cside) [isAJump(cside)&&!isDiag(cside)&& isLegalJump(cside)]/{
+    			legalMove(true,cside);
+    		}-> NextToPlayer; 
+    		move(String cside) [isAJump(cside)&&!isDiag(cside)&& !isLegalJump(cside)]/{
+    			illegalMove();
+    		}-> NextToPlayer;
+    		move(String cside) [isDiag(cside)&& isLegalJumpDiag(cside)]/{
+    			legalMove(true,cside);
+    		}-> NextToPlayer; 
+    		move(String cside) [isDiag(cside)&& !isLegalJumpDiag(cside)]/{
+    			illegalMove();
+    		}-> NextToPlayer;
 			change() [isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")==0)] -> NextToBorderOrWall;
 			change() [isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")!=0)] -> NextToBorderOrWallAndPlayer;
 			change() [!isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")==0)] -> Default;
 		}
 		
 		NextToBorderOrWallAndPlayer{
+			move(String cside) [!isAJump(cside)&&!isDiag(cside)&&isLegalStep(cside)]/{
+    			legalMove(false,cside);
+    		}-> NextToBorderOrWallAndPlayer;
+    		move(String cside) [!isAJump(cside)&&!isDiag(cside)&&!isLegalStep(cside)]/{
+    			illegalMove();
+    		}-> NextToBorderOrWallAndPlayer; 
+    		move(String cside) [isAJump(cside)&&!isDiag(cside)&& isLegalJump(cside)]/{
+    			legalMove(true,cside);
+    		}-> NextToBorderOrWallAndPlayer; 
+    		move(String cside) [isAJump(cside)&&!isDiag(cside)&& !isLegalJump(cside)]/{
+    			illegalMove();
+    		}-> NextToBorderOrWallAndPlayer;
+    		move(String cside) [isDiag(cside)&& isLegalJumpDiag(cside)]/{
+    			legalMove(true,cside);
+    		}-> NextToBorderOrWallAndPlayer; 
+    		move(String cside) [isDiag(cside)&& !isLegalJumpDiag(cside)]/{
+    			illegalMove();
+    		}-> NextToBorderOrWallAndPlayer;
 			change()[isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")==0)] -> NextToBorderOrWall;
 			change()[!isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")!=)] -> NextToPlayer;
 			change() [!isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")==0)]-> Default;
 		}
 		Default{
+			move(String cside) [!isAJump(cside)&&!isDiag(cside)]/{
+    			legalMove(false,cside);
+    		}-> Default; 
+    		move(String cside) [isAJump(cside)||isDiag(cside)]/{
+    			illegalMove();
+    		}-> Default; 
 			change()[isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")==0)] -> NextToBorderOrWall;
 			change()[!isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")!=0)]-> NextToPlayer;
 			change()[isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")!=0)] -> NextToBorderOrWallAndPlayer;
@@ -131,12 +132,12 @@ class PawnBehavior {
     }
     
     // Returns if it is legal to step in the given direction
-    boolean isLegalStep() { 
+    boolean isLegalStep(String cside) { 
     	
     	int curRow = getCurrentPawnRow();
 		int curCol = getCurrentPawnColumn();
     	
-    	Boolean walla= isWallBlocking(curRow,curCol,this.side,true);  //if adjacent wall
+    	Boolean walla= isWallBlocking(curRow,curCol,cside,true);  //if adjacent wall
     	if (walla){
     		return false;
     	}
@@ -145,21 +146,21 @@ class PawnBehavior {
     }
     
     // Returns if it is legal to jump in the given direction
-    boolean isLegalJump() { 
+    boolean isLegalJump(String cside) { 
     	
     	int curRow = getCurrentPawnRow();
 		int curCol = getCurrentPawnColumn();
 		
 		String opSide = isOpponentAdjacent();
     	Boolean wallb= isWallBlocking(curRow,curCol,opSide,false); 	//wall adjacent to opponent
-    	Boolean walla= isWallBlocking(curRow,curCol,this.side,true);  //if adjacent wall
+    	Boolean walla= isWallBlocking(curRow,curCol,cside,true);  //if adjacent wall
 		System.out.print(" opside="+opSide);
 		System.out.print(" wallb="+wallb);
     	System.out.print(" walla="+walla);
 		if ((wallb)||(walla)){
     		return false;
     	}
-		else if(this.side.compareTo(opSide)==0){
+		else if(cside.compareTo(opSide)==0){
 			return true;
 		} 
 		
@@ -169,7 +170,7 @@ class PawnBehavior {
     }
     
     
-    boolean isLegalJumpDiag() { 
+    boolean isLegalJumpDiag(String cside) { 
     	
     	int curRow = getCurrentPawnRow();
     	int curCol = getCurrentPawnColumn();
@@ -177,7 +178,7 @@ class PawnBehavior {
     	int opCol = getOpponentPawnColumn();
     	
     	String opSide = isOpponentAdjacent();
-    	String otherSide= this.side.replace(opSide,"");
+    	String otherSide= cside.replace(opSide,"");
     	
     	Boolean wallb= isWallBlocking(curRow,curCol,opSide,false); //if wall blocking straight jump
     	Boolean walla= isWallBlocking(curRow,curCol,opSide,true);  //if adjacent wall
@@ -193,23 +194,23 @@ class PawnBehavior {
     	else if ((walla)||(wallc)){
     		return false;
     	}
-		else if(this.side.compareTo("upleft")==0){
+		else if(cside.compareTo("upleft")==0){
 			if((opSide.compareTo("up")==0) || opSide.compareTo("left")==0){
 				return true;
 			}
 		} 
 		
-		else if(this.side.compareTo("upright")==0){
+		else if(cside.compareTo("upright")==0){
 			if((opSide.compareTo("up")==0) || opSide.compareTo("right")==0){
 				return true;
 			}
 		} 
-		else if(this.side.compareTo("downleft")==0){
+		else if(cside.compareTo("downleft")==0){
 			if((opSide.compareTo("down")==0) || opSide.compareTo("left")==0){
 				return true;
 			}
 		} 
-		else if(this.side.compareTo("downright")==0){
+		else if(cside.compareTo("downright")==0){
 			if((opSide.compareTo("down")==0) || opSide.compareTo("right")==0){
 				return true;
 			}
@@ -431,7 +432,7 @@ class PawnBehavior {
     *
     *Guard returns if desired step move is legal
     */
-    void legalMove(boolean isJump) { 
+    void legalMove(boolean isJump, String cside) { 
 		status="success";
     	GamePosition curr= currentGame.getCurrentPosition();
     	int curRow = getCurrentPawnRow()-1;
@@ -442,34 +443,34 @@ class PawnBehavior {
 			distance=1;
 		}
 		
-		if(this.side.compareTo("up")==0){
+		if(cside.compareTo("up")==0){
 			r=curRow-distance;
 		} 
 		
-		else if(this.side.compareTo("right")==0){
+		else if(cside.compareTo("right")==0){
 			j=curCol+distance;
 		} 
-		else if(this.side.compareTo("left")==0){
+		else if(cside.compareTo("left")==0){
 			j=curCol-distance;
 		} 
-		else if(this.side.compareTo("down")==0){
+		else if(cside.compareTo("down")==0){
 			r=curRow+distance;
 		}
 		
-		else if(this.side.compareTo("upleft")==0){
+		else if(cside.compareTo("upleft")==0){
 			r=curRow-1;
 			j=curCol-1;
 		} 
 		
-		else if(this.side.compareTo("upright")==0){
+		else if(cside.compareTo("upright")==0){
 			r=curRow-1;
 			j=curCol+1;
 		} 
-		else if(this.side.compareTo("downleft")==0){
+		else if(cside.compareTo("downleft")==0){
 			r=curRow+1;
 			j=curCol-1;
 		} 
-		else if(this.side.compareTo("downright")==0){
+		else if(cside.compareTo("downright")==0){
 			r=curRow+1;
 			j=curCol+1;
 		}
@@ -493,7 +494,7 @@ class PawnBehavior {
 			}
 		}
 		
-		change();
+		//change();
     }
     
     /**
