@@ -399,24 +399,6 @@ public class CucumberStepDefinitions {
 		game.setWallMoveCandidate(wmc);
 		Tile target = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(row ,col));
 		
-		// Check if the WallMoveCandidate belongs to the current player
-				/*if(wmc != null && player.indexOfWall(wmc.getWallPlaced()) != -1) {
-					// Set the WallMoveCandidate's attributes to those specified in input
-					if(wmc.getWallDirection() != dir) wmc.setWallDirection(dir);
-					if(wmc.getTargetTile().getRow() != row || wmc.getTargetTile().getColumn() != col)
-						wmc.setTargetTile(target);
-				} else { // If no WallMoveCandidate exists or it is other player's, make a new one with input
-					Wall w = pos.getWhiteWallsInStock(1);
-					int moveNum = game.numberOfMoves();
-					int roundNum = 1;
-					if(moveNum != 0) {
-						roundNum = game.getMove(moveNum-1).getRoundNumber();
-					}
-					w.setMove(new WallMove(moveNum+1, roundNum, player, target, game, dir, w));
-					game.setWallMoveCandidate(w.getMove());
-				}
-				
-				//assertNotEquals(true, gc.validatePosition(game));*/
 				resvalid=gc.valWallPosition(col-1, row-1, sdir);
 	}
 	
@@ -444,9 +426,7 @@ public class CucumberStepDefinitions {
 		WallMove wmc = game.getWallMoveCandidate();
 		Tile target = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(row ,col));
 		assertEquals(0,game.getMoves().size());
-		/*assertNotEquals(target, wmc.getTargetTile());
-		assertEquals(false, wmc.getWallPlaced());
-		assertNotEquals(sdir, wmc.getWallDirection());*/
+	
 	}
 		
 	/**

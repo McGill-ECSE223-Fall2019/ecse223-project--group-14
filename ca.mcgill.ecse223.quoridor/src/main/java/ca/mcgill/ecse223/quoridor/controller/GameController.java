@@ -1256,6 +1256,16 @@ public class GameController {
 	 * Constructs an initial game position from playerPosition data and player color data for a
 	 * given game.
 	 */
+	/**
+	 *  A helper method for load position where it constructs an initial game position data and
+	 *   player color data for a given game.
+	 * @param game
+	 * @param playerOnePosition
+	 * @param playerTwoPosition
+	 * @param playerOne
+	 * @param isPlayerOneWhite
+	 * @return GamePosition
+	 */
 	private static GamePosition makeInitialGamePosition(Game game, PlayerPosition playerOnePosition, 
 			PlayerPosition playerTwoPosition, Player playerOne, boolean isPlayerOneWhite) {
 		GamePosition aNewGamePosition;
