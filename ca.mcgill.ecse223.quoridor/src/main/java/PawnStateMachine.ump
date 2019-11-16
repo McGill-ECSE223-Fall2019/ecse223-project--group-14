@@ -11,16 +11,17 @@ class PawnBehavior {
 	
 	String side;
 	String status;
-		
+	
+	//state machine for move validation
     pawnSM {
     	Placed{
     		initiate(String cside)[isDiag(cside)] -> /{
     			this.side=cside;
     		}  JumpingDiagonal;
-    		initiate(String cside) [!isAJump()&&!isDiag(cside)] -> /{
+    		initiate(String cside) [!isAJump(cside)&&!isDiag(cside)] -> /{
     			this.side=cside;
     		}  Stepping;
-    		initiate(String cside) [isAJump()&&!isDiag(cside)] -> /{
+    		initiate(String cside) [isAJump(cside)&&!isDiag(cside)] -> /{
     			this.side=cside;
     		}  JumpingStraight;
     	}
@@ -396,9 +397,21 @@ class PawnBehavior {
 		
 		if (player.hasGameAsWhite()) {
 			curr.setWhitePosition(new PlayerPosition(player, currentGame.getQuoridor().getBoard().getTile(r*9+j)));
+			if (isJump){
+				currentGame.addMove(new JumpMove(currentGame.numberOfPositions(), 0, player, currentGame.getQuoridor().getBoard().getTile(r*9+j),currentGame));
+			}
+			else {
+				currentGame.addMove(new StepMove(currentGame.numberOfPositions(), 0, player, currentGame.getQuoridor().getBoard().getTile(r*9+j),currentGame));
+			}
 		}
 		else {
 			curr.setBlackPosition(new PlayerPosition(player, currentGame.getQuoridor().getBoard().getTile(r*9+j)));
+			if (isJump){
+				currentGame.addMove(new JumpMove(currentGame.numberOfPositions(), 1, player, currentGame.getQuoridor().getBoard().getTile(r*9+j),currentGame));
+			}
+			else {
+				currentGame.addMove(new StepMove(currentGame.numberOfPositions(), 1, player, currentGame.getQuoridor().getBoard().getTile(r*9+j),currentGame));
+			}
 		}
     }
     
@@ -407,14 +420,14 @@ class PawnBehavior {
     *
     *Guard returns if desired move is a straight jump
     */
-    Boolean isAJump(){
+    Boolean isAJump(String cside){
 		int opRow = getOpponentPawnRow();
     	int opCol = getOpponentPawnColumn();
     	
     	int curRow = getCurrentPawnRow();
     	int curCol = getCurrentPawnColumn();
     	String opSide=isOpponentAdjacent(curRow, curCol, opRow, opCol);
-		if (this.side.compareTo(opSide)==0){
+		if (cside.compareTo(opSide)==0){
 			return true;
 		}
 		return false;    
@@ -427,17 +440,17 @@ class PawnBehavior {
     */
     Boolean isDiag(String cside){
 		
-		if(this.side.compareTo("upleft")==0){
+		if(cside.compareTo("upleft")==0){
 			return true;
 		} 
 		
-		else if(this.side.compareTo("upright")==0){
+		else if(cside.compareTo("upright")==0){
 			return true;
 		} 
-		else if(this.side.compareTo("downleft")==0){
+		else if(cside.compareTo("downleft")==0){
 			return true;
 		} 
-		else if(this.side.compareTo("downright")==0){
+		else if(cside.compareTo("downright")==0){
 			return true;
 		}
 		return false;    

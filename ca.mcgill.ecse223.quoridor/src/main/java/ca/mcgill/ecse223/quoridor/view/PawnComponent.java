@@ -139,7 +139,7 @@ public class PawnComponent extends HoldableComponent{
 		pb.setCurrentGame(qp.getQ().getCurrentGame());
 		pb.setPlayer(curr.getPlayerToMove());*/
 		//TODO
-		
+		System.out.print(side);
 		pb.initiate(side);
 		pb.dropPawn();
 		if (pb.getStatus().compareTo("success")==0) {
