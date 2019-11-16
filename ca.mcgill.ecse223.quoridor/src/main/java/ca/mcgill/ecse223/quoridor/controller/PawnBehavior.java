@@ -21,6 +21,8 @@ public class PawnBehavior
   //PawnBehavior State Machines
   public enum PawnSM { Placed, Stepping, JumpingStraight, JumpingDiagonal }
   private PawnSM pawnSM;
+  public enum StatusSM { NextToBorderOrWall, NextToPlayer, NextToBorderOrWallAndPlayer, Default }
+  private StatusSM statusSM;
 
   //PawnBehavior Associations
   private Game currentGame;
@@ -36,6 +38,7 @@ public class PawnBehavior
     side = aSide;
     status = aStatus;
     setPawnSM(PawnSM.Placed);
+    setStatusSM(StatusSM.NextToBorderOrWall);
   }
 
   //------------------------
@@ -87,9 +90,20 @@ public class PawnBehavior
     return answer;
   }
 
+  public String getStatusSMFullName()
+  {
+    String answer = statusSM.toString();
+    return answer;
+  }
+
   public PawnSM getPawnSM()
   {
     return pawnSM;
+  }
+
+  public StatusSM getStatusSM()
+  {
+    return statusSM;
   }
 
   public boolean initiate(String cside)
@@ -200,6 +214,88 @@ public class PawnBehavior
     return wasEventProcessed;
   }
 
+  public boolean change()
+  {
+    boolean wasEventProcessed = false;
+    
+    StatusSM aStatusSM = statusSM;
+    switch (aStatusSM)
+    {
+      case NextToBorderOrWall:
+        if (!(isWOrBAdjacent())&&(isOpponentAdjacent().compareTo("no")!=0))
+        {
+          setStatusSM(StatusSM.NextToPlayer);
+          wasEventProcessed = true;
+          break;
+        }
+        if (isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")!=0))
+        {
+          setStatusSM(StatusSM.NextToBorderOrWallAndPlayer);
+          wasEventProcessed = true;
+          break;
+        }
+        if (!(isWOrBAdjacent())&&(isOpponentAdjacent().compareTo("no")==0))
+        {
+          setStatusSM(StatusSM.Default);
+          wasEventProcessed = true;
+          break;
+        }
+        break;
+      case NextToPlayer:
+        if (isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")==0))
+        {
+          setStatusSM(StatusSM.NextToBorderOrWall);
+          wasEventProcessed = true;
+          break;
+        }
+        if (isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")!=0))
+        {
+          setStatusSM(StatusSM.NextToBorderOrWallAndPlayer);
+          wasEventProcessed = true;
+          break;
+        }
+        if (!(isWOrBAdjacent())&&(isOpponentAdjacent().compareTo("no")==0))
+        {
+          setStatusSM(StatusSM.Default);
+          wasEventProcessed = true;
+          break;
+        }
+        break;
+      case NextToBorderOrWallAndPlayer:
+        if (isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")==0))
+        {
+          setStatusSM(StatusSM.NextToBorderOrWall);
+          wasEventProcessed = true;
+          break;
+        }
+        break;
+      case Default:
+        if (isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")==0))
+        {
+          setStatusSM(StatusSM.NextToBorderOrWall);
+          wasEventProcessed = true;
+          break;
+        }
+        if (!(isWOrBAdjacent())&&(isOpponentAdjacent().compareTo("no")!=0))
+        {
+          setStatusSM(StatusSM.NextToPlayer);
+          wasEventProcessed = true;
+          break;
+        }
+        if (isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")!=0))
+        {
+          setStatusSM(StatusSM.NextToBorderOrWallAndPlayer);
+          wasEventProcessed = true;
+          break;
+        }
+        break;
+      default:
+        // Other states do respond to this event
+    }
+
+    return wasEventProcessed;
+  }
+
   private void setPawnSM(PawnSM aPawnSM)
   {
     pawnSM = aPawnSM;
@@ -220,6 +316,11 @@ public class PawnBehavior
         isValid = isLegalJumpDiag();
         break;
     }
+  }
+
+  private void setStatusSM(StatusSM aStatusSM)
+  {
+    statusSM = aStatusSM;
   }
   /* Code from template association_GetOne */
   public Game getCurrentGame()
@@ -270,7 +371,7 @@ public class PawnBehavior
   /**
    * Returns the current row number of the pawn
    */
-  // line 61 "../../../../../PawnStateMachine.ump"
+  // line 87 "../../../../../PawnStateMachine.ump"
   public int getCurrentPawnRow(){
     GamePosition pos = currentGame.getCurrentPosition();
     	if (player.hasGameAsWhite()){
@@ -285,7 +386,7 @@ public class PawnBehavior
   /**
    * Returns the current column number of the pawn
    */
-  // line 74 "../../../../../PawnStateMachine.ump"
+  // line 100 "../../../../../PawnStateMachine.ump"
   public int getCurrentPawnColumn(){
     GamePosition pos=currentGame.getCurrentPosition();
     	if (player.hasGameAsWhite()){
@@ -300,7 +401,7 @@ public class PawnBehavior
   /**
    * Returns the current row number of the pawn
    */
-  // line 85 "../../../../../PawnStateMachine.ump"
+  // line 111 "../../../../../PawnStateMachine.ump"
   public int getOpponentPawnRow(){
     GamePosition pos=currentGame.getCurrentPosition();
     	if (player.hasGameAsWhite()){
@@ -315,7 +416,7 @@ public class PawnBehavior
   /**
    * Returns the current column number of the pawn
    */
-  // line 98 "../../../../../PawnStateMachine.ump"
+  // line 124 "../../../../../PawnStateMachine.ump"
   public int getOpponentPawnColumn(){
     GamePosition pos=currentGame.getCurrentPosition();
     	if (player.hasGameAsWhite()){
@@ -330,15 +431,10 @@ public class PawnBehavior
   /**
    * Returns if it is legal to step in the given direction
    */
-  // line 109 "../../../../../PawnStateMachine.ump"
+  // line 136 "../../../../../PawnStateMachine.ump"
   public boolean isLegalStep(){
-    int opRow = getOpponentPawnRow();
-    	int opCol = getOpponentPawnColumn();
-    	
-    	int curRow = getCurrentPawnRow();
+    int curRow = getCurrentPawnRow();
 		int curCol = getCurrentPawnColumn();
-		
-		//String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
     	
     	Boolean walla= isWallBlocking(curRow,curCol,this.side,true);  //if adjacent wall
     	if (walla){
@@ -352,15 +448,12 @@ public class PawnBehavior
   /**
    * Returns if it is legal to jump in the given direction
    */
-  // line 127 "../../../../../PawnStateMachine.ump"
+  // line 150 "../../../../../PawnStateMachine.ump"
   public boolean isLegalJump(){
-    int opRow = getOpponentPawnRow();
-    	int opCol = getOpponentPawnColumn();
-    	
-    	int curRow = getCurrentPawnRow();
+    int curRow = getCurrentPawnRow();
 		int curCol = getCurrentPawnColumn();
 		
-		String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
+		String opSide = isOpponentAdjacent();
     	Boolean wallb= isWallBlocking(curRow,curCol,opSide,false); 	//wall adjacent to opponent
     	Boolean walla= isWallBlocking(curRow,curCol,this.side,true);  //if adjacent wall
 		System.out.print(" opside="+opSide);
@@ -378,17 +471,19 @@ public class PawnBehavior
 		}
   }
 
-  // line 153 "../../../../../PawnStateMachine.ump"
+  // line 174 "../../../../../PawnStateMachine.ump"
   public boolean isLegalJumpDiag(){
-    int opRow = getOpponentPawnRow();
+    int curRow = getCurrentPawnRow();
+    	int curCol = getCurrentPawnColumn();
+    	int opRow = getOpponentPawnRow();
     	int opCol = getOpponentPawnColumn();
     	
-    	int curRow = getCurrentPawnRow();
-    	int curCol = getCurrentPawnColumn();
+    	String opSide = isOpponentAdjacent();
+    	String otherSide= this.side.replace(opSide,"");
     	
-    	String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
-    	Boolean wallb= isWallBlocking(curRow,curCol,opSide,false); 
+    	Boolean wallb= isWallBlocking(curRow,curCol,opSide,false); //if wall blocking straight jump
     	Boolean walla= isWallBlocking(curRow,curCol,opSide,true);  //if adjacent wall
+    	Boolean wallc= isWallBlocking(opRow,opCol,otherSide,true);  //if wall blocking second half of diagonal jump 
     	Boolean border= isBorderBlocking(opRow,opCol,opSide);
     	System.out.print(" opside="+opSide);
     	System.out.print(" border="+border);
@@ -397,7 +492,7 @@ public class PawnBehavior
     	if ((!border)&&(!wallb)){
     		return false;
     	}
-    	else if (walla){
+    	else if ((walla)||(wallc)){
     		return false;
     	}
 		else if(this.side.compareTo("upleft")==0){
@@ -425,7 +520,62 @@ public class PawnBehavior
     	return false;
   }
 
-  // line 199 "../../../../../PawnStateMachine.ump"
+
+  /**
+   * 
+   * @author DariusPi
+   * 
+   * Determines if there is a wall or directly next to the player in any direction
+   * 
+   */
+  // line 228 "../../../../../PawnStateMachine.ump"
+  public boolean isWOrBAdjacent(){
+    int curRow = getCurrentPawnRow();
+    	int curCol = getCurrentPawnColumn();
+    	
+    	if (isWallBlocking(curRow,curCol,"up",true)){
+    		return true;
+    	}
+    	
+    	else if (isWallBlocking(curRow,curCol,"left",true)){
+    		return true;
+    	}
+    	
+    	else if (isWallBlocking(curRow,curCol,"right",true)){
+    		return true;
+    	}
+    	
+    	else if (isWallBlocking(curRow,curCol,"down",true)){
+    		return true;
+    	}
+    	
+    	else if (isBorderBlocking(curRow,curCol,"up")){
+    		return true;
+    	}
+    	
+    	else if (isBorderBlocking(curRow,curCol,"left")){
+    		return true;
+    	}
+    	
+    	else if (isBorderBlocking(curRow,curCol,"right")){
+    		return true;
+    	}
+    	
+    	else if (isBorderBlocking(curRow,curCol,"down")){
+    		return true;
+    	}
+    	return false;
+  }
+
+
+  /**
+   * 
+   * @author DariusPi
+   * 
+   * Determines if there is a wall either next to the player or 2 away from the player for jumps
+   * 
+   */
+  // line 272 "../../../../../PawnStateMachine.ump"
   public boolean isWallBlocking(int curRow, int curCol, String cside, boolean isStep){
     int distance;
     	if(isStep){
@@ -530,9 +680,15 @@ public class PawnBehavior
    * 
    * Guard returns side that opponent is on if any
    */
-  // line 301 "../../../../../PawnStateMachine.ump"
-  public String isOpponentAdjacent(int curR, int curC, int oR, int oC){
-    if ((curR==oR)&&(curC==oC+1)){
+  // line 374 "../../../../../PawnStateMachine.ump"
+  public String isOpponentAdjacent(){
+    int oR = getOpponentPawnRow();
+    	int oC = getOpponentPawnColumn();
+    	
+    	int curR = getCurrentPawnRow();
+    	int curC = getCurrentPawnColumn();
+    	
+    	if ((curR==oR)&&(curC==oC+1)){
     		return "left";
     	}
     	else if ((curR==oR)&&(curC==oC-1)){
@@ -557,7 +713,7 @@ public class PawnBehavior
    * 
    * Guard returns if board border is blocking move
    */
-  // line 325 "../../../../../PawnStateMachine.ump"
+  // line 404 "../../../../../PawnStateMachine.ump"
   public Boolean isBorderBlocking(int opRow, int opCol, String opSide){
     if ((opSide.compareTo("up")==0)&&(opRow==1)){
     		return true;
@@ -583,7 +739,7 @@ public class PawnBehavior
   /**
    * Action to be called when an illegal move is attempted
    */
-  // line 347 "../../../../../PawnStateMachine.ump"
+  // line 426 "../../../../../PawnStateMachine.ump"
   public void illegalMove(){
     status="illegal";
   }
@@ -595,7 +751,7 @@ public class PawnBehavior
    * 
    * Guard returns if desired step move is legal
    */
-  // line 356 "../../../../../PawnStateMachine.ump"
+  // line 435 "../../../../../PawnStateMachine.ump"
   public void legalMove(boolean isJump){
     status="success";
     	GamePosition curr= currentGame.getCurrentPosition();
@@ -657,6 +813,8 @@ public class PawnBehavior
 				currentGame.addMove(new StepMove(currentGame.numberOfPositions(), 1, player, currentGame.getQuoridor().getBoard().getTile(r*9+j),currentGame));
 			}
 		}
+		
+		change();
   }
 
 
@@ -666,14 +824,9 @@ public class PawnBehavior
    * 
    * Guard returns if desired move is a straight jump
    */
-  // line 424 "../../../../../PawnStateMachine.ump"
+  // line 505 "../../../../../PawnStateMachine.ump"
   public Boolean isAJump(String cside){
-    int opRow = getOpponentPawnRow();
-    	int opCol = getOpponentPawnColumn();
-    	
-    	int curRow = getCurrentPawnRow();
-    	int curCol = getCurrentPawnColumn();
-    	String opSide=isOpponentAdjacent(curRow, curCol, opRow, opCol);
+    String opSide=isOpponentAdjacent();
 		if (cside.compareTo(opSide)==0){
 			return true;
 		}
@@ -687,7 +840,7 @@ public class PawnBehavior
    * 
    * Guard returns if desired move is a diagonal jump
    */
-  // line 443 "../../../../../PawnStateMachine.ump"
+  // line 519 "../../../../../PawnStateMachine.ump"
   public Boolean isDiag(String cside){
     if(cside.compareTo("upleft")==0){
 			return true;
@@ -719,7 +872,7 @@ public class PawnBehavior
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 462 "../../../../../PawnStateMachine.ump"
+  // line 538 "../../../../../PawnStateMachine.ump"
   enum MoveDirection 
   {
     East, South, West, North;

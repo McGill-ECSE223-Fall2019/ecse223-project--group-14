@@ -56,6 +56,32 @@ class PawnBehavior {
 		}
 	}
 	
+	//state machine for persistent pawn location
+	statusSM{
+		NextToBorderOrWall{
+			change() [!isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")!=0)] -> NextToPlayer;
+			change() [isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")!=0)] -> NextToBorderOrWallAndPlayer;
+			change() [!isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")==0)]-> Default;
+		}
+		
+		NextToPlayer{
+			change() [isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")==0)] -> NextToBorderOrWall;
+			change() [isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")!=0)] -> NextToBorderOrWallAndPlayer;
+			change() [!isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")==0)] -> Default;
+		}
+		
+		NextToBorderOrWallAndPlayer{
+			change()[isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")==0)] -> NextToBorderOrWall;
+			change()[!isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")!=)] -> NextToPlayer;
+			change() [!isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")==0)]-> Default;
+		}
+		Default{
+			change()[isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")==0)] -> NextToBorderOrWall;
+			change()[!isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")!=0)]-> NextToPlayer;
+			change()[isWOrBAdjacent()&&(isOpponentAdjacent().compareTo("no")!=0)] -> NextToBorderOrWallAndPlayer;
+		}
+	}
+	
     // Returns the current row number of the pawn
     int getCurrentPawnRow() { 
     	GamePosition pos = currentGame.getCurrentPosition();
@@ -106,13 +132,9 @@ class PawnBehavior {
     
     // Returns if it is legal to step in the given direction
     boolean isLegalStep() { 
-    	int opRow = getOpponentPawnRow();
-    	int opCol = getOpponentPawnColumn();
     	
     	int curRow = getCurrentPawnRow();
 		int curCol = getCurrentPawnColumn();
-		
-		//String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
     	
     	Boolean walla= isWallBlocking(curRow,curCol,this.side,true);  //if adjacent wall
     	if (walla){
@@ -124,13 +146,11 @@ class PawnBehavior {
     
     // Returns if it is legal to jump in the given direction
     boolean isLegalJump() { 
-    	int opRow = getOpponentPawnRow();
-    	int opCol = getOpponentPawnColumn();
     	
     	int curRow = getCurrentPawnRow();
 		int curCol = getCurrentPawnColumn();
 		
-		String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
+		String opSide = isOpponentAdjacent();
     	Boolean wallb= isWallBlocking(curRow,curCol,opSide,false); 	//wall adjacent to opponent
     	Boolean walla= isWallBlocking(curRow,curCol,this.side,true);  //if adjacent wall
 		System.out.print(" opside="+opSide);
@@ -150,15 +170,18 @@ class PawnBehavior {
     
     
     boolean isLegalJumpDiag() { 
-    	int opRow = getOpponentPawnRow();
-    	int opCol = getOpponentPawnColumn();
     	
     	int curRow = getCurrentPawnRow();
     	int curCol = getCurrentPawnColumn();
+    	int opRow = getOpponentPawnRow();
+    	int opCol = getOpponentPawnColumn();
     	
-    	String opSide = isOpponentAdjacent(curRow,curCol,opRow,opCol);
-    	Boolean wallb= isWallBlocking(curRow,curCol,opSide,false); 
+    	String opSide = isOpponentAdjacent();
+    	String otherSide= this.side.replace(opSide,"");
+    	
+    	Boolean wallb= isWallBlocking(curRow,curCol,opSide,false); //if wall blocking straight jump
     	Boolean walla= isWallBlocking(curRow,curCol,opSide,true);  //if adjacent wall
+    	Boolean wallc= isWallBlocking(opRow,opCol,otherSide,true);  //if wall blocking second half of diagonal jump 
     	Boolean border= isBorderBlocking(opRow,opCol,opSide);
     	System.out.print(" opside="+opSide);
     	System.out.print(" border="+border);
@@ -167,7 +190,7 @@ class PawnBehavior {
     	if ((!border)&&(!wallb)){
     		return false;
     	}
-    	else if (walla){
+    	else if ((walla)||(wallc)){
     		return false;
     	}
 		else if(this.side.compareTo("upleft")==0){
@@ -195,6 +218,56 @@ class PawnBehavior {
     	return false;
     }
 	
+	/**
+	*@author DariusPi
+	*
+	*Determines if there is a wall or directly next to the player in any direction
+	*
+	*/
+	boolean isWOrBAdjacent(){
+		int curRow = getCurrentPawnRow();
+    	int curCol = getCurrentPawnColumn();
+    	
+    	if (isWallBlocking(curRow,curCol,"up",true)){
+    		return true;
+    	}
+    	
+    	else if (isWallBlocking(curRow,curCol,"left",true)){
+    		return true;
+    	}
+    	
+    	else if (isWallBlocking(curRow,curCol,"right",true)){
+    		return true;
+    	}
+    	
+    	else if (isWallBlocking(curRow,curCol,"down",true)){
+    		return true;
+    	}
+    	
+    	else if (isBorderBlocking(curRow,curCol,"up")){
+    		return true;
+    	}
+    	
+    	else if (isBorderBlocking(curRow,curCol,"left")){
+    		return true;
+    	}
+    	
+    	else if (isBorderBlocking(curRow,curCol,"right")){
+    		return true;
+    	}
+    	
+    	else if (isBorderBlocking(curRow,curCol,"down")){
+    		return true;
+    	}
+    	return false;
+	}
+	
+	/**
+	*@author DariusPi
+	*
+	*Determines if there is a wall either next to the player or 2 away from the player for jumps
+	*
+	*/
 	boolean isWallBlocking(int curRow, int curCol,String cside,boolean isStep){
     	int distance;
     	if(isStep){
@@ -297,7 +370,13 @@ class PawnBehavior {
     *
     *Guard returns side that opponent is on if any
     */
-    String isOpponentAdjacent(int curR, int curC, int oR, int oC){
+    String isOpponentAdjacent(){
+    	int oR = getOpponentPawnRow();
+    	int oC = getOpponentPawnColumn();
+    	
+    	int curR = getCurrentPawnRow();
+    	int curC = getCurrentPawnColumn();
+    	
     	if ((curR==oR)&&(curC==oC+1)){
     		return "left";
     	}
@@ -413,6 +492,8 @@ class PawnBehavior {
 				currentGame.addMove(new StepMove(currentGame.numberOfPositions(), 1, player, currentGame.getQuoridor().getBoard().getTile(r*9+j),currentGame));
 			}
 		}
+		
+		change();
     }
     
     /**
@@ -421,12 +502,7 @@ class PawnBehavior {
     *Guard returns if desired move is a straight jump
     */
     Boolean isAJump(String cside){
-		int opRow = getOpponentPawnRow();
-    	int opCol = getOpponentPawnColumn();
-    	
-    	int curRow = getCurrentPawnRow();
-    	int curCol = getCurrentPawnColumn();
-    	String opSide=isOpponentAdjacent(curRow, curCol, opRow, opCol);
+    	String opSide=isOpponentAdjacent();
 		if (cside.compareTo(opSide)==0){
 			return true;
 		}
