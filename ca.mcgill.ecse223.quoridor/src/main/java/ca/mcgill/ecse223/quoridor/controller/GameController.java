@@ -532,7 +532,13 @@ public class GameController {
 		if(filename.exists()) return true;
 		else return false;
 	}
-
+	
+	/**
+	 *  The save game method is responsible for saving the current game and its moves in a file. 
+	 * @param q
+	 * @param FileName
+	 * @throws IOException
+	 */
 	public void SaveGame(Quoridor q, String FileName) throws IOException {
 	
 		File file=new File(FileName);		//Our file created
@@ -1276,7 +1282,7 @@ public class GameController {
 	
 	
 	/**
-	 * A helper method to calculate the index of the tile using its row and coloumn number
+	 * A helper method to calculate the index of the tile using its row and column number
 	 * @param row
 	 * @param col
 	 * @return int
@@ -1292,8 +1298,12 @@ public class GameController {
 		
 	}
 	
-	/*
-	 * Color-agnostic combined addOrMoveWallsOnBoard and removeWallsInStock for loadPosiiton feature
+	/**
+	 * Color-agnostic combined addOrMoveWallsOnBoard and removeWallsInStock for loadPosition feature
+	 * @param gp
+	 * @param wall
+	 * @param isWhite
+	 * @return boolean
 	 */
 	private static boolean addOrMoveWallsOnBoard(GamePosition gp, Wall wall, boolean isWhite) {
 		boolean didRemove = false;
