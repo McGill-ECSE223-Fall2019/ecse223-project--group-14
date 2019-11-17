@@ -38,7 +38,7 @@ public class QuoridorPage extends JFrame{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private JLabel errorMessage;
+	public JLabel errorMessage;
 	private String error = null;
 	
 	private JLabel turnMessage1;
@@ -958,7 +958,7 @@ public class QuoridorPage extends JFrame{
 	}*/
 	
 	private void endTurnButtonActionPerformed(java.awt.event.ActionEvent evt) {	//this is the same as switch player
-		
+		error = "";
 		currPlayer=!currPlayer;
 		gc.switchPlayer(q);
 		if (currPlayer) {
@@ -974,6 +974,7 @@ public class QuoridorPage extends JFrame{
 			turnMessage2.setVisible(true);
 		}
 		stageMove=false;
+		refreshData();
 	}
 	
 	private void initButtons() {

@@ -51,9 +51,6 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 							System.out.println(ex.getMessage());
 						}
 					}
-					else if (temp instanceof PawnComponent) {
-						// Do something
-					}
 					
 					heldComponent = temp;
 					
@@ -81,16 +78,18 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 			
 			// If heldComponent is a Wall
 			else if(heldComponent instanceof WallComponent && ((WallComponent) heldComponent).dropWall()){
-				// If dropWall was successful, then lock in move, and prevent player from picking up anything else
+				// If movePawn was successful, then lock in move, and prevent player from picking up anything else
 				// until he presses the End Turn button.
 				frame.setStageMove(true);
 			
 				this.pickedUpX = 0;
 				this.pickedUpY = 0;
 				heldComponent=null;
+				frame.errorMessage.setText("");
 			}
 			// If heldComponent is a Pawn
 			else if(heldComponent instanceof PawnComponent && ((PawnComponent) heldComponent).movePawn(frame.getTiles())){
+				
 				// If dropPawn was successful, then lock in move, and prevent player from picking up anything else
 				// until he presses the End Turn button.
 				frame.setStageMove(true);
@@ -98,6 +97,7 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 				this.pickedUpX = 0;
 				this.pickedUpY = 0;
 				heldComponent=null;
+				frame.errorMessage.setText("");
 			}
 
 			else { // If no position is clicked (and not rotating), just put the component back
@@ -106,6 +106,7 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 				this.pickedUpY = 0;
 				if (heldComponent instanceof WallComponent) ((WallComponent) heldComponent).setDirection("vertical");
 				heldComponent = null;
+				frame.errorMessage.setText("Inavlid Move");
 			}
 		}
 	}
