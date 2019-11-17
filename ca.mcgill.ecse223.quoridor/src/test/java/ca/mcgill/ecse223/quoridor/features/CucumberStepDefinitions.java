@@ -60,7 +60,7 @@ public class CucumberStepDefinitions {
 	// ***********************************************
 	// Background step definitions
 	// ***********************************************
-
+	
 	@Given("^The game is not running$")
 	public void theGameIsNotRunning() {
 		initQuoridorAndBoard();
@@ -141,8 +141,9 @@ public class CucumberStepDefinitions {
 		System.out.println();
 	}
 	
-	/*
+	/**
 	 * @author louismollick
+	 * @throws Exception
 	 */
 	@Given("I do not have a wall in my hand")
 	public void iDoNotHaveAWallInMyHand() throws Exception{
@@ -152,8 +153,9 @@ public class CucumberStepDefinitions {
 		view.setHeldComponent(null);
 	}
 	
-	/*
+	/**
 	 * @author louismollick
+	 * @throws Exception
 	 */
 	@And("^I have a wall in my hand over the board$")
 	public void givenIHaveAWallInMyHandOverTheBoard() throws Exception {
@@ -376,25 +378,6 @@ public class CucumberStepDefinitions {
 		wmc.setTargetTile(t);
 		
 		Tile target = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(row ,col));
-		
-		// Check if the WallMoveCandidate belongs to the current player
-				/*if(wmc != null && player.indexOfWall(wmc.getWallPlaced()) != -1) {
-					// Set the WallMoveCandidate's attributes to those specified in input
-					if(wmc.getWallDirection() != dir) wmc.setWallDirection(dir);
-					if(wmc.getTargetTile().getRow() != row || wmc.getTargetTile().getColumn() != col)
-						wmc.setTargetTile(target);
-				} else { // If no WallMoveCandidate exists or it is other player's, make a new one with input
-					Wall w = pos.getWhiteWallsInStock(1);
-					int moveNum = game.numberOfMoves();
-					int roundNum = 1;
-					if(moveNum != 0) {
-						roundNum = game.getMove(moveNum-1).getRoundNumber();
-					}
-					w.setMove(new WallMove(moveNum, roundNum, player, target, game, dir, w));
-					game.setWallMoveCandidate(w.getMove());
-				}*/
-				
-				//assertEquals(true, gc.validatePosition(game));
 		resvalid=gc.valWallPosition(col-1, row-1, sdir);
 	}
 	
@@ -418,24 +401,6 @@ public class CucumberStepDefinitions {
 		game.setWallMoveCandidate(wmc);
 		Tile target = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(row ,col));
 		
-		// Check if the WallMoveCandidate belongs to the current player
-				/*if(wmc != null && player.indexOfWall(wmc.getWallPlaced()) != -1) {
-					// Set the WallMoveCandidate's attributes to those specified in input
-					if(wmc.getWallDirection() != dir) wmc.setWallDirection(dir);
-					if(wmc.getTargetTile().getRow() != row || wmc.getTargetTile().getColumn() != col)
-						wmc.setTargetTile(target);
-				} else { // If no WallMoveCandidate exists or it is other player's, make a new one with input
-					Wall w = pos.getWhiteWallsInStock(1);
-					int moveNum = game.numberOfMoves();
-					int roundNum = 1;
-					if(moveNum != 0) {
-						roundNum = game.getMove(moveNum-1).getRoundNumber();
-					}
-					w.setMove(new WallMove(moveNum+1, roundNum, player, target, game, dir, w));
-					game.setWallMoveCandidate(w.getMove());
-				}
-				
-				//assertNotEquals(true, gc.validatePosition(game));*/
 				resvalid=gc.valWallPosition(col-1, row-1, sdir);
 	}
 	
@@ -463,9 +428,7 @@ public class CucumberStepDefinitions {
 		WallMove wmc = game.getWallMoveCandidate();
 		Tile target = QuoridorApplication.getQuoridor().getBoard().getTile(getIndex(row ,col));
 		assertEquals(0,game.getMoves().size());
-		/*assertNotEquals(target, wmc.getTargetTile());
-		assertEquals(false, wmc.getWallPlaced());
-		assertNotEquals(sdir, wmc.getWallDirection());*/
+	
 	}
 		
 	/**
@@ -1668,7 +1631,6 @@ public class CucumberStepDefinitions {
 	 */ 
 	@Given ("No file (.*) exists in the filesystem")
 	public void NoFileExistsInTheFilesystem(String FileName) throws Throwable{
-		//Quoridor quoridor = QuoridorApplication.getQuoridor();
 		String file="";
 		StringBuilder sb = new StringBuilder();
 		
@@ -1762,8 +1724,7 @@ public class CucumberStepDefinitions {
 		//This GUI method is functional but difficult to testing this manner
 		GameController G = new GameController();
 		boolean File_Overwrite = true;
-		//assertEquals(File_Overwrite, G.filename_exists(FileName));
-
+		
 	}
 
 	/**
@@ -1775,8 +1736,7 @@ public class CucumberStepDefinitions {
 		//This GUI method is functional but difficult to testing this manner
 		GameController G = new GameController();
 		boolean File_Overwrite = true;
-		//assertEquals(File_Overwrite, G.filename_exists(FileName));
-	}
+			}
 	
  
 	/*
@@ -2052,37 +2012,6 @@ public class CucumberStepDefinitions {
 	 /**
 	  * @author DariusPi
 	  * 
-	  * @param side
-	  */
-	 @And ("My opponent is not {string} from the player")
-	 public void myOpponentIsNotFromThePlayer(String side) {
-		 Quoridor q=QuoridorApplication.getQuoridor();
-		Game g=q.getCurrentGame();
-		GamePosition prev=g.getCurrentPosition();
-		PlayerPosition p1;
-		PlayerPosition p2;
-		if (prev.getPlayerToMove().hasGameAsWhite()) {
-			p1=prev.getWhitePosition();
-			p2=prev.getBlackPosition();
-		}
-		else {
-			p1=prev.getBlackPosition();
-			p2=prev.getWhitePosition();
-		}
-		 
-		 if ((p1.getTile().getColumn()==p2.getTile().getColumn())||(p1.getTile().getColumn()==p2.getTile().getColumn()-1)||(p1.getTile().getColumn()==p2.getTile().getColumn()+1)){
-			if (p1.getTile().getColumn()+3>9) {
-				p2.setTile(q.getBoard().getTile((p2.getTile().getRow()-1)*9+p2.getTile().getColumn()-1+3));
-			}
-			else {
-				p2.setTile(q.getBoard().getTile((p2.getTile().getRow()-1)*9+p2.getTile().getColumn()-1-3));
-			}
-		}
-	 }
-	 
-	 /**
-	  * @author DariusPi
-	  * 
 	  * @param row
 	  * @param col
 	  */
@@ -2176,7 +2105,9 @@ public class CucumberStepDefinitions {
 	// ***********************************************
 
 	// Place your extracted methods below
-
+	/**
+	 * A method to initialize the quoridor and the board.
+	 */
 	private void initQuoridorAndBoard() {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Board board = new Board(quoridor);
@@ -2189,6 +2120,12 @@ public class CucumberStepDefinitions {
 		}
 	}
 
+	/**
+	 * A method to create users and players and then adding them to a list.
+	 * @param userName1
+	 * @param userName2
+	 * @return ArrayList<Player>
+	 */
 	private ArrayList<Player> createUsersAndPlayers(String userName1, String userName2) {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		User user1 = quoridor.addUser(userName1);
@@ -2229,6 +2166,10 @@ public class CucumberStepDefinitions {
 		return playersList;
 	}
 
+	/**
+	 * A method to create and start a game.
+	 * @param players
+	 */
 	private void createAndStartGame(ArrayList<Player> players) {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 
@@ -2244,8 +2185,8 @@ public class CucumberStepDefinitions {
 		/*Tile player1StartPos = quoridor.getBoard().getTile(4);
 		Tile player2StartPos = quoridor.getBoard().getTile(76);*/
 
-		
 		Game game = new Game(GameStatus.Running, MoveMode.PlayerMove, quoridor);
+
 		game.setWhitePlayer(players.get(0));
 		game.setBlackPlayer(players.get(1));
 
@@ -2267,21 +2208,31 @@ public class CucumberStepDefinitions {
 		game.setCurrentPosition(gamePosition);
 	}
 	
+	/**
+	 * A helper method to calculate the index of the tile using its row and column numbers.
+	 * @param row
+	 * @param col
+	 * @return Integer
+	 */
 	private int getIndex(int row, int col) {
-		//return (col - 1) * 9 + (row - 1);Saif's
-		/*if(row<0||row>9||col<0||col>9) {to avoid getting index in range for invalid coordinates due to -ve +ve cancelling
-			return -1;
-		}*/
+		
 		if(row<=0||col<=0||row>9||col>9){
 			return -1;
 		}
 		else {
-		return ((((row-1)*9)+col)-1);//returning wrong values for incorrect row or col 
-		//may return out of bound value which can be handled by 
+		return ((((row-1)*9)+col)-1);
 		}
 		
 	}
 	
+	/**
+	 *  A method to check if there is a wall in the provided coordinates and specified direction.
+	 * @param row
+	 * @param col
+	 * @param wallsOnBoard
+	 * @param orientation
+	 * @return boolean
+	 */
 	private boolean wallPresent(int row, int col, Wall[] wallsOnBoard, Direction orientation) {
 		if (wallsOnBoard.length == 0)
 			return false;

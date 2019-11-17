@@ -99,7 +99,7 @@ public class GameController {
 		
 		Player p1=new Player(new Time(10), q.getUser(0), 9, Direction.Horizontal);
 		Player p2 = new Player(new Time(10), q.getUser(1), 1, Direction.Horizontal);
-		new Game(GameStatus.Initializing, MoveMode.PlayerMove, q);
+		 new Game(GameStatus.Initializing, MoveMode.PlayerMove,q);
 		
 		q.getCurrentGame().setWhitePlayer(p1);
 		q.getCurrentGame().setBlackPlayer(p2);
@@ -532,7 +532,13 @@ public class GameController {
 		if(filename.exists()) return true;
 		else return false;
 	}
-
+	
+	/**
+	 *  The save game method is responsible for saving the current game and its moves in a file. 
+	 * @param q
+	 * @param FileName
+	 * @throws IOException
+	 */
 	public void SaveGame(Quoridor q, String FileName) throws IOException {
 	
 		File file=new File(FileName);		//Our file created
@@ -579,7 +585,6 @@ public class GameController {
 					
 				}
 				writer.print("W: " + ColumnW+rowW);//print white player position
-				//writer.print("W: " + ColumnW + ", " + rowW);
 				
 				List<Wall> wWall	= q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard(); //wall objects
 				
@@ -620,7 +625,6 @@ public class GameController {
 					}					
 					writer.print("," + WallColumnLetterWhite + pos.getMove().getTargetTile().getRow() + pos.getMove().getWallDirection().toString().charAt(0));
 
-				//	writer.print();
 				}
 				writer.println("");
 				int rowB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();		//black player row		
@@ -657,8 +661,8 @@ public class GameController {
 				}
 
 				writer.print("B: " + ColumnB+rowB); //prints black player's position
-			//	writer.print("B: "+ rowB + ", " + ColumnB);
-
+			
+				
 				List<Wall> bWall	= q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();	//wall objects list	
 				for(Wall pos1: bWall)
 				{ 
@@ -697,8 +701,8 @@ public class GameController {
 				
 					writer.print("," + WallColumnLetterBlack + pos1.getMove().getTargetTile().getRow() + pos1.getMove().getWallDirection().toString().charAt(0));
 				}
-				//writer.println()
-			    writer.close();	
+
+					writer.close();	
 			}
 			
 			//if black playing, black should be on the first line
@@ -739,7 +743,7 @@ public class GameController {
 				}
 
 				writer.print("B: " + ColumnB+ rowB);//print player's position
-			//	writer.print("B: "+ rowB + ", " + ColumnB);
+
 
 				List<Wall> bWall	= q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard(); //wall object list
 				for(Wall pos1: bWall) //enhanced for loop
@@ -815,8 +819,8 @@ public class GameController {
 				}
 
 				writer.print("W: " + ColumnW  + rowW); //string print player position
-				//writer.print("W: " + ColumnW + ", " + rowW);
-				
+
+	
 				List<Wall> wWall	= q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard(); //object wall
 		
 				for(Wall pos: wWall)
@@ -854,7 +858,7 @@ public class GameController {
 				
 					//print wall column, row, direction
 					writer.print("," + WallColumnLetterWhite + pos.getMove().getTargetTile().getRow() + pos.getMove().getWallDirection().toString().charAt(0));
-				//	writer.print();
+				
 				}
 				 writer.close();	//close writer
 			}
@@ -1250,11 +1254,16 @@ public class GameController {
 		//was successful
 		return game;
 	}
-	
-	/*
-	 * Helper method for load position
-	 * Constructs an initial game position from playerPosition data and player color data for a
-	 * given game.
+
+	/**
+	 *  A helper method for load position where it constructs an initial game position data and
+	 *   player color data for a given game.
+	 * @param game
+	 * @param playerOnePosition
+	 * @param playerTwoPosition
+	 * @param playerOne
+	 * @param isPlayerOneWhite
+	 * @return GamePosition
 	 */
 	private static GamePosition makeInitialGamePosition(Game game, PlayerPosition playerOnePosition, 
 			PlayerPosition playerTwoPosition, Player playerOne, boolean isPlayerOneWhite) {
@@ -1269,14 +1278,17 @@ public class GameController {
 		return aNewGamePosition;
 	}
 	
-	/*
-	 * getIndex from Stepdefinitions, cleaned up a bit
-	 * Credit to Saifullah for getting it working properly in Iteration 2
+	
+	/**
+	 * A helper method to calculate the index of the tile using its row and column numbers.
+	 * @param row
+	 * @param col
+	 * @return Integer
 	 */
 	private static int getIndex(int row, int col) {
 		
 		if(row <= 0 || col <= 0 || row > 9 || col > 9) {
-			return -10; //sentinel for indexNotFound
+			return -10; 
 		}
 		else {
 		return ((((row-1)*9)+col)-1);
@@ -1284,8 +1296,12 @@ public class GameController {
 		
 	}
 	
-	/*
-	 * Color-agnostic combined addOrMoveWallsOnBoard and removeWallsInStock for loadPosiiton feature
+	/**
+	 * Color-agnostic combined addOrMoveWallsOnBoard and removeWallsInStock for loadPosition feature
+	 * @param gp
+	 * @param wall
+	 * @param isWhite
+	 * @return boolean
 	 */
 	private static boolean addOrMoveWallsOnBoard(GamePosition gp, Wall wall, boolean isWhite) {
 		boolean didRemove = false;
