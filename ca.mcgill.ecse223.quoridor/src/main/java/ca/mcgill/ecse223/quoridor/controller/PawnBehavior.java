@@ -610,11 +610,7 @@ public class PawnBehavior
   }
 
   // line 246 "../../../../../PawnStateMachine.ump"
-  /**
-   * Determines if the the diagonal jump is legal or not
-   * @param cside
-   * @return boolean
-   */
+  
   public boolean isLegalJumpDiag(String cside){
     int curRow = getCurrentPawnRow();
     	int curCol = getCurrentPawnColumn();
@@ -665,14 +661,7 @@ public class PawnBehavior
 
 
   // line 300 "../../../../../PawnStateMachine.ump"
-  /**
-   * Determines if there is a wall or directly next to the player in any direction
-   * @author DariusPi
-   * @param isJump
-   * @param cside
-   * @param current
-   * @return boolean
-   */
+ 
   public Boolean isWOrBAdjacent(Boolean isJump, String cside, Boolean current){
     int curRow;
     	int curCol;
@@ -722,14 +711,7 @@ public class PawnBehavior
 
 
   // line 352 "../../../../../PawnStateMachine.ump"
-  /**
-   * Determines if there is a wall either next to the player or 2 away from the player for jumps
-   * @param curRow
-   * @param curCol
-   * @param cside
-   * @param isStep
-   * @return boolean
-   */
+  
   public boolean isWallBlocking(int curRow, int curCol, String cside, boolean isStep){
     int distance;
     	if(isStep){
@@ -829,14 +811,7 @@ public class PawnBehavior
 
 
   // line 454 "../../../../../PawnStateMachine.ump"
-  /**
-   * Guard returns side that opponent is on if any
-   * @author DariusPi
-   * @param isJump
-   * @param cside
-   * @param current
-   * @return String
-   */
+  
   public String isOpponentAdjacent(Boolean isJump, String cside, boolean current){
     int oR = getOpponentPawnRow();
     	int oC = getOpponentPawnColumn();
@@ -872,14 +847,7 @@ public class PawnBehavior
 
 
   // line 492 "../../../../../PawnStateMachine.ump"
-  /**
-   * Guard returns if board border is blocking move
-   * @author DariuspI
-   * @param opRow
-   * @param opCol
-   * @param opSide
-   * @return boolean
-   */
+ 
   public Boolean isBorderBlocking(int opRow, int opCol, String opSide){
     if ((opSide.compareTo("up")==0)&&(opRow==1)){
     		return true;
@@ -902,9 +870,7 @@ public class PawnBehavior
   }
 
 
-  /**
-   * Action to be called when an illegal move is attempted
-   */
+  
   // line 514 "../../../../../PawnStateMachine.ump"
   public void illegalMove(){
     status="illegal";
@@ -912,12 +878,7 @@ public class PawnBehavior
 
 
   // line 523 "../../../../../PawnStateMachine.ump"
-  /**
-   * Guard returns id desired step move is legal
-   * @author DariusPi
-   * @param isJump
-   * @param cside
-   */
+  
   public void legalMove(boolean isJump, String cside){
     status="success";
     	GamePosition curr= currentGame.getCurrentPosition();
@@ -948,12 +909,7 @@ public class PawnBehavior
 
 
   // line 556 "../../../../../PawnStateMachine.ump"
-  /**.
-   * Guard returns if desired move is a straight jump
-   * @author DariusPi
-   * @param cside
-   * @return boolean
-   */
+  
   public Boolean isAJump(String cside){
     String opSide=isOpponentAdjacent(false,"",true);
 		if (cside.compareTo(opSide)==0){
@@ -965,12 +921,7 @@ public class PawnBehavior
 
  
   // line 570 "../../../../../PawnStateMachine.ump"
-  /**
-   * Guard returns if desired move is a diagonal jump.
-   * @author DariusPi
-   * @param cside
-   * @return boolean
-   */
+  
   public Boolean isDiag(String cside){
     if(cside.compareTo("upleft")==0){
 			return true;
@@ -989,12 +940,6 @@ public class PawnBehavior
   }
 
   // line 587 "../../../../../PawnStateMachine.ump"
-  /**
-   * Method to get next tile
-   * @param isJump
-   * @param cside
-   * @return integer
-   */
   public int getNextTile(boolean isJump, String cside){
     int curRow = getCurrentPawnRow()-1;
     	int curCol = getCurrentPawnColumn()-1;
@@ -1040,23 +985,13 @@ public class PawnBehavior
   }
 
   // line 631 "../../../../../PawnStateMachine.ump"
-  /**
-   * Method to get next row
-   * @param isJump
-   * @param cside
-   * @return integer
-   */
+
   public int getNextRow(boolean isJump, String cside){
     return getNextTile(isJump,cside)/9;
   }
 
   // line 634 "../../../../../PawnStateMachine.ump"
-  /**
-   * Method to get next column
-   * @param isJump
-   * @param cside
-   * @return integer
-   */
+  
   public int getNextCol(boolean isJump, String cside){
     return getNextTile(isJump,cside)%9;
   }
