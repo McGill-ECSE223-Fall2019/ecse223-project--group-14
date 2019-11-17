@@ -154,7 +154,10 @@ class PawnBehavior {
 		}
 	}
 	
-    // Returns the current row number of the pawn
+    /**
+     * Returns the current row number of the pawn
+     * @return integer
+     */
     int getCurrentPawnRow() { 
     	GamePosition pos = currentGame.getCurrentPosition();
     	if (player.hasGameAsWhite()){
@@ -166,8 +169,10 @@ class PawnBehavior {
     }
     
     
-    
-    // Returns the current column number of the pawn
+    /**
+     * Returns the current column number of the pawn
+     * @return integer
+     */
     int getCurrentPawnColumn() {
     	GamePosition pos=currentGame.getCurrentPosition();
     	if (player.hasGameAsWhite()){
@@ -178,7 +183,10 @@ class PawnBehavior {
 	    }
     }
     
-    // Returns the current row number of the pawn
+    /**
+     * Returns the current column number of the pawn
+     * @return integer
+     */
     int getOpponentPawnRow() { 
     	GamePosition pos=currentGame.getCurrentPosition();
     	if (player.hasGameAsWhite()){
@@ -191,7 +199,10 @@ class PawnBehavior {
     
     
     
-    // Returns the current column number of the pawn
+    /**
+     * Returns the current column number of the pawn
+     * @return integer
+     */
     int getOpponentPawnColumn() {
     	GamePosition pos=currentGame.getCurrentPosition();
     	if (player.hasGameAsWhite()){
@@ -202,7 +213,11 @@ class PawnBehavior {
 	    }
     }
     
-    // Returns if it is legal to step in the given direction
+    /**
+     * Returns if it is legal to step in the given direction
+     * @param cside
+     * @return boolean
+     */
     boolean isLegalStep(String cside) { 
     	
     	int curRow = getCurrentPawnRow();
@@ -216,7 +231,11 @@ class PawnBehavior {
     	return true; 
     }
     
-    // Returns if it is legal to jump in the given direction
+    /**
+     * Returns if it is legal to jump in the given direction
+     * @param cside
+     * @return boolean
+     */
     boolean isLegalJump(String cside) { 
     	
     	int curRow = getCurrentPawnRow();
