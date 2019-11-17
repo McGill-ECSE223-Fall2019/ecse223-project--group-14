@@ -585,7 +585,6 @@ public class GameController {
 					
 				}
 				writer.print("W: " + ColumnW+rowW);//print white player position
-				//writer.print("W: " + ColumnW + ", " + rowW);
 				
 				List<Wall> wWall	= q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard(); //wall objects
 				
@@ -626,7 +625,6 @@ public class GameController {
 					}					
 					writer.print("," + WallColumnLetterWhite + pos.getMove().getTargetTile().getRow() + pos.getMove().getWallDirection().toString().charAt(0));
 
-				//	writer.print();
 				}
 				writer.println("");
 				int rowB = q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();		//black player row		
@@ -663,8 +661,8 @@ public class GameController {
 				}
 
 				writer.print("B: " + ColumnB+rowB); //prints black player's position
-			//	writer.print("B: "+ rowB + ", " + ColumnB);
-
+			
+				
 				List<Wall> bWall	= q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();	//wall objects list	
 				for(Wall pos1: bWall)
 				{ 
@@ -703,8 +701,8 @@ public class GameController {
 				
 					writer.print("," + WallColumnLetterBlack + pos1.getMove().getTargetTile().getRow() + pos1.getMove().getWallDirection().toString().charAt(0));
 				}
-				//writer.println()
-			    writer.close();	
+
+					writer.close();	
 			}
 			
 			//if black playing, black should be on the first line
@@ -745,7 +743,7 @@ public class GameController {
 				}
 
 				writer.print("B: " + ColumnB+ rowB);//print player's position
-			//	writer.print("B: "+ rowB + ", " + ColumnB);
+
 
 				List<Wall> bWall	= q.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard(); //wall object list
 				for(Wall pos1: bWall) //enhanced for loop
@@ -821,8 +819,8 @@ public class GameController {
 				}
 
 				writer.print("W: " + ColumnW  + rowW); //string print player position
-				//writer.print("W: " + ColumnW + ", " + rowW);
-				
+
+	
 				List<Wall> wWall	= q.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard(); //object wall
 		
 				for(Wall pos: wWall)
@@ -860,7 +858,7 @@ public class GameController {
 				
 					//print wall column, row, direction
 					writer.print("," + WallColumnLetterWhite + pos.getMove().getTargetTile().getRow() + pos.getMove().getWallDirection().toString().charAt(0));
-				//	writer.print();
+				
 				}
 				 writer.close();	//close writer
 			}

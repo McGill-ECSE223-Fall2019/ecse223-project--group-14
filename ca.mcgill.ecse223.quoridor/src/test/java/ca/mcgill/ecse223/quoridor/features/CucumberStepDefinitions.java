@@ -1631,7 +1631,6 @@ public class CucumberStepDefinitions {
 	 */ 
 	@Given ("No file (.*) exists in the filesystem")
 	public void NoFileExistsInTheFilesystem(String FileName) throws Throwable{
-		//Quoridor quoridor = QuoridorApplication.getQuoridor();
 		String file="";
 		StringBuilder sb = new StringBuilder();
 		
@@ -1725,8 +1724,7 @@ public class CucumberStepDefinitions {
 		//This GUI method is functional but difficult to testing this manner
 		GameController G = new GameController();
 		boolean File_Overwrite = true;
-		//assertEquals(File_Overwrite, G.filename_exists(FileName));
-
+		
 	}
 
 	/**
@@ -1738,8 +1736,7 @@ public class CucumberStepDefinitions {
 		//This GUI method is functional but difficult to testing this manner
 		GameController G = new GameController();
 		boolean File_Overwrite = true;
-		//assertEquals(File_Overwrite, G.filename_exists(FileName));
-	}
+			}
 	
  
 	/*
