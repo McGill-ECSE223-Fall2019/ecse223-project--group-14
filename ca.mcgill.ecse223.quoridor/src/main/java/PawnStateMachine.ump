@@ -515,10 +515,11 @@ class PawnBehavior {
     }
     
     /**
-    *@author DariusPi
-    *
-    *Guard returns if desired step move is legal
-    */
+     * Guard returns if desired step move is legal
+     * @author DariusPi
+     * @param isJump
+     * @param cside
+     */
     void legalMove(boolean isJump, String cside) { 
 		status="success";
     	GamePosition curr= currentGame.getCurrentPosition();
@@ -547,11 +548,12 @@ class PawnBehavior {
 		//change();
     }
     
-    /**
-    *@author DariusPi
-    *
-    *Guard returns if desired move is a straight jump
-    */
+   /**
+     * Guard returns if desired move is a straight jump
+     * @author DariusPi
+     * @param cside
+     * @return boolean
+     */
     Boolean isAJump(String cside){
     	String opSide=isOpponentAdjacent(false,"",true);
 		if (cside.compareTo(opSide)==0){
@@ -561,10 +563,11 @@ class PawnBehavior {
     }
     
     /**
-    *@author DariusPi
-    *
-    *Guard returns if desired move is a diagonal jump
-    */
+     * Guard returns if desired move is a diagonal jump
+     * @author DariusPi
+     * @param cside
+     * @return boolean
+     */
     Boolean isDiag(String cside){
 		
 		if(cside.compareTo("upleft")==0){
@@ -583,6 +586,12 @@ class PawnBehavior {
 		return false;    
     }
     
+    /**
+     * Method to get next tile
+     * @param isJump
+     * @param cside
+     * @return integer
+     */
     int getNextTile(boolean isJump, String cside){
     	int curRow = getCurrentPawnRow()-1;
     	int curCol = getCurrentPawnColumn()-1;
@@ -627,9 +636,22 @@ class PawnBehavior {
 		return r*9+j;
     }
     
+    /**
+     * Method to get next row
+     * @param isJump
+     * @param cside
+     * @return integer
+     */
     int getNextRow(boolean isJump, String cside){
     	return getNextTile(isJump,cside)/9;
     }
+    
+    /**
+     * Method to get next column
+     * @param isJump
+     * @param cside
+     * @return integer
+     */
     int getNextCol(boolean isJump, String cside){
     	return getNextTile(isJump,cside)%9;
     }
