@@ -134,15 +134,10 @@ public class PawnComponent extends HoldableComponent{
 			return false; 
 		}
 		
-		/*PawnBehavior pb=new PawnBehavior(false,"","invalid");
-		pb.setCurrentGame(qp.getQ().getCurrentGame());
-		pb.setPlayer(curr.getPlayerToMove());*/
-		//TODO
 		System.out.print(side);
 		pb.change();				//necessary in case of load game, can't move to init cuz of gherkin tests
 		pb.move(side);
-		/*pb.initiate(side);
-		pb.dropPawn();*/
+		
 		
 		if (pb.getStatus().compareTo("success")==0) {
 			//pb.change();
@@ -153,13 +148,6 @@ public class PawnComponent extends HoldableComponent{
 		else {
 			return false;
 		}
-		/*if (pb.getIsValid()) {
-			pb.dropPawn();
-		}
-		else {	 
-			pb.cancel();
-			return false;
-		}*/
 		
 	}
 }
