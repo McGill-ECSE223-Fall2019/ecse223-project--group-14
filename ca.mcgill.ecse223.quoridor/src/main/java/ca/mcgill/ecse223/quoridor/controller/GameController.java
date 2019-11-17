@@ -495,13 +495,15 @@ public class GameController {
 	 * @param min (number of)
 	 * 
 	 * @param sec (number of)
-	 * @throws Exception 
 	 * 
-	 * @throws UnsupportedOperationException
+	 * 
+	 * @throws Exception if time is null
+	 * 
+	 * 
 	 */
 
 	public void setTime (Quoridor q, int min, int sec) throws Exception {
-		//throw new UnsupportedOperationException();
+
 		if (min==0&&sec==0) {
 			throw new Exception();
 		}
@@ -524,7 +526,7 @@ public class GameController {
 	 * 
 	 * @param FileName
 	 * 
-	 * @throws UnsupportedOperationException
+	 * @returns false when no filename is there, true else
 	 */
 
 	public Boolean filename_exists (String FileName) {
@@ -535,9 +537,11 @@ public class GameController {
 	
 	/**
 	 *  The save game method is responsible for saving the current game and its moves in a file. 
+	 * @author amine
 	 * @param q
 	 * @param FileName
 	 * @throws IOException
+	 * @returns game data file
 	 */
 	public void SaveGame(Quoridor q, String FileName) throws IOException {
 	
