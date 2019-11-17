@@ -868,10 +868,10 @@ public class GameController {
 			}
 			    
 		} catch (FileNotFoundException e) {
-			// Auto-generated catch block
+			// empty catch block
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {
-			// Auto-generated catch block
+			// empty catch block
 			e.printStackTrace();
 		}
 		
