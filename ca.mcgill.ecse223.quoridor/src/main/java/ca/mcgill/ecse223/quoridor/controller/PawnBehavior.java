@@ -528,7 +528,7 @@ public class PawnBehavior
 
   /**
    * 
-   * Returns the current column number of the pawn
+   * Returns the current row number of the pawn (opponent)
    * @return integer
    */
   // line 191 "../../../../../PawnStateMachine.ump"
@@ -545,7 +545,7 @@ public class PawnBehavior
 
   /**
    * 
-   * Returns the current column number of the pawn
+   * Returns the current column number of the pawn (opponent)
    * @return integer
    */
   // line 207 "../../../../../PawnStateMachine.ump"
@@ -726,8 +726,8 @@ public class PawnBehavior
   /**
    * 
    * Determines if there is a wall either next to the player or 2 away from the player for jumps
-   * @curRow
-   * @curCol
+   * @param curRow
+   * @param curCol
    * @param cside
    * @param isStep
    * @return boolean
