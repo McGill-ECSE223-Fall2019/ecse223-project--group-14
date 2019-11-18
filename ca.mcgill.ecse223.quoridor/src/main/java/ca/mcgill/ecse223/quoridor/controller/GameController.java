@@ -1504,6 +1504,26 @@ public class GameController {
 		return null;
 	}
 	
+	/*Iteration 5*/
+	
+	//TODO
+	/**
+	 * User attempts to continue a game while in replay mode
+	 * 
+	 * @author DariusPi
+	 * 
+	 * @param q
+	 * @returns true for possible, or false for impossible
+	 */
+	public Boolean continueGame(Quoridor q) {
+		
+		return false;
+	}
+	
+	public void initReplay(Quoridor q) {
+		q.getCurrentGame().setGameStatus(GameStatus.Replay);
+	}
+	
 }
 
 

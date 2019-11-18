@@ -38,6 +38,8 @@ public class QuoridorPage extends JFrame{
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	public JLabel gameVicotryStatus;
+	
 	public JLabel errorMessage;
 	private String error = null;
 	

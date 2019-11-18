@@ -2078,7 +2078,177 @@ public class CucumberStepDefinitions {
 		}
 	 }
 	 
-
+	 
+	 /*Iteration 5 features*/
+	 
+	 //TODO
+	 
+	 /**
+	  * @author DariusPi
+	  */
+	 @When ("I initiate replay mode")
+	 public void iInitiateReplayMode() {
+		 Quoridor q=QuoridorApplication.getQuoridor();
+		 q.setCurrentGame(new Game(GameStatus.WhiteWon, MoveMode.PlayerMove, q));
+		 GameController gc=new GameController();
+		 gc.initReplay(q);
+	 }
+	 
+	 /**
+	  * @author DariusPi
+	  */
+	 @Then ("The game shall be in replay mode")
+	 public void theGameShallBeInReplayMode(){
+		 Quoridor q=QuoridorApplication.getQuoridor();
+		 assertEquals(GameStatus.Replay, q.getCurrentGame().getGameStatus());
+	 }
+	 
+	 /**
+	  * @author DariusPi
+	  */
+	 @Given ("The game is in replay mode")
+	 public void theGameIsInReplayMode() {
+		 Quoridor q=QuoridorApplication.getQuoridor();
+		 GameController gc=new GameController();
+		 gc.initReplay(q);
+	 }
+	 
+	 /**
+	  * @author DariusPi
+	  */
+	 @Given ("The following moves have been played in game:")
+	 public void theFollowingMovesHaveBeenPlayedInGame() { //should probably take in the moves?
+		 
+	 }
+	 
+	 /**
+	  * @author DariusPi
+	  */
+	 @And ("The game does not have a final result")
+	 public void theGameDoesnotHaveAFinalResult() {
+		 
+	 }
+	 
+	 /**
+	  * @author DariusPI
+	  * 
+	  * @param movno
+	  * @param rndno
+	  */
+	 @And ("The next move is {int}.{int}")
+	 public void theNextMoveIs(int movno,int rndno){
+		 
+	 }
+	 
+	 /**
+	  * @author DariusPi
+	  */
+	 @When ("I initiate to continue game")
+	 public void iInitiateToContinueGame(){
+		 Quoridor q=QuoridorApplication.getQuoridor();
+		 GameController gc=new GameController();
+		 gc.continueGame(q);
+		 
+		 
+	 }
+	 
+	 /**
+	  * @author DariusPi
+	  */
+	 @And ("The remaining moves of the game shall be removed")
+	 public void theRemainingMovesOfTheGameShallBeRemoved() {
+		 
+	 }
+	 
+	 /**
+	  * @author DariusPi
+	  */
+	 @And ("The game has a final result")
+	 public void theGameHasAFinalResult() {
+		 
+	 }
+	 
+	 /**
+	  * @author DariusPi
+	  */
+	 @And ("I shall be notified that finished games cannot be continued")
+	 public void iShallBeNotifiedThatFinishedGamesCannotBeContinued() {
+		 
+	 }
+	 
+	 /**
+	  * @author DariusPi
+	  * 
+	  * @param player
+	  */
+	 @Given ("Player {string} has just completed his move")
+	 public void playerHasJustCompletedHisMove(String player) {
+		 
+	 }
+	 
+	 /**
+	  * @author DariusPi
+	  * 
+	  * @param player
+	  * @param row
+	  * @param col
+	  */
+	 @And ("The new position of {string} is {int}:{int}")
+	 public void theNewPositionOfIs(String player,int row,int col) {
+		 
+	 }
+	  
+	 /**
+	  * @author DariusPi
+	  * 
+	  * @param player
+	  */
+	 @And ("The clock of {string} is more than zero")
+	 public void theClockOfIsMoreThanZero(String player) {
+		  
+	 }
+	  
+	 /**
+	  * @author DariusPi
+	  * 
+	  * @param player
+	  */
+	  @When ("Checking of game result is initated")
+	  public void checkingOfGameResultIsInitated() {
+		  
+	  }
+	  
+	  /**
+	   * @author DariusPi
+	   * 
+	   * @param result
+	   */
+	  @Then ("Game result shall be {string}")
+	  public void gameResultShallBe(String result) {
+		  
+	  }
+	  
+	  /**
+	   * @author DariusPi
+	   */
+	  @And ("The game shall no longer be running")
+	  public void theGameShallNoLongerBeRunning() {
+		  Quoridor q=QuoridorApplication.getQuoridor();
+		  Game g=q.getCurrentGame();
+		  assertNotEquals(g.getGameStatus(),GameStatus.Running);
+	  }
+	  
+	  /**
+	   * @author DariusPi
+	   * 
+	   * @param player
+	   */
+	  @When ("The clock of {string} counts down to zero")
+	  public void theClockOfCountsDownToZero(String player) {
+		  
+	  }
+	  
+	  
 	// ***********************************************
 	// Clean up
 	// ***********************************************
