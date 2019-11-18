@@ -7,7 +7,7 @@ Feature: Load Game
     Given The game is not running
 
   Scenario Outline: Load valid incomplete game 
-    When I initiate to load a game in "<filename>"
+    When I initiate to load a saved game "<filename>"
     And Each game move is valid
     And The game has no final results
     And The position to load is valid
@@ -25,7 +25,7 @@ Feature: Load Game
       | quoridor_test_game_2.mov | white  |     2 |     5 | black    |     8 |     5 |      6 |      5 | horizontal     |      3 |      5 | vertical       |               8 |
 
   Scenario Outline: Load valid complete game 
-    When I initiate to load a game in "<filename>"
+    When I initiate to load a saved game "<filename>"
     And Each game move is valid
     And The game has a final result
     And The position to load is valid
