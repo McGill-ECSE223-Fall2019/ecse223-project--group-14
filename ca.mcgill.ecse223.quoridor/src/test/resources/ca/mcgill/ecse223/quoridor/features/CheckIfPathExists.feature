@@ -21,7 +21,7 @@ Feature: Check if path exists
 # R4     __ _|_ __
 
   Scenario Outline: Path to target area is not blocked
-    Given A "<dir>" wall move candidate exists at position <frow>:<fcol>
+     Given A wall move candidate exists with "<dir>" at position (<frow>, <fcol>)
     And The black player is located at <brow>:<bcol>
     And The white player is located at <wrow>:<wcol>
     When Check path existence is initiated
