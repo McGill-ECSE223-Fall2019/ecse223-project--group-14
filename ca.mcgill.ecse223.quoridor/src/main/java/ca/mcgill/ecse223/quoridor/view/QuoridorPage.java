@@ -966,6 +966,7 @@ public class QuoridorPage extends JFrame{
 		turnMessage1.setVisible(false);
 		turnMessage2.setVisible(false);
 		
+		continueButton.setVisible(false);
 		replayGameButton.setVisible(false);
 		stepForwardButton.setVisible(false);
 		stepBackwardButton.setVisible(false);
@@ -1005,7 +1006,13 @@ public class QuoridorPage extends JFrame{
 		}
 		else {
 			//TODO the draw game method should be checked here
-			finishGame();
+			if (currPlayer) {
+				finishGame("White Wins!");
+			}
+			else {
+				finishGame("Black Wins!");
+			}
+			
 		}
 		
 		
