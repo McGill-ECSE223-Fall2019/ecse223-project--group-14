@@ -2078,6 +2078,46 @@ public class CucumberStepDefinitions {
 		}
 	 }
 	 
+	 
+	 /**
+	  * @author louismollick
+	  */
+	 @When("The game is no longer running")
+	 public void theGameisNoLongerRunning() {
+		 theGameIsRunning();
+		 Quoridor quoridor = QuoridorApplication.getQuoridor();
+		 GameController gameController = new GameController();
+		 gameController.setFinalGameStatus(GameStatus.WhiteWon);
+	 }
+	 
+	 /**
+	  * @author louismollick
+	  */
+	 @Then("The final result shall be displayed")
+	 public void theFinalResultShallBeDisplayed() throws Exception {
+		 QuoridorPage view = QuoridorApplication.getQuoridorView();
+		 assertEquals(true, view.isFinalResultVisible());
+	 }
+	 
+	 /**
+	  * @author louismollick
+	  */
+	 @Then("White's clock shall not be counting down")
+	 @And("Black's clock shall not be counting down")
+	 public void clockShallNotBeCountingDown() throws Exception {
+		 QuoridorPage view = QuoridorApplication.getQuoridorView();
+		 assertEquals(false, view.gettimeRem2());
+	 }
+	 
+	 /**
+	  * @author louismollick
+	  */
+	 @Then("White shall be unable to move")
+	 @And("Black shall be unable to move")
+	 public void playersShallBeUnableToMove() throws Exception {
+		 QuoridorPage view = QuoridorApplication.getQuoridorView();
+		 assertEquals(false, !view.getStageMove());
+	 }
 
 	// ***********************************************
 	// Clean up

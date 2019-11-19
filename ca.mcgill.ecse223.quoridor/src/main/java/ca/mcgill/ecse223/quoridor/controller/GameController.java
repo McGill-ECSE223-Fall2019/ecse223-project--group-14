@@ -1474,6 +1474,16 @@ public class GameController {
 		}
 	}
 	
+	/**
+	 * For ReportFinalResult feature
+	 * @param q
+	 */
+	public void setFinalGameStatus(GameStatus status) {
+		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(status);
+		QuoridorApplication.getQuoridorView().setStageMove(true);
+		QuoridorApplication.getQuoridorView().finishGame("White wins!");
+	}
+	
 	public void deleteGame(Quoridor q) {
 		q.getCurrentGame().delete();
 	}
