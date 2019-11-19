@@ -96,11 +96,6 @@ public class QuoridorPage extends JFrame{
 	
 	private JButton endTurnButton;
 	
-	/*private JButton upButton;
-	private JButton rightButton;
-	private JButton downButton;
-	private JButton leftButton;*/
-	
 	private final int buttonH=30;
 	private final int buttonW=125;
 	
@@ -274,8 +269,6 @@ public class QuoridorPage extends JFrame{
 		wPawn.setVisible(true);
 		bPawn.setVisible(true);
 		
-		//wwalls[0].contains(5, 5); can be used to determine valid wall placement
-		
 		toggleBoard(false);
 		getContentPane().setLayout(null);
 		int y=260;
@@ -316,19 +309,6 @@ public class QuoridorPage extends JFrame{
 		add(jumpEndButton);
 		quitButton.setBounds(10, y+120, buttonW, buttonH);
 		add(quitButton);
-		
-		/*upButton.setFont(new Font("Serif",Font.PLAIN,11));
-		upButton.setBounds(35, y+180, 68, buttonH);
-		add(upButton);
-		rightButton.setFont(new Font("Serif",Font.PLAIN,11));
-		rightButton.setBounds(80, y+210, 68, buttonH);
-		add(rightButton);
-		downButton.setFont(new Font("Serif",Font.PLAIN,11));
-		downButton.setBounds(35, y+240, 68, buttonH);
-		add(downButton);
-		leftButton.setFont(new Font("Serif",Font.PLAIN,11));
-		leftButton.setBounds(10, y+210, 68, buttonH);
-		add(leftButton);*/
 		
 		acceptDrawButton.setBounds(10, y, buttonW, buttonH);
 		add(acceptDrawButton);
@@ -442,9 +422,10 @@ public class QuoridorPage extends JFrame{
 		quitButton.setVisible(true);
 		
 		endTurnButton.setVisible(false);
-		
+		turnMessage1.setVisible(false);
+		turnMessage2.setVisible(false);
 		toggleBoard(false);
-		
+		error=q.getCurrentGame().getGameStatus().toString();
 		refreshData();
 	}
 	
@@ -864,7 +845,7 @@ public class QuoridorPage extends JFrame{
 		jumpEndButton.setVisible(true);
 		quitButton.setVisible(true);
 		continueButton.setVisible(true);
-		
+		gc.initReplay(q);
 		stageMove=true;
 		banner = "Replay Mode";
 		refreshData();
@@ -875,25 +856,38 @@ public class QuoridorPage extends JFrame{
 		error = "";
 		//TODO in phase 2
 		// update visuals
+		boolean canContinue=gc.continueGame(q);
+		if (canContinue) {
+			continueButton.setVisible(false);
+			stepForwardButton.setVisible(false);
+			stepBackwardButton.setVisible(false);
+			jumpStartButton.setVisible(false);
+			jumpEndButton.setVisible(false);
+			
+			endTurnButton.setVisible(true);
+			saveGameButton.setVisible(true);
+			resignGameButton.setVisible(true);
+			drawGameButton.setVisible(true);
+			timeRem1.setVisible(true);
+			timeRem2.setVisible(true);
+			
+			
+			//TODO either set remaining times to a constant or let them set the times
+			if (q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite()) {
+				turnMessage1.setVisible(true);
+			}
+			else {
+				turnMessage2.setVisible(true);
+			}
+			
+			stageMove=false;
+			timer.start();
+			banner = "GamePlay";
+		}
+		else {
+			error="Finished games cannot be continued";
+		}
 		
-		continueButton.setVisible(false);
-		stepForwardButton.setVisible(false);
-		stepBackwardButton.setVisible(false);
-		jumpStartButton.setVisible(false);
-		jumpEndButton.setVisible(false);
-		
-		endTurnButton.setVisible(true);
-		saveGameButton.setVisible(true);
-		resignGameButton.setVisible(true);
-		drawGameButton.setVisible(true);
-		timeRem1.setVisible(true);
-		timeRem2.setVisible(true);
-		
-		
-		//TODO either set remaining times to a constant or let them set the times
-		stageMove=false;
-		timer.start();
-		banner = "GamePlay";
 		refreshData();
 	}
 	
@@ -933,9 +927,7 @@ public class QuoridorPage extends JFrame{
 		refreshData();
 	}
 	
-	private void quitButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message
-		//GameController gc= new GameController();		
+	private void quitButtonActionPerformed(java.awt.event.ActionEvent evt) {	
 		toggleBoard(false);
 		
 		error = "";
@@ -971,26 +963,36 @@ public class QuoridorPage extends JFrame{
 	
 	private void endTurnButtonActionPerformed(java.awt.event.ActionEvent evt) {	//this is the same as switch player
 		error = "";
-		currPlayer=!currPlayer;
-		gc.switchPlayer(q);
-		if (currPlayer) {
-			timeRem1.setVisible(true);
-			timeRem2.setVisible(false);
-			turnMessage1.setVisible(true);
-			turnMessage2.setVisible(false);
+		
+		boolean isOver=gc.checkResult(q);
+		if (!isOver) {
+			currPlayer=!currPlayer;
+			gc.switchPlayer(q);
+			if (currPlayer) {
+				timeRem1.setVisible(true);
+				timeRem2.setVisible(false);
+				turnMessage1.setVisible(true);
+				turnMessage2.setVisible(false);
+			}
+			else {
+				timeRem1.setVisible(false);
+				timeRem2.setVisible(true);
+				turnMessage1.setVisible(false);
+				turnMessage2.setVisible(true);
+			}
+			stageMove=false;
+			refreshData();
 		}
 		else {
-			timeRem1.setVisible(false);
-			timeRem2.setVisible(true);
-			turnMessage1.setVisible(false);
-			turnMessage2.setVisible(true);
+			//TODO the draw game method should be checked here
+			finishGame();
 		}
-		stageMove=false;
-		refreshData();
+		
+		
 	}
 	
 	private void initButtons() {
-		//regular
+		
 		newGameButton = new JButton();
 		newGameButton.setText("New Game");
 		
