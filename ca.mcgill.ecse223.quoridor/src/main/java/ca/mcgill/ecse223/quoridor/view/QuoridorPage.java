@@ -10,13 +10,16 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
 import java.io.IOException;
 import java.sql.Time;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
@@ -104,11 +107,13 @@ public class QuoridorPage extends JFrame{
 	private boolean currPlayer;	//true for white, false for black
 	
 	private Timer timer;
+	private boolean finished; // If game is over, result is shown
 	
 	private Quoridor q;
 	private GameController gc;
 	
 	private QuoridorMouseListener listener;
+	
 	
 	private TileComponent [][] tiles;
 	public WallComponent [] bwalls;
@@ -140,7 +145,8 @@ public class QuoridorPage extends JFrame{
 		setSize(650, 800);
 		getContentPane().setBackground(Color.LIGHT_GRAY);
 		
-		stageMove=false;
+		stageMove=false; // players can move
+		finished = false; // game is not over
 		
 		points=new Point[8][9];
 		sq = new TileComponent [8][9];
@@ -225,7 +231,11 @@ public class QuoridorPage extends JFrame{
 			public void actionPerformed(ActionEvent evt) {
 				boolean over=gc.countdown(q);
 				if (over) {
-					finishGame();
+					if(gc.getCurrentPlayerColor() == Color.BLACK) {
+						finishGame("White wins!");
+					}else {
+						finishGame("Black wins!");
+					}
 				}
 				else {
 					if (q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsBlack()) {
@@ -400,15 +410,21 @@ public class QuoridorPage extends JFrame{
 		
 	}
 	
-	
-	private void finishGame() {
-		//set screen to results
+	/**
+	 * Helper method to end game and display a result
+	 * @param result
+	 */
+	public void finishGame(String result) {
+		finished = true; // Indicate the result is being shown
+		stageMove = true; // Prevent player from moving
+		// Set screen to results
+		banner = result;
 		
 		//TODO for phase 2
 		timer.stop();
 		timeRem1.setVisible(false);
 		timeRem2.setVisible(false);
-		banner="Game Over";
+		
 		newGameButton.setVisible(false);
 		saveGameButton.setVisible(false);
 		loadGameButton.setVisible(false);
@@ -480,7 +496,6 @@ public class QuoridorPage extends JFrame{
 			
 			p1Name.setText(success);
 			refreshData();
-			
 		}
 		else {
 			error=success;
@@ -797,7 +812,12 @@ public class QuoridorPage extends JFrame{
 	
 	private void resignGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		//TODO in phase 2
-		finishGame();
+		if(gc.getCurrentPlayerColor() == Color.BLACK) {
+			finishGame("White wins!");
+		}else {
+			finishGame("Black wins!");
+		}
+		
 	}
 	
 	private void drawGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -820,7 +840,7 @@ public class QuoridorPage extends JFrame{
 		
 		// update visuals
 		error = "accept draw"; 
-		finishGame();
+		finishGame("The game was a draw!");
 	}
 	
 	private void declineDrawButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1404,6 +1424,14 @@ public class QuoridorPage extends JFrame{
 	 */
 	public TileComponent[][] getTiles(){
 		return this.tiles;
+	}
+	
+	/**
+	 * * Helper method returning if the final result is being displayed
+	 * @author louismollick
+	 */
+	public boolean isFinalResultVisible() {
+		return finished;
 	}
 	
 	//helper

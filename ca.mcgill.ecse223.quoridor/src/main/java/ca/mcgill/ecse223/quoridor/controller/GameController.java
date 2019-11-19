@@ -1481,6 +1481,16 @@ public class GameController {
 		}
 	}
 	
+	/**
+	 * For ReportFinalResult feature
+	 * @param q
+	 */
+	public void setFinalGameStatus(GameStatus status) {
+		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(status);
+		QuoridorApplication.getQuoridorView().setStageMove(true);
+		QuoridorApplication.getQuoridorView().finishGame("White wins!");
+	}
+	
 	public void deleteGame(Quoridor q) {
 		q.getCurrentGame().delete();
 	}
@@ -1571,6 +1581,17 @@ public class GameController {
 			q.getCurrentGame().setGameStatus(GameStatus.Running);
 			return false;
 		}
+	}
+	
+	/**
+	 * * For CheckifPathExists feature
+	 * 
+	 * @author louismollick
+	 * @return String result : white, black, none, both
+	 */
+	public String checkPathExistence() {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		return "both";
 	}
 }
 

@@ -53,6 +53,7 @@ public class CucumberStepDefinitions {
 	private String dir;
 	private boolean wvalid;
 	private boolean resvalid;
+	private String pathExistsFor;
 	private Player starter;
 	private static Direction Direction;
 	
@@ -2078,7 +2079,45 @@ public class CucumberStepDefinitions {
 		}
 	 }
 	 
+	 /**
+	  * @author louismollick
+	  */
+	 @When("The game is no longer running")
+	 public void theGameisNoLongerRunning() {
+		 theGameIsRunning();
+		 Quoridor quoridor = QuoridorApplication.getQuoridor();
+		 GameController gameController = new GameController();
+		 gameController.setFinalGameStatus(GameStatus.WhiteWon);
+	 }
 	 
+	 /**
+	  * @author louismollick
+	  */
+	 @Then("The final result shall be displayed")
+	 public void theFinalResultShallBeDisplayed() throws Exception {
+		 QuoridorPage view = QuoridorApplication.getQuoridorView();
+		 assertEquals(true, view.isFinalResultVisible());
+	 }
+	 
+	 /**
+	  * @author louismollick
+	  */
+	 @Then("White's clock shall not be counting down")
+	 @And("Black's clock shall not be counting down")
+	 public void clockShallNotBeCountingDown() throws Exception {
+		 QuoridorPage view = QuoridorApplication.getQuoridorView();
+		 assertEquals(false, view.gettimeRem2());
+	 }
+	 
+	 /**
+	  * @author louismollick
+	  */
+	 @Then("White shall be unable to move")
+	 @And("Black shall be unable to move")
+	 public void playersShallBeUnableToMove() throws Exception {
+		 QuoridorPage view = QuoridorApplication.getQuoridorView();
+		 assertEquals(false, !view.getStageMove());
+	 }
 	 /*Iteration 5 features*/
 	 
 	 //TODO
@@ -2289,6 +2328,47 @@ public class CucumberStepDefinitions {
 		  gc.countdown(q);
 	  }
 	  
+	  /**
+	   * @author louismollick
+	   * @param int brow
+	   * @param int bcol
+	   */
+	  @Given("The black player is located at {int}:{int}")
+	  public void theBlackPlayerIsLocatedAt(int brow, int bcol) {
+		  Quoridor quoridor = QuoridorApplication.getQuoridor();
+		  Tile tile = quoridor.getBoard().getTile((brow-1)*9+bcol-1);
+		  quoridor.getCurrentGame().getCurrentPosition().getBlackPosition().setTile(tile);
+	  }
+	  
+	  /**
+	   * @author louismollick
+	   * @param int wrow
+	   * @param int wcol
+	   */
+	  @Given("The white player is located at {int}:{int}")
+	  public void theWhitePlayerIsLocatedAt(int wrow, int wcol) {
+		  Quoridor quoridor = QuoridorApplication.getQuoridor();
+		  Tile tile = quoridor.getBoard().getTile((wrow-1)*9+wcol-1);
+		  quoridor.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
+	  }
+	  
+	  /**
+	   * @author louismollick
+	   */
+	  @When("Check path existence is initiated")
+	  public void checkPathExistenceIsInitiated() {
+		  GameController gameController = new GameController();
+		  pathExistsFor = gameController.checkPathExistence();
+	  }
+	  
+	  /**
+	   * @author louismollick
+	   * @param String result
+	   */
+	  @Then("Path is available for {string} player\\(s)")
+	  public void pathIsAvailableFor(String result) {
+		  assertEquals(result, pathExistsFor);
+	  }
 	  
 	// ***********************************************
 	// Clean up
