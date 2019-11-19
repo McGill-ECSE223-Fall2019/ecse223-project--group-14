@@ -41,6 +41,8 @@ public class QuoridorPage extends JFrame{
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	public JLabel gameVicotryStatus;
+	
 	public JLabel errorMessage;
 	private String error = null;
 	
@@ -88,7 +90,7 @@ public class QuoridorPage extends JFrame{
 	private JButton declineDrawButton;
 	
 	private JButton replayGameButton;
-	
+	private JButton continueButton;
 	private JButton stepForwardButton;
 	private JButton stepBackwardButton;
 	private JButton jumpStartButton;
@@ -110,7 +112,7 @@ public class QuoridorPage extends JFrame{
 	private boolean currPlayer;	//true for white, false for black
 	
 	private Timer timer;
-	private boolean finished; // If game is over
+	private boolean finished; // If game is over, result is shown
 	
 	private Quoridor q;
 	private GameController gc;
@@ -312,6 +314,8 @@ public class QuoridorPage extends JFrame{
 		drawGameButton.setBounds(10, y+90, buttonW, buttonH);
 		add(drawGameButton);
 		
+		continueButton.setBounds(10, y-30, buttonW, buttonH);
+		add(continueButton);
 		stepForwardButton.setBounds(10, y, buttonW, buttonH);
 		add(stepForwardButton);
 		stepBackwardButton.setBounds(10, y+30, buttonW, buttonH);
@@ -431,7 +435,8 @@ public class QuoridorPage extends JFrame{
 	 * @param result
 	 */
 	public void finishGame(String result) {
-		finished = true;
+		finished = true; // Indicate the result is being shown
+		stageMove = true; // Prevent player from moving
 		// Set screen to results
 		banner = result;
 		
@@ -878,8 +883,37 @@ public class QuoridorPage extends JFrame{
 		jumpStartButton.setVisible(true);
 		jumpEndButton.setVisible(true);
 		quitButton.setVisible(true);
+		continueButton.setVisible(true);
 		
+		stageMove=true;
 		banner = "Replay Mode";
+		refreshData();
+	}
+	
+	private void continueButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		// clear error message		
+		error = "";
+		//TODO in phase 2
+		// update visuals
+		
+		continueButton.setVisible(false);
+		stepForwardButton.setVisible(false);
+		stepBackwardButton.setVisible(false);
+		jumpStartButton.setVisible(false);
+		jumpEndButton.setVisible(false);
+		
+		endTurnButton.setVisible(true);
+		saveGameButton.setVisible(true);
+		resignGameButton.setVisible(true);
+		drawGameButton.setVisible(true);
+		timeRem1.setVisible(true);
+		timeRem2.setVisible(true);
+		
+		
+		//TODO either set remaining times to a constant or let them set the times
+		stageMove=false;
+		timer.start();
+		banner = "GamePlay";
 		refreshData();
 	}
 	
@@ -888,7 +922,7 @@ public class QuoridorPage extends JFrame{
 		error = "";
 		//TODO in phase 2
 		// update visuals
-		error = "step for"; //for testing
+		
 		refreshData();
 	}
 	
@@ -897,7 +931,7 @@ public class QuoridorPage extends JFrame{
 		error = "";
 		//TODO in phase 2
 		// update visuals
-		error = "step back"; //for testing
+		
 		refreshData();
 	}
 	
@@ -906,7 +940,7 @@ public class QuoridorPage extends JFrame{
 		error = "";
 		//TODO in phase 2
 		// update visuals
-		error = "jump start"; //for testing
+		
 		refreshData();
 	}
 	
@@ -915,7 +949,7 @@ public class QuoridorPage extends JFrame{
 		error = "";
 		//TODO in phase 2
 		// update visuals
-		error = "jump end"; //for testing
+		
 		refreshData();
 	}
 	
@@ -931,11 +965,6 @@ public class QuoridorPage extends JFrame{
 		saveGameButton.setVisible(false);
 		resignGameButton.setVisible(false);
 		drawGameButton.setVisible(false);
-		
-		/*upButton.setVisible(false);
-		leftButton.setVisible(false);
-		rightButton.setVisible(false);
-		downButton.setVisible(false);*/
 		
 		p1Name.setVisible(false);
 		p2Name.setVisible(false);
@@ -959,22 +988,6 @@ public class QuoridorPage extends JFrame{
 		q.getCurrentGame().delete();
 		refreshData();
 	}
-	
-	/*private void upButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		//call gc 
-	}
-	
-	private void rightButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		//call gc 
-	}
-	
-	private void downButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		//call gc 
-	}
-	
-	private void leftButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		//call gc 
-	}*/
 	
 	private void endTurnButtonActionPerformed(java.awt.event.ActionEvent evt) {	//this is the same as switch player
 		error = "";
@@ -1066,6 +1079,10 @@ public class QuoridorPage extends JFrame{
 		replayGameButton.setVisible(false);
 		
 		//replay mode buttons
+		continueButton = new JButton();
+		continueButton.setText("Continue");
+		continueButton.setVisible(false);
+		
 		stepForwardButton = new JButton();
 		stepForwardButton.setText("Step Forward");
 		stepForwardButton.setVisible(false);
@@ -1090,21 +1107,6 @@ public class QuoridorPage extends JFrame{
 		endTurnButton.setText("End Turn");
 		endTurnButton.setVisible(false);
 		
-		/*upButton= new JButton();
-		upButton.setText("UP");
-		upButton.setVisible(false);
-		
-		rightButton= new JButton();
-		rightButton.setText("RIGHT");
-		rightButton.setVisible(false);
-		
-		downButton= new JButton();
-		downButton.setText("DOWN");
-		downButton.setVisible(false);
-		
-		leftButton= new JButton();
-		leftButton.setText("LEFT");
-		leftButton.setVisible(false);*/
 	}
 	
 	private void addListners() {
@@ -1253,6 +1255,12 @@ public class QuoridorPage extends JFrame{
 			}
 		});
 		
+		continueButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				continueButtonActionPerformed(evt);
+			}
+		});
+		
 		stepForwardButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				stepForwardButtonActionPerformed(evt);
@@ -1289,29 +1297,6 @@ public class QuoridorPage extends JFrame{
 			}
 		});
 		
-		/*upButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				upButtonActionPerformed(evt);
-			}
-		});
-		
-		rightButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				rightButtonActionPerformed(evt);
-			}
-		});
-		
-		downButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				downButtonActionPerformed(evt);
-			}
-		});
-		
-		leftButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				leftButtonActionPerformed(evt);
-			}
-		});*/
 	}
 	
 	
@@ -1343,10 +1328,6 @@ public class QuoridorPage extends JFrame{
 			}
 		}
 		
-		/*upButton.setVisible(vis);
-		rightButton.setVisible(vis);
-		downButton.setVisible(vis);
-		leftButton.setVisible(vis);*/
 	}
 	
 	private void toggleMainButtons(boolean vis) {

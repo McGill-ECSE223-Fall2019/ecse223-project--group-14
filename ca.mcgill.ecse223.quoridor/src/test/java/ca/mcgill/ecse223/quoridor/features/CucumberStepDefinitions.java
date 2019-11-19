@@ -53,6 +53,7 @@ public class CucumberStepDefinitions {
 	private String dir;
 	private boolean wvalid;
 	private boolean resvalid;
+	private String pathExistsFor;
 	private Player starter;
 	private static Direction Direction;
 	
@@ -2078,7 +2079,6 @@ public class CucumberStepDefinitions {
 		}
 	 }
 	 
-	 
 	 /**
 	  * @author louismollick
 	  */
@@ -2118,7 +2118,251 @@ public class CucumberStepDefinitions {
 		 QuoridorPage view = QuoridorApplication.getQuoridorView();
 		 assertEquals(false, !view.getStageMove());
 	 }
-
+	 /*Iteration 5 features*/
+	 
+	 //TODO
+	 
+	 /**
+	  * @author DariusPi
+	  */
+	 @When ("I initiate replay mode")
+	 public void iInitiateReplayMode() {
+		 Quoridor q=QuoridorApplication.getQuoridor();
+		 q.setCurrentGame(new Game(GameStatus.WhiteWon, MoveMode.PlayerMove, q));
+		 GameController gc=new GameController();
+		 gc.initReplay(q);
+	 }
+	 
+	 /**
+	  * @author DariusPi
+	  */
+	 @Then ("The game shall be in replay mode")
+	 public void theGameShallBeInReplayMode(){
+		 Quoridor q=QuoridorApplication.getQuoridor();
+		 assertEquals(GameStatus.Replay, q.getCurrentGame().getGameStatus());
+	 }
+	 
+	 /**
+	  * @author DariusPi
+	  */
+	 @Given ("The game is in replay mode")
+	 public void theGameIsInReplayMode() {
+		 Quoridor q=QuoridorApplication.getQuoridor();
+		 initQuoridorAndBoard();
+		 ArrayList<Player> createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
+		 createAndStartGame(createUsersAndPlayers);
+		 q.getCurrentGame().setGameStatus(GameStatus.Replay);
+		 //q.setCurrentGame(new Game(GameStatus.Replay, MoveMode.PlayerMove, q));
+	 }
+	 
+	 /**
+	  * @author DariusPi
+	  */
+	 @Given ("The following moves have been played in game:")
+	 public void theFollowingMovesHaveBeenPlayedInGame(io.cucumber.datatable.DataTable dataTable) { //should probably take in the moves?
+		 
+	 }
+	 
+	 /**
+	  * @author DariusPi
+	  */
+	 @And ("The game does not have a final result")
+	 public void theGameDoesnotHaveAFinalResult() {
+		 
+	 }
+	 
+	 /**
+	  * @author DariusPI
+	  * 
+	  * @param movno
+	  * @param rndno
+	  */
+	 @And ("The next move is {int}.{int}")
+	 public void theNextMoveIs(int movno,int rndno){
+		 
+	 }
+	 
+	 /**
+	  * @author DariusPi
+	  */
+	 @When ("I initiate to continue game")
+	 public void iInitiateToContinueGame(){
+		 Quoridor q=QuoridorApplication.getQuoridor();
+		 GameController gc=new GameController();
+		 gc.continueGame(q);
+		 
+		 
+	 }
+	 
+	 /**
+	  * @author DariusPi
+	  */
+	 @And ("The remaining moves of the game shall be removed")
+	 public void theRemainingMovesOfTheGameShallBeRemoved() {
+		 
+	 }
+	 
+	 /**
+	  * @author DariusPi
+	  */
+	 @And ("The game has a final result")
+	 public void theGameHasAFinalResult() {
+		 
+	 }
+	 
+	 /**
+	  * @author DariusPi
+	  */
+	 @And ("I shall be notified that finished games cannot be continued")
+	 public void iShallBeNotifiedThatFinishedGamesCannotBeContinued() {
+		 
+	 }
+	 
+	 /**
+	  * @author DariusPi
+	  * 
+	  * @param player
+	  */
+	 @Given ("Player {string} has just completed his move")
+	 public void playerHasJustCompletedHisMove(String player) {
+		 
+	 }
+	 
+	 /**
+	  * @author DariusPi
+	  * 
+	  * @param player
+	  * @param row
+	  * @param col
+	  */
+	 @And ("The new position of {string} is {int}:{int}")
+	 public void theNewPositionOfIs(String player,int row,int col) {
+		 Quoridor q=QuoridorApplication.getQuoridor();
+		 
+		 //this swap is necessary as we are playing horizontally but the test is wrottent vertically
+		 int temp=col;
+		 col=row;
+		 row=temp;
+		 
+		 if (player.compareTo("white")==0) {
+			 q.getCurrentGame().getCurrentPosition().setWhitePosition(new PlayerPosition(q.getCurrentGame().getWhitePlayer(),q.getBoard().getTile((row-1)*9+col-1)));
+		 }
+		 else {
+			 q.getCurrentGame().getCurrentPosition().setBlackPosition(new PlayerPosition(q.getCurrentGame().getBlackPlayer(),q.getBoard().getTile((row-1)*9+col-1)));
+		 }
+	 }
+	  
+	 /**
+	  * @author DariusPi
+	  * 
+	  * @param player
+	  */
+	 @And ("The clock of {string} is more than zero")
+	 public void theClockOfIsMoreThanZero(String player) {
+		  
+	 }
+	  
+	 /**
+	  * @author DariusPi
+	  * 
+	  * @param player
+	  */
+	  @When ("Checking of game result is initated")
+	  public void checkingOfGameResultIsInitated() {
+		  Quoridor q=QuoridorApplication.getQuoridor();
+		  GameController gc=new GameController();
+		  gc.checkResult(q);
+	  }
+	  
+	  /**
+	   * @author DariusPi
+	   * 
+	   * @param result
+	   */
+	  @Then ("Game result shall be {string}")
+	  public void gameResultShallBe(String result) {
+		  Quoridor q=QuoridorApplication.getQuoridor();
+		  Game g=q.getCurrentGame();
+		  if (result.compareTo("pending")==0) {
+			  assertEquals(g.getGameStatus(),GameStatus.Running);
+		  }
+		  else {
+			  assertEquals(g.getGameStatus().toString().toLowerCase(),result.toLowerCase());
+		  }
+		  
+	  }
+	  
+	  /**
+	   * @author DariusPi
+	   */
+	  @And ("The game shall no longer be running")
+	  public void theGameShallNoLongerBeRunning() {
+		  Quoridor q=QuoridorApplication.getQuoridor();
+		  Game g=q.getCurrentGame();
+		  assertNotEquals(g.getGameStatus(),GameStatus.Running);
+	  }
+	  
+	  /**
+	   * @author DariusPi
+	   * 
+	   * @param player
+	   */
+	  @When ("The clock of {string} counts down to zero")
+	  public void theClockOfCountsDownToZero(String player) {
+		  Quoridor q=QuoridorApplication.getQuoridor();
+		  if (player.compareTo("white")==0) {
+			  q.getCurrentGame().getCurrentPosition().setPlayerToMove(q.getCurrentGame().getWhitePlayer());
+		  }
+		  else {
+			  q.getCurrentGame().getCurrentPosition().setPlayerToMove(q.getCurrentGame().getBlackPlayer());
+		  }
+		  q.getCurrentGame().getCurrentPosition().getPlayerToMove().setRemainingTime(new Time(0));
+		  GameController gc=new GameController();
+		  gc.countdown(q);
+	  }
+	  
+	  /**
+	   * @author louismollick
+	   * @param int brow
+	   * @param int bcol
+	   */
+	  @Given("The black player is located at {int}:{int}")
+	  public void theBlackPlayerIsLocatedAt(int brow, int bcol) {
+		  Quoridor quoridor = QuoridorApplication.getQuoridor();
+		  Tile tile = quoridor.getBoard().getTile((brow-1)*9+bcol-1);
+		  quoridor.getCurrentGame().getCurrentPosition().getBlackPosition().setTile(tile);
+	  }
+	  
+	  /**
+	   * @author louismollick
+	   * @param int wrow
+	   * @param int wcol
+	   */
+	  @Given("The white player is located at {int}:{int}")
+	  public void theWhitePlayerIsLocatedAt(int wrow, int wcol) {
+		  Quoridor quoridor = QuoridorApplication.getQuoridor();
+		  Tile tile = quoridor.getBoard().getTile((wrow-1)*9+wcol-1);
+		  quoridor.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
+	  }
+	  
+	  /**
+	   * @author louismollick
+	   */
+	  @When("Check path existence is initiated")
+	  public void checkPathExistenceIsInitiated() {
+		  GameController gameController = new GameController();
+		  pathExistsFor = gameController.checkPathExistence();
+	  }
+	  
+	  /**
+	   * @author louismollick
+	   * @param String result
+	   */
+	  @Then("Path is available for {string} player\\(s)")
+	  public void pathIsAvailableFor(String result) {
+		  assertEquals(result, pathExistsFor);
+	  }
+	  
 	// ***********************************************
 	// Clean up
 	// ***********************************************

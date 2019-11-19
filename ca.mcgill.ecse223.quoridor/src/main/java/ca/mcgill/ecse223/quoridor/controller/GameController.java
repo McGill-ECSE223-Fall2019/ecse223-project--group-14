@@ -149,6 +149,13 @@ public class GameController {
 		long tb=q.getCurrentGame().getCurrentPosition().getPlayerToMove().getRemainingTime().getTime();
 		long ta=tb-1000;
 		if (ta<=0) {
+			if (q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite()) {
+				q.getCurrentGame().setGameStatus(GameStatus.BlackWon);
+			}
+			else {
+				q.getCurrentGame().setGameStatus(GameStatus.WhiteWon);
+			}
+			
 			return true;
 		}
 		q.getCurrentGame().getCurrentPosition().getPlayerToMove().setRemainingTime(new Time(ta));
@@ -1514,6 +1521,51 @@ public class GameController {
 		return null;
 	}
 	
+	/*Iteration 5*/
+	
+	//TODO
+	/**
+	 * User attempts to continue a game while in replay mode
+	 * 
+	 * @author DariusPi
+	 * 
+	 * @param q
+	 * @returns true for possible, or false for impossible
+	 */
+	public Boolean continueGame(Quoridor q) {
+		
+		q.getCurrentGame().setGameStatus(GameStatus.Running);
+		return false;
+	}
+	
+	public void initReplay(Quoridor q) {
+		q.getCurrentGame().setGameStatus(GameStatus.Replay);
+	}
+	
+	public void checkResult(Quoridor q) {
+		PlayerPosition pw=q.getCurrentGame().getCurrentPosition().getWhitePosition();
+		PlayerPosition pb=q.getCurrentGame().getCurrentPosition().getBlackPosition();
+		if (pw.getTile().getColumn()==9) {
+			q.getCurrentGame().setGameStatus(GameStatus.WhiteWon);
+		}
+		else if (pb.getTile().getColumn()==1) {
+			q.getCurrentGame().setGameStatus(GameStatus.BlackWon);
+		}
+		else {
+			q.getCurrentGame().setGameStatus(GameStatus.Running);
+		}
+	}
+	
+	/**
+	 * * For CheckifPathExists feature
+	 * 
+	 * @author louismollick
+	 * @return String result : white, black, none, both
+	 */
+	public String checkPathExistence() {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		return "both";
+	}
 }
 
 
