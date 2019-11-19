@@ -2189,7 +2189,7 @@ public class CucumberStepDefinitions {
 	 public void iInitiateToContinueGame(){
 		 Quoridor q=QuoridorApplication.getQuoridor();
 		 GameController gc=new GameController();
-		 gc.continueGame(q);
+		 resvalid=gc.continueGame(q);
 		 
 		 
 	 }
@@ -2215,7 +2215,14 @@ public class CucumberStepDefinitions {
 	  */
 	 @And ("I shall be notified that finished games cannot be continued")
 	 public void iShallBeNotifiedThatFinishedGamesCannotBeContinued() {
-		 
+		 String result;
+		 if (!resvalid) {
+			 result="Finished games cannot be continued";
+		 }
+		 else {
+			 result="";
+		 }
+		 assertEquals(result,"Finished games cannot be continued");
 	 }
 	 
 	 /**

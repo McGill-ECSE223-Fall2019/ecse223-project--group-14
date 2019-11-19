@@ -1524,6 +1524,7 @@ public class GameController {
 	/*Iteration 5*/
 	
 	//TODO
+	
 	/**
 	 * User attempts to continue a game while in replay mode
 	 * 
@@ -1534,25 +1535,51 @@ public class GameController {
 	 */
 	public Boolean continueGame(Quoridor q) {
 		
-		q.getCurrentGame().setGameStatus(GameStatus.Running);
-		return false;
+		boolean isOver=checkResult(q);
+		if(isOver) {
+			q.getCurrentGame().setGameStatus(GameStatus.Replay);
+			return false;
+		}
+		else {
+			//TODO delete any moves after current one and check position
+			q.getCurrentGame().setGameStatus(GameStatus.Running);
+			return true;
+		}
 	}
 	
+	/**
+	 * Switches the model to be in replay mode
+	 * 
+	 * @author DariusPi
+	 * 
+	 * @param q
+	 */
 	public void initReplay(Quoridor q) {
 		q.getCurrentGame().setGameStatus(GameStatus.Replay);
 	}
 	
-	public void checkResult(Quoridor q) {
+	/**
+	 * Checks whether the move results in a victory
+	 * 
+	 * @author DariusPi
+	 * 
+	 * @param q
+	 * @return true if game is over, false if not
+	 */
+	public boolean checkResult(Quoridor q) {
 		PlayerPosition pw=q.getCurrentGame().getCurrentPosition().getWhitePosition();
 		PlayerPosition pb=q.getCurrentGame().getCurrentPosition().getBlackPosition();
 		if (pw.getTile().getColumn()==9) {
 			q.getCurrentGame().setGameStatus(GameStatus.WhiteWon);
+			return true;
 		}
 		else if (pb.getTile().getColumn()==1) {
 			q.getCurrentGame().setGameStatus(GameStatus.BlackWon);
+			return true;
 		}
 		else {
 			q.getCurrentGame().setGameStatus(GameStatus.Running);
+			return false;
 		}
 	}
 	
