@@ -1564,7 +1564,19 @@ public class GameController {
 	 */
 	public String checkPathExistence() {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		return "both";
+		String result = "none";
+		// Check path for White
+		boolean whitePath = true;
+		if (whitePath) result = "white";
+		
+		// Check path for Black
+		boolean blackPath = true;
+		if (blackPath) {
+			if(result.compareTo("white") == 0) result = "both";
+			else result = "black";
+		}
+		
+		return result;
 	}
 }
 
