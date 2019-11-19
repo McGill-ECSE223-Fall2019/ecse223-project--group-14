@@ -2109,15 +2109,18 @@ public class CucumberStepDefinitions {
 	 @Given ("The game is in replay mode")
 	 public void theGameIsInReplayMode() {
 		 Quoridor q=QuoridorApplication.getQuoridor();
-		 GameController gc=new GameController();
-		 gc.initReplay(q);
+		 initQuoridorAndBoard();
+		 ArrayList<Player> createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
+		 createAndStartGame(createUsersAndPlayers);
+		 q.getCurrentGame().setGameStatus(GameStatus.Replay);
+		 //q.setCurrentGame(new Game(GameStatus.Replay, MoveMode.PlayerMove, q));
 	 }
 	 
 	 /**
 	  * @author DariusPi
 	  */
 	 @Given ("The following moves have been played in game:")
-	 public void theFollowingMovesHaveBeenPlayedInGame() { //should probably take in the moves?
+	 public void theFollowingMovesHaveBeenPlayedInGame(io.cucumber.datatable.DataTable dataTable) { //should probably take in the moves?
 		 
 	 }
 	 
@@ -2195,7 +2198,19 @@ public class CucumberStepDefinitions {
 	  */
 	 @And ("The new position of {string} is {int}:{int}")
 	 public void theNewPositionOfIs(String player,int row,int col) {
+		 Quoridor q=QuoridorApplication.getQuoridor();
 		 
+		 //this swap is necessary as we are playing horizontally but the test is wrottent vertically
+		 int temp=col;
+		 col=row;
+		 row=temp;
+		 
+		 if (player.compareTo("white")==0) {
+			 q.getCurrentGame().getCurrentPosition().setWhitePosition(new PlayerPosition(q.getCurrentGame().getWhitePlayer(),q.getBoard().getTile((row-1)*9+col-1)));
+		 }
+		 else {
+			 q.getCurrentGame().getCurrentPosition().setBlackPosition(new PlayerPosition(q.getCurrentGame().getBlackPlayer(),q.getBoard().getTile((row-1)*9+col-1)));
+		 }
 	 }
 	  
 	 /**
@@ -2215,7 +2230,9 @@ public class CucumberStepDefinitions {
 	  */
 	  @When ("Checking of game result is initated")
 	  public void checkingOfGameResultIsInitated() {
-		  
+		  Quoridor q=QuoridorApplication.getQuoridor();
+		  GameController gc=new GameController();
+		  gc.checkResult(q);
 	  }
 	  
 	  /**
@@ -2225,6 +2242,14 @@ public class CucumberStepDefinitions {
 	   */
 	  @Then ("Game result shall be {string}")
 	  public void gameResultShallBe(String result) {
+		  Quoridor q=QuoridorApplication.getQuoridor();
+		  Game g=q.getCurrentGame();
+		  if (result.compareTo("pending")==0) {
+			  assertEquals(g.getGameStatus(),GameStatus.Running);
+		  }
+		  else {
+			  assertEquals(g.getGameStatus().toString().toLowerCase(),result.toLowerCase());
+		  }
 		  
 	  }
 	  
@@ -2245,7 +2270,16 @@ public class CucumberStepDefinitions {
 	   */
 	  @When ("The clock of {string} counts down to zero")
 	  public void theClockOfCountsDownToZero(String player) {
-		  
+		  Quoridor q=QuoridorApplication.getQuoridor();
+		  if (player.compareTo("white")==0) {
+			  q.getCurrentGame().getCurrentPosition().setPlayerToMove(q.getCurrentGame().getWhitePlayer());
+		  }
+		  else {
+			  q.getCurrentGame().getCurrentPosition().setPlayerToMove(q.getCurrentGame().getBlackPlayer());
+		  }
+		  q.getCurrentGame().getCurrentPosition().getPlayerToMove().setRemainingTime(new Time(0));
+		  GameController gc=new GameController();
+		  gc.countdown(q);
 	  }
 	  
 	  
