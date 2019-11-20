@@ -1013,6 +1013,7 @@ public class GameController {
 	 */
 	public void dropWall(int col, int row, String dir, int id) throws UnsupportedOperationException{		
 		Quoridor q = QuoridorApplication.getQuoridor();
+		Game g=q.getCurrentGame();
 		Direction dirc;
 		
 		if(dir.compareTo("vertical") == 0) {
@@ -1022,22 +1023,24 @@ public class GameController {
 			dirc = Direction.Horizontal;
 		}
 		if(id<10) {
-			Wall w = q.getCurrentGame().getWhitePlayer().getWall(id);
+			Wall w = g.getWhitePlayer().getWall(id);
 			if (w.getMove()!=null) {
 				w.getMove().delete();
 			}
-			new WallMove(q.getCurrentGame().getMoves().size(),0,q.getCurrentGame().getWhitePlayer(),q.getBoard().getTile(col+row*9),q.getCurrentGame(),dirc,w);
-			q.getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(q.getCurrentGame().getWhitePlayer().getWall(id));
-			q.getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(q.getCurrentGame().getWhitePlayer().getWall(id));
+			g.addMove(new WallMove(1,1,g.getWhitePlayer(),q.getBoard().getTile(col+row*9),g,dirc,w));
+			//new WallMove(q.getCurrentGame().getMoves().size(),0,q.getCurrentGame().getWhitePlayer(),q.getBoard().getTile(col+row*9),q.getCurrentGame(),dirc,w);
+			g.getCurrentPosition().removeWhiteWallsInStock(g.getWhitePlayer().getWall(id));
+			g.getCurrentPosition().addWhiteWallsOnBoard(g.getWhitePlayer().getWall(id));
 		}
 		else {
-			Wall w=q.getCurrentGame().getBlackPlayer().getWall(id-10);
+			Wall w=g.getBlackPlayer().getWall(id-10);
 			if (w.getMove()!=null) {
 				w.getMove().delete();
 			}
-			new WallMove(q.getCurrentGame().getMoves().size(), 1, q.getCurrentGame().getBlackPlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
-			q.getCurrentGame().getCurrentPosition().removeBlackWallsInStock(q.getCurrentGame().getBlackPlayer().getWall(id-10));
-			q.getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(q.getCurrentGame().getBlackPlayer().getWall(id-10));
+			g.addMove(new WallMove(1,1,g.getBlackPlayer(),q.getBoard().getTile(col+row*9),g,dirc,w));
+			//new WallMove(g.getMoves().size(), 1, q.getCurrentGame().getBlackPlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
+			g.getCurrentPosition().removeBlackWallsInStock(g.getBlackPlayer().getWall(id-10));
+			g.getCurrentPosition().addBlackWallsOnBoard(g.getBlackPlayer().getWall(id-10));
 		}
 	}
 	

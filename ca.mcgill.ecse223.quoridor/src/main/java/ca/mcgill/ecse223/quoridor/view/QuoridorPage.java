@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.io.IOException;
 import java.sql.Time;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -28,11 +29,12 @@ import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameController;
 
 import ca.mcgill.ecse223.quoridor.model.Game;
-
+import ca.mcgill.ecse223.quoridor.model.Move;
 import ca.mcgill.ecse223.quoridor.model.Direction;
 
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
 import ca.mcgill.ecse223.quoridor.model.Wall;
+import ca.mcgill.ecse223.quoridor.model.WallMove;
 
 public class QuoridorPage extends JFrame{ 
 
@@ -1003,6 +1005,18 @@ public class QuoridorPage extends JFrame{
 			}
 			stageMove=false;
 			refreshData();
+			
+			List<Move> mov=q.getCurrentGame().getMoves();
+			System.out.println("end of turn");
+			for (Move m:mov) {
+				if (m instanceof WallMove) {
+					System.out.println("wall  destination:"+m.getTargetTile().getRow()+","+m.getTargetTile().getColumn()+" movenumber:"+m.getMoveNumber()+" roundNumber:"+m.getMoveNumber());
+				}
+				else {
+					System.out.println("destination:"+m.getTargetTile().getRow()+","+m.getTargetTile().getColumn()+" movenumber:"+m.getMoveNumber()+" roundNumber:"+m.getMoveNumber());
+				}
+				
+			}
 		}
 		else {
 			//TODO the draw game method should be checked here

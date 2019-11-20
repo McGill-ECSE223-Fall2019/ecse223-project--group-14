@@ -36,7 +36,7 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 	@Override
 	public void mousePressed(MouseEvent e) {
 		Component cursor = frame.getContentPane().findComponentAt(e.getX(), e.getY());
-		System.out.println(cursor.getClass().toString());
+		//System.out.println(cursor.getClass().toString());
 		if (heldComponent == null) {
 			if (cursor instanceof HoldableComponent) {
 				HoldableComponent temp = (HoldableComponent) cursor;

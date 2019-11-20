@@ -134,7 +134,7 @@ public class PawnComponent extends HoldableComponent{
 			return false; 
 		}
 		
-		System.out.print(side);
+		//System.out.print(side);
 		pb.change();				//necessary in case of load game, can't move to init cuz of gherkin tests
 		pb.move(side);
 		
