@@ -927,11 +927,16 @@ public class PawnBehavior
   public void legalMove(boolean isJump, String cside){
     status="success";
     	GamePosition curr= currentGame.getCurrentPosition();
-		
+		GamePosition next;
 		int nT=getNextTile(isJump,cside);
 		
 		if (player.hasGameAsWhite()) {
-			curr.setWhitePosition(new PlayerPosition(player, currentGame.getQuoridor().getBoard().getTile(nT)));
+			PlayerPosition pos=new PlayerPosition(player, currentGame.getQuoridor().getBoard().getTile(nT));
+			PlayerPosition pos2=new PlayerPosition(currentGame.getBlackPlayer(),curr.getBlackPosition().getTile());
+			next = new GamePosition(currentGame.numberOfPositions(), pos, pos2, currentGame.getBlackPlayer(), currentGame);
+			
+			currentGame.setCurrentPosition(next);
+			//curr.setWhitePosition(new PlayerPosition(player, currentGame.getQuoridor().getBoard().getTile(nT)));
 			if (isJump){
 				currentGame.addMove(new JumpMove(currentGame.numberOfPositions(), 0, player, currentGame.getQuoridor().getBoard().getTile(nT),currentGame));
 			}
@@ -940,7 +945,12 @@ public class PawnBehavior
 			}
 		}
 		else {
-			curr.setBlackPosition(new PlayerPosition(player, currentGame.getQuoridor().getBoard().getTile(nT)));
+			PlayerPosition pos=new PlayerPosition(player, currentGame.getQuoridor().getBoard().getTile(nT));
+			PlayerPosition pos2=new PlayerPosition(currentGame.getWhitePlayer(),curr.getWhitePosition().getTile());
+			next = new GamePosition(currentGame.numberOfPositions(), pos2, pos, currentGame.getWhitePlayer(), currentGame);
+			
+			currentGame.setCurrentPosition(next);
+			//curr.setBlackPosition(new PlayerPosition(player, currentGame.getQuoridor().getBoard().getTile(nT)));
 			if (isJump){
 				currentGame.addMove(new JumpMove(currentGame.numberOfPositions(), 1, player, currentGame.getQuoridor().getBoard().getTile(nT),currentGame));
 			}
@@ -960,7 +970,7 @@ public class PawnBehavior
    * @param cside
    * @return boolean
    */
-  // line 591 "../../../../../PawnStateMachine.ump"
+  // line 601 "../../../../../PawnStateMachine.ump"
   public Boolean isAJump(String cside){
     String opSide=isOpponentAdjacent(false,"",true);
 		if (cside.compareTo(opSide)==0){
@@ -977,7 +987,7 @@ public class PawnBehavior
    * @param cside
    * @return boolean
    */
-  // line 606 "../../../../../PawnStateMachine.ump"
+  // line 616 "../../../../../PawnStateMachine.ump"
   public Boolean isDiag(String cside){
     if(cside.compareTo("upleft")==0){
 			return true;
@@ -1003,7 +1013,7 @@ public class PawnBehavior
    * @param cside
    * @return integer
    */
-  // line 629 "../../../../../PawnStateMachine.ump"
+  // line 639 "../../../../../PawnStateMachine.ump"
   public int getNextTile(boolean isJump, String cside){
     int curRow = getCurrentPawnRow()-1;
     	int curCol = getCurrentPawnColumn()-1;
@@ -1056,7 +1066,7 @@ public class PawnBehavior
    * @param cside
    * @return integer
    */
-  // line 679 "../../../../../PawnStateMachine.ump"
+  // line 689 "../../../../../PawnStateMachine.ump"
   public int getNextRow(boolean isJump, String cside){
     return getNextTile(isJump,cside)/9;
   }
@@ -1069,7 +1079,7 @@ public class PawnBehavior
    * @param cside
    * @return integer
    */
-  // line 689 "../../../../../PawnStateMachine.ump"
+  // line 699 "../../../../../PawnStateMachine.ump"
   public int getNextCol(boolean isJump, String cside){
     return getNextTile(isJump,cside)%9;
   }
@@ -1088,7 +1098,7 @@ public class PawnBehavior
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 695 "../../../../../PawnStateMachine.ump"
+  // line 705 "../../../../../PawnStateMachine.ump"
   enum MoveDirection 
   {
     East, South, West, North;

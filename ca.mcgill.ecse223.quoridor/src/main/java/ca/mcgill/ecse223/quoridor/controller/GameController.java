@@ -37,6 +37,7 @@ import ca.mcgill.ecse223.quoridor.model.WallMove;
 import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
 import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 import ca.mcgill.ecse223.quoridor.model.GamePosition;
+import ca.mcgill.ecse223.quoridor.model.Move;
 
 public class GameController {
 	
@@ -116,7 +117,7 @@ public class GameController {
 				new Wall(j+10, p2);
 			}*/
 		//}
-		GamePosition gamePos=new GamePosition(2, player1Position, player2Position, q.getCurrentGame().getWhitePlayer(), q.getCurrentGame());
+		GamePosition gamePos=new GamePosition(0, player1Position, player2Position, q.getCurrentGame().getWhitePlayer(), q.getCurrentGame());
 		q.getCurrentGame().setCurrentPosition(gamePos);
 		
 	}
@@ -1015,7 +1016,17 @@ public class GameController {
 		Quoridor q = QuoridorApplication.getQuoridor();
 		Game g=q.getCurrentGame();
 		Direction dirc;
-		
+		GamePosition curr=g.getCurrentPosition();
+		GamePosition next;
+		PlayerPosition p1=new PlayerPosition(g.getWhitePlayer(),curr.getWhitePosition().getTile());
+		PlayerPosition p2=new PlayerPosition(g.getBlackPlayer(),curr.getBlackPosition().getTile());
+		if(curr.getPlayerToMove().hasGameAsWhite()) {
+			next=new GamePosition(g.numberOfPositions(), p1, p2, g.getBlackPlayer(), g);
+		}
+		else {
+			next=new GamePosition(g.numberOfPositions(), p1, p2, g.getWhitePlayer(), g);
+		}
+		g.setCurrentPosition(next);
 		if(dir.compareTo("vertical") == 0) {
 			dirc = Direction.Vertical;
 		}
@@ -1028,7 +1039,7 @@ public class GameController {
 				w.getMove().delete();
 			}
 			g.addMove(new WallMove(1,1,g.getWhitePlayer(),q.getBoard().getTile(col+row*9),g,dirc,w));
-			//new WallMove(q.getCurrentGame().getMoves().size(),0,q.getCurrentGame().getWhitePlayer(),q.getBoard().getTile(col+row*9),q.getCurrentGame(),dirc,w);
+			
 			g.getCurrentPosition().removeWhiteWallsInStock(g.getWhitePlayer().getWall(id));
 			g.getCurrentPosition().addWhiteWallsOnBoard(g.getWhitePlayer().getWall(id));
 		}
@@ -1038,7 +1049,7 @@ public class GameController {
 				w.getMove().delete();
 			}
 			g.addMove(new WallMove(1,1,g.getBlackPlayer(),q.getBoard().getTile(col+row*9),g,dirc,w));
-			//new WallMove(g.getMoves().size(), 1, q.getCurrentGame().getBlackPlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
+			
 			g.getCurrentPosition().removeBlackWallsInStock(g.getBlackPlayer().getWall(id-10));
 			g.getCurrentPosition().addBlackWallsOnBoard(g.getBlackPlayer().getWall(id-10));
 		}
@@ -1585,6 +1596,7 @@ public class GameController {
 			return false;
 		}
 	}
+	
 	
 	/**
 	 * * For CheckifPathExists feature

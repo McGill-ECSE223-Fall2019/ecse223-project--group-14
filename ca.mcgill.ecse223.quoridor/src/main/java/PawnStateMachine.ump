@@ -556,11 +556,16 @@ class PawnBehavior {
     void legalMove(boolean isJump, String cside) { 
 		status="success";
     	GamePosition curr= currentGame.getCurrentPosition();
-		
+		GamePosition next;
 		int nT=getNextTile(isJump,cside);
 		
 		if (player.hasGameAsWhite()) {
-			curr.setWhitePosition(new PlayerPosition(player, currentGame.getQuoridor().getBoard().getTile(nT)));
+			PlayerPosition pos=new PlayerPosition(player, currentGame.getQuoridor().getBoard().getTile(nT));
+			PlayerPosition pos2=new PlayerPosition(currentGame.getBlackPlayer(),curr.getBlackPosition().getTile());
+			next = new GamePosition(currentGame.numberOfPositions(), pos, pos2, currentGame.getBlackPlayer(), currentGame);
+			
+			currentGame.setCurrentPosition(next);
+			//curr.setWhitePosition(new PlayerPosition(player, currentGame.getQuoridor().getBoard().getTile(nT)));
 			if (isJump){
 				currentGame.addMove(new JumpMove(currentGame.numberOfPositions(), 0, player, currentGame.getQuoridor().getBoard().getTile(nT),currentGame));
 			}
@@ -569,7 +574,12 @@ class PawnBehavior {
 			}
 		}
 		else {
-			curr.setBlackPosition(new PlayerPosition(player, currentGame.getQuoridor().getBoard().getTile(nT)));
+			PlayerPosition pos=new PlayerPosition(player, currentGame.getQuoridor().getBoard().getTile(nT));
+			PlayerPosition pos2=new PlayerPosition(currentGame.getWhitePlayer(),curr.getWhitePosition().getTile());
+			next = new GamePosition(currentGame.numberOfPositions(), pos2, pos, currentGame.getWhitePlayer(), currentGame);
+			
+			currentGame.setCurrentPosition(next);
+			//curr.setBlackPosition(new PlayerPosition(player, currentGame.getQuoridor().getBoard().getTile(nT)));
 			if (isJump){
 				currentGame.addMove(new JumpMove(currentGame.numberOfPositions(), 1, player, currentGame.getQuoridor().getBoard().getTile(nT),currentGame));
 			}

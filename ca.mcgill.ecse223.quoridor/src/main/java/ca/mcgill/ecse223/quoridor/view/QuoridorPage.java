@@ -29,6 +29,7 @@ import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameController;
 
 import ca.mcgill.ecse223.quoridor.model.Game;
+import ca.mcgill.ecse223.quoridor.model.GamePosition;
 import ca.mcgill.ecse223.quoridor.model.Move;
 import ca.mcgill.ecse223.quoridor.model.Direction;
 
@@ -618,6 +619,12 @@ public class QuoridorPage extends JFrame{
 			gc.startTheClock(q,timer);
 			
 			refreshData();
+			//TODO
+			System.out.println("Positions");
+			List<GamePosition> gp=q.getCurrentGame().getPositions();
+			for (GamePosition pos: gp) {
+				System.out.println(pos.toString());
+			}
 			
 		}
 		else {
@@ -986,11 +993,15 @@ public class QuoridorPage extends JFrame{
 	
 	private void endTurnButtonActionPerformed(java.awt.event.ActionEvent evt) {	//this is the same as switch player
 		error = "";
-		
+		if (!stageMove) {
+			error = "Must perform a move before ending turn";
+			refreshData();
+			return;
+		}
 		boolean isOver=gc.checkResult(q);
 		if (!isOver) {
 			currPlayer=!currPlayer;
-			gc.switchPlayer(q);
+			//gc.switchPlayer(q);
 			if (currPlayer) {
 				timeRem1.setVisible(true);
 				timeRem2.setVisible(false);
@@ -1008,6 +1019,7 @@ public class QuoridorPage extends JFrame{
 			
 			List<Move> mov=q.getCurrentGame().getMoves();
 			System.out.println("end of turn");
+			System.out.println("Moves");
 			for (Move m:mov) {
 				if (m instanceof WallMove) {
 					System.out.println("wall  destination:"+m.getTargetTile().getRow()+","+m.getTargetTile().getColumn()+" movenumber:"+m.getMoveNumber()+" roundNumber:"+m.getMoveNumber());
@@ -1015,7 +1027,11 @@ public class QuoridorPage extends JFrame{
 				else {
 					System.out.println("destination:"+m.getTargetTile().getRow()+","+m.getTargetTile().getColumn()+" movenumber:"+m.getMoveNumber()+" roundNumber:"+m.getMoveNumber());
 				}
-				
+			}
+			System.out.println("Postiions");
+			List<GamePosition> gp=q.getCurrentGame().getPositions();
+			for (GamePosition pos: gp) {
+				System.out.println(pos.toString());
 			}
 		}
 		else {

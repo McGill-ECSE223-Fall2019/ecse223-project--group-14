@@ -581,12 +581,6 @@ public class CucumberStepDefinitions {
 			gc.dropWall(target.getColumn(),target.getRow(),dir, id);
 			game.addMove(wmc);
 			game.setWallMoveCandidate(null);
-			if (game.getCurrentPosition().getPlayerToMove()==game.getWhitePlayer()) {
-				game.getCurrentPosition().setPlayerToMove(game.getBlackPlayer());
-			}
-			else {
-				game.getCurrentPosition().setPlayerToMove(game.getWhitePlayer());
-			}
 		}
 	}
 	
@@ -1918,7 +1912,8 @@ public class CucumberStepDefinitions {
 		/*pb.initiate(side);
 		pb.dropPawn();*/
 		create=pb.getStatus();
-		if (create.compareTo("success")==0) {
+		
+		/*if (create.compareTo("success")==0) {
 			//pb.change();
 			if (curr.getPlayerToMove().hasGameAsWhite()) {
 				curr.setPlayerToMove(quoridor.getCurrentGame().getBlackPlayer());
@@ -1926,7 +1921,7 @@ public class CucumberStepDefinitions {
 			else {
 				curr.setPlayerToMove(quoridor.getCurrentGame().getWhitePlayer());
 			}
-		}
+		}*/
 	 }
 	 
 	 /**
