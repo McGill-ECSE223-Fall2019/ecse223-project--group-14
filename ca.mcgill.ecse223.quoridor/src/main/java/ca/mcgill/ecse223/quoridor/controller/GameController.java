@@ -1193,10 +1193,12 @@ public class GameController {
 			
 		}
 		
-		GamePosition gp = makeInitialGamePosition(game, playerOnePosition, playerTwoPosition, 
-				playerOne, isPlayerOneWhite);
-		game.setCurrentPosition(gp);
-		
+		//GamePosition gp = makeInitialGamePosition(game, playerOnePosition, playerTwoPosition, playerOne, isPlayerOneWhite);
+		//game.setCurrentPosition(gp);
+		game.getCurrentPosition().setWhitePosition(playerOnePosition);
+		game.getCurrentPosition().setBlackPosition(playerTwoPosition);
+		game.getCurrentPosition().setPlayerToMove(playerOne);
+		GamePosition gp=game.getCurrentPosition();
 		/*	
 		 * 	Puts freshly-initialized walls in the stocks of both players.
 		 * 	White has walls 1-10, black has walls 11-20
