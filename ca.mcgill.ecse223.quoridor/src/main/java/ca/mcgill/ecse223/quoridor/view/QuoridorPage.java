@@ -746,7 +746,6 @@ public class QuoridorPage extends JFrame{
 
 		
 		currPlayer=q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite();
-		
 		changeBoard();
 		/*
 		int xb=q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
@@ -928,6 +927,19 @@ public class QuoridorPage extends JFrame{
 		error = "";
 		boolean success=gc.stepForward(q);
 		if(success) {
+			for (int i=0;i<10;i++) {
+				if (wwalls[i].getDirection().compareTo("horizontal")==0) {
+					wwalls[i].rotate();
+				}
+				
+				if (bwalls[i].getDirection().compareTo("horizontal")==0) {
+					bwalls[i].rotate();
+				}
+				
+				wwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 125, WallComponent.wallW, WallComponent.wallH);
+				bwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 675, WallComponent.wallW, WallComponent.wallH);
+			}
+			currPlayer=q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite();
 			changeBoard();
 		}
 		else {
@@ -945,6 +957,19 @@ public class QuoridorPage extends JFrame{
 		
 		boolean success=gc.stepBackward(q);
 		if(success) {
+			for (int i=0;i<10;i++) {
+				if (wwalls[i].getDirection().compareTo("horizontal")==0) {
+					wwalls[i].rotate();
+				}
+				
+				if (bwalls[i].getDirection().compareTo("horizontal")==0) {
+					bwalls[i].rotate();
+				}
+				
+				wwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 125, WallComponent.wallW, WallComponent.wallH);
+				bwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 675, WallComponent.wallW, WallComponent.wallH);
+			}
+			currPlayer=q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite();
 			changeBoard();
 		}
 		else {
@@ -1005,6 +1030,7 @@ public class QuoridorPage extends JFrame{
 		
 		// update visuals
 		banner = "Main Menu"; //for testing
+		currPlayer=true;
 		q.getCurrentGame().delete();
 		refreshData();
 	}
@@ -1049,8 +1075,11 @@ public class QuoridorPage extends JFrame{
 			System.out.println("Postiions");
 			List<GamePosition> gp=q.getCurrentGame().getPositions();
 			for (GamePosition pos: gp) {
-				System.out.println(pos.toString());
+				System.out.println("pos id "+pos.getId());
+				System.out.println("white walls on board "+pos.getWhiteWallsOnBoard().size());
+				System.out.println("black walls on board "+pos.getBlackWallsOnBoard().size());
 			}
+			
 		}
 		else {
 			//TODO the draw game method should be checked here
@@ -1515,8 +1544,18 @@ public class QuoridorPage extends JFrame{
 		bPawn.setBounds(107+xb*50, 167+yb*50, 25, 25);
 		
 		int width,height,x,y; boolean vert;
+		
+		GamePosition cur=q.getCurrentGame().getCurrentPosition();
 		for (int i=0;i<10;i++) {
-			if (q.getCurrentGame().getWhitePlayer().getWall(i).getMove()!=null) {
+			boolean there=false;
+			for (Wall w:cur.getWhiteWallsOnBoard()) {
+				if(w.equals(q.getCurrentGame().getWhitePlayer().getWall(i))) {
+					there=true;
+					break;
+				}
+			}
+			if (there) {
+			//if (q.getCurrentGame().getWhitePlayer().getWall(i).getMove()!=null) {
 				if (q.getCurrentGame().getWhitePlayer().getWall(i).getMove().getWallDirection()==Direction.Horizontal) {
 					vert=false;
 					width=WallComponent.wallH;
@@ -1542,7 +1581,16 @@ public class QuoridorPage extends JFrame{
 			else {
 				wwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 125, WallComponent.wallW, WallComponent.wallH);
 			}
-			if (q.getCurrentGame().getBlackPlayer().getWall(i).getMove()!=null) {
+			
+			there=false;
+			for (Wall w:cur.getBlackWallsOnBoard()) {
+				if(w.equals(q.getCurrentGame().getBlackPlayer().getWall(i))) {
+					there=true;
+					break;
+				}
+			}
+			if (there) {
+			//if (q.getCurrentGame().getBlackPlayer().getWall(i).getMove()!=null) {
 				if (q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getWallDirection()==Direction.Horizontal) {
 					vert=false;
 					width=WallComponent.wallH;

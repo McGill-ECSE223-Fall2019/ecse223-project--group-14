@@ -1026,6 +1026,18 @@ public class GameController {
 		else {
 			next=new GamePosition(g.numberOfPositions(), p1, p2, g.getWhitePlayer(), g);
 		}
+		for (Wall w : curr.getBlackWallsOnBoard()) {
+			next.addBlackWallsOnBoard(w);
+		}
+		for (Wall w : curr.getWhiteWallsOnBoard()) {
+			next.addWhiteWallsOnBoard(w);
+		}
+		for (Wall w : curr.getBlackWallsInStock()) {
+			next.addBlackWallsInStock(w);
+		}
+		for (Wall w : curr.getWhiteWallsInStock()) {
+			next.addWhiteWallsInStock(w);
+		}
 		g.setCurrentPosition(next);
 		if(dir.compareTo("vertical") == 0) {
 			dirc = Direction.Vertical;

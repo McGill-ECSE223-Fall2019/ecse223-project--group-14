@@ -564,6 +564,19 @@ class PawnBehavior {
 			PlayerPosition pos2=new PlayerPosition(currentGame.getBlackPlayer(),curr.getBlackPosition().getTile());
 			next = new GamePosition(currentGame.numberOfPositions(), pos, pos2, currentGame.getBlackPlayer(), currentGame);
 			
+			for (Wall w : curr.getBlackWallsOnBoard()) {
+				next.addBlackWallsOnBoard(w);
+			}
+			for (Wall w : curr.getWhiteWallsOnBoard()) {
+				next.addWhiteWallsOnBoard(w);
+			}
+			for (Wall w : curr.getBlackWallsInStock()) {
+				next.addBlackWallsInStock(w);
+			}
+			for (Wall w : curr.getWhiteWallsInStock()) {
+				next.addWhiteWallsInStock(w);
+			}
+			
 			currentGame.setCurrentPosition(next);
 			//curr.setWhitePosition(new PlayerPosition(player, currentGame.getQuoridor().getBoard().getTile(nT)));
 			if (isJump){
@@ -577,7 +590,18 @@ class PawnBehavior {
 			PlayerPosition pos=new PlayerPosition(player, currentGame.getQuoridor().getBoard().getTile(nT));
 			PlayerPosition pos2=new PlayerPosition(currentGame.getWhitePlayer(),curr.getWhitePosition().getTile());
 			next = new GamePosition(currentGame.numberOfPositions(), pos2, pos, currentGame.getWhitePlayer(), currentGame);
-			
+			for (Wall w : curr.getBlackWallsOnBoard()) {
+				next.addBlackWallsOnBoard(w);
+			}
+			for (Wall w : curr.getWhiteWallsOnBoard()) {
+				next.addWhiteWallsOnBoard(w);
+			}
+			for (Wall w : curr.getBlackWallsInStock()) {
+				next.addBlackWallsInStock(w);
+			}
+			for (Wall w : curr.getWhiteWallsInStock()) {
+				next.addWhiteWallsInStock(w);
+			}
 			currentGame.setCurrentPosition(next);
 			//curr.setBlackPosition(new PlayerPosition(player, currentGame.getQuoridor().getBoard().getTile(nT)));
 			if (isJump){
