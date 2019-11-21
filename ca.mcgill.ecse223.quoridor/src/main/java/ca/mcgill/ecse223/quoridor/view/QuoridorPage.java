@@ -747,6 +747,8 @@ public class QuoridorPage extends JFrame{
 		
 		currPlayer=q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite();
 		
+		changeBoard();
+		/*
 		int xb=q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
 		int yb=q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
 		int xw=q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
@@ -809,6 +811,7 @@ public class QuoridorPage extends JFrame{
 				bwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 675, WallComponent.wallW, WallComponent.wallH);
 			}
 		}
+		*/
 		
 		loadFileButton.setVisible(false);
 		loadField.setVisible(false);
@@ -923,6 +926,13 @@ public class QuoridorPage extends JFrame{
 	private void stepForwardButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message		
 		error = "";
+		boolean success=gc.stepForward(q);
+		if(success) {
+			changeBoard();
+		}
+		else {
+			error="Already at final position";
+		}
 		//TODO in phase 2
 		// update visuals
 		
@@ -932,6 +942,14 @@ public class QuoridorPage extends JFrame{
 	private void stepBackwardButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message		
 		error = "";
+		
+		boolean success=gc.stepBackward(q);
+		if(success) {
+			changeBoard();
+		}
+		else {
+			error="Already at first position";
+		}
 		//TODO in phase 2
 		// update visuals
 		
@@ -1485,5 +1503,70 @@ public class QuoridorPage extends JFrame{
 	
 	public Quoridor getQ() {
 		return q;
+	}
+	
+	public void changeBoard() {
+		int xb=q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+		int yb=q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+		int xw=q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+		int yw=q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+		
+		wPawn.setBounds(107+xw*50, 167+yw*50, 25, 25);
+		bPawn.setBounds(107+xb*50, 167+yb*50, 25, 25);
+		
+		int width,height,x,y; boolean vert;
+		for (int i=0;i<10;i++) {
+			if (q.getCurrentGame().getWhitePlayer().getWall(i).getMove()!=null) {
+				if (q.getCurrentGame().getWhitePlayer().getWall(i).getMove().getWallDirection()==Direction.Horizontal) {
+					vert=false;
+					width=WallComponent.wallH;
+					height=WallComponent.wallW;
+					
+				}
+				else {
+					vert=true;
+					width=WallComponent.wallW;
+					height=WallComponent.wallH;
+				}
+				x=q.getCurrentGame().getWhitePlayer().getWall(i).getMove().getTargetTile().getColumn();
+				y=q.getCurrentGame().getWhitePlayer().getWall(i).getMove().getTargetTile().getRow();
+				
+				if(vert) {
+					wwalls[i].setBounds((int)points[x-1][y-1].getX(),(int)points[x-1][y-1].getY(),width,height);
+				}
+				else {
+					wwalls[i].rotate();
+					wwalls[i].setBounds((int)points2[x-1][y-1].getX(),(int)points2[x-1][y-1].getY(),width,height);
+				}
+			}
+			else {
+				wwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 125, WallComponent.wallW, WallComponent.wallH);
+			}
+			if (q.getCurrentGame().getBlackPlayer().getWall(i).getMove()!=null) {
+				if (q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getWallDirection()==Direction.Horizontal) {
+					vert=false;
+					width=WallComponent.wallH;
+					height=WallComponent.wallW;
+				}
+				else {
+					vert=true;
+					width=WallComponent.wallW;
+					height=WallComponent.wallH;
+				}
+				x=q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getTargetTile().getColumn();
+				y=q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getTargetTile().getRow();
+				
+				if(vert) {
+					bwalls[i].setBounds((int)points[x-1][y-1].getX(),(int)points[x-1][y-1].getY(),width,height);
+				}
+				else {
+					bwalls[i].rotate();
+					bwalls[i].setBounds((int)points2[x-1][y-1].getX(),(int)points2[x-1][y-1].getY(),WallComponent.wallH,WallComponent.wallW);
+				}
+			}
+			else {
+				bwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 675, WallComponent.wallW, WallComponent.wallH);
+			}
+		}
 	}
 }

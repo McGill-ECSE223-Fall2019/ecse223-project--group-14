@@ -1599,6 +1599,27 @@ public class GameController {
 		}
 	}
 	
+	public boolean stepBackward(Quoridor q) {
+		int cur=q.getCurrentGame().getCurrentPosition().getId();
+		if (cur==0) {	//if at beginning, do nothing
+			return false;
+		}
+		else {
+			q.getCurrentGame().setCurrentPosition(q.getCurrentGame().getPosition(cur-1));
+			return true;
+		}
+	}
+	
+	public boolean stepForward(Quoridor q) {
+		int cur=q.getCurrentGame().getCurrentPosition().getId();
+		if (cur==q.getCurrentGame().numberOfPositions()-1) {	//if at final, do nothing
+			return false;
+		}
+		else {
+			q.getCurrentGame().setCurrentPosition(q.getCurrentGame().getPosition(cur+1));
+			return true;
+		}
+	}
 	
 	/**
 	 * * For CheckifPathExists feature
