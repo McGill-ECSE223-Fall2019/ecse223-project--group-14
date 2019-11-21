@@ -1195,8 +1195,14 @@ public class GameController {
 		
 		//GamePosition gp = makeInitialGamePosition(game, playerOnePosition, playerTwoPosition, playerOne, isPlayerOneWhite);
 		//game.setCurrentPosition(gp);
-		game.getCurrentPosition().setWhitePosition(playerOnePosition);
-		game.getCurrentPosition().setBlackPosition(playerTwoPosition);
+		if (isPlayerOneWhite) {
+			game.getCurrentPosition().setWhitePosition(playerOnePosition);
+			game.getCurrentPosition().setBlackPosition(playerTwoPosition);
+		}
+		else {
+			game.getCurrentPosition().setWhitePosition(playerTwoPosition);
+			game.getCurrentPosition().setBlackPosition(playerOnePosition);
+		}
 		game.getCurrentPosition().setPlayerToMove(playerOne);
 		GamePosition gp=game.getCurrentPosition();
 		/*	
