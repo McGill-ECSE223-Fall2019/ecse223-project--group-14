@@ -56,6 +56,7 @@ public class CucumberStepDefinitions {
 	private boolean resvalid;
 	private String pathExistsFor;
 	private Player starter;
+	int index;
 	private static Direction Direction;
 	
 
@@ -2158,12 +2159,17 @@ public class CucumberStepDefinitions {
 	 public void theFollowingMovesHaveBeenPlayedInGame(io.cucumber.datatable.DataTable dataTable) { //should probably take in the moves?
 		 Quoridor q=QuoridorApplication.getQuoridor();
 		 Game g=q.getCurrentGame();
-		 g.addMove(new StepMove(1,1,g.getWhitePlayer(),q.getBoard().getTile(4*9+7),g));
-		 g.addMove(new StepMove(1,2,g.getBlackPlayer(),q.getBoard().getTile(4*9+1),g));
-		 g.addMove(new StepMove(2,1,g.getWhitePlayer(),q.getBoard().getTile(4*9+6),g));
-		 g.addMove(new StepMove(2,2,g.getBlackPlayer(),q.getBoard().getTile(4*9+2),g));
-		 g.addMove(new WallMove(3,1,g.getWhitePlayer(),q.getBoard().getTile(4*9+2),g, Direction.Horizontal,g.getWhitePlayer().getWall(0)));
-		 g.addMove(new WallMove(3,2,g.getBlackPlayer(),q.getBoard().getTile(4*9+7),g, Direction.Horizontal,g.getBlackPlayer().getWall(0)));
+		 
+		 List<Map<String, String>> valueMaps = dataTable.asMaps();
+		 for (Map<String, String> map : valueMaps) {
+			//TODO this needs to read the dataTable and create moves and GamePositions accurately
+		 }
+		 g.addMove(new StepMove(1,1,g.getWhitePlayer(),q.getBoard().getTile(4*9+1),g));
+		 g.addMove(new StepMove(1,2,g.getBlackPlayer(),q.getBoard().getTile(4*9+7),g));
+		 g.addMove(new StepMove(2,1,g.getWhitePlayer(),q.getBoard().getTile(4*9+2),g));
+		 g.addMove(new StepMove(2,2,g.getBlackPlayer(),q.getBoard().getTile(4*9+6),g));
+		 g.addMove(new WallMove(3,1,g.getWhitePlayer(),q.getBoard().getTile(4*9+6),g, Direction.Horizontal,g.getWhitePlayer().getWall(0)));
+		 g.addMove(new WallMove(3,2,g.getBlackPlayer(),q.getBoard().getTile(4*9+1),g, Direction.Horizontal,g.getBlackPlayer().getWall(0)));
 	 }
 	 
 	 /**
@@ -2171,8 +2177,9 @@ public class CucumberStepDefinitions {
 	  */
 	 @And ("The game does not have a final result")
 	 public void theGameDoesnotHaveAFinalResult() {
-		 //TODO
-		 //check if last move is final and if so remove it and change position
+		 Quoridor q=QuoridorApplication.getQuoridor();
+		 GameController gc=new GameController();
+		 assertFalse(gc.checkResult(q));
 	 }
 	 
 	 /**
@@ -2185,7 +2192,7 @@ public class CucumberStepDefinitions {
 	 public void theNextMoveIs(int movno,int rndno){
 		 Quoridor q=QuoridorApplication.getQuoridor();
 		 Game g=q.getCurrentGame();
-		 int index=2*(movno-1)+rndno-1;
+		 index=2*(movno-1)+rndno-1;
 		 if (index%2==0) {
 			 g.getCurrentPosition().setPlayerToMove(g.getWhitePlayer());
 		 }
@@ -2202,7 +2209,9 @@ public class CucumberStepDefinitions {
 		 Quoridor q=QuoridorApplication.getQuoridor();
 		 GameController gc=new GameController();
 		 resvalid=gc.continueGame(q);
-		 
+		 if (!resvalid) {
+			 q.getCurrentGame().setGameStatus(GameStatus.Replay);	//this is done by the view for the app
+		 }
 		 
 	 }
 	 
@@ -2211,7 +2220,9 @@ public class CucumberStepDefinitions {
 	  */
 	 @And ("The remaining moves of the game shall be removed")
 	 public void theRemainingMovesOfTheGameShallBeRemoved() {
-		 
+		 Quoridor q=QuoridorApplication.getQuoridor();
+		 Game g=q.getCurrentGame();
+		 assertEquals(index,g.getMoves().size());		//index is the index of first move that was removed
 	 }
 	 
 	 /**
@@ -2219,7 +2230,14 @@ public class CucumberStepDefinitions {
 	  */
 	 @And ("The game has a final result")
 	 public void theGameHasAFinalResult() {
-		 //insert move with final position
+		 Quoridor q=QuoridorApplication.getQuoridor();
+		 Game g=q.getCurrentGame();
+		 g.addMove(new StepMove(4,1,g.getWhitePlayer(),q.getBoard().getTile(4*9+8),g));
+		 GamePosition curr=g.getCurrentPosition();
+		 PlayerPosition p1=new PlayerPosition(g.getWhitePlayer(),q.getBoard().getTile(4*9+8));
+		 PlayerPosition p2=new PlayerPosition(g.getBlackPlayer(),curr.getBlackPosition().getTile());
+		 GamePosition next=new GamePosition(6,p1,p2,g.getWhitePlayer(),g);
+		 g.setCurrentPosition(next);
 	 }
 	 
 	 /**
@@ -2284,7 +2302,13 @@ public class CucumberStepDefinitions {
 	  */
 	 @And ("The clock of {string} is more than zero")
 	 public void theClockOfIsMoreThanZero(String player) {
-		  
+		 Quoridor q=QuoridorApplication.getQuoridor(); 
+		 if (player.compareTo("white")==0) {
+			  q.getCurrentGame().getWhitePlayer().setRemainingTime(new Time(1000*60*5));
+		 }
+		 else {
+			 q.getCurrentGame().getBlackPlayer().setRemainingTime(new Time(1000*60*5));
+		 }
 	 }
 	  
 	 /**

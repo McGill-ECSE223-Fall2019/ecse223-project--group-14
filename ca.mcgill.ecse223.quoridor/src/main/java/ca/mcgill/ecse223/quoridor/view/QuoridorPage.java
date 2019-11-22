@@ -910,7 +910,11 @@ public class QuoridorPage extends JFrame{
 			else {
 				turnMessage2.setVisible(true);
 			}
-			
+			q.getCurrentGame().getWhitePlayer().setRemainingTime(new Time(1000*60*5));
+			q.getCurrentGame().getBlackPlayer().setRemainingTime(new Time(1000*60*5));
+			Time t=q.getCurrentGame().getBlackPlayer().getRemainingTime();
+			timeRem1.setText(convT2S(t));
+			timeRem2.setText(convT2S(t));
 			stageMove=false;
 			timer.start();
 			banner = "GamePlay";
