@@ -593,7 +593,120 @@ public class CucumberStepDefinitions {
 	public void iMoveWall(String side) {
 		GameController gc = new GameController();
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
-		//gc.moveWall(game, side);
+		gc.moveWall(game, side);
+	}
+	
+	
+	/**
+	 * @author Saifullah9
+	 * @param q
+	 */
+	@When("Jump to start position is initiated")
+	public void jumpStart() {
+		Quoridor q = new Quoridor();
+		GameController gc = new GameController();
+		gc.jumpToStart(q);
+	}
+	
+	/**
+	 * @author Saifullah9
+	 * @param m
+	 * @param r
+	 */
+	@Then("The next move shall be {int}.{int}")
+	public void theNextMove(int m,int r) {
+	/*
+	 * Here I am assuming that the ID of the currentPosition is the same as the id of move
+	 */
+	Quoridor q = QuoridorApplication.getQuoridor();
+	int cur = q.getCurrentGame().getCurrentPosition().getId();
+	Move move = q.getCurrentGame().getMove(cur-1);
+	
+	assertEquals(m, move.getMoveNumber());
+	assertEquals(r,move.getRoundNumber());
+	
+	}
+	
+	/**
+	 * @author Saifullah9
+	 * @param r
+	 * @param c
+	 */
+	@And("White player's position shall be \\({int},{int})")
+	public void WhitePlayerPosition(int r, int c) {
+		
+		GameController gc = new GameController();
+		GamePosition gamePos = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
+		int row = gamePos.getWhitePosition().getTile().getRow();
+		int col = gamePos.getWhitePosition().getTile().getColumn();
+		assertEquals(r,row);
+		assertEquals(c,col);
+	}
+	
+	/**
+	 * @author Saifullah9
+	 * @param r
+	 * @param c
+	 */
+	@And("Black player's position shall be \\({int},{int})")
+	public void BlackPlayerPosition(int r, int c) {
+		
+		GameController gc = new GameController();
+		GamePosition gamePos = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
+		int row = gamePos.getBlackPosition().getTile().getRow();
+		int col = gamePos.getBlackPosition().getTile().getColumn();
+		assertEquals(r,row);
+		assertEquals(c,col);
+	}
+	
+	/**
+	 * @author Saifullah9
+	 * @param n
+	 */
+	@And("White has {int} on stock")
+	public void WhiteWallsOnStock(int n) {
+		
+		GameController gc = new GameController();
+		GamePosition gamePos = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
+		int numberOfWalls = gamePos.getWhiteWallsInStock().size();
+		assertEquals(n,numberOfWalls);
+		}
+	
+	/**
+	 * @author Saifullah9
+	 * @param n
+	 */
+	@And("Black has {int} on stock")
+	public void BlackWallsOnStock(int n) {
+	
+		GameController gc = new GameController();
+		GamePosition gamePos = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
+		int numberOfWalls = gamePos.getBlackWallsInStock().size();
+		assertEquals(n,numberOfWalls);
+		}
+	
+	@When("Jump to final position is initiated")
+	public void jumpFinal() {
+		
+		Quoridor q = new Quoridor();
+		GameController gc = new GameController();
+		gc.jumpToFinal(q);
+	}
+	
+	@When("Step backward is initiated")
+	public void stepback() {
+		
+		Quoridor q = new Quoridor();
+		GameController gc = new GameController();
+		gc.stepBackward(q);
+	}
+	
+	@When("Step forward is initiated")
+	public void stepfront() {
+		
+		Quoridor q = new Quoridor();
+		GameController gc = new GameController();
+		gc.stepForward(q);
 	}
 	
 	/**
