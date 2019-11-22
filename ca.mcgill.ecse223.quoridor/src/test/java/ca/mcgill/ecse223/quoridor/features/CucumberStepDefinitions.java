@@ -608,6 +608,11 @@ public class CucumberStepDefinitions {
 		gc.jumpToStart(q);
 	}
 	
+	/**
+	 * @author Saifullah9
+	 * @param m
+	 * @param r
+	 */
 	@Then("The next move shall be {int}.{int}")
 	public void theNextMove(int m,int r) {
 	/*
@@ -622,6 +627,11 @@ public class CucumberStepDefinitions {
 	
 	}
 	
+	/**
+	 * @author Saifullah9
+	 * @param r
+	 * @param c
+	 */
 	@And("White player's position shall be \\({int},{int})")
 	public void WhitePlayerPosition(int r, int c) {
 		
@@ -633,6 +643,11 @@ public class CucumberStepDefinitions {
 		assertEquals(c,col);
 	}
 	
+	/**
+	 * @author Saifullah9
+	 * @param r
+	 * @param c
+	 */
 	@And("Black player's position shall be \\({int},{int})")
 	public void BlackPlayerPosition(int r, int c) {
 		
@@ -643,6 +658,32 @@ public class CucumberStepDefinitions {
 		assertEquals(r,row);
 		assertEquals(c,col);
 	}
+	
+	/**
+	 * @author Saifullah9
+	 * @param n
+	 */
+	@And("White has {int} on stock")
+	public void WhiteWallsOnStock(int n) {
+		
+		GameController gc = new GameController();
+		GamePosition gamePos = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
+		int numberOfWalls = gamePos.getWhiteWallsInStock().size();
+		assertEquals(n,numberOfWalls);
+		}
+	
+	/**
+	 * @author Saifullah9
+	 * @param n
+	 */
+	@And("Black has {int} on stock")
+	public void BlackWallsOnStock(int n) {
+	
+		GameController gc = new GameController();
+		GamePosition gamePos = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
+		int numberOfWalls = gamePos.getBlackWallsInStock().size();
+		assertEquals(n,numberOfWalls);
+		}
 	
 	/**
 	 * @author Saifullah

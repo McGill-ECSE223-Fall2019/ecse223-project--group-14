@@ -1,10 +1,10 @@
 Feature: Jump to start position
-As a player using replay mode, I wish to scroll fast to the very beginning of the game.
+  As a player using replay mode, I wish to scroll fast to the very beginning of the game.
 
-	  Background: 
+  Background: 
     Given The game is in replay mode
 
-  Scenario Outline: Jump to start 
+  Scenario Outline: Jump to start
     Given The following moves have been played in game:
       | mv | rnd | move |
       |  1 |   1 | e8   |
@@ -30,4 +30,3 @@ As a player using replay mode, I wish to scroll fast to the very beginning of th
       |     2 |     1 |    1 |    1 |    9 |    5 |    10 |    1 |    5 |      10 |
       |     2 |     2 |    1 |    1 |    9 |    5 |    10 |    1 |    5 |      10 |
       |     3 |     1 |    1 |    1 |    9 |    5 |    10 |    1 |    5 |      10 |
-	
