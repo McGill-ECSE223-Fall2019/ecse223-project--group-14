@@ -40,7 +40,7 @@ As a player, I wish to review a past game in replay mode to walk through the mov
       |  2 |   2 | e3   |
       |  3 |   1 | e3h  |
       |  3 |   2 | e8h  |		
-      |  4 |   1 | 0-1  |		
+      |  4 |   1 | e1  	|		
 		And The game has a final result
 		And The next move is <movno>.<rndno> 
 		When I initiate to continue game

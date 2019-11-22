@@ -2159,17 +2159,118 @@ public class CucumberStepDefinitions {
 	 public void theFollowingMovesHaveBeenPlayedInGame(io.cucumber.datatable.DataTable dataTable) { //should probably take in the moves?
 		 Quoridor q=QuoridorApplication.getQuoridor();
 		 Game g=q.getCurrentGame();
-		 
+		 //GamePosition curr=g.getCurrentPosition();
+		 g.getCurrentPosition().setPlayerToMove(g.getWhitePlayer());
 		 List<Map<String, String>> valueMaps = dataTable.asMaps();
 		 for (Map<String, String> map : valueMaps) {
 			//TODO this needs to read the dataTable and create moves and GamePositions accurately
+			 Integer mv = Integer.decode(map.get("mv"));
+			 Integer rnd = Integer.decode(map.get("rnd"));
+			 String mov = map.get("move");
+			 GamePosition next;
+			 int row;
+			 switch (mov.charAt(0)){
+				case 'a':
+					row = 8;
+					break;
+				case 'b':
+					row = 7;
+					break;
+				case 'c':
+					row = 6;
+					break;
+				case 'd':
+					row = 5;
+					break;
+				case 'e':
+					row = 4;
+					break;
+				case 'f':
+					row = 3;
+					break;
+				case 'g':
+					row = 2;
+					break;
+				case 'h':
+					row = 1;
+					break;
+				case 'j':
+					row = 0;
+					break;
+				default:
+					throw new IllegalArgumentException("Unsupported wall direction was provided");
+				}
+			 int col=9-Character.getNumericValue(mov.charAt(1));
+			 if (mov.length()!=3) {	//stepmove
+				 
+				 if (g.getCurrentPosition().getPlayerToMove().hasGameAsWhite()) {
+					 PlayerPosition pos=new PlayerPosition(g.getWhitePlayer(), g.getQuoridor().getBoard().getTile(row*9+col));
+					 PlayerPosition pos2=new PlayerPosition(g.getBlackPlayer(),g.getCurrentPosition().getBlackPosition().getTile());
+					 next = new GamePosition(g.numberOfPositions(), pos, pos2, g.getBlackPlayer(), g);
+				 }
+				 else {
+					 PlayerPosition pos=new PlayerPosition(g.getWhitePlayer(), g.getCurrentPosition().getWhitePosition().getTile());
+					 PlayerPosition pos2=new PlayerPosition(g.getBlackPlayer(),g.getQuoridor().getBoard().getTile(row*9+col));
+					 next = new GamePosition(g.numberOfPositions(), pos, pos2, g.getWhitePlayer(), g);
+				 }
+				 for (Wall w : g.getCurrentPosition().getBlackWallsOnBoard()) {
+					next.addBlackWallsOnBoard(w);
+				 }
+				 for (Wall w : g.getCurrentPosition().getWhiteWallsOnBoard()) {
+					next.addWhiteWallsOnBoard(w);
+				 }
+				 for (Wall w : g.getCurrentPosition().getBlackWallsInStock()) {
+					next.addBlackWallsInStock(w);
+				 }
+				 for (Wall w : g.getCurrentPosition().getWhiteWallsInStock()) {
+					next.addWhiteWallsInStock(w);
+				 }
+				
+				 g.setCurrentPosition(next);
+				 g.addMove(new StepMove(mv, rnd, g.getCurrentPosition().getPlayerToMove(), g.getQuoridor().getBoard().getTile(row*9+col),g));
+			 }
+			 else {					//wall move
+				 PlayerPosition p1=new PlayerPosition(g.getWhitePlayer(),g.getCurrentPosition().getWhitePosition().getTile());
+				 PlayerPosition p2=new PlayerPosition(g.getBlackPlayer(),g.getCurrentPosition().getBlackPosition().getTile());
+				 if(g.getCurrentPosition().getPlayerToMove().hasGameAsWhite()) {
+					next=new GamePosition(g.numberOfPositions(), p1, p2, g.getBlackPlayer(), g);
+				 }
+				 else {
+					next=new GamePosition(g.numberOfPositions(), p1, p2, g.getWhitePlayer(), g);
+				 }
+				 for (Wall w : g.getCurrentPosition().getBlackWallsOnBoard()) {
+					 next.addBlackWallsOnBoard(w);
+				 }
+				 for (Wall w : g.getCurrentPosition().getWhiteWallsOnBoard()) {
+					 next.addWhiteWallsOnBoard(w);
+				 }
+				 for (Wall w : g.getCurrentPosition().getBlackWallsInStock()) {
+					 next.addBlackWallsInStock(w);
+				 }
+				 for (Wall w : g.getCurrentPosition().getWhiteWallsInStock()) {
+					 next.addWhiteWallsInStock(w);
+				 }
+				 g.setCurrentPosition(next);
+				 Direction dirc;
+				 if(mov.charAt(2) == 'v') {
+					 dirc = Direction.Vertical;
+				 }
+				 else {
+					 dirc = Direction.Horizontal;
+				 }
+				 for (int i=0;i<10;i++) {
+					 Wall w=g.getCurrentPosition().getPlayerToMove().getWall(i);
+					 if (!w.hasMove()) {
+						 g.addMove(new WallMove(mv,rnd,g.getCurrentPosition().getPlayerToMove(),q.getBoard().getTile(col+row*9),g,dirc,w));
+						 g.getCurrentPosition().removeWhiteWallsInStock(g.getWhitePlayer().getWall(i));
+						 g.getCurrentPosition().addWhiteWallsOnBoard(g.getWhitePlayer().getWall(i));
+						 break;
+					 }
+				 }
+				 
+			 }
+			 
 		 }
-		 g.addMove(new StepMove(1,1,g.getWhitePlayer(),q.getBoard().getTile(4*9+1),g));
-		 g.addMove(new StepMove(1,2,g.getBlackPlayer(),q.getBoard().getTile(4*9+7),g));
-		 g.addMove(new StepMove(2,1,g.getWhitePlayer(),q.getBoard().getTile(4*9+2),g));
-		 g.addMove(new StepMove(2,2,g.getBlackPlayer(),q.getBoard().getTile(4*9+6),g));
-		 g.addMove(new WallMove(3,1,g.getWhitePlayer(),q.getBoard().getTile(4*9+6),g, Direction.Horizontal,g.getWhitePlayer().getWall(0)));
-		 g.addMove(new WallMove(3,2,g.getBlackPlayer(),q.getBoard().getTile(4*9+1),g, Direction.Horizontal,g.getBlackPlayer().getWall(0)));
 	 }
 	 
 	 /**
@@ -2193,12 +2294,13 @@ public class CucumberStepDefinitions {
 		 Quoridor q=QuoridorApplication.getQuoridor();
 		 Game g=q.getCurrentGame();
 		 index=2*(movno-1)+rndno-1;
-		 if (index%2==0) {
+		 /*if (index%2==0) {
 			 g.getCurrentPosition().setPlayerToMove(g.getWhitePlayer());
 		 }
 		 else {
 			 g.getCurrentPosition().setPlayerToMove(g.getBlackPlayer());
-		 }
+		 }*/
+		 g.setCurrentPosition(g.getPosition(index));
 	 }
 	 
 	 /**
@@ -2232,12 +2334,12 @@ public class CucumberStepDefinitions {
 	 public void theGameHasAFinalResult() {
 		 Quoridor q=QuoridorApplication.getQuoridor();
 		 Game g=q.getCurrentGame();
-		 g.addMove(new StepMove(4,1,g.getWhitePlayer(),q.getBoard().getTile(4*9+8),g));
+		 /*g.addMove(new StepMove(4,1,g.getWhitePlayer(),q.getBoard().getTile(4*9+8),g));
 		 GamePosition curr=g.getCurrentPosition();
 		 PlayerPosition p1=new PlayerPosition(g.getWhitePlayer(),q.getBoard().getTile(4*9+8));
 		 PlayerPosition p2=new PlayerPosition(g.getBlackPlayer(),curr.getBlackPosition().getTile());
 		 GamePosition next=new GamePosition(6,p1,p2,g.getWhitePlayer(),g);
-		 g.setCurrentPosition(next);
+		 g.setCurrentPosition(next);*/
 	 }
 	 
 	 /**
