@@ -20,7 +20,7 @@ Feature: Jump to start position
     Then The next move shall be <nmov>.<nrnd>
     And White player's position shall be (<wrow>,<wcol>)
     And Black player's position shall be (<brow>,<bcol>)
-    And White has <wwallno> on stock
+    And White has <wwall> on stock
     And Black has <bwallno> on stock
 
     Examples: 

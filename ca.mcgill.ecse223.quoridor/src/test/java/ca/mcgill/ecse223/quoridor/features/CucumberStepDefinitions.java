@@ -620,7 +620,7 @@ public class CucumberStepDefinitions {
 	 */
 	Quoridor q = QuoridorApplication.getQuoridor();
 	int cur = q.getCurrentGame().getCurrentPosition().getId();
-	Move move = q.getCurrentGame().getMove(cur);
+	Move move = q.getCurrentGame().getMove(cur-1);
 	
 	assertEquals(m, move.getMoveNumber());
 	assertEquals(r,move.getRoundNumber());
@@ -684,6 +684,14 @@ public class CucumberStepDefinitions {
 		int numberOfWalls = gamePos.getBlackWallsInStock().size();
 		assertEquals(n,numberOfWalls);
 		}
+	
+	@When("Jump to final position is initiated")
+	public void jumpFinal() {
+		
+		Quoridor q = new Quoridor();
+		GameController gc = new GameController();
+		gc.jumpToFinal(q);
+	}
 	
 	/**
 	 * @author Saifullah
