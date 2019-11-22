@@ -693,6 +693,22 @@ public class CucumberStepDefinitions {
 		gc.jumpToFinal(q);
 	}
 	
+	@When("Step backward is initiated")
+	public void stepback() {
+		
+		Quoridor q = new Quoridor();
+		GameController gc = new GameController();
+		gc.stepBackward(q);
+	}
+	
+	@When("Step forward is initiated")
+	public void stepfront() {
+		
+		Quoridor q = new Quoridor();
+		GameController gc = new GameController();
+		gc.stepForward(q);
+	}
+	
 	/**
 	 * @author Saifullah
 	 */
