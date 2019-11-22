@@ -2159,11 +2159,9 @@ public class CucumberStepDefinitions {
 	 public void theFollowingMovesHaveBeenPlayedInGame(io.cucumber.datatable.DataTable dataTable) { //should probably take in the moves?
 		 Quoridor q=QuoridorApplication.getQuoridor();
 		 Game g=q.getCurrentGame();
-		 //GamePosition curr=g.getCurrentPosition();
 		 g.getCurrentPosition().setPlayerToMove(g.getWhitePlayer());
 		 List<Map<String, String>> valueMaps = dataTable.asMaps();
 		 for (Map<String, String> map : valueMaps) {
-			//TODO this needs to read the dataTable and create moves and GamePositions accurately
 			 Integer mv = Integer.decode(map.get("mv"));
 			 Integer rnd = Integer.decode(map.get("rnd"));
 			 String mov = map.get("move");
@@ -2294,12 +2292,6 @@ public class CucumberStepDefinitions {
 		 Quoridor q=QuoridorApplication.getQuoridor();
 		 Game g=q.getCurrentGame();
 		 index=2*(movno-1)+rndno-1;
-		 /*if (index%2==0) {
-			 g.getCurrentPosition().setPlayerToMove(g.getWhitePlayer());
-		 }
-		 else {
-			 g.getCurrentPosition().setPlayerToMove(g.getBlackPlayer());
-		 }*/
 		 g.setCurrentPosition(g.getPosition(index));
 	 }
 	 
@@ -2334,12 +2326,9 @@ public class CucumberStepDefinitions {
 	 public void theGameHasAFinalResult() {
 		 Quoridor q=QuoridorApplication.getQuoridor();
 		 Game g=q.getCurrentGame();
-		 /*g.addMove(new StepMove(4,1,g.getWhitePlayer(),q.getBoard().getTile(4*9+8),g));
-		 GamePosition curr=g.getCurrentPosition();
-		 PlayerPosition p1=new PlayerPosition(g.getWhitePlayer(),q.getBoard().getTile(4*9+8));
-		 PlayerPosition p2=new PlayerPosition(g.getBlackPlayer(),curr.getBlackPosition().getTile());
-		 GamePosition next=new GamePosition(6,p1,p2,g.getWhitePlayer(),g);
-		 g.setCurrentPosition(next);*/
+		 for (GamePosition gp:g.getPositions()) {
+			 gp.setWhitePosition(new PlayerPosition(g.getWhitePlayer(),q.getBoard().getTile(4*9+8)));
+		 }
 	 }
 	 
 	 /**
@@ -2384,7 +2373,7 @@ public class CucumberStepDefinitions {
 	 public void theNewPositionOfIs(String player,int row,int col) {
 		 Quoridor q=QuoridorApplication.getQuoridor();
 		 
-		 //this swap is necessary as we are playing horizontally but the test is wrottent vertically
+		 //this swap is necessary as we are playing horizontally but the test is written vertically
 		 int temp=col;
 		 col=row;
 		 row=temp;
