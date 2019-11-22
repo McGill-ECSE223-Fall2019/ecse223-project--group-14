@@ -1635,6 +1635,11 @@ public class GameController {
 		}
 	}
 	
+	/**
+	 * In replay mode, this method is used to traverse to the previous move in the game.
+	 * @param q
+	 * @return boolean
+	 */
 	public boolean stepBackward(Quoridor q) {
 		int cur=q.getCurrentGame().getCurrentPosition().getId();
 		if (cur==0) {	//if at beginning, do nothing
@@ -1646,7 +1651,11 @@ public class GameController {
 		}
 	}
 	
-	
+	/**
+	 * In replay mode, this method is used to traverse to the next move in the game.
+	 * @param q
+	 * @return boolean
+	 */
 	public boolean stepForward(Quoridor q) {
 		int cur=q.getCurrentGame().getCurrentPosition().getId();
 		if (cur==q.getCurrentGame().numberOfPositions()-1) {	//if at final, do nothing
@@ -1674,6 +1683,12 @@ public class GameController {
 		}
 	}
 	
+	/**
+	 * In replay mode, this method is used to traverse to the very end of the game.
+	 * @author Saifullah9
+	 * @param q
+	 * @return boolean
+	 */
 	public boolean jumpToFinal(Quoridor q) {
 		int cur = q.getCurrentGame().getCurrentPosition().getId();
 		if(cur == q.getCurrentGame().numberOfPositions()-1) {
