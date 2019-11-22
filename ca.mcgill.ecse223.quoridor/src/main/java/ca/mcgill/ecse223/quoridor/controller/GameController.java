@@ -1646,6 +1646,7 @@ public class GameController {
 		}
 	}
 	
+	
 	public boolean stepForward(Quoridor q) {
 		int cur=q.getCurrentGame().getCurrentPosition().getId();
 		if (cur==q.getCurrentGame().numberOfPositions()-1) {	//if at final, do nothing
@@ -1653,6 +1654,22 @@ public class GameController {
 		}
 		else {
 			q.getCurrentGame().setCurrentPosition(q.getCurrentGame().getPosition(cur+1));
+			return true;
+		}
+	}
+	
+	/**
+	 * In replay mode, this method is used to traverse to the very beginning of the game.
+	 * @author Saifullah9
+	 * @param q
+	 * @return boolean
+	 */
+	public boolean jumpToStart(Quoridor q) {
+		int cur = q.getCurrentGame().getCurrentPosition().getId();
+		if(cur == 0) {
+			return false;
+		}else {
+			q.getCurrentGame().setCurrentPosition(q.getCurrentGame().getPosition(0));
 			return true;
 		}
 	}
