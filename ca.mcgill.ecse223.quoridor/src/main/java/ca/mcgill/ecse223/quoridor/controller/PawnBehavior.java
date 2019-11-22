@@ -951,10 +951,10 @@ public class PawnBehavior
 			currentGame.setCurrentPosition(next);
 			//curr.setWhitePosition(new PlayerPosition(player, currentGame.getQuoridor().getBoard().getTile(nT)));
 			if (isJump){
-				currentGame.addMove(new JumpMove(currentGame.numberOfPositions(), 0, player, currentGame.getQuoridor().getBoard().getTile(nT),currentGame));
+				currentGame.addMove(new JumpMove(currentGame.numberOfPositions()-2, 0, player, currentGame.getQuoridor().getBoard().getTile(nT),currentGame));
 			}
 			else {
-				currentGame.addMove(new StepMove(currentGame.numberOfPositions(), 0, player, currentGame.getQuoridor().getBoard().getTile(nT),currentGame));
+				currentGame.addMove(new StepMove(currentGame.numberOfPositions()-2, 0, player, currentGame.getQuoridor().getBoard().getTile(nT),currentGame));
 			}
 		}
 		else {
@@ -976,10 +976,10 @@ public class PawnBehavior
 			currentGame.setCurrentPosition(next);
 			//curr.setBlackPosition(new PlayerPosition(player, currentGame.getQuoridor().getBoard().getTile(nT)));
 			if (isJump){
-				currentGame.addMove(new JumpMove(currentGame.numberOfPositions(), 1, player, currentGame.getQuoridor().getBoard().getTile(nT),currentGame));
+				currentGame.addMove(new JumpMove(currentGame.numberOfPositions()-2, 1, player, currentGame.getQuoridor().getBoard().getTile(nT),currentGame));
 			}
 			else {
-				currentGame.addMove(new StepMove(currentGame.numberOfPositions(), 1, player, currentGame.getQuoridor().getBoard().getTile(nT),currentGame));
+				currentGame.addMove(new StepMove(currentGame.numberOfPositions()-2, 1, player, currentGame.getQuoridor().getBoard().getTile(nT),currentGame));
 			}
 		}
 		

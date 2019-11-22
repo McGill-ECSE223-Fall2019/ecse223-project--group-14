@@ -1043,6 +1043,25 @@ public class QuoridorPage extends JFrame{
 			return;
 		}
 		boolean isOver=gc.checkResult(q);
+		
+		List<Move> mov=q.getCurrentGame().getMoves();
+		System.out.println("end of turn");
+		System.out.println("Moves: "+mov.size());
+		for (Move m:mov) {
+			if (m instanceof WallMove) {
+				System.out.println("wall  destination:"+m.getTargetTile().getRow()+","+m.getTargetTile().getColumn()+" movenumber:"+m.getMoveNumber()+" roundNumber:"+m.getMoveNumber());
+			}
+			else {
+				System.out.println("destination:"+m.getTargetTile().getRow()+","+m.getTargetTile().getColumn()+" movenumber:"+m.getMoveNumber()+" roundNumber:"+m.getMoveNumber());
+			}
+		}
+		System.out.println("Postiions");
+		List<GamePosition> gp=q.getCurrentGame().getPositions();
+		for (GamePosition pos: gp) {
+			System.out.println("pos id "+pos.getId());
+			System.out.println("white walls on board "+pos.getWhiteWallsOnBoard().size());
+			System.out.println("black walls on board "+pos.getBlackWallsOnBoard().size());
+		}
 		if (!isOver) {
 			currPlayer=!currPlayer;
 			//gc.switchPlayer(q);
@@ -1060,25 +1079,6 @@ public class QuoridorPage extends JFrame{
 			}
 			stageMove=false;
 			refreshData();
-			
-			List<Move> mov=q.getCurrentGame().getMoves();
-			System.out.println("end of turn");
-			System.out.println("Moves");
-			for (Move m:mov) {
-				if (m instanceof WallMove) {
-					System.out.println("wall  destination:"+m.getTargetTile().getRow()+","+m.getTargetTile().getColumn()+" movenumber:"+m.getMoveNumber()+" roundNumber:"+m.getMoveNumber());
-				}
-				else {
-					System.out.println("destination:"+m.getTargetTile().getRow()+","+m.getTargetTile().getColumn()+" movenumber:"+m.getMoveNumber()+" roundNumber:"+m.getMoveNumber());
-				}
-			}
-			System.out.println("Postiions");
-			List<GamePosition> gp=q.getCurrentGame().getPositions();
-			for (GamePosition pos: gp) {
-				System.out.println("pos id "+pos.getId());
-				System.out.println("white walls on board "+pos.getWhiteWallsOnBoard().size());
-				System.out.println("black walls on board "+pos.getBlackWallsOnBoard().size());
-			}
 			
 		}
 		else {

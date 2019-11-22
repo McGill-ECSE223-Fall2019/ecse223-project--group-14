@@ -1050,7 +1050,7 @@ public class GameController {
 			if (w.getMove()!=null) {
 				w.getMove().delete();
 			}
-			g.addMove(new WallMove(1,1,g.getWhitePlayer(),q.getBoard().getTile(col+row*9),g,dirc,w));
+			g.addMove(new WallMove(g.numberOfPositions()-2,1,g.getWhitePlayer(),q.getBoard().getTile(col+row*9),g,dirc,w));
 			
 			g.getCurrentPosition().removeWhiteWallsInStock(g.getWhitePlayer().getWall(id));
 			g.getCurrentPosition().addWhiteWallsOnBoard(g.getWhitePlayer().getWall(id));
@@ -1060,7 +1060,7 @@ public class GameController {
 			if (w.getMove()!=null) {
 				w.getMove().delete();
 			}
-			g.addMove(new WallMove(1,1,g.getBlackPlayer(),q.getBoard().getTile(col+row*9),g,dirc,w));
+			g.addMove(new WallMove(g.numberOfPositions()-2,1,g.getBlackPlayer(),q.getBoard().getTile(col+row*9),g,dirc,w));
 			
 			g.getCurrentPosition().removeBlackWallsInStock(g.getBlackPlayer().getWall(id-10));
 			g.getCurrentPosition().addBlackWallsOnBoard(g.getBlackPlayer().getWall(id-10));
@@ -1560,6 +1560,8 @@ public class GameController {
 	//TODO
 	
 	/**
+	 * For EnterReplayModeFeature
+	 * 
 	 * User attempts to continue a game while in replay mode
 	 * 
 	 * @author DariusPi
@@ -1575,13 +1577,27 @@ public class GameController {
 			return false;
 		}
 		else {
-			//TODO delete any moves after current one and check position
+			Game g=q.getCurrentGame();
+			GamePosition curr=g.getCurrentPosition();
+			int i=curr.getId();
+			int j=g.getPositions().size()-i-1; //number of positions to delete
+			for (int k=0;k<j;k++) {
+				g.getPosition(g.getPositions().size()-1).delete();
+				
+				
+				Move m=g.getMove(g.getMoves().size()-1);
+				m.delete();
+				g.removeMove(m);
+			}
+			
 			q.getCurrentGame().setGameStatus(GameStatus.Running);
 			return true;
 		}
 	}
 	
 	/**
+	 * For EnterReplayModeFeature
+	 * 
 	 * Switches the model to be in replay mode
 	 * 
 	 * @author DariusPi
@@ -1593,6 +1609,8 @@ public class GameController {
 	}
 	
 	/**
+	 * For checkIfGameWon feature
+	 * 
 	 * Checks whether the move results in a victory
 	 * 
 	 * @author DariusPi

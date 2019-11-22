@@ -29,6 +29,7 @@ import ca.mcgill.ecse223.quoridor.model.Move;
 import ca.mcgill.ecse223.quoridor.model.Player;
 import ca.mcgill.ecse223.quoridor.model.PlayerPosition;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
+import ca.mcgill.ecse223.quoridor.model.StepMove;
 import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Wall;
@@ -2155,7 +2156,14 @@ public class CucumberStepDefinitions {
 	  */
 	 @Given ("The following moves have been played in game:")
 	 public void theFollowingMovesHaveBeenPlayedInGame(io.cucumber.datatable.DataTable dataTable) { //should probably take in the moves?
-		 
+		 Quoridor q=QuoridorApplication.getQuoridor();
+		 Game g=q.getCurrentGame();
+		 g.addMove(new StepMove(1,1,g.getWhitePlayer(),q.getBoard().getTile(4*9+7),g));
+		 g.addMove(new StepMove(1,2,g.getBlackPlayer(),q.getBoard().getTile(4*9+1),g));
+		 g.addMove(new StepMove(2,1,g.getWhitePlayer(),q.getBoard().getTile(4*9+6),g));
+		 g.addMove(new StepMove(2,2,g.getBlackPlayer(),q.getBoard().getTile(4*9+2),g));
+		 g.addMove(new WallMove(3,1,g.getWhitePlayer(),q.getBoard().getTile(4*9+2),g, Direction.Horizontal,g.getWhitePlayer().getWall(0)));
+		 g.addMove(new WallMove(3,2,g.getBlackPlayer(),q.getBoard().getTile(4*9+7),g, Direction.Horizontal,g.getBlackPlayer().getWall(0)));
 	 }
 	 
 	 /**
@@ -2163,7 +2171,8 @@ public class CucumberStepDefinitions {
 	  */
 	 @And ("The game does not have a final result")
 	 public void theGameDoesnotHaveAFinalResult() {
-		 
+		 //TODO
+		 //check if last move is final and if so remove it and change position
 	 }
 	 
 	 /**
@@ -2174,7 +2183,15 @@ public class CucumberStepDefinitions {
 	  */
 	 @And ("The next move is {int}.{int}")
 	 public void theNextMoveIs(int movno,int rndno){
-		 
+		 Quoridor q=QuoridorApplication.getQuoridor();
+		 Game g=q.getCurrentGame();
+		 int index=2*(movno-1)+rndno-1;
+		 if (index%2==0) {
+			 g.getCurrentPosition().setPlayerToMove(g.getWhitePlayer());
+		 }
+		 else {
+			 g.getCurrentPosition().setPlayerToMove(g.getBlackPlayer());
+		 }
 	 }
 	 
 	 /**
@@ -2202,7 +2219,7 @@ public class CucumberStepDefinitions {
 	  */
 	 @And ("The game has a final result")
 	 public void theGameHasAFinalResult() {
-		 
+		 //insert move with final position
 	 }
 	 
 	 /**
@@ -2227,7 +2244,13 @@ public class CucumberStepDefinitions {
 	  */
 	 @Given ("Player {string} has just completed his move")
 	 public void playerHasJustCompletedHisMove(String player) {
-		 
+		 Quoridor q=QuoridorApplication.getQuoridor();
+		 if (player.compareTo("white")==0) {
+			 q.getCurrentGame().getCurrentPosition().setPlayerToMove(q.getCurrentGame().getWhitePlayer());
+		 }
+		 else {
+			 q.getCurrentGame().getCurrentPosition().setPlayerToMove(q.getCurrentGame().getBlackPlayer());
+		 }
 	 }
 	 
 	 /**
