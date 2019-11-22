@@ -593,7 +593,55 @@ public class CucumberStepDefinitions {
 	public void iMoveWall(String side) {
 		GameController gc = new GameController();
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
-		//gc.moveWall(game, side);
+		gc.moveWall(game, side);
+	}
+	
+	
+	/**
+	 * @author Saifullah9
+	 * @param q
+	 */
+	@When("Jump to start position is initiated")
+	public void jumpStart() {
+		Quoridor q = new Quoridor();
+		GameController gc = new GameController();
+		gc.jumpToStart(q);
+	}
+	
+	@Then("The next move shall be {int}.{int}")
+	public void theNextMove(int m,int r) {
+	/*
+	 * Here I am assuming that the ID of the currentPosition is the same as the id of move
+	 */
+	Quoridor q = QuoridorApplication.getQuoridor();
+	int cur = q.getCurrentGame().getCurrentPosition().getId();
+	Move move = q.getCurrentGame().getMove(cur);
+	
+	assertEquals(m, move.getMoveNumber());
+	assertEquals(r,move.getRoundNumber());
+	
+	}
+	
+	@And("White player's position shall be \\({int},{int})")
+	public void WhitePlayerPosition(int r, int c) {
+		
+		GameController gc = new GameController();
+		GamePosition gamePos = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
+		int row = gamePos.getWhitePosition().getTile().getRow();
+		int col = gamePos.getWhitePosition().getTile().getColumn();
+		assertEquals(r,row);
+		assertEquals(c,col);
+	}
+	
+	@And("Black player's position shall be \\({int},{int})")
+	public void BlackPlayerPosition(int r, int c) {
+		
+		GameController gc = new GameController();
+		GamePosition gamePos = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
+		int row = gamePos.getBlackPosition().getTile().getRow();
+		int col = gamePos.getBlackPosition().getTile().getColumn();
+		assertEquals(r,row);
+		assertEquals(c,col);
 	}
 	
 	/**
