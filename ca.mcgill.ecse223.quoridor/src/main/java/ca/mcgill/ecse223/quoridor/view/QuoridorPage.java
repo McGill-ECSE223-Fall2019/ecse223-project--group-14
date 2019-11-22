@@ -990,6 +990,26 @@ public class QuoridorPage extends JFrame{
 		error = "";
 		//TODO in phase 2
 		// update visuals
+		boolean success=gc.jumpToStart(q);
+		if(success) {
+			for (int i=0;i<10;i++) {
+				if (wwalls[i].getDirection().compareTo("horizontal")==0) {
+					wwalls[i].rotate();
+				}
+				
+				if (bwalls[i].getDirection().compareTo("horizontal")==0) {
+					bwalls[i].rotate();
+				}
+				
+				wwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 125, WallComponent.wallW, WallComponent.wallH);
+				bwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 675, WallComponent.wallW, WallComponent.wallH);
+			}
+			currPlayer=q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite();
+			changeBoard();
+		}
+		else {
+			error="Already at first position";
+		}
 		
 		refreshData();
 	}
@@ -999,6 +1019,26 @@ public class QuoridorPage extends JFrame{
 		error = "";
 		//TODO in phase 2
 		// update visuals
+		boolean success=gc.jumpToFinal(q);
+		if(success) {
+			for (int i=0;i<10;i++) {
+				if (wwalls[i].getDirection().compareTo("horizontal")==0) {
+					wwalls[i].rotate();
+				}
+				
+				if (bwalls[i].getDirection().compareTo("horizontal")==0) {
+					bwalls[i].rotate();
+				}
+				
+				wwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 125, WallComponent.wallW, WallComponent.wallH);
+				bwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 675, WallComponent.wallW, WallComponent.wallH);
+			}
+			currPlayer=q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite();
+			changeBoard();
+		}
+		else {
+			error="Already at final position";
+		}
 		
 		refreshData();
 	}
