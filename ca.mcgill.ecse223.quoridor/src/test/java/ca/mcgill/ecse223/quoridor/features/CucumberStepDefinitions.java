@@ -593,7 +593,7 @@ public class CucumberStepDefinitions {
 	public void iMoveWall(String side) {
 		GameController gc = new GameController();
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
-		gc.moveWall(game, side);
+		//gc.moveWall(game, side);
 	}
 	
 	
