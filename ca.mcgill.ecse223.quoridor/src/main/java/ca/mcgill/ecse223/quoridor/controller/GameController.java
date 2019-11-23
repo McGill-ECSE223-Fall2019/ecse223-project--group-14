@@ -51,8 +51,7 @@ public class GameController {
 		
 		if (q.getBoard()==null) {
 			Board board = new Board(q);
-			// Creating tiles by rows, i.e., the column index changes with every tile
-			// creation
+			// Creating tiles by rows, i.e., the column index changes with every tile creation
 			for (int i = 1; i <= 9; i++) { // rows
 				for (int j = 1; j <= 9; j++) { // columns
 					board.addTile(i, j);
@@ -62,14 +61,6 @@ public class GameController {
 		
 		new User("usera",q);
 		new User("userb",q);
-		
-		/*for (int i = 0; i < 2; i++) {
-			for (int j = 0; j < 10; j++) {
-				new Wall(i * 10 + j, players[i]);
-			}
-		}*/
-		
-		//initBoard(q);
 	}
 	
 	/**
@@ -105,18 +96,11 @@ public class GameController {
 		q.getCurrentGame().setWhitePlayer(p1);
 		q.getCurrentGame().setBlackPlayer(p2);
 		
-		//this can be taken out when init board is correct
 		Tile player1StartPos = q.getBoard().getTile(36);
 		Tile player2StartPos = q.getBoard().getTile(44);
 		PlayerPosition player1Position = new PlayerPosition(q.getCurrentGame().getWhitePlayer(), player1StartPos);
 		PlayerPosition player2Position = new PlayerPosition(q.getCurrentGame().getBlackPlayer(), player2StartPos);
 		
-		//for (int i = 0; i < 2; i++) {
-			/*for (int j = 0; j < 10; j++) {
-				new Wall(j, p1);
-				new Wall(j+10, p2);
-			}*/
-		//}
 		GamePosition gamePos=new GamePosition(0, player1Position, player2Position, q.getCurrentGame().getWhitePlayer(), q.getCurrentGame());
 		q.getCurrentGame().setCurrentPosition(gamePos);
 		
@@ -134,9 +118,6 @@ public class GameController {
 	public void startTheClock(Quoridor q, Timer t){
 		t.start();
 		q.getCurrentGame().setGameStatus(GameStatus.Running);
-		//Time time=g.getBlackPlayer().getRemainingTime();
-		
-		
 	}
 	
 	/**
@@ -369,19 +350,6 @@ public class GameController {
 			
 		}
 		
-		/*if (id<10) { 	//white
-			Wall w=q.getCurrentGame().getWhitePlayer().getWall(id);
-			new WallMove(q.getCurrentGame().getMoves().size(), 0, q.getCurrentGame().getWhitePlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
-			q.getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(q.getCurrentGame().getWhitePlayer().getWall(id));
-			q.getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(q.getCurrentGame().getWhitePlayer().getWall(id));
-		}
-		
-		else {
-			Wall w=q.getCurrentGame().getBlackPlayer().getWall(id-10);
-			new WallMove(q.getCurrentGame().getMoves().size(), 1, q.getCurrentGame().getBlackPlayer(), q.getBoard().getTile(col+row*9), q.getCurrentGame(), dirc, w);
-			q.getCurrentGame().getCurrentPosition().removeBlackWallsInStock(q.getCurrentGame().getBlackPlayer().getWall(id-10));
-			q.getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(q.getCurrentGame().getBlackPlayer().getWall(id-10));
-		}*/
 		return true;
 	}
 	
@@ -1458,11 +1426,9 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	public Boolean validatePos(GamePosition posToValidate) {//commented out for merge 
-		// TODO Auto-generated method stub
+		
 		//Checks if pawn position overlaps with another pawn or a wall position overlaps with a wall or out of track pawn or wall
-		//if yes returns error
-		//if no returns ok
-		//will compare this with String result in @then
+		//if yes returns error, if no returns ok
 		if(posToValidate.getId()==-1) {//handles walls and pawn out of board
 			return false;
 		}
@@ -1492,9 +1458,7 @@ public class GameController {
 		//For Walls 
 		//
 		return true; //3rd nov
-		//throw new UnsupportedOperationException();//testing 3rd nov
-	}//commented out for merge
-	
+	}
 
 	/**
 	 * For Initialize Board feature
@@ -1632,6 +1596,15 @@ public class GameController {
 		else {
 			q.getCurrentGame().setGameStatus(GameStatus.Running);
 			return false;
+		}
+	}
+	
+	public void resignGame(Quoridor q) {
+		if (q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite()) {
+			q.getCurrentGame().setGameStatus(GameStatus.BlackWon);
+		}
+		else {
+			q.getCurrentGame().setGameStatus(GameStatus.WhiteWon);
 		}
 	}
 	

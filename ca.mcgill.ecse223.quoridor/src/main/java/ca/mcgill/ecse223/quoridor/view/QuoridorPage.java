@@ -423,7 +423,6 @@ public class QuoridorPage extends JFrame{
 		// Set screen to results
 		banner = result;
 		
-		//TODO for phase 2
 		timer.stop();
 		timeRem1.setVisible(false);
 		timeRem2.setVisible(false);
@@ -823,6 +822,7 @@ public class QuoridorPage extends JFrame{
 	
 	private void resignGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		//TODO in phase 2
+		gc.resignGame(q);
 		if(gc.getCurrentPlayerColor() == Color.BLACK) {
 			finishGame("White wins!");
 		}else {
