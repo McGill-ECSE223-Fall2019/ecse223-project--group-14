@@ -603,7 +603,7 @@ public class CucumberStepDefinitions {
 	 */
 	@When("Jump to start position is initiated")
 	public void jumpStart() {
-		Quoridor q = new Quoridor();
+		Quoridor q=QuoridorApplication.getQuoridor();
 		GameController gc = new GameController();
 		gc.jumpToStart(q);
 	}
@@ -688,7 +688,7 @@ public class CucumberStepDefinitions {
 	@When("Jump to final position is initiated")
 	public void jumpFinal() {
 		
-		Quoridor q = new Quoridor();
+		Quoridor q=QuoridorApplication.getQuoridor();
 		GameController gc = new GameController();
 		gc.jumpToFinal(q);
 	}
@@ -696,7 +696,7 @@ public class CucumberStepDefinitions {
 	@When("Step backward is initiated")
 	public void stepback() {
 		
-		Quoridor q = new Quoridor();
+		Quoridor q=QuoridorApplication.getQuoridor();
 		GameController gc = new GameController();
 		gc.stepBackward(q);
 	}
@@ -704,7 +704,7 @@ public class CucumberStepDefinitions {
 	@When("Step forward is initiated")
 	public void stepfront() {
 		
-		Quoridor q = new Quoridor();
+		Quoridor q=QuoridorApplication.getQuoridor();
 		GameController gc = new GameController();
 		gc.stepForward(q);
 	}
