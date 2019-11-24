@@ -171,71 +171,6 @@ public class CucumberStepDefinitions {
 		ArrayList<Player> players = createUsersAndPlayers("user1", "user2");
 		new Game(GameStatus.Initializing, MoveMode.PlayerMove, QuoridorApplication.getQuoridor());
 	}
-	
-	/**
-	 * Commented out because it causes errors in jumppawn
-	 */
-	@Given("^The following moves were executed:$")
-	public void theFolowingMovesWereExecuted(DataTable table) {
-		List<String> params = table.asList(String.class);
-		index = 4;
-		
-		Player player;
-		Tile location;
-		Game g = QuoridorApplication.getQuoridor().getCurrentGame();
-		Board b = QuoridorApplication.getQuoridor().getBoard();
-		int currentID = g.getCurrentPosition().getId();
-		while (index < params.size()) {
-			GamePosition currentPosition = g.getCurrentPosition();
-			currentID++;
-			int move = Integer.parseInt(params.get(index++));
-			int turn = Integer.parseInt(params.get(index++));
-			int row = 10 - Integer.parseInt(params.get(index++));
-			int col = Integer.parseInt(params.get(index++));
-			
-			if (turn == 1) {
-				player = g.getWhitePlayer();
-				location = currentPosition.getWhitePosition().getTile();
-			} else {
-				assertEquals(turn, 2);
-				player = g.getBlackPlayer();
-				location = currentPosition.getBlackPosition().getTile();
-			}
-			
-			
-			
-			//Check that this is a valid pawn move to make from current position -- Should not care
-			//if (Math.abs(location.getRow() - row) > 1 || Math.abs(location.getColumn() - col) > 1)
-				//fail();
-			
-			//if (!(Math.abs(location.getRow() - row) == 1 ^ Math.abs(location.getColumn() - col) == 1))
-				//fail();
-			
-			Tile newTile = g.getQuoridor().getBoard().getTile(getIndex(row, col));
-			g.addMove(new StepMove(move, 0, player, newTile, g));
-			PlayerPosition newPlayerPosition = new PlayerPosition(player, newTile);
-			
-			
-			if (turn == 1) {
-				GamePosition newGamePosition = new GamePosition(currentID, 
-						newPlayerPosition, new PlayerPosition(g.getBlackPlayer(), 
-						currentPosition.getBlackPosition().getTile()), g.getBlackPlayer(), g);
-				
-				g.setCurrentPosition(newGamePosition);
-				assertEquals(g.getCurrentPosition().getWhitePosition().getTile(), 
-						b.getTile(getIndex(row, col)));
-			} else {
-				GamePosition newGamePosition = new GamePosition(currentID,
-						new PlayerPosition(g.getWhitePlayer(), 
-						currentPosition.getBlackPosition().getTile()), newPlayerPosition, 
-						g.getWhitePlayer(), g);
-				
-				g.setCurrentPosition(newGamePosition);
-				assertEquals(g.getCurrentPosition().getBlackPosition().getTile(), 
-						b.getTile(getIndex(row, col)));
-			}
-		}
-	}
 
 	// ***********************************************
 	// Scenario and scenario outline step definitions
@@ -1622,6 +1557,70 @@ public class CucumberStepDefinitions {
 		GameController G = new GameController();
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		assertTrue(G.isClockCountingDown(quoridor.getCurrentGame().getWhitePlayer()));
+	}
+	
+	/**
+	 * @author FSharp4
+	 * @throws Throwable
+	 */
+	@Given("^The following moves were executed:$")
+	public void theFolowingMovesWereExecuted(DataTable table) {
+		List<String> params = table.asList(String.class);
+		index = 4;
+		
+		Player player;
+		Tile location;
+		Game g = QuoridorApplication.getQuoridor().getCurrentGame();
+		Board b = QuoridorApplication.getQuoridor().getBoard();
+		int currentID = g.getCurrentPosition().getId();
+		while (index < params.size()) {
+			GamePosition currentPosition = g.getCurrentPosition();
+			currentID++;
+			int move = Integer.parseInt(params.get(index++));
+			int turn = Integer.parseInt(params.get(index++));
+			int row = 10 - Integer.parseInt(params.get(index++));
+			int col = Integer.parseInt(params.get(index++));
+			
+			if (turn == 1) {
+				player = g.getWhitePlayer();
+				location = currentPosition.getWhitePosition().getTile();
+			} else {
+				assertEquals(turn, 2);
+				player = g.getBlackPlayer();
+				location = currentPosition.getBlackPosition().getTile();
+			}
+			
+			//Check that this is a valid pawn move to make from current position -- Should not care
+			//if (Math.abs(location.getRow() - row) > 1 || Math.abs(location.getColumn() - col) > 1)
+				//fail();
+			
+			//if (!(Math.abs(location.getRow() - row) == 1 ^ Math.abs(location.getColumn() - col) == 1))
+				//fail();
+			
+			Tile newTile = g.getQuoridor().getBoard().getTile(getIndex(row, col));
+			g.addMove(new StepMove(move, 0, player, newTile, g));
+			PlayerPosition newPlayerPosition = new PlayerPosition(player, newTile);
+			
+			
+			if (turn == 1) {
+				GamePosition newGamePosition = new GamePosition(currentID, 
+						newPlayerPosition, new PlayerPosition(g.getBlackPlayer(), 
+						currentPosition.getBlackPosition().getTile()), g.getBlackPlayer(), g);
+				
+				g.setCurrentPosition(newGamePosition);
+				assertEquals(g.getCurrentPosition().getWhitePosition().getTile(), 
+						b.getTile(getIndex(row, col)));
+			} else {
+				GamePosition newGamePosition = new GamePosition(currentID,
+						new PlayerPosition(g.getWhitePlayer(), 
+						currentPosition.getBlackPosition().getTile()), newPlayerPosition, 
+						g.getWhitePlayer(), g);
+				
+				g.setCurrentPosition(newGamePosition);
+				assertEquals(g.getCurrentPosition().getBlackPosition().getTile(), 
+						b.getTile(getIndex(row, col)));
+			}
+		}
 	}
 
 	/**
