@@ -5,9 +5,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.awt.Color;
+
+
 import java.io.File;
 
 import java.sql.Time;
@@ -1578,7 +1578,7 @@ public class CucumberStepDefinitions {
 			currentID++;
 			int move = Integer.parseInt(params.get(index++));
 			int turn = Integer.parseInt(params.get(index++));
-			int row = 10 - Integer.parseInt(params.get(index++));
+			int row = Integer.parseInt(params.get(index++));
 			int col = Integer.parseInt(params.get(index++));
 			
 			if (turn == 1) {
@@ -1613,7 +1613,7 @@ public class CucumberStepDefinitions {
 			} else {
 				GamePosition newGamePosition = new GamePosition(currentID,
 						new PlayerPosition(g.getWhitePlayer(), 
-						currentPosition.getBlackPosition().getTile()), newPlayerPosition, 
+						currentPosition.getWhitePosition().getTile()), newPlayerPosition, 
 						g.getWhitePlayer(), g);
 				
 				g.setCurrentPosition(newGamePosition);
@@ -1621,6 +1621,47 @@ public class CucumberStepDefinitions {
 						b.getTile(getIndex(row, col)));
 			}
 		}
+	}
+	
+	@And("The last move of {string} is pawn move to {int}:{int}")
+	public void theLastMoveOfIsPawnMoveTo(String player, int row, int col) {
+		Quoridor q = QuoridorApplication.getQuoridor();
+		Game g = q.getCurrentGame();
+		int move = g.numberOfMoves() / 2;
+		Tile newTile = q.getBoard().getTile(getIndex(row, col));
+		Player p;
+		Player opp;
+		PlayerPosition oppPos;
+		
+		boolean isWhite = player.contentEquals("white");
+		if (isWhite) {
+			p = g.getWhitePlayer();
+			opp = g.getBlackPlayer();
+			oppPos = new PlayerPosition(opp, g.getCurrentPosition().getBlackPosition().getTile());
+		} else {
+			p = g.getBlackPlayer();
+			opp = g.getWhitePlayer();
+			oppPos = new PlayerPosition(opp, g.getCurrentPosition().getWhitePosition().getTile());
+		}
+		
+		g.addMove(new StepMove(move, 0, p, newTile, g));
+		PlayerPosition pPos = new PlayerPosition(p, newTile);
+		int nextGPID = g.getCurrentPosition().getId() + 1;
+		GamePosition nextGP;
+		
+		if (isWhite) {
+			nextGP = new GamePosition(nextGPID, pPos, oppPos, opp, g);
+			g.setCurrentPosition(nextGP);
+			assertEquals(g.getCurrentPosition().getWhitePosition().getTile(), 
+					q.getBoard().getTile(getIndex(row, col)));
+		} else {
+			nextGP = new GamePosition(nextGPID, oppPos, pPos, opp, g);
+			g.setCurrentPosition(nextGP);
+			assertEquals(g.getCurrentPosition().getBlackPosition().getTile(), 
+					q.getBoard().getTile(getIndex(row, col)));
+		}
+		
+		
 	}
 
 	/**
@@ -2438,7 +2479,7 @@ public class CucumberStepDefinitions {
 	 }
 	  
 	 /**
-	  * @author DariusPi
+	  * @author DariusPi, FSharp4
 	  * 
 	  * @param player
 	  */
@@ -2447,6 +2488,7 @@ public class CucumberStepDefinitions {
 		  Quoridor q=QuoridorApplication.getQuoridor();
 		  GameController gc=new GameController();
 		  gc.checkResult(q);
+		  gc.drawCheck(q);
 	  }
 	  
 	  /**
@@ -2458,11 +2500,14 @@ public class CucumberStepDefinitions {
 	  public void gameResultShallBe(String result) {
 		  Quoridor q=QuoridorApplication.getQuoridor();
 		  Game g=q.getCurrentGame();
-		  if (result.compareTo("pending")==0) {
+		  if (result.toLowerCase().compareTo("pending")==0) {
 			  assertEquals(g.getGameStatus(),GameStatus.Running);
 		  }
-		  else {
+		  else if (result.contains("Won")){
 			  assertEquals(g.getGameStatus().toString().toLowerCase(),result.toLowerCase());
+		  }
+		  else if (result.contentEquals("Drawn")){
+			  assertEquals(g.getGameStatus(), GameStatus.Draw);
 		  }
 		  
 	  }

@@ -30,6 +30,7 @@ import ca.mcgill.ecse223.quoridor.model.Game;
 import ca.mcgill.ecse223.quoridor.model.Player;
 import ca.mcgill.ecse223.quoridor.model.PlayerPosition;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
+import ca.mcgill.ecse223.quoridor.model.StepMove;
 import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Wall;
@@ -1309,11 +1310,8 @@ public class GameController {
 	}
 	
 	
-	/**
+	/*
 	 * A helper method to calculate the index of the tile using its row and column numbers.
-	 * @param row
-	 * @param col
-	 * @return Integer
 	 */
 	private static int getIndex(int row, int col) {
 		
@@ -1494,6 +1492,67 @@ public class GameController {
 			q.getCurrentGame().getCurrentPosition().addOrMoveBlackWallsInStockAt(q.getCurrentGame()
 					.getBlackPlayer().getWall(i), i);
 		}
+	}
+	
+	/**
+	 * For Draw Game feature (IdentifyIfGameDrawn)
+	 * Checks for three-fold repetition of moves. This is only possible with step moves.
+	 * Returns true if the game was a draw (and indicates such in the model if the game is so).
+	 * 
+	 * @author FSharp4
+	 * @param q
+	 * @return
+	 */
+	public boolean drawCheck(Quoridor q) {
+
+		Game g = q.getCurrentGame();
+		if (g.getGameStatus() == GameStatus.BlackWon || g.getGameStatus() == GameStatus.WhiteWon)
+			return false;
+		
+		if (g.numberOfMoves() < 9) //Need at least this many moves for there to be a draw
+			return false;
+		
+		Move[] p1Lastmoves = new Move[5];
+		Move[] p2Lastmoves = new Move[4];
+		for (int i = 0; i < 5; i++) {
+			p1Lastmoves[i] = g.getMove(g.numberOfMoves() - 1 - 2 * i);
+			if (!(p1Lastmoves[i] instanceof StepMove))
+				return false;
+			if (i != 4) {
+				p2Lastmoves[i] = g.getMove(g.numberOfMoves() - 2 - 2 * i);
+				if (!(p2Lastmoves[i] instanceof StepMove))
+					return false;
+			}
+		}
+
+		//Checks that moves are equal 2 at a time
+		if (!movesAreIdentical(p1Lastmoves[0], p1Lastmoves[2]))
+			return false;
+		if (!movesAreIdentical(p1Lastmoves[0], p1Lastmoves[4]))
+			return false;
+		if (!movesAreIdentical(p1Lastmoves[1], p1Lastmoves[3]))
+			return false;
+		if (!movesAreIdentical(p2Lastmoves[0], p2Lastmoves[2]))
+			return false;
+		if (!movesAreIdentical(p2Lastmoves[1], p2Lastmoves[3]))
+			return false;
+		
+		//If we are here, game is a draw
+		g.setGameStatus(GameStatus.Draw);
+		return true;
+	}
+	
+	/*
+	 * Helper method
+	 * Checks to see if the player and destination of the move are identical for draw checking
+	 */
+	private boolean movesAreIdentical(Move move1, Move move2) {
+		if (move1.getPlayer() == move2.getPlayer()) {
+			if (move1.getTargetTile() == move2.getTargetTile()) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**
