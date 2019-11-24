@@ -1953,11 +1953,9 @@ public class GameController {
 		QuoridorGraph graph = new QuoridorGraph(quoridor.getCurrentGame().getCurrentPosition());
 		
 		// Check path for White
-		//QuoridorGraph whiteGraph = new QuoridorGraph(graph); // Make a copy of position graph
-		boolean whitePath = graph.checkPathForPlayer(true); // Make graph for that player and find if path exists
+		boolean whitePath = graph.checkPathForPlayer(true);
 		
 		// Check path for Black
-		//QuoridorGraph blackGraph = new QuoridorGraph(graph);
 		boolean blackPath = graph.checkPathForPlayer(false);
 		
 		if (whitePath && blackPath) {
