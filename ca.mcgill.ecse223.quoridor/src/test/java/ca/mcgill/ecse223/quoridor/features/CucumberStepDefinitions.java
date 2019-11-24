@@ -1,5 +1,6 @@
 package ca.mcgill.ecse223.quoridor.features;
 
+import static ca.mcgill.ecse223.quoridor.model.Direction.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -1318,30 +1319,18 @@ public class CucumberStepDefinitions {
 	 */
 	@When ("I initiate to load a saved game? (.*)")
 	public void iInitiateToLoadASavedGame(String filename) throws Throwable {
-		
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		GameController G = new GameController();
-		
-		String file="";
 		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < filename.length() - 2; i++)
+			sb.append(filename.charAt(i + 1));
 		
-		for (int i=0;i<filename.length()-2;i++) {
-			sb.append(filename.charAt(i+1));
-		}
-		file=sb.toString();
-		for (int i = 0; i <= 20; i++) {
-			if (Wall.hasWithId(i)) {
-				Wall.getWithId(i).delete();
-			}
-		}
-		if (file.contains(".mov")) {
-			file = file.substring(0, file.length() - 4) + ".dat";
-		}
+		String file = sb.toString();
 		try {
 			Game game = G.initSavedGameLoad(quoridor, file);
 			assertEquals(quoridor.getCurrentGame(), game);
 		} catch (Exception e) {
-			//do nothing. Expected behavior for invalid savegames.
+			//do nothing. This is expected behavior for some invalid savegames.
 		}
 	}
 	
@@ -1365,28 +1354,21 @@ public class CucumberStepDefinitions {
 	 */
 	@Then ("It shall be (.*)'s turn")
 	public void itShallBeSTurn(String playerColor) {
-		boolean isWhite = false;
-		boolean hasSetColor = false;
-		if (playerColor.toLowerCase().contains("white")) {
-			isWhite = true;
-			hasSetColor = true;
-		} else if (playerColor.toLowerCase().contains("black"))
-			hasSetColor = true;
-		
-		assertTrue(hasSetColor);
+		boolean isWhite = playerColor.toLowerCase().contains("white");
 		GameController G = new GameController();
 		assertTrue(G.setCurrentTurn(isWhite, QuoridorApplication.getQuoridor()));
 	}
 
+	/**
+	 * @author FSharp4
+	 * @throws Throwable
+	 */
 	@And ("The position to load is invalid")
 	public void thePositionToLoadIsInvalid() throws Throwable {
 		GameController G = new GameController();
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		if (quoridor.getCurrentGame().getGameStatus().equals(GameStatus.Initializing))
-			return; //signals that initial loading failed, implying invalid status.
-		else  {
+		if (!quoridor.getCurrentGame().getGameStatus().equals(GameStatus.Initializing))
 			assertFalse(G.checkIfLoadGameValid(quoridor));
-		}
 	}
 	
 	/**
@@ -1394,28 +1376,16 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */
 	@Then("{string} shall be at {int}:{int}")
-	public void shall_be_at(String player, Integer row, Integer col) {
-	    // Write code here that turns the phrase above into concrete actions
-		boolean isWhite = false;
-		boolean hasSetColor = false;;
-		if (player.contains("white")) {
-			isWhite = true;
-			hasSetColor = true;
-		} else if (player.contains("black")) {
-			isWhite = false;
-			hasSetColor = true;
-		}
-		assertTrue(hasSetColor);
+	public void shallBeAt(String player, Integer row, Integer col) {
+		boolean isWhite = (player.toLowerCase().contains("white"));
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game game = quoridor.getCurrentGame();
-		if (isWhite) {
+		if (isWhite)
 			assertEquals(quoridor.getBoard().getTile(getIndex(row, col)), 
 					game.getCurrentPosition().getWhitePosition().getTile());
-		
-		} else {
+		else
 			assertEquals(quoridor.getBoard().getTile(getIndex(row, col)),
 					game.getCurrentPosition().getBlackPosition().getTile());
-		}
 	}
 	
 	/**
@@ -1427,16 +1397,7 @@ public class CucumberStepDefinitions {
 			throws Throwable {
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
 		Wall[] walls;
-		
-		Direction dir = null;
-		if (orientation.toLowerCase().contains("v")) {
-			dir = Direction.Vertical;
-		} else if (orientation.toLowerCase().contains("h")) {
-			dir = Direction.Horizontal;
-		}
-		
-		assertNotNull(dir);
-		
+		Direction dir = (orientation.toLowerCase().contains("v")) ? Vertical : Horizontal;
 		if (playerColor.toLowerCase().contains("w")) {
 			walls = new Wall[game.getCurrentPosition().getWhiteWallsOnBoard().size()];
 			walls = game.getCurrentPosition().getWhiteWallsOnBoard().toArray(walls);
@@ -1467,7 +1428,6 @@ public class CucumberStepDefinitions {
 	public void theLoadShallReturnAnError() throws Throwable {
 		GameController G = new GameController();
 		boolean loadFail = false;
-		
 		if (QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus().equals(GameStatus.Initializing))
 			loadFail = true;
 		
@@ -1567,9 +1527,7 @@ public class CucumberStepDefinitions {
 	public void theFolowingMovesWereExecuted(DataTable table) {
 		List<String> params = table.asList(String.class);
 		index = 4;
-		
 		Player player;
-		Tile location;
 		Game g = QuoridorApplication.getQuoridor().getCurrentGame();
 		Board b = QuoridorApplication.getQuoridor().getBoard();
 		int currentID = g.getCurrentPosition().getId();
@@ -1580,40 +1538,30 @@ public class CucumberStepDefinitions {
 			int turn = Integer.parseInt(params.get(index++));
 			int row = Integer.parseInt(params.get(index++));
 			int col = Integer.parseInt(params.get(index++));
-			
+			Tile oppLocation;
 			if (turn == 1) {
 				player = g.getWhitePlayer();
-				location = currentPosition.getWhitePosition().getTile();
+				oppLocation = currentPosition.getBlackPosition().getTile();
 			} else {
 				assertEquals(turn, 2);
 				player = g.getBlackPlayer();
-				location = currentPosition.getBlackPosition().getTile();
+				oppLocation = currentPosition.getWhitePosition().getTile();
 			}
-			
-			//Check that this is a valid pawn move to make from current position -- Should not care
-			//if (Math.abs(location.getRow() - row) > 1 || Math.abs(location.getColumn() - col) > 1)
-				//fail();
-			
-			//if (!(Math.abs(location.getRow() - row) == 1 ^ Math.abs(location.getColumn() - col) == 1))
-				//fail();
 			
 			Tile newTile = g.getQuoridor().getBoard().getTile(getIndex(row, col));
 			g.addMove(new StepMove(move, 0, player, newTile, g));
 			PlayerPosition newPlayerPosition = new PlayerPosition(player, newTile);
-			
-			
 			if (turn == 1) {
 				GamePosition newGamePosition = new GamePosition(currentID, 
-						newPlayerPosition, new PlayerPosition(g.getBlackPlayer(), 
-						currentPosition.getBlackPosition().getTile()), g.getBlackPlayer(), g);
+						newPlayerPosition, new PlayerPosition(g.getBlackPlayer(), oppLocation), 
+						g.getBlackPlayer(), g);
 				
 				g.setCurrentPosition(newGamePosition);
 				assertEquals(g.getCurrentPosition().getWhitePosition().getTile(), 
 						b.getTile(getIndex(row, col)));
 			} else {
 				GamePosition newGamePosition = new GamePosition(currentID,
-						new PlayerPosition(g.getWhitePlayer(), 
-						currentPosition.getWhitePosition().getTile()), newPlayerPosition, 
+						new PlayerPosition(g.getWhitePlayer(), oppLocation), newPlayerPosition, 
 						g.getWhitePlayer(), g);
 				
 				g.setCurrentPosition(newGamePosition);
@@ -1655,7 +1603,6 @@ public class CucumberStepDefinitions {
 		PlayerPosition pPos = new PlayerPosition(p, newTile);
 		int nextGPID = g.getCurrentPosition().getId() + 1;
 		GamePosition nextGP;
-		
 		if (isWhite) {
 			nextGP = new GamePosition(nextGPID, pPos, oppPos, opp, g);
 			g.setCurrentPosition(nextGP);
