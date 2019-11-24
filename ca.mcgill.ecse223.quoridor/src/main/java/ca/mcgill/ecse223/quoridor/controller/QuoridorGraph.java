@@ -180,19 +180,24 @@ public class QuoridorGraph {
 			}
 		}
 	}
-	
-	public boolean checkPathForPlayer(boolean forWhite) {
+	/*
+	 * forWhite specifies the player for white the search will start
+	 * forGherkin is to comply with the view, which has columns and rows reversed
+	 */
+	public boolean checkPathForPlayer(boolean forWhite, boolean forGherkin) {
 		boolean pathExists = false;
 		
 		// Get starting vertex for search
 		Tile playerKey;
-		int targetRow;
+		int target;
 		if (forWhite) { 
 			playerKey = this.gamePosition.getWhitePosition().getTile();
-			targetRow = 1;
+			if(forGherkin) target = 1;
+			else target = 9;
 		} else {
 			playerKey = this.gamePosition.getBlackPosition().getTile();
-			targetRow = 9;
+			if(forGherkin) target = 9;
+			else target = 1;
 		}
 		
 		// Start depth first traversal using a stack
@@ -211,7 +216,9 @@ public class QuoridorGraph {
 				Vertex v = this.vertexList.get(link);
 				if (!v.getVisited()) { // If we haven't visited already
 					v.setVisited(true);
-					if (link.getRow() == targetRow) { // If at goal, break and return true
+					
+					// If at goal, break and return true
+					if ((forGherkin && link.getRow() == target) || (!forGherkin && link.getColumn() == target)) { 
 						pathExists = true;
 						break;
 					}

@@ -288,6 +288,7 @@ public class GameController {
 		List<Wall> bWall = curr.getBlackWallsOnBoard();
 		Direction dirc;
 		int col =x1;
+		
 		int row=y1;
 		if (dir.compareTo("vertical")==0) {
 			dirc=Direction.Vertical;
@@ -993,6 +994,25 @@ public class GameController {
 		}
 		
 		GamePosition curr=g.getCurrentPosition();
+		WallMove wmc;
+		if(id<10) {
+			Wall w = g.getWhitePlayer().getWall(id);
+			if (w.getMove()!=null) {
+				w.getMove().delete();
+			}
+			wmc = new WallMove(g.numberOfPositions()-1,1,g.getWhitePlayer(),q.getBoard().getTile(col+row*9),g,dirc,w);
+		} else {
+			Wall w=g.getBlackPlayer().getWall(id-10);
+			if (w.getMove()!=null) {
+				w.getMove().delete();
+			}
+			wmc = new WallMove(g.numberOfPositions()-1,1,g.getBlackPlayer(),q.getBoard().getTile(col+row*9),g,dirc,w);
+		}
+		
+		if (!(checkPathExistence(false).compareTo("both") == 0)) {
+			return false;
+		}
+		
 		GamePosition next;
 		PlayerPosition p1=new PlayerPosition(g.getWhitePlayer(),curr.getWhitePosition().getTile());
 		PlayerPosition p2=new PlayerPosition(g.getBlackPlayer(),curr.getBlackPosition().getTile());
@@ -1016,41 +1036,32 @@ public class GameController {
 		}
 		g.setCurrentPosition(next);
 		if(id<10) {
-			Wall w = g.getWhitePlayer().getWall(id);
-			if (w.getMove()!=null) {
-				w.getMove().delete();
-			}
-			g.addMove(new WallMove(g.numberOfPositions()-2,1,g.getWhitePlayer(),q.getBoard().getTile(col+row*9),g,dirc,w));
+			g.addMove(wmc);
 			
 			g.getCurrentPosition().removeWhiteWallsInStock(g.getWhitePlayer().getWall(id));
 			g.getCurrentPosition().addWhiteWallsOnBoard(g.getWhitePlayer().getWall(id));
 		}
 		else {
-			Wall w=g.getBlackPlayer().getWall(id-10);
-			if (w.getMove()!=null) {
-				w.getMove().delete();
-			}
-			g.addMove(new WallMove(g.numberOfPositions()-2,1,g.getBlackPlayer(),q.getBoard().getTile(col+row*9),g,dirc,w));
-			
+			g.addMove(wmc);
 			g.getCurrentPosition().removeBlackWallsInStock(g.getBlackPlayer().getWall(id-10));
 			g.getCurrentPosition().addBlackWallsOnBoard(g.getBlackPlayer().getWall(id-10));
 		}
 		
-		
-		//TODO
-		Boolean path=true;
-		if (!checkPath(q)) {
-			g.setCurrentPosition(g.getPosition(g.getCurrentPosition().getId()-1));
-			g.getPosition(g.getPositions().size()-1).delete();
-			
-			Move m=g.getMove(g.getMoves().size()-1);
-			m.delete();
-			g.removeMove(m);
-			path=false;
-		}
-		return path;
-		
-		//
+		return true;
+//		//TODO
+//		Boolean path=true;
+//		if (!checkPath(q)) {
+//			g.setCurrentPosition(g.getPosition(g.getCurrentPosition().getId()-1));
+//			g.getPosition(g.getPositions().size()-1).delete();
+//			
+//			Move m=g.getMove(g.getMoves().size()-1);
+//			m.delete();
+//			g.removeMove(m);
+//			path=false;
+//		}
+//		return path;
+//		
+//		//
 	}
 	
 	
@@ -2003,8 +2014,9 @@ public class GameController {
 	 * 
 	 * @author louismollick
 	 * @return String result : white, black, none, both
+	 * @param boolean forGherkin : sets the targets to rows instead of cols
 	 */
-	public String checkPathExistence() {
+	public String checkPathExistence(boolean forGherkin) {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		String result = "none";
 		
@@ -2012,10 +2024,10 @@ public class GameController {
 		QuoridorGraph graph = new QuoridorGraph(quoridor.getCurrentGame().getCurrentPosition());
 		
 		// Check path for White
-		boolean whitePath = graph.checkPathForPlayer(true);
+		boolean whitePath = graph.checkPathForPlayer(true, forGherkin);
 		
 		// Check path for Black
-		boolean blackPath = graph.checkPathForPlayer(false);
+		boolean blackPath = graph.checkPathForPlayer(false, forGherkin);
 		
 		if (whitePath && blackPath) {
 			result = "both";
@@ -2025,6 +2037,7 @@ public class GameController {
 			result = "black";
 		}
 		
+		System.out.println("PATH RESULT : " + result);
 		return result;
 	}
 }
