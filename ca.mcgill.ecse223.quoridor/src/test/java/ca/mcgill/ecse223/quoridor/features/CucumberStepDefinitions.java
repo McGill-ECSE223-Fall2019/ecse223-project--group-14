@@ -1754,6 +1754,13 @@ public class CucumberStepDefinitions {
 		 * @throws Throwable
 		 */ 
 	 
+	 @And ("The game to load has an invalid move")
+	 public void TheGameHasInvalidMove() {
+		 Quoridor q=QuoridorApplication.getQuoridor();
+		 Game g=q.getCurrentGame();
+		 
+		 
+	 }
 	 
 	 
 	 
