@@ -1737,6 +1737,29 @@ public class CucumberStepDefinitions {
 		 assertFalse(gc.checkResult(q));
 	 }
 	
+	 /**
+		 * @author AmineMallek
+		 * @throws Throwable
+		 */ 
+		
+		@And ("Each game move is valid")
+			public void GameMoveValid() throws Throwable{
+			 Quoridor q=QuoridorApplication.getQuoridor();
+			 GameController G = new GameController();
+				
+			 boolean eachgamemovevalid = false;
+			 
+				if (QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus().equals(GameStatus.Initializing))
+					eachgamemovevalid = false;
+				try {
+					G.validityChecking(QuoridorApplication.getQuoridor());
+				} catch (Exception e) {
+					eachgamemovevalid = false;
+				}
+				
+				assertTrue(eachgamemovevalid);
+			 
+		}
 
 	
  
