@@ -1730,50 +1730,14 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */ 
 	
-	@And ("Each game move is valid")
-		public void GameMoveValid() throws Throwable{
-		
-	}
-	
-	/**
-	 * @author AmineMallek
-	 * @throws Throwable
-	 */ 
-	
-	 @And ("The game has no final result")
+	 @And ("The game has no final results")
 	 public void theGameHasNoFinalResult() {
 		 Quoridor q=QuoridorApplication.getQuoridor();
-		 Game g=q.getCurrentGame();
-		 for (GamePosition gp:g.getPositions()) {
-			 gp.setWhitePosition(new PlayerPosition(g.getWhitePlayer(),q.getBoard().getTile(4*9+8)));
-			 
-		 }
+		 GameController gc=new GameController();
+		 assertFalse(gc.checkResult(q));
 	 }
 	
-	 /**
-		 * @author AmineMallek
-		 * @throws Throwable
-		 */ 
-	 
-	 @And ("The game to load has an invalid move")
-	 public void TheGameHasInvalidMove() {
-		 Quoridor q=QuoridorApplication.getQuoridor();
-		 Game g=q.getCurrentGame();
-		 
-		 
-	 }
-	 
-	 /**
-		 * @author AmineMallek
-		 * @throws Throwable
-		 */ 
-	 
-	 @Then ("The game shall notify the user that the game file is invalid")
-	 public void TheGameNotifiesUserGameFileInvalid() {
-		 Quoridor q=QuoridorApplication.getQuoridor();
-		// assertEquals();
 
-	 }
 	
  
 	/*
