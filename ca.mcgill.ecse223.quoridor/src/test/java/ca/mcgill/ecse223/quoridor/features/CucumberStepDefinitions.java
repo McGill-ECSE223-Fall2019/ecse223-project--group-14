@@ -1746,6 +1746,7 @@ public class CucumberStepDefinitions {
 		 Game g=q.getCurrentGame();
 		 for (GamePosition gp:g.getPositions()) {
 			 gp.setWhitePosition(new PlayerPosition(g.getWhitePlayer(),q.getBoard().getTile(4*9+8)));
+			 
 		 }
 	 }
 	
@@ -1762,8 +1763,17 @@ public class CucumberStepDefinitions {
 		 
 	 }
 	 
+	 /**
+		 * @author AmineMallek
+		 * @throws Throwable
+		 */ 
 	 
-	 
+	 @Then ("The game shall notify the user that the game file is invalid")
+	 public void TheGameNotifiesUserGameFileInvalid() {
+		 Quoridor q=QuoridorApplication.getQuoridor();
+		// assertEquals();
+
+	 }
 	
  
 	/*
