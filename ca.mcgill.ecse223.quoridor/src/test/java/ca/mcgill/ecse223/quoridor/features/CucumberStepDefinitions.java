@@ -1725,6 +1725,39 @@ public class CucumberStepDefinitions {
 		boolean File_Overwrite = true;
 			}
 	
+	/**
+	 * @author AmineMallek
+	 * @throws Throwable
+	 */ 
+	
+	@And ("Each game move is valid")
+		public void GameMoveValid() throws Throwable{
+		
+	}
+	
+	/**
+	 * @author AmineMallek
+	 * @throws Throwable
+	 */ 
+	
+	 @And ("The game has no final result")
+	 public void theGameHasNoFinalResult() {
+		 Quoridor q=QuoridorApplication.getQuoridor();
+		 Game g=q.getCurrentGame();
+		 for (GamePosition gp:g.getPositions()) {
+			 gp.setWhitePosition(new PlayerPosition(g.getWhitePlayer(),q.getBoard().getTile(4*9+8)));
+		 }
+	 }
+	
+	 /**
+		 * @author AmineMallek
+		 * @throws Throwable
+		 */ 
+	 
+	 
+	 
+	 
+	
  
 	/*
 	 * TODO Iteration 4 
