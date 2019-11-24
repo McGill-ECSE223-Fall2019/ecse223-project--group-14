@@ -29,6 +29,7 @@ import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameController;
 
 import ca.mcgill.ecse223.quoridor.model.Game;
+import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
 import ca.mcgill.ecse223.quoridor.model.GamePosition;
 import ca.mcgill.ecse223.quoridor.model.Move;
 import ca.mcgill.ecse223.quoridor.model.Direction;
@@ -847,9 +848,7 @@ public class QuoridorPage extends JFrame{
 		// clear error message
 		error = "";
 		
-		//TODO in phase 2
-		
-		// update visuals
+		q.getCurrentGame().setGameStatus(GameStatus.Draw);
 		error = "accept draw"; 
 		finishGame("The game was a draw!");
 	}
@@ -1071,7 +1070,7 @@ public class QuoridorPage extends JFrame{
 		quitButton.setVisible(false);
 		
 		endTurnButton.setVisible(false);
-		
+		stageMove=false;
 		// update visuals
 		banner = "Main Menu"; //for testing
 		currPlayer=true;
