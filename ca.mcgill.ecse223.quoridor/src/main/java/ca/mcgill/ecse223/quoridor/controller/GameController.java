@@ -1592,15 +1592,24 @@ public class GameController {
 	public String checkPathExistence() {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		String result = "none";
+		
+		// Create graph representing the current position (no edges where there are walls)
+		QuoridorGraph graph = new QuoridorGraph(quoridor.getCurrentGame().getCurrentPosition());
+		
 		// Check path for White
-		boolean whitePath = true;
-		if (whitePath) result = "white";
+		//QuoridorGraph whiteGraph = new QuoridorGraph(graph); // Make a copy of position graph
+		boolean whitePath = graph.checkPathForPlayer(true); // Make graph for that player and find if path exists
 		
 		// Check path for Black
-		boolean blackPath = true;
-		if (blackPath) {
-			if(result.compareTo("white") == 0) result = "both";
-			else result = "black";
+		//QuoridorGraph blackGraph = new QuoridorGraph(graph);
+		boolean blackPath = graph.checkPathForPlayer(false);
+		
+		if (whitePath && blackPath) {
+			result = "both";
+		} else if (whitePath) {
+			result = "white";
+		} else if (blackPath) {
+			result = "black";
 		}
 		
 		return result;
