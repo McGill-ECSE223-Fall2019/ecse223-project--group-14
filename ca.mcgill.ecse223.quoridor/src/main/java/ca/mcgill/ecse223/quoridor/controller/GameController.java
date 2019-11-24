@@ -1947,7 +1947,26 @@ public class GameController {
 	 */
 	public String checkPathExistence() {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		return "both";
+		String result = "none";
+		
+		// Create graph representing the current position (no edges where there are walls)
+		QuoridorGraph graph = new QuoridorGraph(quoridor.getCurrentGame().getCurrentPosition());
+		
+		// Check path for White
+		boolean whitePath = graph.checkPathForPlayer(true);
+		
+		// Check path for Black
+		boolean blackPath = graph.checkPathForPlayer(false);
+		
+		if (whitePath && blackPath) {
+			result = "both";
+		} else if (whitePath) {
+			result = "white";
+		} else if (blackPath) {
+			result = "black";
+		}
+		
+		return result;
 	}
 }
 

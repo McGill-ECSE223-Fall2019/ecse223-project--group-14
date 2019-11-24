@@ -96,62 +96,47 @@ public class CucumberStepDefinitions {
 
 	@Given("The following walls exist:")
 	public void theFollowingWallsExist(io.cucumber.datatable.DataTable dataTable) {
-
-		wvalid=true; int i=0;
-
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		List<Map<String, String>> valueMaps = dataTable.asMaps();
 		// keys: wrow, wcol, wdir
 		Player[] players = { quoridor.getCurrentGame().getWhitePlayer(), quoridor.getCurrentGame().getBlackPlayer() };
 		int playerIdx = 0;
 		int wallIdxForPlayer = 0;
-		
 		for (Map<String, String> map : valueMaps) {
-			if (i==0) {
-				Integer wrow = Integer.decode(map.get("wrow"));
-				Integer wcol = Integer.decode(map.get("wcol"));
-				// Wall to place
-				// Walls are placed on an alternating basis wrt. the owners
-				//Wall wall = Wall.getWithId(playerIdx * 10 + wallIdxForPlayer);
-				Wall wall = players[playerIdx].getWall(wallIdxForPlayer); // above implementation sets wall to null
+			Integer wrow = Integer.decode(map.get("wrow"));
+			Integer wcol = Integer.decode(map.get("wcol"));
+			// Wall to place
+			// Walls are placed on an alternating basis wrt. the owners
+			//Wall wall = Wall.getWithId(playerIdx * 10 + wallIdxForPlayer);
+			Wall wall = players[playerIdx].getWall(wallIdxForPlayer); // above implementation sets wall to null
 
-				String dir = map.get("wdir");
+			String dir = map.get("wdir");
 
-				Direction direction;
-				switch (dir) {
-				case "horizontal":
-					direction = Direction.Horizontal;
-					break;
-				case "vertical":
-					direction = Direction.Vertical;
-					break;
-				default:
-					throw new IllegalArgumentException("Unsupported wall direction was provided");
-				}
-				new WallMove(0, 1, players[playerIdx], quoridor.getBoard().getTile((wrow - 1) * 9 + wcol - 1), quoridor.getCurrentGame(), direction, wall);
-				if (playerIdx == 0) {
-					quoridor.getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(wall);
-					quoridor.getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(wall);
-				} else {
-					quoridor.getCurrentGame().getCurrentPosition().removeBlackWallsInStock(wall);
-					quoridor.getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(wall);
-				}
-				wallIdxForPlayer = wallIdxForPlayer + playerIdx;
-				playerIdx++;
-				playerIdx = playerIdx % 2;
-				i++;
-				System.out.println();
+			Direction direction;
+			switch (dir) {
+			case "horizontal":
+				direction = Direction.Horizontal;
+				break;
+			case "vertical":
+				direction = Direction.Vertical;
+				break;
+			default:
+				throw new IllegalArgumentException("Unsupported wall direction was provided");
 			}
-			else {
-				Integer wrow = Integer.decode(map.get("wrow"));
-				Integer wcol = Integer.decode(map.get("wcol"));
-				String dir = map.get("wdir");
-				this.row=wrow-1;
-				this.col=wcol-1;
-				this.dir=dir;
+			new WallMove(0, 1, players[playerIdx], quoridor.getBoard().getTile((wrow - 1) * 9 + wcol - 1), quoridor.getCurrentGame(), direction, wall);
+			if (playerIdx == 0) {
+				quoridor.getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(wall);
+				quoridor.getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(wall);
+			} else {
+				quoridor.getCurrentGame().getCurrentPosition().removeBlackWallsInStock(wall);
+				quoridor.getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(wall);
 			}
+			wallIdxForPlayer = wallIdxForPlayer + playerIdx;
+			playerIdx++;
+			playerIdx = playerIdx % 2;
 		}
 		System.out.println();
+
 	}
 	
 	/**
