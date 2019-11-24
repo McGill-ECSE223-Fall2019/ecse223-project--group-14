@@ -1623,6 +1623,14 @@ public class CucumberStepDefinitions {
 		}
 	}
 	
+	/**
+	 * @author FSharp4
+	 * 
+	 * @param player
+	 * @param row
+	 * @param col
+	 * @throws Throwable
+	 */
 	@And("The last move of {string} is pawn move to {int}:{int}")
 	public void theLastMoveOfIsPawnMoveTo(String player, int row, int col) {
 		Quoridor q = QuoridorApplication.getQuoridor();
@@ -1632,7 +1640,6 @@ public class CucumberStepDefinitions {
 		Player p;
 		Player opp;
 		PlayerPosition oppPos;
-		
 		boolean isWhite = player.contentEquals("white");
 		if (isWhite) {
 			p = g.getWhitePlayer();
@@ -1660,8 +1667,14 @@ public class CucumberStepDefinitions {
 			assertEquals(g.getCurrentPosition().getBlackPosition().getTile(), 
 					q.getBoard().getTile(getIndex(row, col)));
 		}
-		
-		
+	}
+	
+	/**
+	 * @author FSharp4
+	 */
+	@When("Player initates to resign")
+	public void playerInitatesToResign() {
+		new GameController().resignGame(QuoridorApplication.getQuoridor());
 	}
 
 	/**
@@ -2492,7 +2505,7 @@ public class CucumberStepDefinitions {
 	  }
 	  
 	  /**
-	   * @author DariusPi
+	   * @author DariusPi, FSharp4
 	   * 
 	   * @param result
 	   */
