@@ -1087,6 +1087,7 @@ public class QuoridorPage extends JFrame{
 			return;
 		}
 		boolean isOver=gc.checkResult(q);
+		boolean isDraw = gc.drawCheck(q);
 		
 		List<Move> mov=q.getCurrentGame().getMoves();
 		System.out.println("end of turn");
@@ -1107,6 +1108,10 @@ public class QuoridorPage extends JFrame{
 			System.out.println("black walls on board "+pos.getBlackWallsOnBoard().size());
 		}
 		if (!isOver) {
+			if (isDraw) {
+				finishGame("Game ended in a draw!");
+				return;
+			}
 			currPlayer=!currPlayer;
 			//gc.switchPlayer(q);
 			if (currPlayer) {
@@ -1127,6 +1132,7 @@ public class QuoridorPage extends JFrame{
 		}
 		else {
 			//TODO the draw game method should be checked here
+			
 			if (currPlayer) {
 				finishGame("White Wins!");
 			}
