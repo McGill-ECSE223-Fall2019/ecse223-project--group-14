@@ -2457,7 +2457,7 @@ public class CucumberStepDefinitions {
 	  @When("Check path existence is initiated")
 	  public void checkPathExistenceIsInitiated() {
 		  GameController gameController = new GameController();
-		  pathExistsFor = gameController.checkPathExistence();
+		  pathExistsFor = gameController.checkPathExistence(true);
 	  }
 	  
 	  /**

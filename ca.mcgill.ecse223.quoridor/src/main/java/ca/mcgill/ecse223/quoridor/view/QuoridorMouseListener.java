@@ -78,6 +78,7 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 			
 			// If heldComponent is a Wall
 			else if(heldComponent instanceof WallComponent && ((WallComponent) heldComponent).dropWall()){
+				System.out.println("it worked?");
 				// If movePawn was successful, then lock in move, and prevent player from picking up anything else
 				// until he presses the End Turn button.
 				frame.setStageMove(true);
