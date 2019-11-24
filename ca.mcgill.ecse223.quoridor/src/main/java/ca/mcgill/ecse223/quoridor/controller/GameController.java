@@ -980,10 +980,17 @@ public class GameController {
 	 * @param game
 	 * @throws UnsupportedOperationException
 	 */
-	public void dropWall(int col, int row, String dir, int id) throws UnsupportedOperationException{		
+	public boolean dropWall(int col, int row, String dir, int id) {		
 		Quoridor q = QuoridorApplication.getQuoridor();
 		Game g=q.getCurrentGame();
 		Direction dirc;
+		if(dir.compareTo("vertical") == 0) {
+			dirc = Direction.Vertical;
+		}
+		else {
+			dirc = Direction.Horizontal;
+		}
+		
 		GamePosition curr=g.getCurrentPosition();
 		GamePosition next;
 		PlayerPosition p1=new PlayerPosition(g.getWhitePlayer(),curr.getWhitePosition().getTile());
@@ -1007,12 +1014,6 @@ public class GameController {
 			next.addWhiteWallsInStock(w);
 		}
 		g.setCurrentPosition(next);
-		if(dir.compareTo("vertical") == 0) {
-			dirc = Direction.Vertical;
-		}
-		else {
-			dirc = Direction.Horizontal;
-		}
 		if(id<10) {
 			Wall w = g.getWhitePlayer().getWall(id);
 			if (w.getMove()!=null) {
@@ -1033,6 +1034,22 @@ public class GameController {
 			g.getCurrentPosition().removeBlackWallsInStock(g.getBlackPlayer().getWall(id-10));
 			g.getCurrentPosition().addBlackWallsOnBoard(g.getBlackPlayer().getWall(id-10));
 		}
+		
+		
+		//TODO
+		Boolean path=true;
+		if (!checkPath(q)) {
+			g.setCurrentPosition(g.getPosition(g.getCurrentPosition().getId()-1));
+			g.getPosition(g.getPositions().size()-1).delete();
+			
+			Move m=g.getMove(g.getMoves().size()-1);
+			m.delete();
+			g.removeMove(m);
+			path=false;
+		}
+		return path;
+		
+		//
 	}
 	
 	
@@ -1597,6 +1614,254 @@ public class GameController {
 			q.getCurrentGame().setGameStatus(GameStatus.Running);
 			return false;
 		}
+	}
+	
+	public boolean checkPath(Quoridor q) {
+		Game g=q.getCurrentGame();
+		PawnBehavior pb=new PawnBehavior("invalid");
+		pb.setCurrentGame(g);
+		Player p;
+		Player real=g.getCurrentPosition().getPlayerToMove();
+		Tile t;
+		String forward, backward;
+		boolean white;
+		int i=g.getCurrentPosition().getId();
+		int f; int b;
+		if (!g.getCurrentPosition().getPlayerToMove().hasGameAsWhite()) {
+			forward="right";
+			backward="left";
+			t=g.getCurrentPosition().getWhitePosition().getTile();
+			white =true;
+			f=9;
+			b=1;
+			p=g.getWhitePlayer();
+		}
+		else {
+			backward="right";
+			forward="left";
+			t=g.getCurrentPosition().getBlackPosition().getTile();
+			white =false;
+			f=1;
+			b=9;
+			p=g.getBlackPlayer();
+		}
+		pb.setPlayer(p);
+		pb.change();
+		g.getCurrentPosition().setPlayerToMove(p);
+		
+		ArrayList<Tile> list=new ArrayList<Tile>();
+		list.add(getTile(q,white));
+		
+		Boolean result=checker(q,pb,forward,backward,p,white,f,b,"",list);
+		g.setCurrentPosition(g.getPosition(i));
+		g.getCurrentPosition().setPlayerToMove(real);
+		if (white) {
+			g.getCurrentPosition().getWhitePosition().setTile(t);
+		}
+		else {
+			g.getCurrentPosition().getBlackPosition().setTile(t);
+		}
+		int j=g.getPositions().size()-i-1; //number of positions to delete
+		for (int k=0;k<j;k++) {
+			g.getPosition(g.getPositions().size()-1).delete();
+			
+			Move m=g.getMove(g.getMoves().size()-1);
+			m.delete();
+			g.removeMove(m);
+		}
+		return result;
+	}
+	public boolean checker(Quoridor q,PawnBehavior pb, String forw, String back,Player p,boolean white,int f,int b,String side,ArrayList<Tile> list) {
+		Tile t=getTile(q,white);
+		System.out.print(" on tile"+t.getRow()+t.getColumn());
+		int dist=-1;
+		if (white) {
+			dist=1;
+		}
+		if (!list.contains(q.getBoard().getTile((t.getRow()-1)*9+t.getColumn()-1+dist))) {
+			pb.change();
+			if(pb.isLegalStep(forw)) {
+				if (white) {
+					q.getCurrentGame().getCurrentPosition().setWhitePosition(new PlayerPosition(p,q.getBoard().getTile((t.getRow()-1)*9+t.getColumn()-1+dist)));
+				}
+				else {
+					q.getCurrentGame().getCurrentPosition().setBlackPosition(new PlayerPosition(p,q.getBoard().getTile((t.getRow()-1)*9+t.getColumn()-1+dist)));
+				}
+				System.out.println("FORWARD");
+				list.add(getTile(q,white));
+				Tile t1=getTile(q,white);
+				q.getCurrentGame().getCurrentPosition().setPlayerToMove(p);
+				if (t1.getColumn()==f) {
+					System.out.println("FOUND	 path ");
+					pb.change();
+					//pb.move(back);
+					if (white) {
+						q.getCurrentGame().getCurrentPosition().setWhitePosition(new PlayerPosition(p,q.getBoard().getTile((t1.getRow()-1)*9+t1.getColumn()-1-dist)));
+					}
+					else {
+						q.getCurrentGame().getCurrentPosition().setBlackPosition(new PlayerPosition(p,q.getBoard().getTile((t1.getRow()-1)*9+t1.getColumn()-1-dist)));
+					}
+					q.getCurrentGame().getCurrentPosition().setPlayerToMove(p);
+					return true;
+				}
+				else {
+					if (checker(q,pb,forw,back,p,white,f,b,forw,list)) {
+						pb.change();
+						if (white) {
+							q.getCurrentGame().getCurrentPosition().setWhitePosition(new PlayerPosition(p,q.getBoard().getTile((t1.getRow()-1)*9+t1.getColumn()-1-dist)));
+						}
+						else {
+							q.getCurrentGame().getCurrentPosition().setBlackPosition(new PlayerPosition(p,q.getBoard().getTile((t1.getRow()-1)*9+t1.getColumn()-1-dist)));
+						}
+						q.getCurrentGame().getCurrentPosition().setPlayerToMove(p);
+						return true;
+					}
+					else {
+						pb.change();
+						if (white) {
+							q.getCurrentGame().getCurrentPosition().setWhitePosition(new PlayerPosition(p,q.getBoard().getTile((t1.getRow()-1)*9+t1.getColumn()-1-dist)));
+						}
+						else {
+							q.getCurrentGame().getCurrentPosition().setBlackPosition(new PlayerPosition(p,q.getBoard().getTile((t1.getRow()-1)*9+t1.getColumn()-1-dist)));
+						}
+						System.out.println("BACKWARD");
+						q.getCurrentGame().getCurrentPosition().setPlayerToMove(p);
+					}
+				}
+			}
+		}
+		
+		
+		if ((t.getRow()!=1)&&(!list.contains(q.getBoard().getTile((t.getRow()-2)*9+t.getColumn()-1)))) {
+			pb.change();
+			if (pb.isLegalStep("up")) {
+				if (white) {
+					q.getCurrentGame().getCurrentPosition().setWhitePosition(new PlayerPosition(p,q.getBoard().getTile((t.getRow()-2)*9+t.getColumn()-1)));
+				}
+				else {
+					q.getCurrentGame().getCurrentPosition().setBlackPosition(new PlayerPosition(p,q.getBoard().getTile((t.getRow()-2)*9+t.getColumn()-1)));
+				}
+				
+				System.out.println("UP");
+				list.add(getTile(q,white));
+				Tile t1=getTile(q,white);
+				q.getCurrentGame().getCurrentPosition().setPlayerToMove(p);
+				if (checker(q,pb,forw,back,p,white,f,b,"up",list)) {
+					pb.change();
+					//pb.move("down");
+					if (white) {
+						q.getCurrentGame().getCurrentPosition().setWhitePosition(new PlayerPosition(p,q.getBoard().getTile((t1.getRow())*9+t1.getColumn()-1)));
+					}
+					else {
+						q.getCurrentGame().getCurrentPosition().setBlackPosition(new PlayerPosition(p,q.getBoard().getTile((t1.getRow())*9+t1.getColumn()-1)));
+					}
+					return true;
+				}
+				else {
+					pb.change();
+					if (white) {
+						q.getCurrentGame().getCurrentPosition().setWhitePosition(new PlayerPosition(p,q.getBoard().getTile((t1.getRow())*9+t1.getColumn()-1)));
+					}
+					else {
+						q.getCurrentGame().getCurrentPosition().setBlackPosition(new PlayerPosition(p,q.getBoard().getTile((t1.getRow())*9+t1.getColumn()-1)));
+					}
+					System.out.println("DOWN");
+					q.getCurrentGame().getCurrentPosition().setPlayerToMove(p);
+				}
+				
+			}
+		}
+		
+		if ((t.getRow()!=9)&&(!list.contains(q.getBoard().getTile((t.getRow())*9+t.getColumn()-1)))) {
+			pb.change();
+			if (pb.isLegalStep("down")) {
+				if (white) {
+					q.getCurrentGame().getCurrentPosition().setWhitePosition(new PlayerPosition(p,q.getBoard().getTile((t.getRow())*9+t.getColumn()-1)));
+				}
+				else {
+					q.getCurrentGame().getCurrentPosition().setBlackPosition(new PlayerPosition(p,q.getBoard().getTile((t.getRow())*9+t.getColumn()-1)));
+				}
+				
+				list.add(getTile(q,white));
+				System.out.println("DOWN");
+				q.getCurrentGame().getCurrentPosition().setPlayerToMove(p);
+				Tile t1=getTile(q,white);
+				if (checker(q,pb,forw,back,p,white,f,b,"down",list)) {
+					pb.change();
+					if (white) {
+						q.getCurrentGame().getCurrentPosition().setWhitePosition(new PlayerPosition(p,q.getBoard().getTile((t1.getRow()-2)*9+t1.getColumn()-1)));
+					}
+					else {
+						q.getCurrentGame().getCurrentPosition().setBlackPosition(new PlayerPosition(p,q.getBoard().getTile((t1.getRow()-2)*9+t1.getColumn()-1)));
+					}
+					return true;
+				}
+				else {
+					pb.change();
+					if (white) {
+						q.getCurrentGame().getCurrentPosition().setWhitePosition(new PlayerPosition(p,q.getBoard().getTile((t1.getRow()-2)*9+t1.getColumn()-1)));
+					}
+					else {
+						q.getCurrentGame().getCurrentPosition().setBlackPosition(new PlayerPosition(p,q.getBoard().getTile((t1.getRow()-2)*9+t1.getColumn()-1)));
+					}
+					
+					System.out.println("UP");
+					q.getCurrentGame().getCurrentPosition().setPlayerToMove(p);
+				}
+				
+			}
+		}
+		
+		if ((t.getColumn()!=b)&&(!list.contains(q.getBoard().getTile((t.getRow()-1)*9+t.getColumn()-1-dist)))) {
+			pb.change();
+			if (pb.isLegalStep(back)) {
+				if (white) {
+					q.getCurrentGame().getCurrentPosition().setWhitePosition(new PlayerPosition(p,q.getBoard().getTile((t.getRow()-1)*9+t.getColumn()-1-dist)));
+				}
+				else {
+					q.getCurrentGame().getCurrentPosition().setBlackPosition(new PlayerPosition(p,q.getBoard().getTile((t.getRow()-1)*9+t.getColumn()-1-dist)));
+				}
+				
+				list.add(getTile(q,white));
+				System.out.println("BACKWARD");
+				q.getCurrentGame().getCurrentPosition().setPlayerToMove(p);
+				Tile t1=getTile(q,white);
+				if (checker(q,pb,forw,back,p,white,f,b,back,list)) {
+					pb.change();
+					if (white) {
+						q.getCurrentGame().getCurrentPosition().setWhitePosition(new PlayerPosition(p,q.getBoard().getTile((t1.getRow()-1)*9+t1.getColumn()-1+dist)));
+					}
+					else {
+						q.getCurrentGame().getCurrentPosition().setBlackPosition(new PlayerPosition(p,q.getBoard().getTile((t1.getRow()-1)*9+t1.getColumn()-1+dist)));
+					}
+					return true;
+				}
+				else {
+					pb.change();
+					if (white) {
+						q.getCurrentGame().getCurrentPosition().setWhitePosition(new PlayerPosition(p,q.getBoard().getTile((t1.getRow()-1)*9+t1.getColumn()-1+dist)));
+					}
+					else {
+						q.getCurrentGame().getCurrentPosition().setBlackPosition(new PlayerPosition(p,q.getBoard().getTile((t1.getRow()-1)*9+t1.getColumn()-1+dist)));
+					}
+					System.out.println("FORWARD");
+					q.getCurrentGame().getCurrentPosition().setPlayerToMove(p);
+				}
+			}
+		}
+		return false;
+		
+	}
+	
+	public Tile getTile(Quoridor q,boolean white) {
+		Tile t;
+		if (white) {
+			t=q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile();
+		}
+		else {
+			t=q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile();
+		}
+		return t;
 	}
 	
 	public void resignGame(Quoridor q) {

@@ -79,9 +79,13 @@ public class WallComponent extends HoldableComponent{
 							GameController gc= new GameController();
 							Boolean valid=gc.valWallPosition(x1,y1, "vertical");
 							if (valid) {
-								gc.dropWall(x1,y1, "vertical",this.wallId);
+								if(gc.dropWall(x1,y1, "vertical",this.wallId)) {
 								// Snap to position
-								this.setLocation((int)points[x1][y1].getX()-wallW/2+5/2,(int)points[x1][y1].getY()-(wallH-50)/2+5/2);
+									this.setLocation((int)points[x1][y1].getX()-wallW/2+5/2,(int)points[x1][y1].getY()-(wallH-50)/2+5/2);
+								}
+								else {
+									valid=false;
+								}
 							}
 							return valid;
 						}
@@ -102,9 +106,13 @@ public class WallComponent extends HoldableComponent{
 							GameController gc= new GameController();
 							Boolean valid=gc.valWallPosition(x1,y1, "horizontal");
 							if (valid) {
-								gc.dropWall(x1,y1, "horizontal", this.wallId);
+								if (gc.dropWall(x1,y1, "horizontal", this.wallId)) {
 								// Snap to position
-								this.setLocation((int)points2[x1][y1].getX()-(wallH-50)/2+5/2,(int)points2[x1][y1].getY()-wallW/2+5/2);
+									this.setLocation((int)points2[x1][y1].getX()-(wallH-50)/2+5/2,(int)points2[x1][y1].getY()-wallW/2+5/2);
+								}
+								else {
+									valid=false;
+								}
 							}
 							
 							return valid;
