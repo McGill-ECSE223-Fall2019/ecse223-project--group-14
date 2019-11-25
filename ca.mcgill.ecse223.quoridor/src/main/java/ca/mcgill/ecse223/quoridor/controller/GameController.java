@@ -1686,6 +1686,22 @@ public class GameController {
 		}
 	}
 	
+	public void saveMoves(Quoridor q, String filename) {
+		//TODO method that saves moves into a .mov file with the same name as the saved position
+	}
+	
+	public Boolean loadMoves(Quoridor q, String filename) {
+		//TODO method that loads moves into model from file, if any are invalid then return false, make sure no moves are loaded in this case
+		return true;
+	}
+	
+	/**
+	 * Previous wrapper for check if path exists, depreciated and should not be used
+	 * @deprecated
+	 * @author DariusPi
+	 * @param q
+	 * @return
+	 */
 	public boolean checkPath(Quoridor q) {
 		Game g=q.getCurrentGame();
 		PawnBehavior pb=new PawnBehavior("invalid");
@@ -1741,6 +1757,23 @@ public class GameController {
 		}
 		return result;
 	}
+	/**
+	 * Previous method to check if path exists, depreciated and should not be used
+	 * @deprecated
+	 * @author DariusPi
+	 * 
+	 * @param q
+	 * @param pb
+	 * @param forw
+	 * @param back
+	 * @param p
+	 * @param white
+	 * @param f
+	 * @param b
+	 * @param side
+	 * @param list
+	 * @return
+	 */
 	public boolean checker(Quoridor q,PawnBehavior pb, String forw, String back,Player p,boolean white,int f,int b,String side,ArrayList<Tile> list) {
 		Tile t=getTile(q,white);
 		System.out.print(" on tile"+t.getRow()+t.getColumn());

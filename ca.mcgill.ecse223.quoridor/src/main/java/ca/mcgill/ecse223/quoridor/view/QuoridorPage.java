@@ -329,7 +329,7 @@ public class QuoridorPage extends JFrame{
 		declineDrawButton.setBounds(10, y+30, buttonW, buttonH);
 		add(declineDrawButton);
 		
-		replayGameButton.setBounds(10, y, buttonW, buttonH);
+		replayGameButton.setBounds(10, y+30, buttonW, buttonH);
 		add(replayGameButton);
 		
 		endTurnButton.setBounds(10, y-30, buttonW, buttonH);		//could be placed better
@@ -429,7 +429,7 @@ public class QuoridorPage extends JFrame{
 		timeRem2.setVisible(false);
 		
 		newGameButton.setVisible(false);
-		saveGameButton.setVisible(false);
+		saveGameButton.setVisible(true);
 		loadGameButton.setVisible(false);
 		resignGameButton.setVisible(false);
 		drawGameButton.setVisible(false);
@@ -615,7 +615,7 @@ public class QuoridorPage extends JFrame{
 			
 			wPawn.init(true);
 			bPawn.init(false);
-			
+			finished = false; 
 			gc.startTheClock(q,timer);
 			
 			refreshData();
@@ -666,11 +666,20 @@ public class QuoridorPage extends JFrame{
 			//call the save game controller method
 			
 			gc.SaveGame(q, saveField.getText());
-			
+			if (finished) {
+				banner="Game Over";
+				quitButton.setVisible(true);
+				replayGameButton.setVisible(true);
+				saveGameButton.setVisible(true);
+				error=q.getCurrentGame().getGameStatus().toString();
+				//toggleBoard(true);
+			}
+			else {
+				banner = "GamePlay"; 
+				toggleMainButtons(true);
+				toggleBoard(true);
+			}
 			// update visuals
-			banner = "GamePlay"; 
-			toggleMainButtons(true);
-			toggleBoard(true);
 			refreshData();
 		}
 	}
@@ -683,8 +692,17 @@ public class QuoridorPage extends JFrame{
 		banner = "GamePlay"; 
 		overwriteButton.setVisible(false);
 		cancelButton.setVisible(false);
-		toggleMainButtons(true);
-		toggleBoard(true);
+		if (finished) {
+			banner = "Game Over"; 
+			quitButton.setVisible(true);
+			replayGameButton.setVisible(true);
+			saveGameButton.setVisible(true);
+			error=q.getCurrentGame().getGameStatus().toString();
+		}
+		else {
+			toggleMainButtons(true);
+			toggleBoard(true);
+		}
 		refreshData();		
 	}
 	
@@ -868,13 +886,10 @@ public class QuoridorPage extends JFrame{
 		// clear error message		
 		toggleBoard(true);
 		error = "";
+		timer.stop();
+		toggleMainButtons(false);
+		toggleReplayButtons(true);
 		replayGameButton.setVisible(false);
-		stepForwardButton.setVisible(true);
-		stepBackwardButton.setVisible(true);
-		jumpStartButton.setVisible(true);
-		jumpEndButton.setVisible(true);
-		quitButton.setVisible(true);
-		continueButton.setVisible(true);
 		gc.initReplay(q);
 		stageMove=true;
 		banner = "Replay Mode";
@@ -884,20 +899,14 @@ public class QuoridorPage extends JFrame{
 	private void continueButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message		
 		error = "";
-		//TODO in phase 2
-		// update visuals
+		
 		boolean canContinue=gc.continueGame(q);
+		//TODO may need to check if game if finished
 		if (canContinue) {
-			continueButton.setVisible(false);
-			stepForwardButton.setVisible(false);
-			stepBackwardButton.setVisible(false);
-			jumpStartButton.setVisible(false);
-			jumpEndButton.setVisible(false);
+			toggleReplayButtons(false);
 			
-			endTurnButton.setVisible(true);
-			saveGameButton.setVisible(true);
-			resignGameButton.setVisible(true);
-			drawGameButton.setVisible(true);
+			toggleMainButtons(true);
+			
 			timeRem1.setVisible(true);
 			timeRem2.setVisible(true);
 			
@@ -1061,13 +1070,7 @@ public class QuoridorPage extends JFrame{
 		turnMessage1.setVisible(false);
 		turnMessage2.setVisible(false);
 		
-		continueButton.setVisible(false);
-		replayGameButton.setVisible(false);
-		stepForwardButton.setVisible(false);
-		stepBackwardButton.setVisible(false);
-		jumpStartButton.setVisible(false);
-		jumpEndButton.setVisible(false);
-		quitButton.setVisible(false);
+		toggleReplayButtons(false);
 		
 		endTurnButton.setVisible(false);
 		stageMove=false;
@@ -1472,13 +1475,24 @@ public class QuoridorPage extends JFrame{
 		resignGameButton.setVisible(vis);
 		drawGameButton.setVisible(vis);
 		endTurnButton.setVisible(vis);
-		
+		replayGameButton.setVisible(vis);
 		if (currPlayer) {
 			turnMessage1.setVisible(vis);
 		}
 		else {
 			turnMessage2.setVisible(vis);
 		}
+	}
+	
+	private void toggleReplayButtons(boolean vis) {
+		continueButton.setVisible(vis);
+		replayGameButton.setVisible(vis);
+		stepForwardButton.setVisible(vis);
+		stepBackwardButton.setVisible(vis);
+		jumpStartButton.setVisible(vis);
+		jumpEndButton.setVisible(vis);
+		quitButton.setVisible(vis);
+		
 	}
 	
 	/**
