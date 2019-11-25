@@ -1725,6 +1725,8 @@ public class CucumberStepDefinitions {
 		boolean File_Overwrite = true;
 			}
 	
+	boolean invalidmove;
+	
 	/**
 	 * @author AmineMallek
 	 * @throws Throwable
@@ -1737,6 +1739,8 @@ public class CucumberStepDefinitions {
 		 assertFalse(gc.checkResult(q));
 	 }
 	
+	 boolean eachgamemovevalid;
+	 
 	 /**
 		 * @author AmineMallek
 		 * @throws Throwable
@@ -1747,7 +1751,7 @@ public class CucumberStepDefinitions {
 			 Quoridor q=QuoridorApplication.getQuoridor();
 			 GameController G = new GameController();
 				
-			 boolean eachgamemovevalid = false;
+			 eachgamemovevalid = false;
 			 
 				if (QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus().equals(GameStatus.Initializing))
 					eachgamemovevalid = false;
@@ -1761,6 +1765,7 @@ public class CucumberStepDefinitions {
 			 
 		}
 
+		
 		 
 		 /**
 			 * @author AmineMallek
@@ -1771,7 +1776,7 @@ public class CucumberStepDefinitions {
 		 public void TheGameHasInvalidMove() {
 			 Quoridor q=QuoridorApplication.getQuoridor();
 			 GameController gc=new GameController();
-			boolean invalidmove = gc.checkResult(q);
+			invalidmove = gc.checkResult(q);
 			 
 		 }
 
@@ -1784,7 +1789,6 @@ public class CucumberStepDefinitions {
 		 public void TheGameNotifiesUserGameFileInvalid() {
 			 Quoridor q=QuoridorApplication.getQuoridor();
 			 GameController gc=new GameController();
-			 boolean invalidmove = gc.checkResult(q);
 			 assertFalse(invalidmove);
 		 }
 	
