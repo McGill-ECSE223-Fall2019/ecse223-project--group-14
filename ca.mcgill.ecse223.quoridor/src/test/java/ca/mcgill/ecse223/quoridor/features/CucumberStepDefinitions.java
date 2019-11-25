@@ -1770,17 +1770,8 @@ public class CucumberStepDefinitions {
 		 @And ("The game to load has an invalid move")
 		 public void TheGameHasInvalidMove() {
 			 Quoridor q=QuoridorApplication.getQuoridor();
-			 GameController G = new GameController();
-			 boolean invalidmove = false;
-				
-				if (QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus().equals(GameStatus.Initializing))
-					invalidmove = true;
-				try {
-					G.validityChecking(QuoridorApplication.getQuoridor());
-				} catch (Exception e) {
-					invalidmove = true;
-				}
-				assertTrue(invalidmove);
+			 GameController gc=new GameController();
+			boolean invalidmove = gc.checkResult(q);
 			 
 		 }
 
@@ -1793,8 +1784,8 @@ public class CucumberStepDefinitions {
 		 public void TheGameNotifiesUserGameFileInvalid() {
 			 Quoridor q=QuoridorApplication.getQuoridor();
 			 GameController gc=new GameController();
-			System.out.println("Game file is invalid");
-
+			 boolean invalidmove = gc.checkResult(q);
+			 assertFalse(invalidmove);
 		 }
 	
  
