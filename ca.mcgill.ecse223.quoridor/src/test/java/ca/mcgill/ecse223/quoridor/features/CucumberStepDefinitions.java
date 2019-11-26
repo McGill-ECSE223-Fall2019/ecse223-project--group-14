@@ -1704,9 +1704,9 @@ public class CucumberStepDefinitions {
 		file=sb.toString();
 		G.SaveGame(quoridor, file);
 		
-		String movFilename=file.substring(0, FileName.length()-3)+"mov";
+		String movFilename=file.substring(0, file.length()-3)+"mov";
 		
-		System.out.print(movFilename);
+		//System.out.print(movFilename);
 		G.saveMoves(quoridor, movFilename);
 	}
 
