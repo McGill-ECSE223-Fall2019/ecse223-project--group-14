@@ -1726,6 +1726,7 @@ public class CucumberStepDefinitions {
 			}
 	
 	boolean invalidmove;
+	boolean eachgamemovevalid;
 	
 	/**
 	 * @author AmineMallek
@@ -1738,8 +1739,6 @@ public class CucumberStepDefinitions {
 		 GameController gc=new GameController();
 		 assertFalse(gc.checkResult(q));
 	 }
-	
-	 boolean eachgamemovevalid;
 	 
 	 /**
 		 * @author AmineMallek
@@ -1755,22 +1754,16 @@ public class CucumberStepDefinitions {
 			 
 				if (QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus().equals(GameStatus.Initializing))
 					eachgamemovevalid = false;
-				try {
-					G.validityChecking(QuoridorApplication.getQuoridor());
-				} catch (Exception e) {
-					eachgamemovevalid = false;
-				}
+				try 				{	G.validityChecking(QuoridorApplication.getQuoridor());	} 
+				catch (Exception e) {	eachgamemovevalid = false;								}
 				
 				assertTrue(eachgamemovevalid);
-			 
 		}
 
-		
-		 
-		 /**
-			 * @author AmineMallek
-			 * @throws Throwable
-			 */ 
+		/**
+		 	* @author AmineMallek
+		 	* @throws Throwable
+		 	*/ 
 		 
 		 @And ("The game to load has an invalid move")
 		 public void TheGameHasInvalidMove() {
