@@ -1785,6 +1785,66 @@ public class CucumberStepDefinitions {
 		boolean File_Overwrite = true;
 			}
 	
+	boolean invalidmove;
+	boolean eachgamemovevalid;
+	
+	/**
+	 * @author AmineMallek
+	 * @throws Throwable
+	 */ 
+	
+	 @And ("The game has no final results")
+	 public void theGameHasNoFinalResult() {
+		 Quoridor q=QuoridorApplication.getQuoridor();
+		 GameController gc=new GameController();
+		 assertFalse(gc.checkResult(q));
+	 }
+	 
+	 /**
+		 * @author AmineMallek
+		 * @throws Throwable
+		 */ 
+		
+		@And ("Each game move is valid")
+			public void GameMoveValid() throws Throwable{
+			 Quoridor q=QuoridorApplication.getQuoridor();
+			 GameController G = new GameController();
+				
+			 eachgamemovevalid = false;
+			 
+				if (QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus().equals(GameStatus.Initializing))
+					eachgamemovevalid = false;
+				try 				{	G.validityChecking(QuoridorApplication.getQuoridor());	} 
+				catch (Exception e) {	eachgamemovevalid = false;								}
+				
+				assertTrue(eachgamemovevalid);
+		}
+
+		/**
+		 	* @author AmineMallek
+		 	* @throws Throwable
+		 	*/ 
+		 
+		 @And ("The game to load has an invalid move")
+		 public void TheGameHasInvalidMove() {
+			 Quoridor q=QuoridorApplication.getQuoridor();
+			 GameController gc=new GameController();
+			invalidmove = gc.checkResult(q);
+			 
+		 }
+
+		 /**
+			 * @author AmineMallek
+			 * @throws Throwable
+			 */ 
+		 
+		 @Then ("The game shall notify the user that the game file is invalid")
+		 public void TheGameNotifiesUserGameFileInvalid() {
+			 Quoridor q=QuoridorApplication.getQuoridor();
+			 GameController gc=new GameController();
+			 assertFalse(invalidmove);
+		 }
+	
  
 	/*
 	 * TODO Iteration 4 
