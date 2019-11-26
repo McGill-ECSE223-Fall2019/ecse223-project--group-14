@@ -1752,8 +1752,8 @@ public class CucumberStepDefinitions {
 				
 			 eachgamemovevalid = false; // false by default
 			 
-				if (QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus().equals(GameStatus.Initializing))
-					eachgamemovevalid = false;
+				if (QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus().equals(GameStatus.Initializing)) //not valud
+					eachgamemovevalid = false;  //stays false
 				try 				{	G.validityChecking(QuoridorApplication.getQuoridor());	} 
 				catch (Exception e) {	eachgamemovevalid = false;								}
 				
@@ -1769,7 +1769,7 @@ public class CucumberStepDefinitions {
 		 public void TheGameHasInvalidMove() {
 			 Quoridor q=QuoridorApplication.getQuoridor();
 			 GameController gc=new GameController();
-			invalidmove = gc.checkResult(q);
+			invalidmove = gc.checkResult(q); //calls checkResult
 			 
 		 }
 
@@ -1782,7 +1782,7 @@ public class CucumberStepDefinitions {
 		 public void TheGameNotifiesUserGameFileInvalid() {
 			 Quoridor q=QuoridorApplication.getQuoridor();
 			 GameController gc=new GameController();
-			 assertFalse(invalidmove);
+			 assertFalse(invalidmove); //false boolean invalid move
 		 }
 	
  
