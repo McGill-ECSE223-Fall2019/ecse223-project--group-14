@@ -1707,7 +1707,7 @@ public class CucumberStepDefinitions {
 		String movFilename=file.substring(0, file.length()-3)+"mov";
 		
 		//System.out.print(movFilename);
-		G.saveMoves(quoridor, movFilename);
+		G.saveMoves(quoridor, movFilename,false);
 	}
 
 	/**

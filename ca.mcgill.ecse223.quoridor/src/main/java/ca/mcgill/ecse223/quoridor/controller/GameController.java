@@ -1048,7 +1048,7 @@ public class GameController {
 		}
 		
 		return true;
-//		//TODO
+
 //		Boolean path=true;
 //		if (!checkPath(q)) {
 //			g.setCurrentPosition(g.getPosition(g.getCurrentPosition().getId()-1));
@@ -1116,7 +1116,7 @@ public class GameController {
 	public Game initSavedGameLoad(Quoridor quoridor, String filename) throws Exception {
 		if (quoridor.getCurrentGame()==null)
 			initGame(quoridor);
-		
+		//TODO
 		Game game = quoridor.getCurrentGame();
 		Board board = quoridor.getBoard();
 		
@@ -1686,7 +1686,7 @@ public class GameController {
 		}
 	}
 	
-	public void saveMoves(Quoridor q, String filename) throws IOException {
+	public void saveMoves(Quoridor q, String filename, boolean finished) throws IOException {
 		File file=new File(filename);		//Our file created
 		
 		file.setWritable(true);
@@ -1727,24 +1727,177 @@ public class GameController {
 				case 9: Column = "i";
 					
 			}
-			if (mvn%2==0) {		//newline
+			if (mvn%2==0) {		
 				writer.print(Column+row);
 			}
 			else {
-				writer.println(" "+Column+row);
+				writer.print(" "+Column+row);
 			}
 			
 			if (mov instanceof WallMove) {
 				writer.print(((WallMove)mov).getWallDirection().toString().toLowerCase().charAt(0));
 			}
+			
+			if (mvn%2==0) {		
+			}
+			else {
+				writer.println();
+			}
 			mvn++;
+		}
+		if (finished) {
+			writer.print(" 0-1");	//indicates terminated game
 		}
 		writer.close();		
 	}
-	
-	public Boolean loadMoves(Quoridor q, String filename) {
-		//TODO method that loads moves into model from file, if any are invalid then return false, make sure no moves are loaded in this case
-		return true;
+	/**
+	 * method that loads moves into model from file, if any are invalid then return false, make sure no moves are loaded in this case
+	 * 
+	 * @param q
+	 * @param filename
+	 * @return 0 for valid and unfinished, 1 for finished and valid, -1 for invalid
+	 * @throws Exception
+	 */
+	public int loadMoves(Quoridor q, String filename) throws Exception {	//three states, valid, invalid, finished
+		int finished=0;
+		int wwalls=0;
+		int bwalls=10;
+		if (q.getCurrentGame()==null) {
+			initGame(q); //maybe start game as well
+			addWalls();
+		}
+		
+		//initialize scanning on file with move data
+		//assume that file is well formatted even if invalid
+		File file = new File(filename);
+		Scanner fileSC = null;
+		try {
+			fileSC = new Scanner(file);
+		} catch (FileNotFoundException e) {
+			throw new Exception("File does not exist!");
+		}
+			
+		//String line= fileSC.nextLine();	
+		while (fileSC.hasNextLine()) {
+			String line= fileSC.nextLine();
+			String []movs=line.split(" ");
+			for (String mov: movs) {
+				
+				//TODO call check move and return -1 if false, 0-1 is end game and should return 1
+				
+				int row=Character.getNumericValue(mov.charAt(1))-1;
+				char Column=mov.charAt(0);
+				int col=0;  //needs conversion to letter, using switch cases
+				switch(Column) {
+					case 'a':  col = 0;
+						break;
+					
+					case 'b':  col = 1;
+						break;
+						
+					case 'c':   col =2;
+						break;
+						
+					case 'd':   col =3;
+						break;
+						
+					case 'e':  col = 4;
+						break;
+						
+					case 'f':  col = 5;
+						break;
+						
+					case 'g':  col = 6;
+						break;
+						
+					case 'h':  col = 7;
+						break;
+						
+					case 'i': col = 8;
+						
+				}
+				Game currentGame=q.getCurrentGame();
+				GamePosition curr= currentGame.getCurrentPosition();
+				GamePosition next;
+				Player player=curr.getPlayerToMove();
+				if (mov.length()==3) {
+					Character d=mov.charAt(2);
+					String dir;
+					int id;
+					if (d=='h') {
+						dir="horizontal";
+					}
+					else {
+						dir="vertical";
+					}
+					
+					if (player.hasGameAsWhite()) {
+						if (wwalls==10) {	//trying to place 11 walls
+							return -1;
+						}
+						id=wwalls;
+						wwalls++;
+					}
+					else {
+						if (wwalls==20) {	//trying to place 11 walls
+							return -1;
+						}
+						id=bwalls;
+						bwalls++;
+					}
+					
+					if (!dropWall(col,row,dir,id)) {
+						return -1;						//if no path
+					}
+				}
+				else {
+					if (player.hasGameAsWhite()) {
+						PlayerPosition pos=new PlayerPosition(player, q.getBoard().getTile(row*9+col));
+						PlayerPosition pos2=new PlayerPosition(currentGame.getBlackPlayer(),curr.getBlackPosition().getTile());
+						next = new GamePosition(currentGame.numberOfPositions(), pos, pos2, currentGame.getBlackPlayer(), currentGame);
+						
+						for (Wall w : curr.getBlackWallsOnBoard()) {
+							next.addBlackWallsOnBoard(w);
+						}
+						for (Wall w : curr.getWhiteWallsOnBoard()) {
+							next.addWhiteWallsOnBoard(w);
+						}
+						for (Wall w : curr.getBlackWallsInStock()) {
+							next.addBlackWallsInStock(w);
+						}
+						for (Wall w : curr.getWhiteWallsInStock()) {
+							next.addWhiteWallsInStock(w);
+						}
+						currentGame.setCurrentPosition(next);
+						currentGame.addMove(new StepMove(currentGame.numberOfPositions()-2, 0, player, q.getBoard().getTile(row*9+col),currentGame));
+					}
+					else {
+						PlayerPosition pos=new PlayerPosition(player, q.getBoard().getTile(row*9+col));
+						PlayerPosition pos2=new PlayerPosition(currentGame.getWhitePlayer(),curr.getWhitePosition().getTile());
+						next = new GamePosition(currentGame.numberOfPositions(), pos2, pos, currentGame.getWhitePlayer(), currentGame);
+						for (Wall w : curr.getBlackWallsOnBoard()) {
+							next.addBlackWallsOnBoard(w);
+						}
+						for (Wall w : curr.getWhiteWallsOnBoard()) {
+							next.addWhiteWallsOnBoard(w);
+						}
+						for (Wall w : curr.getBlackWallsInStock()) {
+							next.addBlackWallsInStock(w);
+						}
+						for (Wall w : curr.getWhiteWallsInStock()) {
+							next.addWhiteWallsInStock(w);
+						}
+						currentGame.setCurrentPosition(next);
+						currentGame.addMove(new StepMove(currentGame.numberOfPositions()-2, 1, player, q.getBoard().getTile(row*9+col),currentGame));
+					}
+				}	
+			}	
+		}
+		fileSC.close();
+		if (!checkIfLoadGameValid(q)) {
+			return -1;
+		}
+		return finished;	
 	}
 	
 	/**

@@ -110,7 +110,7 @@ public class QuoridorPage extends JFrame{
 	
 	private boolean currPlayer;	//true for white, false for black
 	
-	private Timer timer;
+	Timer timer;
 	private boolean finished; // If game is over, result is shown
 	
 	private Quoridor q;
@@ -667,9 +667,8 @@ public class QuoridorPage extends JFrame{
 			
 			gc.SaveGame(q, saveField.getText());
 			
-			String movFilename=saveField.getText().substring(0, saveField.getText().length()-3);
-			movFilename.concat(".mov");
-			gc.saveMoves(q, movFilename);
+			String movFilename=saveField.getText().substring(0, saveField.getText().length()-3)+"mov";
+			gc.saveMoves(q, movFilename,finished);
 			
 			if (finished) {
 				banner="Game Over";
@@ -695,7 +694,7 @@ public class QuoridorPage extends JFrame{
 		
 		String movFilename=saveField.getText().substring(0, saveField.getText().length()-3)+"mov";
 		
-		gc.saveMoves(q, movFilename);
+		gc.saveMoves(q, movFilename,finished);
 		// update visuals
 		banner = "GamePlay"; 
 		overwriteButton.setVisible(false);
@@ -740,7 +739,6 @@ public class QuoridorPage extends JFrame{
 	}
 	
 	private void loadFileButtonActionPerformed(java.awt.event.ActionEvent evt) throws Exception {
-		//TODO check for finished games either by special characters and by finishing move (in case) drop pawn but not end turn
 		gc= new GameController();
 		error = "";
 		for (int i=0;i<10;i++) {
@@ -757,94 +755,45 @@ public class QuoridorPage extends JFrame{
 		}
 		
 		timer.stop();
-		//boolean newg;
-		/*if (p1Name.getText().compareTo("")==0) {
-			q.getCurrentGame().delete();
-		}*/
-		//TODO
-		//call load controller function to update model
-		//reset view with new loaded file
-		//gc.deleteGame(QuoridorApplication.getQuoridor());
+		
 		String filename = loadField.getText();
-		gc.loadGame(QuoridorApplication.getQuoridor(), filename);
-		
+		String movFilename=filename.substring(0, filename.length()-3)+"mov";
+		int load=gc.loadMoves(q, movFilename);
 		//gc.loadGame(QuoridorApplication.getQuoridor(), filename);
-		//will always throw exception due to unimplemented section
-
 		
-		currPlayer=q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite();
-		changeBoard();
-		/*
-		int xb=q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
-		int yb=q.getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
-		int xw=q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
-		int yw=q.getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
-		
-		wPawn.setBounds(107+xw*50, 167+yw*50, 25, 25);
-		bPawn.setBounds(107+xb*50, 167+yb*50, 25, 25);
-		
-		int width,height,x,y; boolean vert;
-		for (int i=0;i<10;i++) {
-			if (q.getCurrentGame().getWhitePlayer().getWall(i).getMove()!=null) {
-				if (q.getCurrentGame().getWhitePlayer().getWall(i).getMove().getWallDirection()==Direction.Horizontal) {
-					vert=false;
-					width=WallComponent.wallH;
-					height=WallComponent.wallW;
-					
-				}
-				else {
-					vert=true;
-					width=WallComponent.wallW;
-					height=WallComponent.wallH;
-				}
-				x=q.getCurrentGame().getWhitePlayer().getWall(i).getMove().getTargetTile().getColumn();
-				y=q.getCurrentGame().getWhitePlayer().getWall(i).getMove().getTargetTile().getRow();
-				
-				if(vert) {
-					wwalls[i].setBounds((int)points[x-1][y-1].getX(),(int)points[x-1][y-1].getY(),width,height);
-				}
-				else {
-					wwalls[i].rotate();
-					wwalls[i].setBounds((int)points2[x-1][y-1].getX(),(int)points2[x-1][y-1].getY(),width,height);
-				}
-			}
-			else {
-				wwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 125, WallComponent.wallW, WallComponent.wallH);
-			}
-			if (q.getCurrentGame().getBlackPlayer().getWall(i).getMove()!=null) {
-				if (q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getWallDirection()==Direction.Horizontal) {
-					vert=false;
-					width=WallComponent.wallH;
-					height=WallComponent.wallW;
-				}
-				else {
-					vert=true;
-					width=WallComponent.wallW;
-					height=WallComponent.wallH;
-				}
-				x=q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getTargetTile().getColumn();
-				y=q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getTargetTile().getRow();
-				
-				if(vert) {
-					bwalls[i].setBounds((int)points[x-1][y-1].getX(),(int)points[x-1][y-1].getY(),width,height);
-				}
-				else {
-					bwalls[i].rotate();
-					bwalls[i].setBounds((int)points2[x-1][y-1].getX(),(int)points2[x-1][y-1].getY(),WallComponent.wallH,WallComponent.wallW);
-				}
-			}
-			else {
-				bwalls[i].setBounds(380+(WallComponent.wallW+10)*i, 675, WallComponent.wallW, WallComponent.wallH);
+		if (load==-1) {
+			error="Invalid File";
+			q.getCurrentGame().setCurrentPosition(q.getCurrentGame().getPosition(0));
+			int j=q.getCurrentGame().getPositions().size()-1; //number of positions to delete
+			for (int k=0;k<j;k++) {
+				q.getCurrentGame().getPosition(q.getCurrentGame().getPositions().size()-1).delete();
+				Move m=q.getCurrentGame().getMove(q.getCurrentGame().getMoves().size()-1);
+				m.delete();
+				q.getCurrentGame().removeMove(m);
 			}
 		}
-		*/
+		else if (load==1) {
+			currPlayer=q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite();
+			changeBoard();
+			loadFileButton.setVisible(false);
+			loadField.setVisible(false);
+			
+			toggleReplayButtons(true);
+			banner="Replay Mode";
+			finished=true;
+		}
+		else {
+			currPlayer=q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite();
+			changeBoard();
 		
-		loadFileButton.setVisible(false);
-		loadField.setVisible(false);
-		p1NameField.setVisible(true);
-		createP1Button.setVisible(true);
-		selectP1Button.setVisible(true);
-		banner="New Game";
+			loadFileButton.setVisible(false);
+			loadField.setVisible(false);
+			p1NameField.setVisible(true);
+			createP1Button.setVisible(true);
+			selectP1Button.setVisible(true);
+			banner="New Game";
+		}
+		//TODO check for finished games either by special characters and by finishing move (in case) drop pawn but not end turn
 		refreshData();
 	}
 	
@@ -908,38 +857,42 @@ public class QuoridorPage extends JFrame{
 	private void continueButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message		
 		error = "";
-		
-		boolean canContinue=gc.continueGame(q);
-		//TODO may need to check if game if finished
-		if (canContinue) {
-			toggleReplayButtons(false);
-			
-			toggleMainButtons(true);
-			
-			timeRem1.setVisible(true);
-			timeRem2.setVisible(true);
-			
-			
-			//TODO either set remaining times to a constant or let them set the times
-			if (q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite()) {
-				turnMessage1.setVisible(true);
-			}
-			else {
-				turnMessage2.setVisible(true);
-			}
-			q.getCurrentGame().getWhitePlayer().setRemainingTime(new Time(1000*60*5));
-			q.getCurrentGame().getBlackPlayer().setRemainingTime(new Time(1000*60*5));
-			Time t=q.getCurrentGame().getBlackPlayer().getRemainingTime();
-			timeRem1.setText(convT2S(t));
-			timeRem2.setText(convT2S(t));
-			stageMove=false;
-			timer.start();
-			banner = "GamePlay";
-		}
-		else {
+		if (finished) {
 			error="Finished games cannot be continued";
 		}
-		
+		else {
+			boolean canContinue=gc.continueGame(q);
+			if (canContinue) {
+				toggleReplayButtons(false);
+				
+				toggleMainButtons(true);
+				
+				timeRem1.setVisible(true);
+				timeRem2.setVisible(true);
+				
+				
+				//TODO either set remaining times to a constant or let them set the times
+				if (q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite()) {
+					turnMessage1.setVisible(true);
+				}
+				else {
+					turnMessage2.setVisible(true);
+				}
+				/*q.getCurrentGame().getWhitePlayer().setRemainingTime(new Time(1000*60*5));
+				q.getCurrentGame().getBlackPlayer().setRemainingTime(new Time(1000*60*5));*/
+				Time t=q.getCurrentGame().getBlackPlayer().getRemainingTime();
+				timeRem1.setText(convT2S(t));
+				timeRem2.setText(convT2S(t));
+				stageMove=false;
+				timer.start();
+				banner = "GamePlay";
+			}
+			else {
+				error="Finished games cannot be continued";
+			}
+			
+		}
+	
 		refreshData();
 	}
 	
@@ -1138,12 +1091,11 @@ public class QuoridorPage extends JFrame{
 				turnMessage2.setVisible(true);
 			}
 			stageMove=false;
+			timer.start();
 			refreshData();
 			
 		}
 		else {
-			//TODO the draw game method should be checked here
-			
 			if (currPlayer) {
 				finishGame("White Wins!");
 			}

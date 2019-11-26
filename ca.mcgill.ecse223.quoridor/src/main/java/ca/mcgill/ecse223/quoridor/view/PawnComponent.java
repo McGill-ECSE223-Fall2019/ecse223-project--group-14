@@ -142,7 +142,7 @@ public class PawnComponent extends HoldableComponent{
 		if (pb.getStatus().compareTo("success")==0) {
 			//pb.change();
 			this.setLocation(tiles[j][i].getX()+(TileComponent.tileW-pawnW)/2, tiles[j][i].getY()+(TileComponent.tileW-pawnW)/2);
-			
+			qp.timer.stop();
 			return true;
 		}
 		else {

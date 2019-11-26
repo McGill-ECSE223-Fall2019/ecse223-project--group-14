@@ -86,6 +86,7 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 				this.pickedUpX = 0;
 				this.pickedUpY = 0;
 				heldComponent=null;
+				frame.timer.stop();
 				frame.errorMessage.setText("");
 			}
 			// If heldComponent is a Pawn
