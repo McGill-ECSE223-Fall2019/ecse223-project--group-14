@@ -1785,8 +1785,8 @@ public class CucumberStepDefinitions {
 		boolean File_Overwrite = true;
 			}
 	
-	boolean invalidmove;
-	boolean eachgamemovevalid;
+	boolean invalidmove; //boolean for invalid move
+	boolean eachgamemovevalid; //boolean for each and every move is valid
 	
 	/**
 	 * @author AmineMallek
@@ -1797,7 +1797,7 @@ public class CucumberStepDefinitions {
 	 public void theGameHasNoFinalResult() {
 		 Quoridor q=QuoridorApplication.getQuoridor();
 		 GameController gc=new GameController();
-		 assertFalse(gc.checkResult(q));
+		 assertFalse(gc.checkResult(q)); //assert false to check Result
 	 }
 	 
 	 /**
@@ -1810,14 +1810,14 @@ public class CucumberStepDefinitions {
 			 Quoridor q=QuoridorApplication.getQuoridor();
 			 GameController G = new GameController();
 				
-			 eachgamemovevalid = false;
+			 eachgamemovevalid = false; // false by default
 			 
-				if (QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus().equals(GameStatus.Initializing))
-					eachgamemovevalid = false;
+				if (QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus().equals(GameStatus.Initializing)) //not valud
+					eachgamemovevalid = false;  //stays false
 				try 				{	G.validityChecking(QuoridorApplication.getQuoridor());	} 
 				catch (Exception e) {	eachgamemovevalid = false;								}
 				
-				assertTrue(eachgamemovevalid);
+				assertTrue(eachgamemovevalid);	// assert true to each game move is valid
 		}
 
 		/**
@@ -1829,7 +1829,7 @@ public class CucumberStepDefinitions {
 		 public void TheGameHasInvalidMove() {
 			 Quoridor q=QuoridorApplication.getQuoridor();
 			 GameController gc=new GameController();
-			invalidmove = gc.checkResult(q);
+			invalidmove = gc.checkResult(q); //calls checkResult
 			 
 		 }
 
@@ -1842,7 +1842,7 @@ public class CucumberStepDefinitions {
 		 public void TheGameNotifiesUserGameFileInvalid() {
 			 Quoridor q=QuoridorApplication.getQuoridor();
 			 GameController gc=new GameController();
-			 assertFalse(invalidmove);
+			 assertFalse(invalidmove); //false boolean invalid move
 		 }
 	
  
