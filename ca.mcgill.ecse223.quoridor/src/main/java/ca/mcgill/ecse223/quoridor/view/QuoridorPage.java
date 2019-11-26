@@ -666,6 +666,11 @@ public class QuoridorPage extends JFrame{
 			//call the save game controller method
 			
 			gc.SaveGame(q, saveField.getText());
+			
+			String movFilename=saveField.getText().substring(0, saveField.getText().length()-3);
+			movFilename.concat(".mov");
+			gc.saveMoves(q, movFilename);
+			
 			if (finished) {
 				banner="Game Over";
 				quitButton.setVisible(true);
@@ -688,6 +693,9 @@ public class QuoridorPage extends JFrame{
 		error = "";
 		gc.SaveGame(q, saveField.getText());
 		
+		String movFilename=saveField.getText().substring(0, saveField.getText().length()-3)+"mov";
+		
+		gc.saveMoves(q, movFilename);
 		// update visuals
 		banner = "GamePlay"; 
 		overwriteButton.setVisible(false);
@@ -732,6 +740,7 @@ public class QuoridorPage extends JFrame{
 	}
 	
 	private void loadFileButtonActionPerformed(java.awt.event.ActionEvent evt) throws Exception {
+		//TODO check for finished games either by special characters and by finishing move (in case) drop pawn but not end turn
 		gc= new GameController();
 		error = "";
 		for (int i=0;i<10;i++) {

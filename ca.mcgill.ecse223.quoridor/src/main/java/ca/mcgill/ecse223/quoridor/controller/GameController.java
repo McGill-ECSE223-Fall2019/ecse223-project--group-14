@@ -1686,8 +1686,60 @@ public class GameController {
 		}
 	}
 	
-	public void saveMoves(Quoridor q, String filename) {
-		//TODO method that saves moves into a .mov file with the same name as the saved position
+	public void saveMoves(Quoridor q, String filename) throws IOException {
+		File file=new File(filename);		//Our file created
+		
+		file.setWritable(true);
+		file.createNewFile();
+		PrintWriter writer;
+		
+		writer = new PrintWriter(file, "UTF-8");
+		int mvn=0;
+		for (Move mov :q.getCurrentGame().getMoves()) {
+			int row=mov.getTargetTile().getRow();
+			int col=mov.getTargetTile().getColumn();
+			String Column = "";  //needs conversion to letter, using switch cases
+			switch(col) {
+				case 1:  Column = "a";
+					break;
+				
+				case 2:  Column = "b";
+					break;
+					
+				case 3:   Column = "c";
+					break;
+					
+				case 4:   Column = "d";
+					break;
+					
+				case 5:  Column = "e";
+					break;
+					
+				case 6:  Column = "f";
+					break;
+					
+				case 7:  Column = "g";
+					break;
+					
+				case 8:  Column = "h";
+					break;
+					
+				case 9: Column = "i";
+					
+			}
+			if (mvn%2==0) {		//newline
+				writer.print(Column+row);
+			}
+			else {
+				writer.println(" "+Column+row);
+			}
+			
+			if (mov instanceof WallMove) {
+				writer.print(((WallMove)mov).getWallDirection().toString().toLowerCase().charAt(0));
+			}
+			mvn++;
+		}
+		writer.close();		
 	}
 	
 	public Boolean loadMoves(Quoridor q, String filename) {
