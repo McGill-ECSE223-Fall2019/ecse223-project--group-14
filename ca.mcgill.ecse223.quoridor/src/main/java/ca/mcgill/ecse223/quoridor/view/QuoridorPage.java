@@ -218,13 +218,13 @@ public class QuoridorPage extends JFrame{
 		loadField.setVisible(false);
 		
 		title = new JLabel();
-		title.setFont(new Font("Serif",Font.PLAIN,36));
+		title.setFont(new Font("Calibri",Font.PLAIN,40));
 		title.setText("Quoridor");
 		
 		bannerMessage = new JLabel();
-		bannerMessage.setFont(new Font("Serif",Font.PLAIN,26));
+		bannerMessage.setFont(new Font("Calibri",Font.PLAIN,28));
 		bannerMessage.setForeground(Color.BLUE);
-		bannerMessage.setBorder(BorderFactory.createLineBorder(Color.BLUE, 5));
+		bannerMessage.setBorder(BorderFactory.createLineBorder(new Color(47,194,4), 5));
 		bannerMessage.setText(banner);
 		
 		initButtons();
