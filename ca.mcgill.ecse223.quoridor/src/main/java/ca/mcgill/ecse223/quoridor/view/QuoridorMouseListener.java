@@ -103,13 +103,19 @@ public class QuoridorMouseListener implements MouseListener, MouseMotionListener
 			}
 
 			else { // If no position is clicked (and not rotating), just put the component back
-				heldComponent.setLocation(this.pickedUpX, this.pickedUpY); // put back to position when pickedUp
-				this.pickedUpX = 0;
-				this.pickedUpY = 0;
-				if (heldComponent instanceof WallComponent) ((WallComponent) heldComponent).setDirection("vertical");
-				heldComponent = null;
+				returnObject();
 				frame.errorMessage.setText("Inavlid Move");
 			}
+		}
+	}
+	
+	public void returnObject() {
+		if (heldComponent != null) {
+			heldComponent.setLocation(this.pickedUpX, this.pickedUpY); // put back to position when pickedUp
+			this.pickedUpX = 0;
+			this.pickedUpY = 0;
+			if (heldComponent instanceof WallComponent) ((WallComponent) heldComponent).setDirection("vertical");
+			heldComponent = null;
 		}
 	}
 

@@ -118,7 +118,6 @@ public class QuoridorPage extends JFrame{
 	
 	private QuoridorMouseListener listener;
 	
-	
 	private TileComponent [][] tiles;
 	public WallComponent [] bwalls;
 	public WallComponent [] wwalls;
@@ -636,6 +635,7 @@ public class QuoridorPage extends JFrame{
 	
 	private void saveGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message
+		listener.returnObject();
 		error="";
 		toggleBoard(false);
 		toggleMainButtons(false);
@@ -822,6 +822,7 @@ public class QuoridorPage extends JFrame{
 	}
 	
 	private void resignGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		listener.returnObject();
 		gc.resignGame(q);
 		if(gc.getCurrentPlayerColor() == Color.BLACK) {
 			finishGame("White wins!");
@@ -832,6 +833,7 @@ public class QuoridorPage extends JFrame{
 	}
 	
 	private void drawGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		listener.returnObject();
 		// update visuals
 		toggleBoard(false);		
 		error = "";
@@ -865,6 +867,7 @@ public class QuoridorPage extends JFrame{
 	
 	private void replayGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message		
+		listener.returnObject();
 		toggleBoard(true);
 		error = "";
 		timer.stop();
@@ -1024,6 +1027,7 @@ public class QuoridorPage extends JFrame{
 	}
 	
 	private void quitButtonActionPerformed(java.awt.event.ActionEvent evt) {	
+		listener.returnObject();
 		toggleBoard(false);
 		
 		error = "";
