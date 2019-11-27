@@ -1086,7 +1086,6 @@ public class GameController {
 	public void loadGame(Quoridor quoridor, String filename) throws Exception {
 		initSavedGameLoad(quoridor, filename);
 		validityChecking(quoridor);
-		
 	}
 	
 	/**
@@ -1098,8 +1097,9 @@ public class GameController {
 	 * @throws Exception
 	 */
 	public void validityChecking(Quoridor quoridor) throws Exception {
-		if (!checkIfLoadGameValid(quoridor))
+		if (!checkIfLoadGameValid(quoridor)) {
 			throw new Exception("Load failed: Position is invalid!");
+		}
 	}
 	
 	/**
@@ -1114,9 +1114,9 @@ public class GameController {
 	 * @throws UnsupportedOperationException
 	 */
 	public Game initSavedGameLoad(Quoridor quoridor, String filename) throws Exception {
-		if (quoridor.getCurrentGame()==null)
+		if (quoridor.getCurrentGame()==null) {
 			initGame(quoridor);
-		//TODO
+		}
 		Game game = quoridor.getCurrentGame();
 		Board board = quoridor.getBoard();
 		
@@ -1608,8 +1608,6 @@ public class GameController {
 	
 	/*Iteration 5*/
 	
-	//TODO
-	
 	/**
 	 * For EnterReplayModeFeature
 	 * 
@@ -1686,6 +1684,16 @@ public class GameController {
 		}
 	}
 	
+	
+	/**
+	 * Saves the current moves including possibly a finish string 0-1 indicating a finished game
+	 * 
+	 * @author DariusPi 
+	 * @param q
+	 * @param filename
+	 * @param finished
+	 * @throws IOException
+	 */
 	public void saveMoves(Quoridor q, String filename, boolean finished) throws IOException {
 		File file=new File(filename);		//Our file created
 		
@@ -1738,18 +1746,22 @@ public class GameController {
 				writer.print(((WallMove)mov).getWallDirection().toString().toLowerCase().charAt(0));
 			}
 			
-			if (mvn%2==0) {		
-			}
-			else {
+			if (mvn%2!=0) {		
 				writer.println();
 			}
 			mvn++;
 		}
 		if (finished) {
-			writer.print(" 0-1");	//indicates terminated game
+			if (mvn%2==0) {
+				writer.print("0-1");	//indicates terminated game
+			}
+			else {
+				writer.print(" 0-1");	//indicates terminated game
+			}
 		}
 		writer.close();		
 	}
+	
 	/**
 	 * Method that loads moves into model from file, if any are invalid then return false, make sure no moves are loaded in this case
 	 * 
@@ -1789,13 +1801,16 @@ public class GameController {
 			
 				int valid=checkMove(mov,player.hasGameAsWhite());
 				if(valid==-1){
+					fileSC.close();
 					return -1;
 				}
 				else if (valid==1) {
 					if (!checkIfLoadGameValid(q)) {
+						fileSC.close();
 						return -1;
 					}
 					else {
+						fileSC.close();
 						return 1;
 					}
 				}
@@ -1843,6 +1858,7 @@ public class GameController {
 					
 					if (player.hasGameAsWhite()) {
 						if (wwalls==10) {	//trying to place 11 walls
+							fileSC.close();
 							return -1;
 						}
 						id=wwalls;
@@ -1850,6 +1866,7 @@ public class GameController {
 					}
 					else {
 						if (wwalls==20) {	//trying to place 11 walls
+							fileSC.close();
 							return -1;
 						}
 						id=bwalls;
@@ -1857,6 +1874,7 @@ public class GameController {
 					}
 					
 					if (!dropWall(col,row,dir,id)) {
+						fileSC.close();
 						return -1;						//if no path
 					}
 				}
@@ -1902,6 +1920,7 @@ public class GameController {
 					}
 				}
 				if (valid==2) {
+					fileSC.close();
 					return 1;
 				}
 			}
@@ -2012,6 +2031,7 @@ public class GameController {
 		}
 		return result;
 	}
+	
 	/**
 	 * Previous method to check if path exists, depreciated and should not be used
 	 * @deprecated

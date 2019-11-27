@@ -619,7 +619,6 @@ public class QuoridorPage extends JFrame{
 			gc.startTheClock(q,timer);
 			
 			refreshData();
-			//TODO
 			System.out.println("Positions");
 			List<GamePosition> gp=q.getCurrentGame().getPositions();
 			for (GamePosition pos: gp) {
@@ -650,42 +649,50 @@ public class QuoridorPage extends JFrame{
 	private void saveFileButtonActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
 		// clear error message
 		error = "";	
-		
-		Boolean fileExist=gc.filename_exists(saveField.getText());
-		
-		saveFileButton.setVisible(false);
-		saveField.setVisible(false);
-		
-		if (fileExist) {
-			overwriteButton.setVisible(true);
-			cancelButton.setVisible(true);
-			error = "File already exists, overwrite?";
-			refreshData();
+		String filename=saveField.getText();
+		if (filename.length()<5) {
+			error="FileName must be non empty and have a .dat extension";
+		}
+		else if (filename.substring(filename.length()-4).compareTo(".dat")!=0){
+			error="FileName must be non empty and have a .dat extension";
 		}
 		else {
-			//call the save game controller method
+			Boolean fileExist=gc.filename_exists(saveField.getText());
 			
-			gc.SaveGame(q, saveField.getText());
+			saveFileButton.setVisible(false);
+			saveField.setVisible(false);
 			
-			String movFilename=saveField.getText().substring(0, saveField.getText().length()-3)+"mov";
-			gc.saveMoves(q, movFilename,finished);
-			
-			if (finished) {
-				banner="Game Over";
-				quitButton.setVisible(true);
-				replayGameButton.setVisible(true);
-				saveGameButton.setVisible(true);
-				error=q.getCurrentGame().getGameStatus().toString();
-				//toggleBoard(true);
+			if (fileExist) {
+				overwriteButton.setVisible(true);
+				cancelButton.setVisible(true);
+				error = "File already exists, overwrite?";
+				refreshData();
 			}
 			else {
-				banner = "GamePlay"; 
-				toggleMainButtons(true);
-				toggleBoard(true);
+				//call the save game controller method
+				error="";
+				gc.SaveGame(q, saveField.getText());
+				
+				String movFilename=saveField.getText().substring(0, saveField.getText().length()-3)+"mov";
+				gc.saveMoves(q, movFilename,finished);
+				
+				if (finished) {
+					banner="Game Over";
+					quitButton.setVisible(true);
+					replayGameButton.setVisible(true);
+					saveGameButton.setVisible(true);
+					error=q.getCurrentGame().getGameStatus().toString();
+					//toggleBoard(true);
+				}
+				else {
+					banner = "GamePlay"; 
+					toggleMainButtons(true);
+					toggleBoard(true);
+				}
+				// update visuals
 			}
-			// update visuals
-			refreshData();
 		}
+		refreshData();
 	}
 	
 	private void overwriteButtonActionPerformed(java.awt.event.ActionEvent evt) throws IOException {
@@ -717,10 +724,20 @@ public class QuoridorPage extends JFrame{
 		// update visuals
 		error = "";
 		cancelButton.setVisible(false);
-		banner = "GamePlay"; 
 		overwriteButton.setVisible(false);
-		toggleMainButtons(true);
-		toggleBoard(true);
+		if (finished) {
+			banner = "Game Over"; 
+			quitButton.setVisible(true);
+			replayGameButton.setVisible(true);
+			saveGameButton.setVisible(true);
+			error=q.getCurrentGame().getGameStatus().toString();
+		}
+		else {
+			banner = "GamePlay"; 
+			toggleMainButtons(true);
+			toggleBoard(true);
+		}
+		
 		refreshData();		
 	}
 	
@@ -755,50 +772,56 @@ public class QuoridorPage extends JFrame{
 		}
 		
 		timer.stop();
-		
 		String filename = loadField.getText();
-		String movFilename=filename.substring(0, filename.length()-3)+"mov";
-		int load=gc.loadMoves(q, movFilename);
-		//gc.loadGame(QuoridorApplication.getQuoridor(), filename);
-		
-		if (load==-1) {
-			error="Invalid File";
-			q.getCurrentGame().setCurrentPosition(q.getCurrentGame().getPosition(0));
-			int j=q.getCurrentGame().getPositions().size()-1; //number of positions to delete
-			for (int k=0;k<j;k++) {
-				q.getCurrentGame().getPosition(q.getCurrentGame().getPositions().size()-1).delete();
-				Move m=q.getCurrentGame().getMove(q.getCurrentGame().getMoves().size()-1);
-				m.delete();
-				q.getCurrentGame().removeMove(m);
-			}
+		if (filename.length()<5) {
+			error="FileName must be non empty and have a .dat extension";
 		}
-		else if (load==1) {
-			currPlayer=q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite();
-			changeBoard();
-			loadFileButton.setVisible(false);
-			loadField.setVisible(false);
-			toggleBoard(true);
-			toggleReplayButtons(true);
-			banner="Replay Mode";
-			finished=true;
+		else if (filename.substring(filename.length()-4).compareTo(".dat")!=0){
+			error="FileName must be non empty and have a .dat extension";
 		}
 		else {
-			currPlayer=q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite();
-			changeBoard();
-		
-			loadFileButton.setVisible(false);
-			loadField.setVisible(false);
-			p1NameField.setVisible(true);
-			createP1Button.setVisible(true);
-			selectP1Button.setVisible(true);
-			banner="New Game";
+			String movFilename=filename.substring(0, filename.length()-3)+"mov";
+			int load=gc.loadMoves(q, movFilename);
+			//gc.loadGame(QuoridorApplication.getQuoridor(), filename);
+			
+			if (load==-1) {
+				error="Invalid File";
+				q.getCurrentGame().setCurrentPosition(q.getCurrentGame().getPosition(0));
+				int j=q.getCurrentGame().getPositions().size()-1; //number of positions to delete
+				for (int k=0;k<j;k++) {
+					q.getCurrentGame().getPosition(q.getCurrentGame().getPositions().size()-1).delete();
+					Move m=q.getCurrentGame().getMove(q.getCurrentGame().getMoves().size()-1);
+					m.delete();
+					q.getCurrentGame().removeMove(m);
+				}
+			}
+			else if (load==1) {
+				currPlayer=q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite();
+				changeBoard();
+				loadFileButton.setVisible(false);
+				loadField.setVisible(false);
+				toggleBoard(true);
+				toggleReplayButtons(true);
+				banner="Replay Mode";
+				finished=true;
+				stageMove=true;
+			}
+			else {
+				currPlayer=q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite();
+				changeBoard();
+			
+				loadFileButton.setVisible(false);
+				loadField.setVisible(false);
+				p1NameField.setVisible(true);
+				createP1Button.setVisible(true);
+				selectP1Button.setVisible(true);
+				banner="New Game";
+			}
 		}
-		//TODO check for finished games either by special characters and by finishing move (in case) drop pawn but not end turn
 		refreshData();
 	}
 	
 	private void resignGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		//TODO in phase 2
 		gc.resignGame(q);
 		if(gc.getCurrentPlayerColor() == Color.BLACK) {
 			finishGame("White wins!");
@@ -870,16 +893,12 @@ public class QuoridorPage extends JFrame{
 				timeRem1.setVisible(true);
 				timeRem2.setVisible(true);
 				
-				
-				//TODO either set remaining times to a constant or let them set the times
 				if (q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite()) {
 					turnMessage1.setVisible(true);
 				}
 				else {
 					turnMessage2.setVisible(true);
 				}
-				/*q.getCurrentGame().getWhitePlayer().setRemainingTime(new Time(1000*60*5));
-				q.getCurrentGame().getBlackPlayer().setRemainingTime(new Time(1000*60*5));*/
 				Time t=q.getCurrentGame().getBlackPlayer().getRemainingTime();
 				timeRem1.setText(convT2S(t));
 				timeRem2.setText(convT2S(t));
@@ -919,8 +938,6 @@ public class QuoridorPage extends JFrame{
 		else {
 			error="Already at final position";
 		}
-		//TODO in phase 2
-		// update visuals
 		
 		refreshData();
 	}
@@ -949,17 +966,12 @@ public class QuoridorPage extends JFrame{
 		else {
 			error="Already at first position";
 		}
-		//TODO in phase 2
-		// update visuals
-		
 		refreshData();
 	}
 	
 	private void jumpStartButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message		
 		error = "";
-		//TODO in phase 2
-		// update visuals
 		boolean success=gc.jumpToStart(q);
 		if(success) {
 			for (int i=0;i<10;i++) {
@@ -987,8 +999,6 @@ public class QuoridorPage extends JFrame{
 	private void jumpEndButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message	
 		error = "";
-		//TODO in phase 2
-		// update visuals
 		boolean success=gc.jumpToFinal(q);
 		if(success) {
 			for (int i=0;i<10;i++) {
@@ -1308,17 +1318,12 @@ public class QuoridorPage extends JFrame{
 						try {
 							loadFileButtonActionPerformed(new java.awt.event.ActionEvent(null, buttonH, banner));
 						} catch (Exception e2) {
-							// TODO Auto-generated catch block
+							
 							e2.printStackTrace();
 						}
 						//do nothing
 					}
-					//try {
-					//	loadFileButtonActionPerformed(evt);
-					//} catch (Exception e1) {
-					//	// TODO Auto-generated catch block
-					//	e1.printStackTrace();
-					//}
+					
 					refreshData();
 				}
 			}
