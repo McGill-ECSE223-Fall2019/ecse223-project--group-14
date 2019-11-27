@@ -777,7 +777,7 @@ public class QuoridorPage extends JFrame{
 			changeBoard();
 			loadFileButton.setVisible(false);
 			loadField.setVisible(false);
-			
+			toggleBoard(true);
 			toggleReplayButtons(true);
 			banner="Replay Mode";
 			finished=true;

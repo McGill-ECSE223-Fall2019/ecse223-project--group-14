@@ -1751,7 +1751,7 @@ public class GameController {
 		writer.close();		
 	}
 	/**
-	 * method that loads moves into model from file, if any are invalid then return false, make sure no moves are loaded in this case
+	 * Method that loads moves into model from file, if any are invalid then return false, make sure no moves are loaded in this case
 	 * 
 	 * @param q
 	 * @param filename
@@ -1782,9 +1782,23 @@ public class GameController {
 			String line= fileSC.nextLine();
 			String []movs=line.split(" ");
 			for (String mov: movs) {
-				
-				//TODO call check move and return -1 if false, 0-1 is end game and should return 1
-				
+				Game currentGame=q.getCurrentGame();
+				GamePosition curr= currentGame.getCurrentPosition();
+				GamePosition next;
+				Player player=curr.getPlayerToMove();
+			
+				int valid=checkMove(mov,player.hasGameAsWhite());
+				if(valid==-1){
+					return -1;
+				}
+				else if (valid==1) {
+					if (!checkIfLoadGameValid(q)) {
+						return -1;
+					}
+					else {
+						return 1;
+					}
+				}
 				int row=Character.getNumericValue(mov.charAt(1))-1;
 				char Column=mov.charAt(0);
 				int col=0;  //needs conversion to letter, using switch cases
@@ -1816,10 +1830,6 @@ public class GameController {
 					case 'i': col = 8;
 						
 				}
-				Game currentGame=q.getCurrentGame();
-				GamePosition curr= currentGame.getCurrentPosition();
-				GamePosition next;
-				Player player=curr.getPlayerToMove();
 				if (mov.length()==3) {
 					Character d=mov.charAt(2);
 					String dir;
@@ -1890,14 +1900,54 @@ public class GameController {
 						currentGame.setCurrentPosition(next);
 						currentGame.addMove(new StepMove(currentGame.numberOfPositions()-2, 1, player, q.getBoard().getTile(row*9+col),currentGame));
 					}
-				}	
-			}	
+				}
+				if (valid==2) {
+					return 1;
+				}
+			}
 		}
 		fileSC.close();
 		if (!checkIfLoadGameValid(q)) {
 			return -1;
 		}
 		return finished;	
+	}
+	
+	/**
+	 * Helper method for loadMoves, checks if move is in correct format or if finish game string
+	 * 
+	 * @author DariusPi
+	 * 
+	 * @param mov
+	 * @return 0 if valid, -1 if invalid, 1 if finished string, 2 if finishing move
+	 */
+	public int checkMove(String mov, boolean white) {
+		if (mov.length()>3) {
+			return -1;
+		}
+		if (mov.compareTo("0-1")==0) {		//in case of timeout or resigned or drawn games
+			return 1;
+		}
+		if ((mov.charAt(0)>='a')&&(mov.charAt(0)<='i')){
+			int row=Character.getNumericValue(mov.charAt(1));
+			if (row>=1&&row<=9) {
+				if (mov.length()==3) {
+					if ((mov.charAt(2)=='v')||mov.charAt(2)=='h') {
+						return 0;
+					}
+				}
+				else {
+					if (white&&(mov.charAt(0)=='i')) {
+						return 2;
+					}
+					else if(!white &&mov.charAt(0)=='a') {
+						return 2;
+					}
+					return 0;
+				}
+			}
+		}
+		return -1;
 	}
 	
 	/**
