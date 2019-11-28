@@ -1929,6 +1929,7 @@ public class GameController {
 		if (!checkIfLoadGameValid(q)) {
 			return -1;
 		}
+		q.getCurrentGame().setGameStatus(GameStatus.ReadyToStart);
 		return finished;	
 	}
 	
