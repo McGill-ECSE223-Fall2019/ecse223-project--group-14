@@ -771,7 +771,7 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */
 	@When ("A new game is being initialized")
-	public void aNewGameIsBeingInitialized() throws Throwable{
+	public void aNewGameIsBeingInitialized() {
 		GameController G= new GameController();
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
 		G.initGame(quoridor);
@@ -782,7 +782,7 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */
 	@And ("White player chooses a username")
-	public void whitePlayerChoosesAUsername() throws Throwable{
+	public void whitePlayerChoosesAUsername() {
 		//This method requires GUI input for the user name and whether a new user name is created or selected
 		
 		GameController G= new GameController();
@@ -807,7 +807,7 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */ 
 	@And ("Black player chooses a username")
-	public void blackPlayerChoosesAUsername() throws Throwable{
+	public void blackPlayerChoosesAUsername() {
 		//This method requires GUI input for the user name and whether a new user name is created or selected
 		
 		GameController G= new GameController();
@@ -846,7 +846,7 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */ 
 	@Then ("The game shall become ready to start")
-	public void theGameShallBecomeReadyToStart() throws Throwable{
+	public void theGameShallBecomeReadyToStart() {
 		GameStatus aGameStatus = GameStatus.ReadyToStart;
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
 		assertNotNull(quoridor.getCurrentGame());
@@ -861,7 +861,7 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */ 
 	@Given ("The game is ready to start")
-	public void theGameIsReadyToStart() throws Throwable{
+	public void theGameIsReadyToStart() {
 		GameController gc=new GameController();
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
 		gc.initQuorridor();
@@ -874,7 +874,7 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */ 
 	@When ("I start the clock")
-	public void iStartTheClock() throws Throwable{
+	public void iStartTheClock() {
 		GameController G= new GameController();
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
 		G.startTheClock(quoridor,new Timer(0, null));
@@ -897,7 +897,7 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */ 
 	@And ("The board shall be initialized")
-	public void theBoardIsInitialized() throws Throwable{
+	public void theBoardIsInitialized() {
 		
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
 		GamePosition pos=quoridor.getCurrentGame().getCurrentPosition();
@@ -912,7 +912,7 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */ 
 	@Given ("Next player to set user name is? (.*)")
-	public void nextPlayerToSetUserNameIs(String color) throws Throwable{
+	public void nextPlayerToSetUserNameIs(String color) {
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
 		
 		create="";
@@ -945,7 +945,7 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */ 
 	@And ("There is existing user (.*)")
-	public void thereIsExistingUser(String name) throws Throwable{
+	public void thereIsExistingUser(String name) {
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
 		User user=new User(name, quoridor);
 		quoridor.addUser(user);
@@ -956,7 +956,7 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */ 
 	@When ("The player selects existing? (.*)")
-	public void thePlayerSelectsExisting(String name) throws Throwable{
+	public void thePlayerSelectsExisting(String name) {
 		GameController G= new GameController();
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
 		if (quoridor.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite()) {
@@ -972,7 +972,7 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */ 
 	@Then ("The name of player? (.*) in the new game shall be (.*)")
-	public void theNameOfPlayerInTheNewGameShallBe(String Color, String name)throws Throwable{
+	public void theNameOfPlayerInTheNewGameShallBe(String Color, String name) {
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
 		Game game=quoridor.getCurrentGame();
 		if (Color.compareTo("white")==0) {
@@ -988,7 +988,7 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */ 
 	@And ("There is no existing user?(.*)")
-	public void thereIsNoExistingUser(String name) throws Throwable{
+	public void thereIsNoExistingUser(String name) {
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
 		List<User> li=quoridor.getUsers();
 		if (!li.isEmpty()) {
@@ -1007,7 +1007,7 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */ 
 	@When ("The player provides new user name: ?(.*)")
-	public void thePlayerProvidesNewUserName(String name) throws Throwable{
+	public void thePlayerProvidesNewUserName(String name) {
 		GameController G= new GameController();
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
 		if (quoridor.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite()) {
@@ -1023,7 +1023,7 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */ 
 	@Then ("The player shall be warned that (.*) already exists")
-	public void thePlayerShallBeWarnedThatAlreadyExists(String name) throws Throwable{
+	public void thePlayerShallBeWarnedThatAlreadyExists(String name) {
 		//GUI related feature
 		
 		assertEquals(create,name +" already exists");
@@ -1034,7 +1034,7 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */ 
 	@And ("Next player to set user name shall be (.*)")
-	public void nextlayerToSetUserNameShallBe(String color) throws Throwable{
+	public void nextlayerToSetUserNameShallBe(String color) {
 		Quoridor quoridor=QuoridorApplication.getQuoridor();
 		if (color.compareTo("white")==0) {
 			assertEquals(quoridor.getCurrentGame().getCurrentPosition().getPlayerToMove(),quoridor.getCurrentGame().getWhitePlayer());
@@ -1084,7 +1084,7 @@ public class CucumberStepDefinitions {
 	 */
 	
 	@When ("Validation of the position is initiated")
-	public void validationOfPositionisInitiated()throws Throwable {//game position created in given pass it to game controller
+	public void validationOfPositionisInitiated() {//game position created in given pass it to game controller
 		//try getting position from tile created in Atgiven
 		//not allowed to give argument to the above method
 		Quoridor q=QuoridorApplication.getQuoridor();
@@ -1097,7 +1097,7 @@ public class CucumberStepDefinitions {
 	 * @throws Throwable
 	 */
 	@Then ("The position shall be {string}")
-	public void thePositionShallBeResult(String result) throws Throwable{
+	public void thePositionShallBeResult(String result){
 		String success;
 		if (resvalid) {
 			success="ok";
@@ -1359,7 +1359,7 @@ public class CucumberStepDefinitions {
 		  }
 			
 	  }
-	  	//TODO
+	  
 	/**
 	 * @author FSharp4
 	 * @throws Throwable
@@ -2284,9 +2284,6 @@ public class CucumberStepDefinitions {
 		 QuoridorPage view = QuoridorApplication.getQuoridorView();
 		 assertEquals(false, !view.getStageMove());
 	 }
-	 /*Iteration 5 features*/
-	 
-	 //TODO
 	 
 	 /**
 	  * @author DariusPi

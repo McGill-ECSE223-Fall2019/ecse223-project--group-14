@@ -1623,7 +1623,6 @@ public class QuoridorPage extends JFrame{
 				}
 			}
 			if (there) {
-			//if (q.getCurrentGame().getBlackPlayer().getWall(i).getMove()!=null) {
 				if (q.getCurrentGame().getBlackPlayer().getWall(i).getMove().getWallDirection()==Direction.Horizontal) {
 					vert=false;
 					width=WallComponent.wallH;

@@ -1686,6 +1686,8 @@ public class GameController {
 	
 	
 	/**
+	 * For SaveGame Feature
+	 * 
 	 * Saves the current moves including possibly a finish string 0-1 indicating a finished game
 	 * 
 	 * @author DariusPi 
@@ -1763,8 +1765,11 @@ public class GameController {
 	}
 	
 	/**
+	 * For loadGame feature
+	 * 
 	 * Method that loads moves into model from file, if any are invalid then return false, make sure no moves are loaded in this case
 	 * 
+	 * @author DariusPi
 	 * @param q
 	 * @param filename
 	 * @return 0 for valid and unfinished, 1 for finished and valid, -1 for invalid
@@ -1971,7 +1976,7 @@ public class GameController {
 	}
 	
 	/**
-	 * Previous wrapper for check if path exists, depreciated and should not be used
+	 * Previous wrapper for check if path exists, deprecated and should not be used
 	 * @deprecated
 	 * @author DariusPi
 	 * @param q
