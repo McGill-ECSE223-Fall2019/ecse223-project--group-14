@@ -608,10 +608,11 @@ public class CucumberStepDefinitions {
 	 */
 	Quoridor q = QuoridorApplication.getQuoridor();
 	int cur = q.getCurrentGame().getCurrentPosition().getId();
-	Move move = q.getCurrentGame().getMove(cur-1);
+	int nm=cur/2+1;
+	int nr=cur%2+1;
 	
-	assertEquals(m, move.getMoveNumber());
-	assertEquals(r,move.getRoundNumber());
+	assertEquals(m, nm);						//the next move to be executed
+	assertEquals(r, nr);
 	
 	}
 	
@@ -622,9 +623,8 @@ public class CucumberStepDefinitions {
 	 */
 	@And("White player's position shall be \\({int},{int})")
 	public void WhitePlayerPosition(int r, int c) {
-		
-		GameController gc = new GameController();
-		GamePosition gamePos = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
+		Quoridor q = QuoridorApplication.getQuoridor();
+		GamePosition gamePos = q.getCurrentGame().getCurrentPosition();
 		int row = gamePos.getWhitePosition().getTile().getRow();
 		int col = gamePos.getWhitePosition().getTile().getColumn();
 		assertEquals(r,row);
@@ -667,7 +667,6 @@ public class CucumberStepDefinitions {
 	@And("Black has {int} on stock")
 	public void BlackWallsOnStock(int n) {
 	
-		GameController gc = new GameController();
 		GamePosition gamePos = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
 		int numberOfWalls = gamePos.getBlackWallsInStock().size();
 		assertEquals(n,numberOfWalls);
@@ -2261,45 +2260,47 @@ public class CucumberStepDefinitions {
 		 Quoridor q=QuoridorApplication.getQuoridor();
 		 Game g=q.getCurrentGame();
 		 g.getCurrentPosition().setPlayerToMove(g.getWhitePlayer());
+		 g.getCurrentPosition().getBlackPosition().setTile(q.getBoard().getTile(4));
+		 g.getCurrentPosition().getWhitePosition().setTile(q.getBoard().getTile(8*9+4)); 
 		 List<Map<String, String>> valueMaps = dataTable.asMaps();
 		 for (Map<String, String> map : valueMaps) {
 			 Integer mv = Integer.decode(map.get("mv"));
 			 Integer rnd = Integer.decode(map.get("rnd"));
 			 String mov = map.get("move");
 			 GamePosition next;
-			 int row;
+			 int col;
 			 switch (mov.charAt(0)){
 				case 'a':
-					row = 8;
+					col = 0;
 					break;
 				case 'b':
-					row = 7;
+					col = 1;
 					break;
 				case 'c':
-					row = 6;
+					col = 2;
 					break;
 				case 'd':
-					row = 5;
+					col = 3;
 					break;
 				case 'e':
-					row = 4;
+					col = 4;
 					break;
 				case 'f':
-					row = 3;
+					col = 5;
 					break;
 				case 'g':
-					row = 2;
+					col = 6;
 					break;
 				case 'h':
-					row = 1;
+					col = 7;
 					break;
 				case 'j':
-					row = 0;
+					col = 8;
 					break;
 				default:
 					throw new IllegalArgumentException("Unsupported wall direction was provided");
 				}
-			 int col=9-Character.getNumericValue(mov.charAt(1));
+			 int row=Character.getNumericValue(mov.charAt(1))-1;
 			 if (mov.length()!=3) {	//stepmove
 				 
 				 if (g.getCurrentPosition().getPlayerToMove().hasGameAsWhite()) {
@@ -2324,9 +2325,8 @@ public class CucumberStepDefinitions {
 				 for (Wall w : g.getCurrentPosition().getWhiteWallsInStock()) {
 					next.addWhiteWallsInStock(w);
 				 }
-				
-				 g.setCurrentPosition(next);
 				 g.addMove(new StepMove(mv, rnd, g.getCurrentPosition().getPlayerToMove(), g.getQuoridor().getBoard().getTile(row*9+col),g));
+				 g.setCurrentPosition(next);
 			 }
 			 else {					//wall move
 				 PlayerPosition p1=new PlayerPosition(g.getWhitePlayer(),g.getCurrentPosition().getWhitePosition().getTile());
@@ -2349,7 +2349,7 @@ public class CucumberStepDefinitions {
 				 for (Wall w : g.getCurrentPosition().getWhiteWallsInStock()) {
 					 next.addWhiteWallsInStock(w);
 				 }
-				 g.setCurrentPosition(next);
+				 //g.setCurrentPosition(next);
 				 Direction dirc;
 				 if(mov.charAt(2) == 'v') {
 					 dirc = Direction.Vertical;
@@ -2361,11 +2361,18 @@ public class CucumberStepDefinitions {
 					 Wall w=g.getCurrentPosition().getPlayerToMove().getWall(i);
 					 if (!w.hasMove()) {
 						 g.addMove(new WallMove(mv,rnd,g.getCurrentPosition().getPlayerToMove(),q.getBoard().getTile(col+row*9),g,dirc,w));
-						 g.getCurrentPosition().removeWhiteWallsInStock(g.getWhitePlayer().getWall(i));
-						 g.getCurrentPosition().addWhiteWallsOnBoard(g.getWhitePlayer().getWall(i));
+						 if(q.getCurrentGame().getCurrentPosition().getPlayerToMove().hasGameAsWhite()) {
+							 next.removeWhiteWallsInStock(g.getCurrentPosition().getPlayerToMove().getWall(i));
+							 next.addWhiteWallsOnBoard(g.getCurrentPosition().getPlayerToMove().getWall(i));
+						 }
+						 else {
+							 next.removeBlackWallsInStock(g.getCurrentPosition().getPlayerToMove().getWall(i));
+							 next.addBlackWallsOnBoard(g.getCurrentPosition().getPlayerToMove().getWall(i)); 
+						 }
 						 break;
 					 }
 				 }
+				 g.setCurrentPosition(next);
 				 
 			 }
 			 
