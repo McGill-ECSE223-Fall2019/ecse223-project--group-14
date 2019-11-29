@@ -635,7 +635,18 @@ public class QuoridorPage extends JFrame{
 	
 	private void saveGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message
-		if (stageMove) {
+		if (finished) {
+			listener.returnObject();
+			error="";
+			toggleBoard(false);
+			toggleMainButtons(false);
+			
+			saveFileButton.setVisible(true);
+			saveField.setVisible(true);
+			banner = "Save Game";
+		}
+		
+		else if (stageMove) {
 			error="Must End Turn Before Performing Action";
 		}
 		else {
