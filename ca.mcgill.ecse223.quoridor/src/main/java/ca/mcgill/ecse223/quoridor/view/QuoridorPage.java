@@ -635,14 +635,19 @@ public class QuoridorPage extends JFrame{
 	
 	private void saveGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		// clear error message
-		listener.returnObject();
-		error="";
-		toggleBoard(false);
-		toggleMainButtons(false);
-		
-		saveFileButton.setVisible(true);
-		saveField.setVisible(true);
-		banner = "Save Game";
+		if (stageMove) {
+			error="Must End Turn Before Performing Action";
+		}
+		else {
+			listener.returnObject();
+			error="";
+			toggleBoard(false);
+			toggleMainButtons(false);
+			
+			saveFileButton.setVisible(true);
+			saveField.setVisible(true);
+			banner = "Save Game";
+		}
 		refreshData();
 	}
 	
@@ -822,26 +827,37 @@ public class QuoridorPage extends JFrame{
 	}
 	
 	private void resignGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		listener.returnObject();
-		gc.resignGame(q);
-		if(gc.getCurrentPlayerColor() == Color.BLACK) {
-			finishGame("White wins!");
-		}else {
-			finishGame("Black wins!");
+		if (stageMove) {
+			error="Must End Turn Before Performing Action";
 		}
-		
+		else {
+			error="";
+			listener.returnObject();
+			gc.resignGame(q);
+			if(gc.getCurrentPlayerColor() == Color.BLACK) {
+				finishGame("White wins!");
+			}else {
+				finishGame("Black wins!");
+			}
+		}
+		refreshData();
 	}
 	
 	private void drawGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		listener.returnObject();
-		// update visuals
-		toggleBoard(false);		
-		error = "";
-		
-		toggleMainButtons(false);
-		acceptDrawButton.setVisible(true);
-		declineDrawButton.setVisible(true);
-		banner = "Draw Proposal";
+		if (stageMove) {
+			error="Must End Turn Before Performing Action";
+		}
+		else {
+			listener.returnObject();
+			// update visuals
+			toggleBoard(false);		
+			error = "";
+			
+			toggleMainButtons(false);
+			acceptDrawButton.setVisible(true);
+			declineDrawButton.setVisible(true);
+			banner = "Draw Proposal";
+		}
 		refreshData();
 	}
 	
@@ -866,17 +882,35 @@ public class QuoridorPage extends JFrame{
 	
 	
 	private void replayGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// clear error message		
-		listener.returnObject();
-		toggleBoard(true);
-		error = "";
-		timer.stop();
-		toggleMainButtons(false);
-		toggleReplayButtons(true);
-		replayGameButton.setVisible(false);
-		gc.initReplay(q);
-		stageMove=true;
-		banner = "Replay Mode";
+		if (finished) {
+			// clear error message		
+			listener.returnObject();
+			toggleBoard(true);
+			error = "";
+			timer.stop();
+			toggleMainButtons(false);
+			toggleReplayButtons(true);
+			replayGameButton.setVisible(false);
+			gc.initReplay(q);
+			stageMove=true;
+			banner = "Replay Mode";
+		}
+		else if (stageMove) {
+			error="Must End Turn Before Performing Action";
+		}
+		else {
+			// clear error message		
+			listener.returnObject();
+			toggleBoard(true);
+			error = "";
+			timer.stop();
+			toggleMainButtons(false);
+			toggleReplayButtons(true);
+			replayGameButton.setVisible(false);
+			gc.initReplay(q);
+			stageMove=true;
+			banner = "Replay Mode";
+		}
 		refreshData();
 	}
 	
@@ -1072,10 +1106,10 @@ public class QuoridorPage extends JFrame{
 		System.out.println("Moves: "+mov.size());
 		for (Move m:mov) {
 			if (m instanceof WallMove) {
-				System.out.println("wall  destination:"+m.getTargetTile().getRow()+","+m.getTargetTile().getColumn()+" movenumber:"+m.getMoveNumber()+" roundNumber:"+m.getMoveNumber());
+				System.out.println("wall  destination:"+m.getTargetTile().getRow()+","+m.getTargetTile().getColumn());
 			}
 			else {
-				System.out.println("destination:"+m.getTargetTile().getRow()+","+m.getTargetTile().getColumn()+" movenumber:"+m.getMoveNumber()+" roundNumber:"+m.getMoveNumber());
+				System.out.println("destination:"+m.getTargetTile().getRow()+","+m.getTargetTile().getColumn());
 			}
 		}
 		System.out.println("Postiions");
